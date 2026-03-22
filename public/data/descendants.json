@@ -1,0 +1,1586 @@
+[
+  {
+    "id": "101000027",
+    "name": "Serena",
+    "groupId": "101200027",
+    "element": "fire",
+    "skillTypes": [
+      "singular",
+      "dimension"
+    ],
+    "image": "https://open.api.nexon.com/static/tfd/img/d106721e64d412727aec86fca600ad22",
+    "skills": [
+      {
+        "name": "Sacred Flame",
+        "type": "Active Skill",
+        "element": "Fire",
+        "image": "https://open.api.nexon.com/static/tfd/img/49bf5fec45f6fc61eaf486971a37d9ac",
+        "arche": "Singular"
+      },
+      {
+        "name": "Ascension",
+        "type": "Active Skill",
+        "element": "Fire",
+        "image": "https://open.api.nexon.com/static/tfd/img/2fea2b2298bcd09eb0865842a5b60c26",
+        "arche": "Singular"
+      },
+      {
+        "name": "Soar",
+        "type": "Active Skill",
+        "element": "Fire",
+        "image": "https://open.api.nexon.com/static/tfd/img/ae8cd6bc361538eaa10373081c4fcefd",
+        "arche": "Dimension"
+      },
+      {
+        "name": "Redemption",
+        "type": "Active Skill",
+        "element": "Fire",
+        "image": "https://open.api.nexon.com/static/tfd/img/70e363934ee1c3b601068a4839232bba",
+        "arche": "Dimension"
+      },
+      {
+        "name": "Divinity",
+        "type": "Passive Skill",
+        "element": "Fire",
+        "image": "https://open.api.nexon.com/static/tfd/img/d71abb568eb4c4879b08bba50e71c38c",
+        "arche": null
+      }
+    ]
+  },
+  {
+    "id": "101000028",
+    "name": "Ultimate Blair",
+    "groupId": "101200012",
+    "element": "fire",
+    "skillTypes": [
+      "dimension",
+      "singular"
+    ],
+    "image": "https://open.api.nexon.com/static/tfd/img/5452e03e53350197ae827b194cf04411",
+    "skills": [
+      {
+        "name": "Blaze Up",
+        "type": "Active Skill",
+        "element": "Fire",
+        "image": "https://open.api.nexon.com/static/tfd/img/5338792587af3eda52b9dcf3c8935264",
+        "arche": "Dimension"
+      },
+      {
+        "name": "Extinguish",
+        "type": "Active Skill",
+        "element": "Fire",
+        "image": "https://open.api.nexon.com/static/tfd/img/b43f93e567469762dff5816427e6516d",
+        "arche": "Singular"
+      },
+      {
+        "name": "Burn Taste",
+        "type": "Active Skill",
+        "element": "Fire",
+        "image": "https://open.api.nexon.com/static/tfd/img/d329ef027f9213cd12321a6741ad0ebc",
+        "arche": "Dimension"
+      },
+      {
+        "name": "Deadly Cuisine",
+        "type": "Active Skill",
+        "element": "Fire",
+        "image": "https://open.api.nexon.com/static/tfd/img/e6f950bc9b122f46dddb78c4ee510e53",
+        "arche": "Dimension"
+      },
+      {
+        "name": "Pitmaster",
+        "type": "Passive Skill",
+        "element": "Fire",
+        "image": "https://open.api.nexon.com/static/tfd/img/2c72df653a4b0f48a6a5cb236307d734",
+        "arche": null
+      }
+    ]
+  },
+  {
+    "id": "101000029",
+    "name": "Nell",
+    "groupId": "101200029",
+    "element": "nonattribute",
+    "skillTypes": [
+      "tech",
+      "fusion"
+    ],
+    "image": "https://open.api.nexon.com/static/tfd/img/0a257481650002dbfaa5d4d89397ebd1",
+    "skills": [
+      {
+        "name": "Breach Projection",
+        "type": "Active Skill",
+        "element": "Non-Attribute",
+        "image": "https://open.api.nexon.com/static/tfd/img/77b7d8825c1157d7adb17e7a6c3df6f4",
+        "arche": "Tech"
+      },
+      {
+        "name": "Breach Link",
+        "type": "Active Skill",
+        "element": "Non-Attribute",
+        "image": "https://open.api.nexon.com/static/tfd/img/c963d7bad94ebcccaf174db62ac8a5a3",
+        "arche": "Fusion"
+      },
+      {
+        "name": "Gravitic Reversal",
+        "type": "Active Skill",
+        "element": "Non-Attribute",
+        "image": "https://open.api.nexon.com/static/tfd/img/2884ad2790569f38cfc904c886509192",
+        "arche": "Fusion"
+      },
+      {
+        "name": "Gaze of the Abyss",
+        "type": "Active Skill",
+        "element": "Non-Attribute",
+        "image": "https://open.api.nexon.com/static/tfd/img/b415e29faf9aa87ec9f76ab51073c2d3",
+        "arche": "Tech"
+      },
+      {
+        "name": "Suspicion & Insight",
+        "type": "Passive Skill",
+        "element": "Non-Attribute",
+        "image": "https://open.api.nexon.com/static/tfd/img/08aef3879432deb8821ee9857e560aa6",
+        "arche": "Tech"
+      }
+    ]
+  },
+  {
+    "id": "101000030",
+    "name": "Ultimate Luna",
+    "groupId": "101200018",
+    "element": "nonattribute",
+    "skillTypes": [
+      "tech",
+      "singular"
+    ],
+    "image": "https://open.api.nexon.com/static/tfd/img/c5161da6b56a47ede75f19b37df4656e",
+    "skills": [
+      {
+        "name": "Stage Presence",
+        "type": "Active Skill",
+        "element": "Non-Attribute",
+        "image": "https://open.api.nexon.com/static/tfd/img/2177985e3c6b996880ca37c82014a530",
+        "arche": "Tech"
+      },
+      {
+        "name": "Passionate Stage",
+        "type": "Active Skill",
+        "element": "Non-Attribute",
+        "image": "https://open.api.nexon.com/static/tfd/img/c2399cd58cba60059281441f9d170c25",
+        "arche": "Singular"
+      },
+      {
+        "name": "Relaxing Act",
+        "type": "Active Skill",
+        "element": "Non-Attribute",
+        "image": "https://open.api.nexon.com/static/tfd/img/06a715d8ba5d0d239f4f942b58da89d7",
+        "arche": "Singular"
+      },
+      {
+        "name": "Delightful Stage",
+        "type": "Active Skill",
+        "element": "Non-Attribute",
+        "image": "https://open.api.nexon.com/static/tfd/img/ee2d67a54266bec5c77c675871c4ec2a",
+        "arche": "Singular"
+      },
+      {
+        "name": "Improvisation",
+        "type": "Passive Skill",
+        "element": "Non-Attribute",
+        "image": "https://open.api.nexon.com/static/tfd/img/6d459bcc048970a7f2eabfdbd3ba88ae",
+        "arche": null
+      }
+    ]
+  },
+  {
+    "id": "101000031",
+    "name": "Harris",
+    "groupId": "101200031",
+    "element": "toxic",
+    "skillTypes": [
+      "tech",
+      "fusion"
+    ],
+    "image": "https://open.api.nexon.com/static/tfd/img/798219489778cc914617a1ae52542bd9",
+    "skills": [
+      {
+        "name": "Crushing Charge",
+        "type": "Active Skill",
+        "element": "Toxic",
+        "image": "https://open.api.nexon.com/static/tfd/img/30297e87f4a0ce4def33e6a880542ede",
+        "arche": "Tech"
+      },
+      {
+        "name": "Site Intrusion",
+        "type": "Active Skill",
+        "element": "Toxic",
+        "image": "https://open.api.nexon.com/static/tfd/img/a37d6bf5dfcc0afbf0db129a3dbd3629",
+        "arche": "Tech"
+      },
+      {
+        "name": "Designate Danger Zone",
+        "type": "Active Skill",
+        "element": "Toxic",
+        "image": "https://open.api.nexon.com/static/tfd/img/00ca00a3c311745787c0750197fbacad",
+        "arche": "Fusion"
+      },
+      {
+        "name": "Waste Disposal",
+        "type": "Active Skill",
+        "element": "Toxic",
+        "image": "https://open.api.nexon.com/static/tfd/img/be00cb6f3479364b0fd9b4b0be8ce530",
+        "arche": "Fusion"
+      },
+      {
+        "name": "Internal Toxin Control",
+        "type": "Passive Skill",
+        "element": "Toxic",
+        "image": "https://open.api.nexon.com/static/tfd/img/6449e44255c2e2f986b8b94848b22037",
+        "arche": null
+      }
+    ]
+  },
+  {
+    "id": "101000001",
+    "name": "Lepic",
+    "groupId": "101200001",
+    "element": "fire",
+    "skillTypes": [
+      "tech",
+      "singular"
+    ],
+    "image": "https://open.api.nexon.com/static/tfd/img/6cecbb40acd1b4479a44caaf22817751",
+    "skills": [
+      {
+        "name": "Grenade Throw",
+        "type": "Active Skill",
+        "element": "Fire",
+        "image": "https://open.api.nexon.com/static/tfd/img/40fda38dfa17be7aff4a6209a8c7ee26",
+        "arche": "Tech"
+      },
+      {
+        "name": "Overclock",
+        "type": "Active Skill",
+        "element": "Fire",
+        "image": "https://open.api.nexon.com/static/tfd/img/2be7856296eb7ba788084605fa557cc4",
+        "arche": "Singular"
+      },
+      {
+        "name": "Traction Grenade",
+        "type": "Active Skill",
+        "element": "Fire",
+        "image": "https://open.api.nexon.com/static/tfd/img/5b29fba44f49f8531ce43c2fd6b2c848",
+        "arche": "Singular"
+      },
+      {
+        "name": "Overkill",
+        "type": "Active Skill",
+        "element": "Fire",
+        "image": "https://open.api.nexon.com/static/tfd/img/b3625d8bb410f48fbefe5caf8f2d6872",
+        "arche": "Tech"
+      },
+      {
+        "name": "Close Call",
+        "type": "Passive Skill",
+        "element": "Fire",
+        "image": "https://open.api.nexon.com/static/tfd/img/f7d84e8a94df0511683922ab007c38f7",
+        "arche": null
+      }
+    ]
+  },
+  {
+    "id": "101000002",
+    "name": "Ajax",
+    "groupId": "101200002",
+    "element": "nonattribute",
+    "skillTypes": [
+      "tech",
+      "dimension"
+    ],
+    "image": "https://open.api.nexon.com/static/tfd/img/74d88097b3547c406a36651c9378638c",
+    "skills": [
+      {
+        "name": "Orbit Barrier",
+        "type": "Active Skill",
+        "element": "Non-Attribute",
+        "image": "https://open.api.nexon.com/static/tfd/img/32d5aad86c4fd613c91b03f24c984bf8",
+        "arche": "Tech"
+      },
+      {
+        "name": "Void Walk",
+        "type": "Active Skill",
+        "element": "Non-Attribute",
+        "image": "https://open.api.nexon.com/static/tfd/img/8b2776cacdd9785ea322b1b6f05c5a3f",
+        "arche": "Tech"
+      },
+      {
+        "name": "Expulsion",
+        "type": "Active Skill",
+        "element": "Non-Attribute",
+        "image": "https://open.api.nexon.com/static/tfd/img/0d679bd5e3336f8d85e20b4021d42c26",
+        "arche": "Tech"
+      },
+      {
+        "name": "Hyper Cube",
+        "type": "Active Skill",
+        "element": "Non-Attribute",
+        "image": "https://open.api.nexon.com/static/tfd/img/52241d69bb871d664802af9d811c14f7",
+        "arche": "Dimension"
+      },
+      {
+        "name": "Event Horizon",
+        "type": "Passive Skill",
+        "element": "Non-Attribute",
+        "image": "https://open.api.nexon.com/static/tfd/img/0e2d7cfd1cd7ac6e9e86f7cc9f058d22",
+        "arche": null
+      }
+    ]
+  },
+  {
+    "id": "101000032",
+    "name": "Ultimate Yujin",
+    "groupId": "101200017",
+    "element": "nonattribute",
+    "skillTypes": [
+      "singular",
+      "fusion"
+    ],
+    "image": "https://open.api.nexon.com/static/tfd/img/97b874cf88f46df4729ef085977142b4",
+    "skills": [
+      {
+        "name": "Solidarity Healing",
+        "type": "Active Skill",
+        "element": "Non-Attribute",
+        "image": "https://open.api.nexon.com/static/tfd/img/fc637114828d9ee1e391231349db7a3c",
+        "arche": "Singular"
+      },
+      {
+        "name": "Restructure Serum",
+        "type": "Active Skill",
+        "element": "Non-Attribute",
+        "image": "https://open.api.nexon.com/static/tfd/img/4a50f47b3ad6447d2a932e20b66e1113",
+        "arche": "Fusion"
+      },
+      {
+        "name": "Stimulant Spray",
+        "type": "Active Skill",
+        "element": "Non-Attribute",
+        "image": "https://open.api.nexon.com/static/tfd/img/10639e5ce0ff87b38f068c77b08bda59",
+        "arche": "Singular"
+      },
+      {
+        "name": "Duty and Sacrifice",
+        "type": "Active Skill",
+        "element": "Non-Attribute",
+        "image": "https://open.api.nexon.com/static/tfd/img/c2858588287c8c36abe6bb05da1a388d",
+        "arche": "Fusion"
+      },
+      {
+        "name": "Stop Overreacting",
+        "type": "Passive Skill",
+        "element": "Non-Attribute",
+        "image": "https://open.api.nexon.com/static/tfd/img/aecaca80b9b6803bdc0ada4008cd34e2",
+        "arche": null
+      }
+    ]
+  },
+  {
+    "id": "101000003",
+    "name": "Viessa",
+    "groupId": "101200003",
+    "element": "chill",
+    "skillTypes": [
+      "fusion",
+      "tech"
+    ],
+    "image": "https://open.api.nexon.com/static/tfd/img/b2be3dc734d2fb10e694de951a5d1079",
+    "skills": [
+      {
+        "name": "Frost Shards",
+        "type": "Active Skill",
+        "element": "Chill",
+        "image": "https://open.api.nexon.com/static/tfd/img/c707b1cb867017488d0bd9a606c64083",
+        "arche": "Fusion"
+      },
+      {
+        "name": "Frost Road",
+        "type": "Active Skill",
+        "element": "Chill",
+        "image": "https://open.api.nexon.com/static/tfd/img/54a2d0af721c5f89c0b50f3c5f040c7a",
+        "arche": "Fusion"
+      },
+      {
+        "name": "Cold Snap",
+        "type": "Active Skill",
+        "element": "Chill",
+        "image": "https://open.api.nexon.com/static/tfd/img/432aed3fe47809f57b7f2292ee1ec76a",
+        "arche": "Fusion"
+      },
+      {
+        "name": "Blizzard",
+        "type": "Active Skill",
+        "element": "Chill",
+        "image": "https://open.api.nexon.com/static/tfd/img/223e856846a532c44e1a566104d912e4",
+        "arche": "Tech"
+      },
+      {
+        "name": "Ice Sphere",
+        "type": "Passive Skill",
+        "element": "Chill",
+        "image": "https://open.api.nexon.com/static/tfd/img/3fbbc5263d8466f5675b2228a3d72439",
+        "arche": "Tech"
+      }
+    ]
+  },
+  {
+    "id": "101000033",
+    "name": "Dia",
+    "groupId": "101200032",
+    "element": "chill",
+    "skillTypes": [
+      "fusion",
+      "singular"
+    ],
+    "image": "https://open.api.nexon.com/static/tfd/img/0580da25c301ce664bc1af709942a601",
+    "skills": [
+      {
+        "name": "Glacial Clash",
+        "type": "Active Skill",
+        "element": "Chill",
+        "image": "https://open.api.nexon.com/static/tfd/img/a41399ff81f6fab8e90035495cdbf495",
+        "arche": "Fusion"
+      },
+      {
+        "name": "Ice Wall",
+        "type": "Active Skill",
+        "element": "Chill",
+        "image": "https://open.api.nexon.com/static/tfd/img/afa00183d2f6ae3ada4dc532326c1dbc",
+        "arche": "Singular"
+      },
+      {
+        "name": "Avalanche",
+        "type": "Active Skill",
+        "element": "Chill",
+        "image": "https://open.api.nexon.com/static/tfd/img/8ec48c67c8bc5ed1a858b9db206db84b",
+        "arche": "Fusion"
+      },
+      {
+        "name": "Frost Storm",
+        "type": "Active Skill",
+        "element": "Chill",
+        "image": "https://open.api.nexon.com/static/tfd/img/5629a65988b6135a5cebc851108ca581",
+        "arche": "Fusion"
+      },
+      {
+        "name": "Frozen Delight",
+        "type": "Passive Skill",
+        "element": "Chill",
+        "image": "https://open.api.nexon.com/static/tfd/img/e68de7007da562ceba547d019d946c2f",
+        "arche": null
+      }
+    ]
+  },
+  {
+    "id": "101000004",
+    "name": "Ultimate Lepic",
+    "groupId": "101200001",
+    "element": "fire",
+    "skillTypes": [
+      "tech",
+      "singular"
+    ],
+    "image": "https://open.api.nexon.com/static/tfd/img/e2f1ec94648d91eede78f377c3b7aa19",
+    "skills": [
+      {
+        "name": "Grenade Throw",
+        "type": "Active Skill",
+        "element": "Fire",
+        "image": "https://open.api.nexon.com/static/tfd/img/b0aae25dab0555a9866c9197a1b4de7f",
+        "arche": "Tech"
+      },
+      {
+        "name": "Overclock",
+        "type": "Active Skill",
+        "element": "Fire",
+        "image": "https://open.api.nexon.com/static/tfd/img/2118622f5b0d167315f2bd643c066eae",
+        "arche": "Singular"
+      },
+      {
+        "name": "Traction Grenade",
+        "type": "Active Skill",
+        "element": "Fire",
+        "image": "https://open.api.nexon.com/static/tfd/img/8bf813d0dc712767dfde08c7209a71b7",
+        "arche": "Singular"
+      },
+      {
+        "name": "Overkill",
+        "type": "Active Skill",
+        "element": "Fire",
+        "image": "https://open.api.nexon.com/static/tfd/img/6aab485ab7359a6a0eafd6eb518cab3e",
+        "arche": "Tech"
+      },
+      {
+        "name": "Close Call",
+        "type": "Passive Skill",
+        "element": "Fire",
+        "image": "https://open.api.nexon.com/static/tfd/img/beb966f4d74cf223e6a83a6ec661227a",
+        "arche": null
+      }
+    ]
+  },
+  {
+    "id": "101000005",
+    "name": "Jayber",
+    "groupId": "101200005",
+    "element": "nonattribute",
+    "skillTypes": [
+      "dimension",
+      "singular"
+    ],
+    "image": "https://open.api.nexon.com/static/tfd/img/79c5cbb60e2e06209a0a515775cfa3b6",
+    "skills": [
+      {
+        "name": "Assault Turret",
+        "type": "Active Skill",
+        "element": "Non-Attribute",
+        "image": "https://open.api.nexon.com/static/tfd/img/38891f4ba741b9a0f98cffd0158e3cf2",
+        "arche": "Dimension"
+      },
+      {
+        "name": "Medical Turret",
+        "type": "Active Skill",
+        "element": "Non-Attribute",
+        "image": "https://open.api.nexon.com/static/tfd/img/023ca99b5d0c19f5916b10a02b4da57b",
+        "arche": "Dimension"
+      },
+      {
+        "name": "Multi-purpose Gun",
+        "type": "Active Skill",
+        "element": "Non-Attribute",
+        "image": "https://open.api.nexon.com/static/tfd/img/21130adc8f21b739c67d57ba63de70b3",
+        "arche": "Singular"
+      },
+      {
+        "name": "Reactivate",
+        "type": "Active Skill",
+        "element": "Non-Attribute",
+        "image": "https://open.api.nexon.com/static/tfd/img/2b2c9f10da3760e4f04db8ed76d08ddc",
+        "arche": "Singular"
+      },
+      {
+        "name": "Turret Sync",
+        "type": "Passive Skill",
+        "element": "Non-Attribute",
+        "image": "https://open.api.nexon.com/static/tfd/img/8b6e3ef794e27448fcf9925cb4d26b1c",
+        "arche": null
+      }
+    ]
+  },
+  {
+    "id": "101000006",
+    "name": "Bunny",
+    "groupId": "101200006",
+    "element": "electric",
+    "skillTypes": [
+      "fusion",
+      "singular"
+    ],
+    "image": "https://open.api.nexon.com/static/tfd/img/eaffb014c98c36d8b30d90d7778bb840",
+    "skills": [
+      {
+        "name": "Thrill Bomb",
+        "type": "Active Skill",
+        "element": "Electric",
+        "image": "https://open.api.nexon.com/static/tfd/img/cdac45aafb7e833720dae97248346781",
+        "arche": "Fusion"
+      },
+      {
+        "name": "Speed of Light",
+        "type": "Active Skill",
+        "element": "Electric",
+        "image": "https://open.api.nexon.com/static/tfd/img/f4e715174c1c4583d39e04f0fb26965b",
+        "arche": "Singular"
+      },
+      {
+        "name": "Lightning Emission",
+        "type": "Active Skill",
+        "element": "Electric",
+        "image": "https://open.api.nexon.com/static/tfd/img/07178abf6a0820297077cfdbd54bb8e7",
+        "arche": "Singular"
+      },
+      {
+        "name": "Maximum Power",
+        "type": "Active Skill",
+        "element": "Electric",
+        "image": "https://open.api.nexon.com/static/tfd/img/a202f90bfd757abe17348e19df57ce23",
+        "arche": "Fusion"
+      },
+      {
+        "name": "Rabbit Foot",
+        "type": "Passive Skill",
+        "element": "Electric",
+        "image": "https://open.api.nexon.com/static/tfd/img/9825a73c0c55080110aaeac4afd204ea",
+        "arche": "Fusion"
+      }
+    ]
+  },
+  {
+    "id": "101000007",
+    "name": "Ultimate Ajax",
+    "groupId": "101200002",
+    "element": "nonattribute",
+    "skillTypes": [
+      "tech",
+      "dimension"
+    ],
+    "image": "https://open.api.nexon.com/static/tfd/img/118d86964484b25593b9a4dfe62e96c1",
+    "skills": [
+      {
+        "name": "Orbit Barrier",
+        "type": "Active Skill",
+        "element": "Non-Attribute",
+        "image": "https://open.api.nexon.com/static/tfd/img/c2ee02252148416211c20c3f36928a50",
+        "arche": "Tech"
+      },
+      {
+        "name": "Void Walk",
+        "type": "Active Skill",
+        "element": "Non-Attribute",
+        "image": "https://open.api.nexon.com/static/tfd/img/f54d444839fab8d0b6f205b06563f840",
+        "arche": "Tech"
+      },
+      {
+        "name": "Expulsion",
+        "type": "Active Skill",
+        "element": "Non-Attribute",
+        "image": "https://open.api.nexon.com/static/tfd/img/ce942874a0ff9d82ced707adc3dd7009",
+        "arche": "Tech"
+      },
+      {
+        "name": "Hyper Cube",
+        "type": "Active Skill",
+        "element": "Non-Attribute",
+        "image": "https://open.api.nexon.com/static/tfd/img/692e40f1618752d062dc5db10ecf4c93",
+        "arche": "Dimension"
+      },
+      {
+        "name": "Event Horizon",
+        "type": "Passive Skill",
+        "element": "Non-Attribute",
+        "image": "https://open.api.nexon.com/static/tfd/img/44f47b9eeff9cae15a1899809f96a15a",
+        "arche": null
+      }
+    ]
+  },
+  {
+    "id": "101000008",
+    "name": "Freyna",
+    "groupId": "101200008",
+    "element": "toxic",
+    "skillTypes": [
+      "tech",
+      "dimension"
+    ],
+    "image": "https://open.api.nexon.com/static/tfd/img/6737a4c79a8a2fe617cb458031e11358",
+    "skills": [
+      {
+        "name": "Venom Trauma",
+        "type": "Active Skill",
+        "element": "Toxic",
+        "image": "https://open.api.nexon.com/static/tfd/img/334e101ed0854c677eed2ea84da3838d",
+        "arche": "Tech"
+      },
+      {
+        "name": "Defense Mechanism",
+        "type": "Active Skill",
+        "element": "Toxic",
+        "image": "https://open.api.nexon.com/static/tfd/img/7c7ce7d84e999b1fe4b320aa640d1607",
+        "arche": "Dimension"
+      },
+      {
+        "name": "Putrid Venom",
+        "type": "Active Skill",
+        "element": "Toxic",
+        "image": "https://open.api.nexon.com/static/tfd/img/180551122e3d66847c60ca735993ba7d",
+        "arche": "Tech"
+      },
+      {
+        "name": "Venom Baptism",
+        "type": "Active Skill",
+        "element": "Toxic",
+        "image": "https://open.api.nexon.com/static/tfd/img/fa5560f7606c13ba81059be963858671",
+        "arche": "Tech"
+      },
+      {
+        "name": "Contagion Links",
+        "type": "Passive Skill",
+        "element": "Toxic",
+        "image": "https://open.api.nexon.com/static/tfd/img/a85d0fb171b15bf9c52f278e9abe09c3",
+        "arche": "Tech"
+      }
+    ]
+  },
+  {
+    "id": "101000009",
+    "name": "Gley",
+    "groupId": "101200009",
+    "element": "nonattribute",
+    "skillTypes": [
+      "singular",
+      "dimension"
+    ],
+    "image": "https://open.api.nexon.com/static/tfd/img/d72fa90551e23916f18a81dbd4030d8f",
+    "skills": [
+      {
+        "name": "Frenzied",
+        "type": "Active Skill",
+        "element": "Non-Attribute",
+        "image": "https://open.api.nexon.com/static/tfd/img/1c05e1f9e996556f0c168e1d4a763bd6",
+        "arche": "Singular"
+      },
+      {
+        "name": "Life Siphon",
+        "type": "Active Skill",
+        "element": "Non-Attribute",
+        "image": "https://open.api.nexon.com/static/tfd/img/81752069cc9354977b288b76e3d31b25",
+        "arche": "Dimension"
+      },
+      {
+        "name": "Increased Sensory",
+        "type": "Active Skill",
+        "element": "Non-Attribute",
+        "image": "https://open.api.nexon.com/static/tfd/img/e3f866d6365ea9f247dbdec5cbfa048e",
+        "arche": "Singular"
+      },
+      {
+        "name": "Massacre",
+        "type": "Active Skill",
+        "element": "Non-Attribute",
+        "image": "https://open.api.nexon.com/static/tfd/img/73db251cc8d82311f137b149f55bb817",
+        "arche": "Dimension"
+      },
+      {
+        "name": "Thirst",
+        "type": "Passive Skill",
+        "element": "Non-Attribute",
+        "image": "https://open.api.nexon.com/static/tfd/img/4a51831b6ae10ddd0ae4d5374aeddfa2",
+        "arche": null
+      }
+    ]
+  },
+  {
+    "id": "101000010",
+    "name": "Ultimate Viessa",
+    "groupId": "101200003",
+    "element": "chill",
+    "skillTypes": [
+      "fusion",
+      "tech"
+    ],
+    "image": "https://open.api.nexon.com/static/tfd/img/665a53a9b478437b13f7d6ae5f5322db",
+    "skills": [
+      {
+        "name": "Frost Shards",
+        "type": "Active Skill",
+        "element": "Chill",
+        "image": "https://open.api.nexon.com/static/tfd/img/58b38aaffa179e12f57725dfbf1db9e8",
+        "arche": "Fusion"
+      },
+      {
+        "name": "Frost Road",
+        "type": "Active Skill",
+        "element": "Chill",
+        "image": "https://open.api.nexon.com/static/tfd/img/ced304c51d10f92b4a9d4ddc06fb0c38",
+        "arche": "Fusion"
+      },
+      {
+        "name": "Cold Snap",
+        "type": "Active Skill",
+        "element": "Chill",
+        "image": "https://open.api.nexon.com/static/tfd/img/37d7c4a211a07d253dc727bda08ea33e",
+        "arche": "Fusion"
+      },
+      {
+        "name": "Blizzard",
+        "type": "Active Skill",
+        "element": "Chill",
+        "image": "https://open.api.nexon.com/static/tfd/img/9ff3a5b613e57b44fba1903d27973606",
+        "arche": "Tech"
+      },
+      {
+        "name": "Ice Sphere",
+        "type": "Passive Skill",
+        "element": "Chill",
+        "image": "https://open.api.nexon.com/static/tfd/img/0824c7efd00accc5c2bf1b0d64d293cb",
+        "arche": "Tech"
+      }
+    ]
+  },
+  {
+    "id": "101000011",
+    "name": "Sharen",
+    "groupId": "101200011",
+    "element": "electric",
+    "skillTypes": [
+      "fusion",
+      "dimension"
+    ],
+    "image": "https://open.api.nexon.com/static/tfd/img/f14fdb3a55fc96e409a10b5dfa2b31b0",
+    "skills": [
+      {
+        "name": "Cutoff Beam",
+        "type": "Active Skill",
+        "element": "Electric",
+        "image": "https://open.api.nexon.com/static/tfd/img/50f88d96a487ccfa4113a21fb9b521db",
+        "arche": "Fusion"
+      },
+      {
+        "name": "Active Camouflage",
+        "type": "Active Skill",
+        "element": "Electric",
+        "image": "https://open.api.nexon.com/static/tfd/img/25baa8e537b88778fb30ef449354b00d",
+        "arche": "Dimension"
+      },
+      {
+        "name": "Shock Nuts",
+        "type": "Active Skill",
+        "element": "Electric",
+        "image": "https://open.api.nexon.com/static/tfd/img/9f35896f2dcbc8d2b4ad13dbb7dddb93",
+        "arche": "Dimension"
+      },
+      {
+        "name": "Flash Shortsword",
+        "type": "Active Skill",
+        "element": "Electric",
+        "image": "https://open.api.nexon.com/static/tfd/img/20a30de41fd0a6d629d99842e54b22f3",
+        "arche": "Fusion"
+      },
+      {
+        "name": "Assassinator",
+        "type": "Passive Skill",
+        "element": "Electric",
+        "image": "https://open.api.nexon.com/static/tfd/img/aeb90bf9a872f28840ad0052c8918a3b",
+        "arche": "Fusion"
+      }
+    ]
+  },
+  {
+    "id": "101000012",
+    "name": "Blair",
+    "groupId": "101200012",
+    "element": "fire",
+    "skillTypes": [
+      "dimension",
+      "singular"
+    ],
+    "image": "https://open.api.nexon.com/static/tfd/img/1a5ae4f83650ec541226f55c06deef64",
+    "skills": [
+      {
+        "name": "Blaze Up",
+        "type": "Active Skill",
+        "element": "Fire",
+        "image": "https://open.api.nexon.com/static/tfd/img/d15f8d29541f41a1eebb216ee0a34451",
+        "arche": "Dimension"
+      },
+      {
+        "name": "Extinguish",
+        "type": "Active Skill",
+        "element": "Fire",
+        "image": "https://open.api.nexon.com/static/tfd/img/bcc737a37947c231a2363b3327dba208",
+        "arche": "Singular"
+      },
+      {
+        "name": "Burn Taste",
+        "type": "Active Skill",
+        "element": "Fire",
+        "image": "https://open.api.nexon.com/static/tfd/img/5f88adcb0b93d31ab7196720d717bec9",
+        "arche": "Dimension"
+      },
+      {
+        "name": "Deadly Cuisine",
+        "type": "Active Skill",
+        "element": "Fire",
+        "image": "https://open.api.nexon.com/static/tfd/img/d990fc8e2c2fef4540f44a7a0b6f802c",
+        "arche": "Dimension"
+      },
+      {
+        "name": "Pitmaster",
+        "type": "Passive Skill",
+        "element": "Fire",
+        "image": "https://open.api.nexon.com/static/tfd/img/a2e61305f53754a2eececfc5dcf4a366",
+        "arche": null
+      }
+    ]
+  },
+  {
+    "id": "101000015",
+    "name": "Esiemo",
+    "groupId": "101200015",
+    "element": "fire",
+    "skillTypes": [
+      "tech",
+      "fusion"
+    ],
+    "image": "https://open.api.nexon.com/static/tfd/img/4f2cbea689b4118dc58895e5e0771270",
+    "skills": [
+      {
+        "name": "Time Bomb",
+        "type": "Active Skill",
+        "element": "Fire",
+        "image": "https://open.api.nexon.com/static/tfd/img/135b551175abab393282fc3417b69374",
+        "arche": "Tech"
+      },
+      {
+        "name": "Blast",
+        "type": "Active Skill",
+        "element": "Fire",
+        "image": "https://open.api.nexon.com/static/tfd/img/647808975634e4236c9009c28798c564",
+        "arche": "Fusion"
+      },
+      {
+        "name": "Guided Landmine",
+        "type": "Active Skill",
+        "element": "Fire",
+        "image": "https://open.api.nexon.com/static/tfd/img/589126c6551ed0a2472310f3bd06a181",
+        "arche": "Tech"
+      },
+      {
+        "name": "Arche Explosion",
+        "type": "Active Skill",
+        "element": "Fire",
+        "image": "https://open.api.nexon.com/static/tfd/img/1cbd90958a43399c0b2a71b04deda53f",
+        "arche": "Fusion"
+      },
+      {
+        "name": "Adventitious Habit",
+        "type": "Passive Skill",
+        "element": "Fire",
+        "image": "https://open.api.nexon.com/static/tfd/img/62ce7b1e9c492160310de8d98117510e",
+        "arche": "Fusion"
+      }
+    ]
+  },
+  {
+    "id": "101000013",
+    "name": "Valby",
+    "groupId": "101200013",
+    "element": "nonattribute",
+    "skillTypes": [
+      "fusion",
+      "dimension"
+    ],
+    "image": "https://open.api.nexon.com/static/tfd/img/f1236f2af539bd14c431b5befdd120f4",
+    "skills": [
+      {
+        "name": "Bubble Bullet",
+        "type": "Active Skill",
+        "element": "Non-Attribute",
+        "image": "https://open.api.nexon.com/static/tfd/img/6ff1c0dbd44f95627835afffd5c3a593",
+        "arche": "Fusion"
+      },
+      {
+        "name": "Plop Plop",
+        "type": "Active Skill",
+        "element": "Non-Attribute",
+        "image": "https://open.api.nexon.com/static/tfd/img/e1e8dd61d230596c53f7d0dedef2d345",
+        "arche": "Dimension"
+      },
+      {
+        "name": "Clean Up",
+        "type": "Active Skill",
+        "element": "Non-Attribute",
+        "image": "https://open.api.nexon.com/static/tfd/img/330ed09dce1880e52983ae23cca87f63",
+        "arche": "Dimension"
+      },
+      {
+        "name": "Laundry Bomb",
+        "type": "Active Skill",
+        "element": "Non-Attribute",
+        "image": "https://open.api.nexon.com/static/tfd/img/2b6217ed55b151676a64473681f07fd8",
+        "arche": "Fusion"
+      },
+      {
+        "name": "Water Intake",
+        "type": "Passive Skill",
+        "element": "Non-Attribute",
+        "image": "https://open.api.nexon.com/static/tfd/img/bc2e6988a64706ff5c47205c266e336d",
+        "arche": null
+      }
+    ]
+  },
+  {
+    "id": "101000016",
+    "name": "Enzo",
+    "groupId": "101200016",
+    "element": "nonattribute",
+    "skillTypes": [
+      "singular",
+      "dimension"
+    ],
+    "image": "https://open.api.nexon.com/static/tfd/img/dd903ca869faef90ddbe9a64127c8ca1",
+    "skills": [
+      {
+        "name": "Start Supply",
+        "type": "Active Skill",
+        "element": "Non-Attribute",
+        "image": "https://open.api.nexon.com/static/tfd/img/b31623806505fabda7a97a0f7ae3d18f",
+        "arche": "Singular"
+      },
+      {
+        "name": "Explosive Drone",
+        "type": "Active Skill",
+        "element": "Non-Attribute",
+        "image": "https://open.api.nexon.com/static/tfd/img/fec68f8de0eb16491474dc45d5f093ae",
+        "arche": "Dimension"
+      },
+      {
+        "name": "Enhance Combat Suit",
+        "type": "Active Skill",
+        "element": "Non-Attribute",
+        "image": "https://open.api.nexon.com/static/tfd/img/70de38574c7fb9d0ab706a26da11d01c",
+        "arche": "Singular"
+      },
+      {
+        "name": "Perfect Support",
+        "type": "Active Skill",
+        "element": "Non-Attribute",
+        "image": "https://open.api.nexon.com/static/tfd/img/9a5321d22913bdeaa27b76fd0a4163b5",
+        "arche": "Dimension"
+      },
+      {
+        "name": "Firing Specialist",
+        "type": "Passive Skill",
+        "element": "Non-Attribute",
+        "image": "https://open.api.nexon.com/static/tfd/img/f74c8a674af689a3413786c7b6d0842b",
+        "arche": null
+      }
+    ]
+  },
+  {
+    "id": "101000014",
+    "name": "Kyle",
+    "groupId": "101200014",
+    "element": "nonattribute",
+    "skillTypes": [
+      "tech",
+      "dimension"
+    ],
+    "image": "https://open.api.nexon.com/static/tfd/img/2ae6db799a211e64aa6a0cd1494c1b0d",
+    "skills": [
+      {
+        "name": "Repulsion Dash",
+        "type": "Active Skill",
+        "element": "Non-Attribute",
+        "image": "https://open.api.nexon.com/static/tfd/img/c4f4c305bdc858d4cd3f895acde9faf6",
+        "arche": "Tech"
+      },
+      {
+        "name": "Magnetic Bulwark",
+        "type": "Active Skill",
+        "element": "Non-Attribute",
+        "image": "https://open.api.nexon.com/static/tfd/img/9009df12bc86c372d45d13737dcd499c",
+        "arche": "Dimension"
+      },
+      {
+        "name": "Magnetism Spurt",
+        "type": "Active Skill",
+        "element": "Non-Attribute",
+        "image": "https://open.api.nexon.com/static/tfd/img/71f43d556958655c6cec50912d683724",
+        "arche": "Dimension"
+      },
+      {
+        "name": "Superconductivity Thrusters",
+        "type": "Active Skill",
+        "element": "Non-Attribute",
+        "image": "https://open.api.nexon.com/static/tfd/img/e50c0ad1a58e014e5f41316e94ae6a89",
+        "arche": "Tech"
+      },
+      {
+        "name": "Experienced Technician",
+        "type": "Passive Skill",
+        "element": "Non-Attribute",
+        "image": "https://open.api.nexon.com/static/tfd/img/72ba557258698824584a2ab24439b305",
+        "arche": null
+      }
+    ]
+  },
+  {
+    "id": "101000017",
+    "name": "Yujin",
+    "groupId": "101200017",
+    "element": "nonattribute",
+    "skillTypes": [
+      "singular",
+      "fusion"
+    ],
+    "image": "https://open.api.nexon.com/static/tfd/img/2bb766e96b8aa777faf6ef1b5afcbc3f",
+    "skills": [
+      {
+        "name": "Solidarity Healing",
+        "type": "Active Skill",
+        "element": "Non-Attribute",
+        "image": "https://open.api.nexon.com/static/tfd/img/856558715bc1d53e7666ea67afe55aa2",
+        "arche": "Singular"
+      },
+      {
+        "name": "Restructure Serum",
+        "type": "Active Skill",
+        "element": "Non-Attribute",
+        "image": "https://open.api.nexon.com/static/tfd/img/73a489100f524cd6b45c4438d8c98764",
+        "arche": "Fusion"
+      },
+      {
+        "name": "Stimulant Spray",
+        "type": "Active Skill",
+        "element": "Non-Attribute",
+        "image": "https://open.api.nexon.com/static/tfd/img/0a289c19f03b13384761b3adda866400",
+        "arche": "Singular"
+      },
+      {
+        "name": "Duty and Sacrifice",
+        "type": "Active Skill",
+        "element": "Non-Attribute",
+        "image": "https://open.api.nexon.com/static/tfd/img/6d480f229ecf2173317bf63d6d2de17b",
+        "arche": "Fusion"
+      },
+      {
+        "name": "Stop Overreacting",
+        "type": "Passive Skill",
+        "element": "Non-Attribute",
+        "image": "https://open.api.nexon.com/static/tfd/img/97b1314b41e2fd52c899fd6ea562d5ff",
+        "arche": null
+      }
+    ]
+  },
+  {
+    "id": "101000018",
+    "name": "Luna",
+    "groupId": "101200018",
+    "element": "nonattribute",
+    "skillTypes": [
+      "tech",
+      "singular"
+    ],
+    "image": "https://open.api.nexon.com/static/tfd/img/c07d494b9cb1d8285fee1f1752ff41c0",
+    "skills": [
+      {
+        "name": "Stage Presence",
+        "type": "Active Skill",
+        "element": "Non-Attribute",
+        "image": "https://open.api.nexon.com/static/tfd/img/9a059ccb808cf6ead53c7a6953fc38a5",
+        "arche": "Tech"
+      },
+      {
+        "name": "Passionate Stage",
+        "type": "Active Skill",
+        "element": "Non-Attribute",
+        "image": "https://open.api.nexon.com/static/tfd/img/54f998e70f2eac16673c711196b7495b",
+        "arche": "Singular"
+      },
+      {
+        "name": "Relaxing Act",
+        "type": "Active Skill",
+        "element": "Non-Attribute",
+        "image": "https://open.api.nexon.com/static/tfd/img/02545c61acc8adce6bd67297f2a0bfcc",
+        "arche": "Singular"
+      },
+      {
+        "name": "Delightful Stage",
+        "type": "Active Skill",
+        "element": "Non-Attribute",
+        "image": "https://open.api.nexon.com/static/tfd/img/defefd81167f4fcc340de0e532af600c",
+        "arche": "Singular"
+      },
+      {
+        "name": "Improvisation",
+        "type": "Passive Skill",
+        "element": "Non-Attribute",
+        "image": "https://open.api.nexon.com/static/tfd/img/989b1ddb0f57aceb38c485d7b4e74f36",
+        "arche": null
+      }
+    ]
+  },
+  {
+    "id": "101000019",
+    "name": "Ultimate Bunny",
+    "groupId": "101200006",
+    "element": "electric",
+    "skillTypes": [
+      "fusion",
+      "singular"
+    ],
+    "image": "https://open.api.nexon.com/static/tfd/img/d4e6462f87513fe6652633620b7f8d19",
+    "skills": [
+      {
+        "name": "Thrill Bomb",
+        "type": "Active Skill",
+        "element": "Electric",
+        "image": "https://open.api.nexon.com/static/tfd/img/1369c6b30f09730fb51a7412cd1e3b89",
+        "arche": "Fusion"
+      },
+      {
+        "name": "Speed of Light",
+        "type": "Active Skill",
+        "element": "Electric",
+        "image": "https://open.api.nexon.com/static/tfd/img/2ca6c74399943b2f66ad34e3e3954064",
+        "arche": "Singular"
+      },
+      {
+        "name": "Lightning Emission",
+        "type": "Active Skill",
+        "element": "Electric",
+        "image": "https://open.api.nexon.com/static/tfd/img/1e243471ab2d7742a4165bb1ccf77bd6",
+        "arche": "Singular"
+      },
+      {
+        "name": "Maximum Power",
+        "type": "Active Skill",
+        "element": "Electric",
+        "image": "https://open.api.nexon.com/static/tfd/img/9d80c8428e68872368be8bbe8c20c973",
+        "arche": "Fusion"
+      },
+      {
+        "name": "Rabbit Foot",
+        "type": "Passive Skill",
+        "element": "Electric",
+        "image": "https://open.api.nexon.com/static/tfd/img/aee94bd99cb91c6f6c8e2b57f4188a06",
+        "arche": "Fusion"
+      }
+    ]
+  },
+  {
+    "id": "101000020",
+    "name": "Ultimate Gley",
+    "groupId": "101200009",
+    "element": "nonattribute",
+    "skillTypes": [
+      "singular",
+      "dimension"
+    ],
+    "image": "https://open.api.nexon.com/static/tfd/img/c4c10b88e178305521d044f5a969583d",
+    "skills": [
+      {
+        "name": "Frenzied",
+        "type": "Active Skill",
+        "element": "Non-Attribute",
+        "image": "https://open.api.nexon.com/static/tfd/img/0b4964e22f573db0ea27ae3144db8392",
+        "arche": "Singular"
+      },
+      {
+        "name": "Life Siphon",
+        "type": "Active Skill",
+        "element": "Non-Attribute",
+        "image": "https://open.api.nexon.com/static/tfd/img/8294d74d2be622dee4efcbf7d3c610ba",
+        "arche": "Dimension"
+      },
+      {
+        "name": "Increased Sensory",
+        "type": "Active Skill",
+        "element": "Non-Attribute",
+        "image": "https://open.api.nexon.com/static/tfd/img/929b096dd83d597a08012ba654115f3c",
+        "arche": "Singular"
+      },
+      {
+        "name": "Massacre",
+        "type": "Active Skill",
+        "element": "Non-Attribute",
+        "image": "https://open.api.nexon.com/static/tfd/img/964ec69b96e48abf197218908285b31e",
+        "arche": "Dimension"
+      },
+      {
+        "name": "Thirst",
+        "type": "Passive Skill",
+        "element": "Non-Attribute",
+        "image": "https://open.api.nexon.com/static/tfd/img/482612f9a8d939224d805b5829221f79",
+        "arche": null
+      }
+    ]
+  },
+  {
+    "id": "101000021",
+    "name": "Hailey",
+    "groupId": "101200021",
+    "element": "chill",
+    "skillTypes": [
+      "dimension",
+      "singular"
+    ],
+    "image": "https://open.api.nexon.com/static/tfd/img/3c82dcb5ee799c149a7034365a1bd698",
+    "skills": [
+      {
+        "name": "Cryo Round",
+        "type": "Active Skill",
+        "element": "Chill",
+        "image": "https://open.api.nexon.com/static/tfd/img/ff90d184329138b74c4dad22f7cab5f2",
+        "arche": "Dimension"
+      },
+      {
+        "name": "Storm Snare",
+        "type": "Active Skill",
+        "element": "Chill",
+        "image": "https://open.api.nexon.com/static/tfd/img/396819308b1405672804f97476e8c829",
+        "arche": "Singular"
+      },
+      {
+        "name": "Cold Fury",
+        "type": "Active Skill",
+        "element": "Chill",
+        "image": "https://open.api.nexon.com/static/tfd/img/907f384615c02d48e3fc209aa6f3b347",
+        "arche": "Dimension"
+      },
+      {
+        "name": "Zenith",
+        "type": "Active Skill",
+        "element": "Chill",
+        "image": "https://open.api.nexon.com/static/tfd/img/33977320c085a4833221d99cf87a1324",
+        "arche": "Singular"
+      },
+      {
+        "name": "Safe Strategic Retreat",
+        "type": "Passive Skill",
+        "element": "Chill",
+        "image": "https://open.api.nexon.com/static/tfd/img/887fe7e474e6f978ffafbc8834e79c99",
+        "arche": null
+      }
+    ]
+  },
+  {
+    "id": "101000022",
+    "name": "Ultimate Valby",
+    "groupId": "101200013",
+    "element": "nonattribute",
+    "skillTypes": [
+      "fusion",
+      "dimension"
+    ],
+    "image": "https://open.api.nexon.com/static/tfd/img/8ae81e3d05a981d5da24c26c09106330",
+    "skills": [
+      {
+        "name": "Bubble Bullet",
+        "type": "Active Skill",
+        "element": "Non-Attribute",
+        "image": "https://open.api.nexon.com/static/tfd/img/596c004a6a05fed50bd9b3f16f14130e",
+        "arche": "Fusion"
+      },
+      {
+        "name": "Plop Plop",
+        "type": "Active Skill",
+        "element": "Non-Attribute",
+        "image": "https://open.api.nexon.com/static/tfd/img/e319ee39cc0df095293754a0d71bd9ad",
+        "arche": "Dimension"
+      },
+      {
+        "name": "Clean Up",
+        "type": "Active Skill",
+        "element": "Non-Attribute",
+        "image": "https://open.api.nexon.com/static/tfd/img/fd05e8439ed1c7f7ed0c5c08ec71cc7c",
+        "arche": "Dimension"
+      },
+      {
+        "name": "Laundry Bomb",
+        "type": "Active Skill",
+        "element": "Non-Attribute",
+        "image": "https://open.api.nexon.com/static/tfd/img/1bc291ff04ace2dbcaeddbcd838e6906",
+        "arche": "Fusion"
+      },
+      {
+        "name": "Water Intake",
+        "type": "Passive Skill",
+        "element": "Non-Attribute",
+        "image": "https://open.api.nexon.com/static/tfd/img/afbf18ccbece2adedfa02161d0480d07",
+        "arche": null
+      }
+    ]
+  },
+  {
+    "id": "101000023",
+    "name": "Ultimate Freyna",
+    "groupId": "101200008",
+    "element": "toxic",
+    "skillTypes": [
+      "tech",
+      "dimension"
+    ],
+    "image": "https://open.api.nexon.com/static/tfd/img/133a00069f113afbdcd05b7bfc4c2cfa",
+    "skills": [
+      {
+        "name": "Venom Trauma",
+        "type": "Active Skill",
+        "element": "Toxic",
+        "image": "https://open.api.nexon.com/static/tfd/img/466c2367c6d85801be4cc39a91f6d599",
+        "arche": "Tech"
+      },
+      {
+        "name": "Defense Mechanism",
+        "type": "Active Skill",
+        "element": "Toxic",
+        "image": "https://open.api.nexon.com/static/tfd/img/53d764fc98f8bd3953e900446b40d2c3",
+        "arche": "Dimension"
+      },
+      {
+        "name": "Putrid Venom",
+        "type": "Active Skill",
+        "element": "Toxic",
+        "image": "https://open.api.nexon.com/static/tfd/img/be03d2e42df54f15989a19787150f198",
+        "arche": "Tech"
+      },
+      {
+        "name": "Venom Baptism",
+        "type": "Active Skill",
+        "element": "Toxic",
+        "image": "https://open.api.nexon.com/static/tfd/img/eeba83ef4d37edad1137690808802479",
+        "arche": "Tech"
+      },
+      {
+        "name": "Contagion Links",
+        "type": "Passive Skill",
+        "element": "Toxic",
+        "image": "https://open.api.nexon.com/static/tfd/img/c027f17b71bff4047835d7edf0a76fb0",
+        "arche": "Tech"
+      }
+    ]
+  },
+  {
+    "id": "101000024",
+    "name": "Keelan",
+    "groupId": "101200024",
+    "element": "toxic",
+    "skillTypes": [
+      "fusion",
+      "singular"
+    ],
+    "image": "https://open.api.nexon.com/static/tfd/img/4b0e795f45dda42996c7d2719ba7821d",
+    "skills": [
+      {
+        "name": "Void Corrosion",
+        "type": "Active Skill",
+        "element": "Toxic",
+        "image": "https://open.api.nexon.com/static/tfd/img/2aabbf7f554df671ccd4d82f7b91304b",
+        "arche": "Fusion"
+      },
+      {
+        "name": "Onslaught",
+        "type": "Active Skill",
+        "element": "Toxic",
+        "image": "https://open.api.nexon.com/static/tfd/img/f5af173e61baea44195e0c5865921471",
+        "arche": "Singular"
+      },
+      {
+        "name": "Septic Gust",
+        "type": "Active Skill",
+        "element": "Toxic",
+        "image": "https://open.api.nexon.com/static/tfd/img/b272630361e6d257aee9a7c73ff82f4d",
+        "arche": "Singular"
+      },
+      {
+        "name": "Tremor",
+        "type": "Active Skill",
+        "element": "Toxic",
+        "image": "https://open.api.nexon.com/static/tfd/img/67a67e7dc46b181b7a91cf0ec41bf180",
+        "arche": "Fusion"
+      },
+      {
+        "name": "Erosion",
+        "type": "Passive Skill",
+        "element": "Toxic",
+        "image": "https://open.api.nexon.com/static/tfd/img/0a79ecbd02698d1adc1966d2a7bfa019",
+        "arche": null
+      }
+    ]
+  },
+  {
+    "id": "101000025",
+    "name": "Ultimate Sharen",
+    "groupId": "101200011",
+    "element": "electric",
+    "skillTypes": [
+      "fusion",
+      "dimension"
+    ],
+    "image": "https://open.api.nexon.com/static/tfd/img/a80304228f8f2ad8abcf54e6a15d235e",
+    "skills": [
+      {
+        "name": "Cutoff Beam",
+        "type": "Active Skill",
+        "element": "Electric",
+        "image": "https://open.api.nexon.com/static/tfd/img/4b8f867f6e96e562f26ee88b213d8813",
+        "arche": "Fusion"
+      },
+      {
+        "name": "Active Camouflage",
+        "type": "Active Skill",
+        "element": "Electric",
+        "image": "https://open.api.nexon.com/static/tfd/img/afbe10cf42a417a09e9d6dd3cbb4a125",
+        "arche": "Dimension"
+      },
+      {
+        "name": "Shock Nuts",
+        "type": "Active Skill",
+        "element": "Electric",
+        "image": "https://open.api.nexon.com/static/tfd/img/9201b35cb7fe514840899921890e7f70",
+        "arche": "Dimension"
+      },
+      {
+        "name": "Flash Shortsword",
+        "type": "Active Skill",
+        "element": "Electric",
+        "image": "https://open.api.nexon.com/static/tfd/img/bf12745365ecbe13b02834ab2fd1717b",
+        "arche": "Fusion"
+      },
+      {
+        "name": "Assassinator",
+        "type": "Passive Skill",
+        "element": "Electric",
+        "image": "https://open.api.nexon.com/static/tfd/img/ab2f24e514c283a8880e2b0920103aeb",
+        "arche": "Fusion"
+      }
+    ]
+  },
+  {
+    "id": "101000026",
+    "name": "Ines",
+    "groupId": "101200026",
+    "element": "electric",
+    "skillTypes": [
+      "singular",
+      "tech"
+    ],
+    "image": "https://open.api.nexon.com/static/tfd/img/3fbc78e2b4e4253ac0b81d93d7ad3251",
+    "skills": [
+      {
+        "name": "Chain Lightning",
+        "type": "Active Skill",
+        "element": "Electric",
+        "image": "https://open.api.nexon.com/static/tfd/img/b22a867be6d593592096d4d393b55373",
+        "arche": "Singular"
+      },
+      {
+        "name": "Lightning Conductor",
+        "type": "Active Skill",
+        "element": "Electric",
+        "image": "https://open.api.nexon.com/static/tfd/img/509a11e0d381e6dff0b148301a10321f",
+        "arche": "Tech"
+      },
+      {
+        "name": "Discharge",
+        "type": "Active Skill",
+        "element": "Electric",
+        "image": "https://open.api.nexon.com/static/tfd/img/f9760a2c6f1274ada066925aa3961cde",
+        "arche": "Singular"
+      },
+      {
+        "name": "Snare Hunter",
+        "type": "Active Skill",
+        "element": "Electric",
+        "image": "https://open.api.nexon.com/static/tfd/img/9a4fb1ab826949db58e9da5d0f85ed53",
+        "arche": "Tech"
+      },
+      {
+        "name": "Plasma Oscillation",
+        "type": "Passive Skill",
+        "element": "Electric",
+        "image": "https://open.api.nexon.com/static/tfd/img/bed9e6ff4d64df097cb68d09d4167998",
+        "arche": null
+      }
+    ]
+  }
+]

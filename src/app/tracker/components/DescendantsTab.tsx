@@ -1,14 +1,7 @@
 "use client";
 
-import { useState } from "react";
 import type { TrackerState, DescendantEntry } from "../tracker-client";
-import {
-  elementDefs,
-  skillDefs,
-  descendantMeta,
-  descendantNamesForDropdown,
-  portraitPath,
-} from "@/lib/tracker-data";
+import { elementDefs, skillDefs } from "@/lib/tracker-data";
 import { uuid } from "@/lib/uuid";
 
 interface Props {
@@ -24,143 +17,154 @@ function pushActivity(state: TrackerState, text: string): TrackerState {
   return { ...state, activities };
 }
 
-const allNames = descendantNamesForDropdown();
-
 export function DescendantsTab({ state, setState }: Props) {
-  const [selectedName, setSelectedName] = useState("");
-  const [level, setLevel] = useState(40);
-  const [archeLevel, setArcheLevel] = useState(40);
-  const [catalysts, setCatalysts] = useState(0);
+  const filters = state.descFilters ?? { search: "", element: "all", ownership: "all" };
 
-  const meta = descendantMeta[selectedName];
-  const elementLabel = meta ? (elementDefs.find((d) => d.id === meta.element)?.label ?? meta.element) : "";
-  const skillLabel = meta ? meta.skills.map((s) => skillDefs.find((d) => d.id === s)?.label ?? s).join(" / ") : "";
-
-  function addDescendant(e: React.FormEvent) {
-    e.preventDefault();
-    if (!selectedName || !descendantMeta[selectedName]) {
-      alert("Select a valid descendant.");
-      return;
-    }
-    const m = descendantMeta[selectedName];
-    const entry: DescendantEntry = {
-      id: uuid(),
-      name: selectedName,
-      element: m.element,
-      skills: m.skills,
-      level: Math.min(40, Math.max(1, level)),
-      archeLevel: Math.min(40, Math.max(1, archeLevel)),
-      catalysts: Math.min(20, Math.max(0, catalysts)),
-      portrait: portraitPath(selectedName),
-    };
-    setState((prev) => pushActivity(
-      { ...prev, descendants: [...prev.descendants, entry] },
-      `Added descendant: ${selectedName}`
-    ));
-    setSelectedName(""); setLevel(40); setArcheLevel(40); setCatalysts(0);
+  function setFilter(key: string, value: string) {
+    setState((prev) => ({
+      ...prev,
+      descFilters: { ...prev.descFilters, [key]: value },
+    }));
   }
 
-  function updateDescendant(id: string, field: "level" | "archeLevel" | "catalysts", value: number) {
+  function resetFilters() {
+    setState((prev) => ({
+      ...prev,
+      descFilters: { search: "", element: "all", ownership: "all" },
+    }));
+  }
+
+  function toggleOwnership(mode: "owned" | "unowned") {
+    setState((prev) => ({
+      ...prev,
+      descFilters: {
+        ...prev.descFilters,
+        ownership: prev.descFilters.ownership === mode ? "all" : mode,
+      },
+    }));
+  }
+
+  function toggleOwned(name: string) {
     setState((prev) => {
       const descendants = prev.descendants.map((d) => {
-        if (d.id !== id) return d;
-        const clamped =
-          field === "level" || field === "archeLevel"
-            ? Math.min(40, Math.max(1, value))
-            : Math.min(20, Math.max(0, value));
+        if (d.name !== name) return d;
+        return { ...d, owned: !d.owned };
+      });
+      const d = prev.descendants.find((x) => x.name === name);
+      const wasOwned = d?.owned ?? false;
+      return pushActivity({ ...prev, descendants }, `${wasOwned ? "Removed" : "Added"} descendant: ${name}`);
+    });
+  }
+
+  function updateField(name: string, field: "level" | "archeLevel" | "catalysts", value: number) {
+    setState((prev) => {
+      const descendants = prev.descendants.map((d) => {
+        if (d.name !== name) return d;
+        const clamped = field === "catalysts"
+          ? Math.min(20, Math.max(0, value))
+          : Math.min(40, Math.max(1, value));
         return { ...d, [field]: clamped };
       });
-      const d = prev.descendants.find((x) => x.id === id);
-      return pushActivity({ ...prev, descendants }, `Updated descendant: ${d?.name} (${field})`);
+      return { ...prev, descendants };
     });
   }
 
-  function removeDescendant(id: string) {
-    setState((prev) => {
-      const d = prev.descendants.find((x) => x.id === id);
-      return pushActivity(
-        { ...prev, descendants: prev.descendants.filter((x) => x.id !== id) },
-        `Removed descendant: ${d?.name}`
-      );
+  const { search, element, ownership } = filters;
+
+  const filtered = (state.descendants ?? [])
+    .filter((d) => {
+      const q = (search ?? "").trim().toLowerCase();
+      if (q && !d.name.toLowerCase().includes(q)) return false;
+      if (element !== "all" && d.element !== element) return false;
+      if (ownership === "owned" && !d.owned) return false;
+      if (ownership === "unowned" && d.owned) return false;
+      return true;
+    })
+    .sort((a, b) => {
+      if (a.owned !== b.owned) return a.owned ? -1 : 1;
+      return a.name.localeCompare(b.name);
     });
-  }
 
-  function setDescFilter(id: string) {
-    setState((prev) => ({ ...prev, descFilter: id }));
-  }
-
-  const visible = state.descendants.filter(
-    (d) => state.descFilter === "all" || d.element === state.descFilter
-  );
+  const ownedCount = (state.descendants ?? []).filter((d) => d.owned).length;
+  const totalCount = (state.descendants ?? []).length;
 
   return (
     <section className="panel">
-      <h2>Descendant Progress</h2>
-      <p className="muted">Track descendant build investment and progression.</p>
+      <h2>
+        Descendants
+        <span className="panel-count">{ownedCount}/{totalCount} owned</span>
+      </h2>
+      <p className="muted">Toggle owned, track level, arche level, and catalyst investment.</p>
 
-      <form className="form-grid" onSubmit={addDescendant}>
-        <label>
-          Descendant Name
-          <select value={selectedName} onChange={(e) => setSelectedName(e.target.value)} required>
-            <option value="" disabled hidden>Select descendant</option>
-            {allNames.map((n) => <option key={n} value={n}>{n}</option>)}
-          </select>
-        </label>
-        <label>
-          Element
-          <input value={elementLabel} readOnly placeholder="Auto-filled" />
-        </label>
-        <label>
-          Skill Types
-          <input value={skillLabel} readOnly placeholder="Auto-filled" />
-        </label>
-        <label>
-          Level
-          <input type="number" min={1} max={40} value={level} onChange={(e) => setLevel(Number(e.target.value))} required />
-        </label>
-        <label>
-          Arche Level
-          <input type="number" min={1} max={40} value={archeLevel} onChange={(e) => setArcheLevel(Number(e.target.value))} required />
-        </label>
-        <label>
-          # of Catalysts
-          <input type="number" min={0} max={20} value={catalysts} onChange={(e) => setCatalysts(Number(e.target.value))} required />
-        </label>
-        <button type="submit" style={{ alignSelf: "end" }}>Add Descendant</button>
-      </form>
+      <div className="weapon-filters">
+        <span className="filter-row-title">Filters</span>
+        <div className="filter-group">
+          <input
+            value={search ?? ""}
+            placeholder="Search descendant..."
+            style={{ width: 180 }}
+            onChange={(e) => setFilter("search", e.target.value)}
+            aria-label="Search descendants"
+          />
+          <button className="filter-chip" onClick={resetFilters}>Reset Filters</button>
+        </div>
 
-      <div className="filter-group" style={{ marginBottom: "0.75rem" }}>
-        {elementDefs.map((def) => (
+        <span className="filter-row-title">Elements</span>
+        <div className="filter-group">
+          {elementDefs.map((def) => (
+            <button
+              key={def.id}
+              className={`filter-chip${element === def.id ? " active" : ""}`}
+              onClick={() => setFilter("element", def.id === element ? "all" : def.id)}
+            >
+              {def.icon && <img src={def.icon} alt={def.label} />}
+              {def.label}
+            </button>
+          ))}
+        </div>
+
+        <span className="filter-row-title">Owned Status</span>
+        <div className="filter-group ownership-filter-group">
           <button
-            key={def.id}
-            className={`filter-chip${state.descFilter === def.id ? " active" : ""}`}
-            onClick={() => setDescFilter(def.id)}
+            className={`filter-chip${ownership === "owned" ? " active" : ""}`}
+            onClick={() => toggleOwnership("owned")}
           >
-            {def.icon && <img src={def.icon} alt={def.label} />}
-            {def.label}
+            Owned ({ownedCount})
           </button>
-        ))}
+          <button
+            className={`filter-chip${ownership === "unowned" ? " active" : ""}`}
+            onClick={() => toggleOwnership("unowned")}
+          >
+            Unowned ({totalCount - ownedCount})
+          </button>
+        </div>
       </div>
 
       <div className="table-wrap">
-        <table>
+        <table className="descendants-table">
           <thead>
             <tr>
+              <th>Owned</th>
               <th>Descendant</th>
               <th>Element</th>
               <th>Skill Types</th>
               <th>Level</th>
               <th>Arche</th>
               <th>Catalysts</th>
-              <th></th>
             </tr>
           </thead>
           <tbody>
-            {visible.map((d) => {
+            {filtered.map((d) => {
               const elemDef = elementDefs.find((x) => x.id === d.element);
-              const initials = d.name.split(" ").map((x) => x[0]).slice(0, 2).join("").toUpperCase();
               return (
-                <tr key={d.id}>
+                <tr key={d.name} className={d.owned ? "" : "row-unowned"}>
+                  <td style={{ textAlign: "center" }}>
+                    <input
+                      type="checkbox"
+                      checked={d.owned}
+                      onChange={() => toggleOwned(d.name)}
+                    />
+                  </td>
                   <td>
                     <span className="desc-cell">
                       <img
@@ -174,7 +178,9 @@ export function DescendantsTab({ state, setState }: Props) {
                           if (fallback) fallback.style.display = "";
                         }}
                       />
-                      <span className="portrait portrait-initials" style={{ display: "none" }}>{initials}</span>
+                      <span className="portrait portrait-initials" style={{ display: "none" }}>
+                        {d.name.split(" ").map((x) => x[0]).slice(0, 2).join("").toUpperCase()}
+                      </span>
                       {d.name}
                     </span>
                   </td>
@@ -198,40 +204,50 @@ export function DescendantsTab({ state, setState }: Props) {
                     </span>
                   </td>
                   <td>
-                    <input
-                      className="inline-edit"
-                      type="number" min={1} max={40} value={d.level}
-                      onChange={(e) => updateDescendant(d.id, "level", Number(e.target.value))}
-                    />
+                    {d.owned ? (
+                      <input
+                        className="inline-edit"
+                        type="number" min={1} max={40}
+                        defaultValue={d.level}
+                        onBlur={(e) => updateField(d.name, "level", Number(e.target.value) || 1)}
+                      />
+                    ) : (
+                      <span className="muted">—</span>
+                    )}
                   </td>
                   <td>
-                    <input
-                      className="inline-edit"
-                      type="number" min={1} max={40} value={d.archeLevel}
-                      onChange={(e) => updateDescendant(d.id, "archeLevel", Number(e.target.value))}
-                    />
+                    {d.owned ? (
+                      <input
+                        className="inline-edit"
+                        type="number" min={1} max={40}
+                        defaultValue={d.archeLevel}
+                        onBlur={(e) => updateField(d.name, "archeLevel", Number(e.target.value) || 1)}
+                      />
+                    ) : (
+                      <span className="muted">—</span>
+                    )}
                   </td>
                   <td>
-                    <input
-                      className="inline-edit"
-                      type="number" min={0} max={20} value={d.catalysts}
-                      onChange={(e) => updateDescendant(d.id, "catalysts", Number(e.target.value))}
-                    />
-                  </td>
-                  <td>
-                    <button
-                      className="danger"
-                      style={{ padding: "0.25rem 0.6rem", fontSize: "0.8rem" }}
-                      onClick={() => removeDescendant(d.id)}
-                    >
-                      Remove
-                    </button>
+                    {d.owned ? (
+                      <input
+                        className="inline-edit"
+                        type="number" min={0} max={20}
+                        defaultValue={d.catalysts}
+                        onBlur={(e) => updateField(d.name, "catalysts", Number(e.target.value) || 0)}
+                      />
+                    ) : (
+                      <span className="muted">—</span>
+                    )}
                   </td>
                 </tr>
               );
             })}
-            {visible.length === 0 && (
-              <tr><td colSpan={7} style={{ textAlign: "center", color: "var(--muted)", padding: "1rem" }}>No descendants added yet.</td></tr>
+            {filtered.length === 0 && (
+              <tr>
+                <td colSpan={7} style={{ textAlign: "center", color: "var(--muted)", padding: "1.5rem" }}>
+                  No descendants match current filters.
+                </td>
+              </tr>
             )}
           </tbody>
         </table>

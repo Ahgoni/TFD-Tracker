@@ -28,7 +28,7 @@ export async function GET() {
   });
 
   const enriched = await Promise.all(
-    friends.map(async (f) => {
+    friends.map(async (f: { id: string; token: string; nickname: string; createdAt: Date }) => {
       const safe = {
         id: f.id,
         token: f.token,

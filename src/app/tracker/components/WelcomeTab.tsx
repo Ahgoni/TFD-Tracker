@@ -72,6 +72,17 @@ const SECTION_CARDS = [
     desc: "Set active farming targets, check them off, and filter to your active grind.",
     accent: "#ef4444",
   },
+  {
+    tab: "Mastery",
+    icon: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+      </svg>
+    ),
+    title: "Mastery Rank",
+    desc: "Track your mastery progress from descendants owned, weapons acquired, and more.",
+    accent: "#f59e0b",
+  },
 ];
 
 function activityToTab(text: string): string | null {
@@ -92,7 +103,8 @@ export function WelcomeTab({ state, setTab }: Props) {
   const totalWeapons = state.weapons.length;
   const activeGoals = state.goals.filter((g) => g.active && !g.completed).length;
   const totalMaterials = state.materials.reduce((s, m) => s + Number(m.qty ?? 0), 0);
-  const descendants = state.descendants.length;
+  const ownedDescendants = state.descendants.filter((d) => d.owned).length;
+  const totalDescendants = state.descendants.length;
 
   const recent = (state.activities ?? []).slice(0, 6);
 
@@ -118,8 +130,11 @@ export function WelcomeTab({ state, setTab }: Props) {
       {/* ── Stats row ─────────────────────────────────────────────── */}
       <section className="welcome-stats">
         <div className="wstat">
-          <span className="wstat-value">{descendants}</span>
-          <span className="wstat-label">Descendants</span>
+          <span className="wstat-value">
+            {ownedDescendants}
+            <span className="wstat-of">/{totalDescendants}</span>
+          </span>
+          <span className="wstat-label">Descendants Owned</span>
         </div>
         <div className="wstat-divider" />
         <div className="wstat">

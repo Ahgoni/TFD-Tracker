@@ -1,5 +1,4 @@
 import { NextResponse } from "next/server";
-import type { Prisma } from "@prisma/client";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { requireUserId } from "@/lib/require-user";
@@ -16,10 +15,12 @@ export async function POST(request: Request) {
   const parsed = importSchema.safeParse(payload);
   if (!parsed.success) return NextResponse.json({ error: "Invalid import payload" }, { status: 400 });
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const stateData = parsed.data.state as any;
   await prisma.appState.upsert({
     where: { userId },
-    update: { data: parsed.data.state as Prisma.InputJsonValue },
-    create: { userId, data: parsed.data.state as Prisma.InputJsonValue },
+    update: { data: stateData },
+    create: { userId, data: stateData },
   });
 
   return NextResponse.json({ ok: true });

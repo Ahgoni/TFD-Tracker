@@ -1,5 +1,4 @@
 import { NextResponse } from "next/server";
-import type { Prisma } from "@prisma/client";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { requireUserId } from "@/lib/require-user";
@@ -38,8 +37,9 @@ export async function PUT(request: Request) {
 
   const saved = await prisma.appState.upsert({
     where: { userId },
-    update: { data: parsed.data as Prisma.InputJsonValue },
-    create: { userId, data: parsed.data as Prisma.InputJsonValue },
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    update: { data: parsed.data as any },
+    create: { userId, data: parsed.data as any },
     select: { updatedAt: true },
   });
 

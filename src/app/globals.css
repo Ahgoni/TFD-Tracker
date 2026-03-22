@@ -500,7 +500,19 @@ input:focus-visible, select:focus-visible, button:focus-visible {
   font-size: 1.15rem;
   margin-bottom: 0.55rem;
   letter-spacing: 0.01em;
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
 }
+.panel-count {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--muted);
+  opacity: 0.8;
+}
+
+.row-unowned { opacity: 0.45; }
+.row-unowned:hover { opacity: 0.7; }
 
 .panel:hover {
   border-color: rgba(0, 200, 240, 0.25);
@@ -2759,3 +2771,176 @@ td .badge { display: inline-flex; align-items: center; gap: 0.35rem; }
 
 /* ── Remove inner radial glow from panels ───────────────────── */
 [data-theme="light"] .panel::before { display: none; }
+
+/* ══════════════════════════════════════════════════════════════
+   MASTERY TAB
+   ══════════════════════════════════════════════════════════════ */
+
+.mastery-page { display: flex; flex-direction: column; gap: 1.25rem; }
+
+.mastery-hero {
+  background: linear-gradient(135deg, rgba(0,200,240,0.08), rgba(168,85,247,0.08));
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 1.5rem 1.75rem;
+}
+
+.mastery-rank-display { display: flex; align-items: center; gap: 1.5rem; }
+
+.mastery-rank-badge {
+  position: relative;
+  width: 80px; height: 80px;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.mastery-star {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  color: #f59e0b;
+  filter: drop-shadow(0 0 6px rgba(245,158,11,0.4));
+}
+.mastery-rank-number {
+  position: relative; z-index: 1;
+  font-size: 1.6rem; font-weight: 900;
+  color: #fff;
+  text-shadow: 0 1px 3px rgba(0,0,0,0.5);
+}
+
+.mastery-rank-title {
+  font-size: 1.3rem; font-weight: 800; margin: 0; color: var(--text);
+}
+.mastery-rank-sub {
+  font-size: 0.82rem; color: var(--muted); margin: 0.15rem 0 0.75rem;
+}
+
+.mastery-progress-bar {
+  height: 10px; border-radius: 8px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid var(--line);
+  overflow: hidden;
+  max-width: 350px;
+}
+.mastery-progress-fill {
+  height: 100%;
+  border-radius: 8px;
+  background: linear-gradient(90deg, var(--accent), var(--accent2));
+  transition: width 0.6s ease;
+}
+.mastery-progress-label {
+  font-size: 0.74rem; color: var(--muted); margin-top: 0.35rem;
+}
+
+/* Collection rings */
+.mastery-rings {
+  display: flex; gap: 1rem; flex-wrap: wrap;
+}
+.mastery-ring-card {
+  flex: 1; min-width: 140px;
+  display: flex; flex-direction: column; align-items: center; gap: 0.4rem;
+  background: var(--card-bg);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 1.25rem 1rem;
+}
+.mastery-ring-svg { width: 90px; height: 90px; }
+.mastery-ring-value { font-size: 1.3rem; font-weight: 900; fill: var(--text); }
+.mastery-ring-max { font-size: 0.65rem; font-weight: 600; fill: var(--muted); }
+.mastery-ring-label { font-size: 0.78rem; font-weight: 600; color: var(--muted); text-align: center; }
+
+/* Current rank rewards */
+.mastery-current-rewards {
+  background: var(--card-bg);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 1.25rem;
+}
+.mastery-current-rewards h3 { font-size: 0.95rem; margin: 0 0 0.75rem; }
+.mastery-reward-chips { display: flex; gap: 0.6rem; flex-wrap: wrap; }
+.mastery-reward-chip {
+  flex: 1; min-width: 100px;
+  display: flex; flex-direction: column; align-items: center; gap: 0.2rem;
+  padding: 0.75rem 0.5rem;
+  border-radius: 10px;
+  background: rgba(0,200,240,0.06);
+  border: 1px solid rgba(0,200,240,0.12);
+}
+.mastery-reward-value { font-size: 1.3rem; font-weight: 800; color: var(--accent); }
+.mastery-reward-label { font-size: 0.7rem; font-weight: 600; color: var(--muted); text-align: center; }
+
+/* Missing section */
+.mastery-missing {
+  background: var(--card-bg);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 1.25rem;
+}
+.mastery-missing h3 { font-size: 0.95rem; margin: 0 0 0.75rem; }
+.mastery-missing-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 0.5rem;
+}
+.mastery-missing-item {
+  display: flex; align-items: center; gap: 0.5rem;
+  padding: 0.4rem 0.6rem;
+  border-radius: 8px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid var(--line);
+  font-size: 0.8rem; color: var(--muted);
+}
+.mastery-missing-img {
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid var(--line);
+}
+
+/* Rewards table */
+.mastery-table-section {
+  background: var(--card-bg);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 1.25rem;
+}
+.mastery-table-section h3 { font-size: 0.95rem; margin: 0 0 0.75rem; }
+
+.mastery-table { width: 100%; font-size: 0.82rem; }
+.mastery-table th { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.04em; }
+
+.mastery-current-row { background: rgba(0,200,240,0.08) !important; }
+.mastery-current-row td { font-weight: 700; }
+.mastery-past-row { opacity: 0.5; }
+
+.mastery-rank-cell {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 26px; height: 26px; border-radius: 50%;
+  font-size: 0.78rem; font-weight: 700;
+}
+.mastery-rank-cell.current {
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  color: #fff;
+}
+
+/* Light mode overrides for mastery */
+[data-theme="light"] .mastery-hero {
+  background: linear-gradient(135deg, rgba(0,136,170,0.06), rgba(139,68,212,0.06));
+}
+[data-theme="light"] .mastery-ring-card,
+[data-theme="light"] .mastery-current-rewards,
+[data-theme="light"] .mastery-missing,
+[data-theme="light"] .mastery-table-section {
+  background: #ffffff;
+}
+[data-theme="light"] .mastery-reward-chip {
+  background: rgba(0,136,170,0.06);
+  border-color: rgba(0,136,170,0.12);
+}
+[data-theme="light"] .mastery-missing-item {
+  background: #f4f7ff;
+}
+[data-theme="light"] .mastery-progress-bar {
+  background: #e8ecf4;
+}
+[data-theme="light"] .mastery-current-row {
+  background: rgba(0,136,170,0.06) !important;
+}

@@ -8,6 +8,7 @@ import { WeaponsTab } from "./components/WeaponsTab";
 import { ReactorsTab } from "./components/ReactorsTab";
 import { MaterialsTab } from "./components/MaterialsTab";
 import { FarmingTab } from "./components/FarmingTab";
+import { MasteryTab } from "./components/MasteryTab";
 import { ProfileMenu } from "./components/ProfileMenu";
 import { FriendsTab } from "./components/FriendsTab";
 import { normalizeWeaponName } from "@/lib/tracker-data";
@@ -57,6 +58,7 @@ export interface DescendantEntry {
   archeLevel: number;
   catalysts: number;
   portrait: string;
+  owned: boolean;
 }
 
 export interface MaterialEntry {
@@ -89,6 +91,7 @@ export interface TrackerState {
   goals: GoalEntry[];
   goalsFilters: { hideCompleted: boolean; onlyActive: boolean };
   weaponFilters: { search: string; rarity: string; rounds: string; sort: string; ownership: string };
+  descFilters: { search: string; element: string; ownership: string };
   filters: { element: string; skill: string };
   descFilter: string;
   notesTabs: Record<string, Array<{ id: string; text: string; done?: boolean }>>;
@@ -96,7 +99,7 @@ export interface TrackerState {
 }
 
 const DEFAULT_STATE: TrackerState = {
-  tabs: ["Welcome", "Descendants", "Weapons", "Reactors", "Materials", "Farming", "Friends"],
+  tabs: ["Welcome", "Descendants", "Weapons", "Reactors", "Materials", "Farming", "Mastery", "Friends"],
   activeTab: "Welcome",
   activities: [],
   weapons: [],
@@ -106,9 +109,10 @@ const DEFAULT_STATE: TrackerState = {
   goals: [],
   goalsFilters: { hideCompleted: false, onlyActive: false },
   weaponFilters: { search: "", rarity: "all", rounds: "all", sort: "name-asc", ownership: "all" },
+  descFilters: { search: "", element: "all", ownership: "all" },
   filters: { element: "all", skill: "all" },
   descFilter: "all",
-  notesTabs: { Weapons: [], Progression: [] },
+  notesTabs: { Weapons: [] },
   sharePrivacy: "open",
 };
 
@@ -154,6 +158,53 @@ async function fetchAndMergeWeaponsCatalog(currentWeapons: WeaponEntry[]): Promi
   }
 }
 
+// ── Descendants catalog helpers ───────────────────────────────────────────────
+
+interface DescendantCatalogEntry {
+  id: string;
+  name: string;
+  element: string;
+  skillTypes: string[];
+  image: string;
+}
+
+async function fetchAndMergeDescendantsCatalog(current: DescendantEntry[]): Promise<DescendantEntry[]> {
+  try {
+    const res = await fetch("/data/descendants.json");
+    if (!res.ok) return current;
+    const catalog: DescendantCatalogEntry[] = await res.json();
+    if (!Array.isArray(catalog) || catalog.length === 0) return current;
+
+    const byName = new Map(current.map((d) => [d.name, d]));
+
+    return catalog.map((c) => {
+      const existing = byName.get(c.name);
+      if (existing) {
+        return {
+          ...existing,
+          element: c.element,
+          skills: c.skillTypes,
+          portrait: c.image,
+          owned: existing.owned ?? true,
+        };
+      }
+      return {
+        id: c.id,
+        name: c.name,
+        element: c.element,
+        skills: c.skillTypes,
+        level: 1,
+        archeLevel: 1,
+        catalysts: 0,
+        portrait: c.image,
+        owned: false,
+      };
+    });
+  } catch {
+    return current;
+  }
+}
+
 // ── Share helpers ─────────────────────────────────────────────────────────────
 
 async function createShareToken(): Promise<string | null> {
@@ -191,6 +242,7 @@ export function TrackerClient() {
           ...DEFAULT_STATE,
           ...(data.state ?? {}),
           weaponFilters: { ...DEFAULT_STATE.weaponFilters, ...(data.state?.weaponFilters ?? {}) },
+          descFilters: { ...DEFAULT_STATE.descFilters, ...(data.state?.descFilters ?? {}) },
           goalsFilters: { ...DEFAULT_STATE.goalsFilters, ...(data.state?.goalsFilters ?? {}) },
           filters: { ...DEFAULT_STATE.filters, ...(data.state?.filters ?? {}) },
           notesTabs: { ...DEFAULT_STATE.notesTabs, ...(data.state?.notesTabs ?? {}) },
@@ -198,6 +250,9 @@ export function TrackerClient() {
 
         if (!loaded.tabs.includes("Friends")) {
           loaded.tabs = [...loaded.tabs, "Friends"];
+        }
+        if (!loaded.tabs.includes("Mastery")) {
+          loaded.tabs = [...loaded.tabs.filter((t) => t !== "Friends"), "Mastery", "Friends"];
         }
         loaded.tabs = loaded.tabs.filter((t) => t !== "Progression");
 
@@ -209,6 +264,16 @@ export function TrackerClient() {
         }
 
         loaded.weapons = await fetchAndMergeWeaponsCatalog(loaded.weapons);
+
+        // Migrate old descendants: mark as owned, merge with full catalog
+        if (Array.isArray(loaded.descendants)) {
+          loaded.descendants = loaded.descendants.map((d) => ({
+            ...d,
+            owned: d.owned ?? true,
+          }));
+        }
+        loaded.descendants = await fetchAndMergeDescendantsCatalog(loaded.descendants);
+
         setState(loaded);
         setSaveStatus("loaded");
         initialized.current = true;
@@ -375,6 +440,9 @@ export function TrackerClient() {
         )}
         {activeTab === "Farming" && (
           <FarmingTab state={state} setState={setState} />
+        )}
+        {activeTab === "Mastery" && (
+          <MasteryTab state={state} />
         )}
         {activeTab === "Friends" && (
           <FriendsTab
