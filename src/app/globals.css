@@ -29,6 +29,11 @@
   --line: #d0d9f0;
   --glow: rgba(0, 136, 170, 0.12);
   --glow2: rgba(139, 68, 212, 0.1);
+  --chip-bg: rgba(0, 136, 170, 0.08);
+  --chip-border: rgba(0, 136, 170, 0.22);
+  --chip-text: #0c1830;
+  --portrait-bg: linear-gradient(160deg, #c0d8f0, #dce8ff);
+  --portrait-border: rgba(0, 136, 170, 0.2);
 }
 
 * {
@@ -137,8 +142,8 @@ input:focus-visible, select:focus-visible, button:focus-visible {
   display: inline-flex;
   align-items: center;
   gap: 0.45rem;
-  background: #0a1525;
-  border: 1px solid var(--line);
+  background: var(--chip-bg, #0a1525);
+  border: 1px solid var(--chip-border, var(--line));
   border-radius: 999px;
   padding: 0.3rem 0.65rem 0.3rem 0.3rem;
   font-size: 0.8rem;
@@ -537,7 +542,7 @@ input:focus-visible, select:focus-visible, button:focus-visible {
   box-shadow: 0 0 22px rgba(0, 200, 240, 0.45), 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
-.btn-ghost { background: #0a1525; border-color: var(--line); color: var(--text); }
+.btn-ghost { background: var(--chip-bg, #0a1525); border-color: var(--chip-border, var(--line)); color: var(--text); }
 
 .btn-ghost:hover {
   border-color: rgba(0, 200, 240, 0.4);
@@ -648,8 +653,8 @@ button.danger, .danger {
   display: inline-flex;
   align-items: center;
   gap: 0.4rem;
-  border: 1px solid var(--line);
-  background: #0a1525;
+  border: 1px solid var(--chip-border, var(--line));
+  background: var(--chip-bg, #0a1525);
   color: var(--muted);
   padding: 0.26rem 0.6rem;
   border-radius: 999px;
@@ -869,8 +874,8 @@ td .badge { display: inline-flex; align-items: center; gap: 0.35rem; }
 .portrait {
   width: 26px; height: 26px;
   border-radius: 999px;
-  background: linear-gradient(160deg, #004d70, #001e30);
-  border: 1px solid rgba(0, 200, 240, 0.35);
+  background: var(--portrait-bg, linear-gradient(160deg, #004d70, #001e30));
+  border: 1px solid var(--portrait-border, rgba(0, 200, 240, 0.35));
   object-fit: cover;
   display: inline-flex; align-items: center; justify-content: center;
   font-size: 0.72rem; font-weight: 700;
@@ -883,11 +888,12 @@ td .badge { display: inline-flex; align-items: center; gap: 0.35rem; }
 
 .skill-chip {
   display: inline-flex; align-items: center; gap: 0.3rem;
-  background: #0a1525;
-  border: 1px solid var(--line);
+  background: var(--chip-bg, #0a1525);
+  border: 1px solid var(--chip-border, var(--line));
   border-radius: 999px;
   padding: 0.15rem 0.45rem;
   font-size: 0.75rem;
+  color: var(--chip-text, inherit);
 }
 
 .rarity-chip-normal  { color: #4dd9ff; border-color: rgba(77, 217, 255, 0.25); background: rgba(0, 200, 240, 0.05); }
@@ -905,7 +911,7 @@ td .badge { display: inline-flex; align-items: center; gap: 0.35rem; }
   border: 1px solid var(--line);
   border-radius: 999px;
   padding: 0.18rem 0.55rem;
-  background: #0a1525;
+  background: var(--chip-bg, #0a1525);
 }
 
 .tier-ultimate { color: #fbbf24; border-color: rgba(251, 191, 36, 0.3); }
@@ -1382,7 +1388,7 @@ td .badge { display: inline-flex; align-items: center; gap: 0.35rem; }
 .welcome-name {
   font-size: 1.9rem;
   font-weight: 800;
-  color: #fff;
+  color: var(--text);
   line-height: 1.1;
   letter-spacing: -0.01em;
 }
@@ -1547,7 +1553,7 @@ td .badge { display: inline-flex; align-items: center; gap: 0.35rem; }
 .welcome-card-title {
   font-size: 0.9rem;
   font-weight: 700;
-  color: #e8f0ff;
+  color: var(--text);
 }
 
 .welcome-card-desc {
@@ -1632,7 +1638,7 @@ td .badge { display: inline-flex; align-items: center; gap: 0.35rem; }
 .welcome-activity-text {
   flex: 1;
   font-size: 0.86rem;
-  color: #c8d6f0;
+  color: var(--text);
 }
 
 .welcome-activity-time {
@@ -1789,7 +1795,7 @@ td .badge { display: inline-flex; align-items: center; gap: 0.35rem; }
 
 .friends-item-name {
   font-weight: 700;
-  color: #e8f0ff;
+  color: var(--text);
   font-size: 0.92rem;
 }
 
