@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { PublicBuildsSection, type PublicBuild } from "@/components/public-builds-section";
 
 interface SharedState {
   tabs?: string[];
@@ -7,6 +8,7 @@ interface SharedState {
   descendants?: Array<{ id: string; name: string; element: string; level: number; archeLevel: number; catalysts: number }>;
   materials?: Array<{ id: string; name: string; qty: number }>;
   goals?: Array<{ id: string; text: string; completed: boolean; active: boolean }>;
+  builds?: PublicBuild[];
 }
 
 interface Owner {
@@ -109,6 +111,8 @@ export default async function UserProfileSharePage({ params }: { params: Promise
           </div>
         ))}
       </div>
+
+      <PublicBuildsSection builds={(state.builds ?? []) as PublicBuild[]} />
 
       {/* Descendants */}
       {(state.descendants ?? []).length > 0 && (

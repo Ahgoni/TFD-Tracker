@@ -9,6 +9,7 @@ import { ReactorsTab } from "./components/ReactorsTab";
 import { MaterialsTab } from "./components/MaterialsTab";
 import { FarmingTab } from "./components/FarmingTab";
 import { MasteryTab } from "./components/MasteryTab";
+import { BuildsTab } from "./components/BuildsTab";
 import { ProfileMenu } from "./components/ProfileMenu";
 import { FriendsTab } from "./components/FriendsTab";
 import { normalizeWeaponName } from "@/lib/tracker-data";
@@ -80,6 +81,22 @@ export interface ActivityEntry {
   at: string;
 }
 
+/** Saved loadout for a descendant or weapon (modules + notes). Shared with friends via profile/share. */
+export interface BuildEntry {
+  id: string;
+  name: string;
+  targetType: "descendant" | "weapon";
+  /** Descendant name or weapon slug */
+  targetKey: string;
+  displayName: string;
+  imageUrl: string;
+  /** Up to 8 module / component lines */
+  moduleSlots: string[];
+  reactorNotes: string;
+  notes: string;
+  updatedAt: string;
+}
+
 export interface TrackerState {
   tabs: string[];
   activeTab: string;
@@ -88,10 +105,12 @@ export interface TrackerState {
   reactors: ReactorEntry[];
   materials: MaterialEntry[];
   descendants: DescendantEntry[];
+  builds: BuildEntry[];
   goals: GoalEntry[];
   goalsFilters: { hideCompleted: boolean; onlyActive: boolean };
   weaponFilters: { search: string; rarity: string; rounds: string; sort: string; ownership: string };
   descFilters: { search: string; element: string; ownership: string };
+  buildFilters: { search: string; type: string };
   filters: { element: string; skill: string };
   descFilter: string;
   notesTabs: Record<string, Array<{ id: string; text: string; done?: boolean }>>;
@@ -99,17 +118,19 @@ export interface TrackerState {
 }
 
 const DEFAULT_STATE: TrackerState = {
-  tabs: ["Welcome", "Descendants", "Weapons", "Reactors", "Materials", "Farming", "Mastery", "Friends"],
+  tabs: ["Welcome", "Descendants", "Weapons", "Reactors", "Materials", "Farming", "Mastery", "Builds", "Friends"],
   activeTab: "Welcome",
   activities: [],
   weapons: [],
   reactors: [],
   materials: [],
   descendants: [],
+  builds: [],
   goals: [],
   goalsFilters: { hideCompleted: false, onlyActive: false },
   weaponFilters: { search: "", rarity: "all", rounds: "all", sort: "name-asc", ownership: "all" },
   descFilters: { search: "", element: "all", ownership: "all" },
+  buildFilters: { search: "", type: "all" },
   filters: { element: "all", skill: "all" },
   descFilter: "all",
   notesTabs: { Weapons: [] },
@@ -243,6 +264,7 @@ export function TrackerClient() {
           ...(data.state ?? {}),
           weaponFilters: { ...DEFAULT_STATE.weaponFilters, ...(data.state?.weaponFilters ?? {}) },
           descFilters: { ...DEFAULT_STATE.descFilters, ...(data.state?.descFilters ?? {}) },
+          buildFilters: { ...DEFAULT_STATE.buildFilters, ...(data.state?.buildFilters ?? {}) },
           goalsFilters: { ...DEFAULT_STATE.goalsFilters, ...(data.state?.goalsFilters ?? {}) },
           filters: { ...DEFAULT_STATE.filters, ...(data.state?.filters ?? {}) },
           notesTabs: { ...DEFAULT_STATE.notesTabs, ...(data.state?.notesTabs ?? {}) },
@@ -254,7 +276,13 @@ export function TrackerClient() {
         if (!loaded.tabs.includes("Mastery")) {
           loaded.tabs = [...loaded.tabs.filter((t) => t !== "Friends"), "Mastery", "Friends"];
         }
+        if (!loaded.tabs.includes("Builds")) {
+          const fi = loaded.tabs.indexOf("Friends");
+          if (fi >= 0) loaded.tabs.splice(fi, 0, "Builds");
+          else loaded.tabs = [...loaded.tabs, "Builds"];
+        }
         loaded.tabs = loaded.tabs.filter((t) => t !== "Progression");
+        if (!Array.isArray(loaded.builds)) loaded.builds = [];
 
         if (Array.isArray(loaded.weapons)) {
           loaded.weapons = loaded.weapons.map((w) => ({
@@ -317,6 +345,8 @@ export function TrackerClient() {
         body: JSON.stringify({ state: parsed }),
       });
       const merged: TrackerState = { ...DEFAULT_STATE, ...parsed };
+      if (!Array.isArray(merged.builds)) merged.builds = [];
+      merged.buildFilters = { ...DEFAULT_STATE.buildFilters, ...merged.buildFilters };
       merged.weapons = await fetchAndMergeWeaponsCatalog(merged.weapons ?? []);
       setState(merged);
       setSaveStatus("saved");
@@ -443,6 +473,9 @@ export function TrackerClient() {
         )}
         {activeTab === "Mastery" && (
           <MasteryTab state={state} />
+        )}
+        {activeTab === "Builds" && (
+          <BuildsTab state={state} setState={setState} />
         )}
         {activeTab === "Friends" && (
           <FriendsTab

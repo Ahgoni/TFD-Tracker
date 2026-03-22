@@ -1,4 +1,6 @@
 import Link from "next/link";
+import { BuildHashScroll } from "./build-hash-scroll";
+import { PublicBuildsSection, type PublicBuild } from "@/components/public-builds-section";
 
 interface SharedState {
   tabs?: string[];
@@ -7,6 +9,18 @@ interface SharedState {
   descendants?: Array<{ id: string; name: string; element: string; level: number; archeLevel: number; catalysts: number }>;
   materials?: Array<{ id: string; name: string; qty: number }>;
   goals?: Array<{ id: string; text: string; completed: boolean; active: boolean }>;
+  builds?: Array<{
+    id: string;
+    name: string;
+    targetType: string;
+    targetKey: string;
+    displayName: string;
+    imageUrl: string;
+    moduleSlots: string[];
+    reactorNotes: string;
+    notes: string;
+    updatedAt: string;
+  }>;
 }
 
 interface Owner {
@@ -76,6 +90,7 @@ export default async function UsernameProfilePage({ params }: { params: Promise<
 
   return (
     <div className="app">
+      <BuildHashScroll />
       <header className="topbar">
         <div className="topbar-row">
           <div className="brand">
@@ -108,6 +123,8 @@ export default async function UsernameProfilePage({ params }: { params: Promise<
           </div>
         ))}
       </div>
+
+      <PublicBuildsSection builds={(state.builds ?? []) as PublicBuild[]} />
 
       {(state.descendants ?? []).length > 0 && (
         <section className="panel" style={{ marginBottom: "1rem" }}>

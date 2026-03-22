@@ -83,6 +83,19 @@ const SECTION_CARDS = [
     desc: "Track your mastery progress from descendants owned, weapons acquired, and more.",
     accent: "#f59e0b",
   },
+  {
+    tab: "Builds",
+    icon: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M12 2L2 7l10 5 10-5-10-5z" />
+        <path d="M2 17l10 5 10-5" />
+        <path d="M2 12l10 5 10-5" />
+      </svg>
+    ),
+    title: "Builds",
+    desc: "Save descendant & weapon loadouts — modules, reactor notes, and share with friends on your profile.",
+    accent: "#22d3ee",
+  },
 ];
 
 function activityToTab(text: string): string | null {
@@ -92,6 +105,7 @@ function activityToTab(text: string): string | null {
   if (t.includes("descendant")) return "Descendants";
   if (t.includes("material")) return "Materials";
   if (t.includes("goal") || t.includes("farming")) return "Farming";
+  if (t.includes("build")) return "Builds";
   return null;
 }
 
