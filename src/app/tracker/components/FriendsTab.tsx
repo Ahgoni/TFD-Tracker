@@ -12,6 +12,7 @@ interface SavedFriend {
   lastSeen: string | null;
   friendName: string | null;
   friendImage: string | null;
+  friendUsername: string | null;
 }
 
 interface Props {
@@ -21,17 +22,28 @@ interface Props {
   onGenerateShare: () => void;
 }
 
-function parseInput(input: string): string {
+function parseInput(input: string): { type: "username" | "user_id" | "share_token"; value: string } | null {
   const trimmed = input.trim();
+  if (!trimmed) return null;
+
+  const usernamePageMatch = trimmed.match(/\/u\/([a-zA-Z0-9_]+)/);
+  if (usernamePageMatch) return { type: "username", value: usernamePageMatch[1].toLowerCase() };
+
   const userMatch = trimmed.match(/\/share\/user\/([a-zA-Z0-9_-]+)/);
-  if (userMatch) return `user:${userMatch[1]}`;
+  if (userMatch) return { type: "user_id", value: userMatch[1] };
+
   const tokenMatch = trimmed.match(/\/share\/([a-zA-Z0-9_-]+)/);
-  if (tokenMatch) return tokenMatch[1];
-  return trimmed;
+  if (tokenMatch) return { type: "share_token", value: tokenMatch[1] };
+
+  const cleaned = trimmed.replace(/^@/, "").toLowerCase();
+  if (/^[a-z][a-z0-9_]{2,19}$/.test(cleaned)) return { type: "username", value: cleaned };
+
+  return null;
 }
 
 function friendViewUrl(token: string, origin: string): string {
   if (token.startsWith("user:")) return `${origin}/share/user/${token.slice(5)}`;
+  if (token.startsWith("username:")) return `${origin}/u/${token.slice(9)}`;
   return `${origin}/share/${token}`;
 }
 
@@ -84,13 +96,18 @@ export function FriendsTab({ sharePrivacy, onPrivacyChange, shareToken, onGenera
   const [adding, setAdding] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
-  const [copied, setCopied] = useState<"profile" | "share" | null>(null);
+  const [copied, setCopied] = useState<"profile" | "share" | "id" | null>(null);
   const addFormRef = useRef<HTMLDivElement>(null);
 
-  const userId = (session?.user as { id?: string } | undefined)?.id;
+  const username = (session?.user as Record<string, unknown> | undefined)?.username as string | null;
   const origin = typeof window !== "undefined" ? window.location.origin : "";
-  const profileUrl = userId ? `${origin}/share/user/${userId}` : null;
+  const profileUrl = username ? `${origin}/u/${username}` : null;
   const shareUrl = shareToken ? `${origin}/share/${shareToken}` : null;
+
+  const [editingUsername, setEditingUsername] = useState(false);
+  const [newUsername, setNewUsername] = useState("");
+  const [usernameError, setUsernameError] = useState("");
+  const [savingUsername, setSavingUsername] = useState(false);
 
   useEffect(() => {
     fetch("/api/friends")
@@ -106,38 +123,85 @@ export function FriendsTab({ sharePrivacy, onPrivacyChange, shareToken, onGenera
     return () => clearInterval(interval);
   }, []);
 
-  const copyText = useCallback((text: string, which: "profile" | "share") => {
+  const copyText = useCallback((text: string, which: "profile" | "share" | "id") => {
     navigator.clipboard.writeText(text).then(() => {
       setCopied(which);
       setTimeout(() => setCopied(null), 2000);
     });
   }, []);
 
+  async function saveUsername(e: React.FormEvent) {
+    e.preventDefault();
+    setUsernameError("");
+    setSavingUsername(true);
+    try {
+      const res = await fetch("/api/profile", {
+        method: "PUT",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ username: newUsername.trim().toLowerCase() }),
+      });
+      const data = await res.json();
+      if (!res.ok) { setUsernameError(data.error ?? "Failed to save username."); return; }
+      setEditingUsername(false);
+      window.location.reload();
+    } catch {
+      setUsernameError("Network error.");
+    } finally {
+      setSavingUsername(false);
+    }
+  }
+
   async function addFriend(e: React.FormEvent) {
     e.preventDefault();
     setError("");
     setSuccess("");
-    const token = parseInput(input);
-    if (!token) { setError("Paste a valid share or profile link."); return; }
+
+    const parsed = parseInput(input);
+    if (!parsed) { setError("Enter a username (e.g. @ahgoni) or paste a profile/share link."); return; }
     if (!nickname.trim()) { setError("Give this friend a nickname."); return; }
+
     setAdding(true);
-    const res = await fetch("/api/friends", {
-      method: "POST",
-      headers: { "content-type": "application/json" },
-      body: JSON.stringify({ token, nickname: nickname.trim() }),
-    });
-    const data = await res.json();
-    setAdding(false);
-    if (!res.ok) { setError(data.error ?? "Failed to add friend."); return; }
-    setFriends((prev) => {
-      const exists = prev.find((f) => f.token === token);
-      if (exists) return prev.map((f) => f.token === token ? { ...f, nickname: nickname.trim() } : f);
-      return [...prev, data.friend];
-    });
-    setSuccess(`${nickname.trim()} added to your squad!`);
-    setInput("");
-    setNickname("");
-    setTimeout(() => setSuccess(""), 4000);
+
+    try {
+      let token: string;
+
+      if (parsed.type === "username") {
+        const lookupRes = await fetch(`/api/user/lookup?q=${encodeURIComponent(parsed.value)}`);
+        if (!lookupRes.ok) {
+          const err = await lookupRes.json();
+          setError(err.error ?? `No user found with username @${parsed.value}`);
+          setAdding(false);
+          return;
+        }
+        token = `username:${parsed.value}`;
+      } else if (parsed.type === "user_id") {
+        token = `user:${parsed.value}`;
+      } else {
+        token = parsed.value;
+      }
+
+      const res = await fetch("/api/friends", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ token, nickname: nickname.trim() }),
+      });
+      const data = await res.json();
+      if (!res.ok) { setError(data.error ?? "Failed to add friend."); setAdding(false); return; }
+
+      setFriends((prev) => {
+        const exists = prev.find((f) => f.token === token);
+        if (exists) return prev.map((f) => f.token === token ? { ...f, nickname: nickname.trim() } : f);
+        return [...prev, data.friend];
+      });
+      setSuccess(`${nickname.trim()} added to your squad!`);
+      setInput("");
+      setNickname("");
+      setTimeout(() => setSuccess(""), 4000);
+    } catch {
+      setError("Network error. Try again.");
+    } finally {
+      setAdding(false);
+    }
   }
 
   async function removeFriend(id: string) {
@@ -180,20 +244,19 @@ export function FriendsTab({ sharePrivacy, onPrivacyChange, shareToken, onGenera
         </button>
       </div>
 
-      {/* Your link strip */}
+      {/* Your Profile ID */}
       <div className="social-your-link-box">
         <div className="social-your-link-header">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" style={{ width: 13, height: 13, opacity: 0.7 }}>
-            <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />
-            <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" /><circle cx="12" cy="7" r="4" />
           </svg>
-          <span>Your Inventory Link</span>
+          <span>Your Profile ID</span>
           <div className="social-privacy-toggle">
             <button
               className={`social-privacy-btn${sharePrivacy === "open" ? " active" : ""}`}
               onClick={() => onPrivacyChange("open")}
               title="Friends can view without a link"
-            >Open</button>
+            >Open to Friends</button>
             <button
               className={`social-privacy-btn${sharePrivacy === "link_only" ? " active" : ""}`}
               onClick={() => onPrivacyChange("link_only")}
@@ -202,32 +265,84 @@ export function FriendsTab({ sharePrivacy, onPrivacyChange, shareToken, onGenera
           </div>
         </div>
 
-        {sharePrivacy === "open" && profileUrl ? (
-          <div className="social-link-row">
+        {username ? (
+          <div className="social-profile-id-row">
+            <div className="social-profile-id">
+              <span className="social-profile-at">@</span>
+              <span className="social-profile-name">{username}</span>
+            </div>
+            <button className="social-copy-btn" onClick={() => copyText(`@${username}`, "id")}>
+              {copied === "id" ? "Copied!" : "Copy ID"}
+            </button>
+            <button
+              className="social-copy-btn"
+              style={{ fontSize: "0.72rem" }}
+              onClick={() => { setNewUsername(username); setEditingUsername(true); setUsernameError(""); }}
+            >Edit</button>
+          </div>
+        ) : (
+          <div className="social-set-username">
+            <p className="social-set-username-hint">Set a profile ID so friends can add you by username instead of sharing links.</p>
+            <button className="btn btn-primary btn-sm" onClick={() => { setEditingUsername(true); setNewUsername(""); setUsernameError(""); }}>
+              Choose Username
+            </button>
+          </div>
+        )}
+
+        {editingUsername && (
+          <form className="social-username-form" onSubmit={saveUsername}>
+            <div className="social-username-input-wrap">
+              <span className="social-username-prefix">@</span>
+              <input
+                value={newUsername}
+                onChange={(e) => setNewUsername(e.target.value.toLowerCase().replace(/[^a-z0-9_]/g, ""))}
+                placeholder="your_username"
+                maxLength={20}
+                autoFocus
+                className="social-field-input"
+              />
+            </div>
+            <div className="social-username-actions">
+              <button type="submit" className="btn btn-primary btn-sm" disabled={savingUsername}>
+                {savingUsername ? "Saving…" : "Save"}
+              </button>
+              <button type="button" className="btn btn-ghost btn-sm" onClick={() => setEditingUsername(false)}>Cancel</button>
+            </div>
+            {usernameError && <p className="social-msg social-msg-error">{usernameError}</p>}
+            <p className="social-username-rules">3–20 characters · lowercase letters, numbers, underscores · must start with a letter</p>
+          </form>
+        )}
+
+        {sharePrivacy === "open" && profileUrl && !editingUsername && (
+          <div className="social-link-row" style={{ marginTop: "0.5rem" }}>
             <input readOnly value={profileUrl} onClick={(e) => (e.target as HTMLInputElement).select()} />
             <button className="social-copy-btn" onClick={() => copyText(profileUrl, "profile")}>
-              {copied === "profile" ? "✓" : "Copy"}
+              {copied === "profile" ? "Copied!" : "Copy Link"}
             </button>
           </div>
-        ) : sharePrivacy === "link_only" && shareUrl ? (
-          <div className="social-link-row">
+        )}
+
+        {sharePrivacy === "link_only" && shareUrl && !editingUsername && (
+          <div className="social-link-row" style={{ marginTop: "0.5rem" }}>
             <input readOnly value={shareUrl} onClick={(e) => (e.target as HTMLInputElement).select()} />
             <button className="social-copy-btn" onClick={() => copyText(shareUrl, "share")}>
-              {copied === "share" ? "✓" : "Copy"}
+              {copied === "share" ? "Copied!" : "Copy Link"}
             </button>
           </div>
-        ) : sharePrivacy === "link_only" ? (
+        )}
+
+        {sharePrivacy === "link_only" && !shareUrl && !editingUsername && (
           <div style={{ display: "flex", alignItems: "center", gap: "0.75rem", marginTop: "0.5rem" }}>
             <p style={{ fontSize: "0.8rem", color: "var(--muted)", flex: 1, margin: 0 }}>
-              No share link yet. Generate one so friends can view your inventory.
+              Generate a share link so friends can view your inventory.
             </p>
             <button className="btn btn-primary btn-sm" onClick={onGenerateShare}>Generate Link</button>
           </div>
-        ) : null}
+        )}
 
         <p className="social-link-hint">
           {sharePrivacy === "open"
-            ? "Friends who paste your profile link can view your inventory."
+            ? "Friends can add you by username or profile link."
             : "Only people with your exact share link can view."}
         </p>
       </div>
@@ -236,17 +351,16 @@ export function FriendsTab({ sharePrivacy, onPrivacyChange, shareToken, onGenera
       {showAddForm && (
         <div className="social-add-form-wrap" ref={addFormRef}>
           <p className="social-add-intro">
-            Ask your friend to copy their link from the <strong>Friends</strong> tab and paste it below.
-            Accepts both a <em>profile link</em> (<code>/share/user/…</code>) or a <em>share link</em> (<code>/share/…</code>).
+            Add a friend by their <strong>username</strong> (e.g. <code>@void_hunter</code>) or paste their profile/share link.
           </p>
           <form className="social-add-form" onSubmit={addFriend}>
             <div className="social-add-fields">
               <div className="social-field">
-                <label className="social-field-label">Friend&apos;s Link</label>
+                <label className="social-field-label">Username or Link</label>
                 <input
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
-                  placeholder="https://tfdtracker.gg/share/user/…"
+                  placeholder="@username or https://tfdtracker.gg/u/..."
                   className="social-field-input"
                 />
               </div>
@@ -267,15 +381,6 @@ export function FriendsTab({ sharePrivacy, onPrivacyChange, shareToken, onGenera
           </form>
           {error && <p className="social-msg social-msg-error">{error}</p>}
           {success && <p className="social-msg social-msg-ok">{success}</p>}
-
-          <div className="social-discord-note">
-            <svg viewBox="0 0 24 24" fill="currentColor" style={{ width: 16, height: 16, flexShrink: 0, color: "#5865f2" }}>
-              <path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z" />
-            </svg>
-            <span>
-              Auto-adding Discord friends requires special API access from Discord. For now, share your link above and have them add you manually.
-            </span>
-          </div>
         </div>
       )}
 
@@ -295,7 +400,7 @@ export function FriendsTab({ sharePrivacy, onPrivacyChange, shareToken, onGenera
               <path d="M58 54v-2a10 10 0 0 0-7.5-9.7M50 20.13a10 10 0 0 1 0 14.74" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" />
             </svg>
             <p className="social-empty-title">No squad members yet</p>
-            <p className="social-empty-sub">Share your inventory link with friends and ask them to add you, or click <strong>Add Friend</strong> above.</p>
+            <p className="social-empty-sub">Share your username with friends and ask them to add you, or click <strong>Add Friend</strong> above.</p>
           </div>
         ) : (
           <>
@@ -352,7 +457,6 @@ function FriendRow({
 }) {
   const status = getStatus(friend.lastSeen);
   const viewUrl = friendViewUrl(friend.token, origin);
-  const isProfileLink = friend.token.startsWith("user:");
 
   return (
     <div className="social-friend-row">
@@ -363,17 +467,15 @@ function FriendRow({
         </div>
         <div className="social-friend-info">
           <span className="social-friend-name">{friend.nickname}</span>
-          {friend.friendName && friend.friendName !== friend.nickname && (
-            <span className="social-friend-discord-name">{friend.friendName}</span>
-          )}
+          <span className="social-friend-discord-name">
+            {friend.friendUsername ? `@${friend.friendUsername}` : friend.friendName ?? ""}
+          </span>
           <span className="social-friend-meta">
             {status === "online"
               ? "Tracker open"
               : status === "recent"
               ? `Active ${formatLastSeen(friend.lastSeen)}`
               : `Last seen ${formatLastSeen(friend.lastSeen)}`}
-            {" · "}
-            {isProfileLink ? "Profile link" : "Share link"}
           </span>
         </div>
       </div>

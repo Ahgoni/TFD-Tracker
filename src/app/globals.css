@@ -2422,6 +2422,42 @@ td .badge { display: inline-flex; align-items: center; gap: 0.35rem; }
 
 .social-link-hint { font-size: 0.74rem; color: var(--muted); opacity: 0.7; margin-top: 0.45rem; }
 
+.social-profile-id-row {
+  display: flex; align-items: center; gap: 0.5rem; margin-top: 0.5rem;
+}
+.social-profile-id {
+  display: flex; align-items: baseline; gap: 0.1rem;
+  font-size: 1.1rem; font-weight: 800;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.social-profile-at { font-weight: 900; font-size: 1rem; }
+.social-profile-name { font-weight: 800; }
+
+.social-set-username { margin-top: 0.5rem; }
+.social-set-username-hint { font-size: 0.82rem; color: var(--muted); margin-bottom: 0.5rem; }
+
+.social-username-form {
+  margin-top: 0.55rem; display: flex; flex-direction: column; gap: 0.4rem;
+}
+.social-username-input-wrap {
+  display: flex; align-items: center; gap: 0.1rem;
+  background: rgba(255,255,255,0.04); border: 1px solid var(--line);
+  border-radius: 8px; padding: 0 0.6rem;
+}
+.social-username-prefix {
+  font-size: 1rem; font-weight: 800; color: var(--accent); flex-shrink: 0;
+}
+.social-username-input-wrap input {
+  border: none !important; background: transparent !important; padding: 0.4rem 0 !important;
+  font-size: 0.88rem; color: var(--text);
+}
+.social-username-actions { display: flex; gap: 0.4rem; }
+.social-username-rules {
+  font-size: 0.7rem; color: var(--muted); opacity: 0.65; margin: 0;
+}
+
 .social-add-form-wrap {
   padding: 1rem 1.25rem; border-bottom: 1px solid var(--line);
   background: rgba(0,0,0,0.15);
