@@ -2624,7 +2624,7 @@ td .badge { display: inline-flex; align-items: center; gap: 0.35rem; }
 [data-theme="light"] .filter-chip img,
 [data-theme="light"] .badge img,
 [data-theme="light"] .skill-chip img {
-  filter: brightness(0.3);
+  filter: brightness(0) saturate(100%);
 }
 
 /* ── Table body cells ───────────────────────────────────────── */
