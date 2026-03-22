@@ -1,6 +1,5 @@
 "use client";
 
-import { useRef } from "react";
 import type { TrackerState, WeaponEntry } from "../tracker-client";
 import { ammoDefs, roundsLabel } from "@/lib/tracker-data";
 import { uuid } from "@/lib/uuid";
@@ -19,7 +18,6 @@ function pushActivity(state: TrackerState, text: string): TrackerState {
 }
 
 export function WeaponsTab({ state, setState }: Props) {
-  const searchRef = useRef<HTMLInputElement>(null);
 
   function setFilter(key: string, value: string) {
     setState((prev) => ({
@@ -90,10 +88,11 @@ export function WeaponsTab({ state, setState }: Props) {
         <span className="filter-row-title">Filters</span>
         <div className="filter-group">
           <input
-            defaultValue={search}
+            value={search ?? ""}
             placeholder="Search weapon..."
             style={{ width: 180 }}
-            onInput={(e) => setFilter("search", (e.target as HTMLInputElement).value)}
+            onChange={(e) => setFilter("search", e.target.value)}
+            aria-label="Search weapons"
           />
           <select value={rarity} onChange={(e) => setFilter("rarity", e.target.value)}>
             <option value="all">All Rarity</option>

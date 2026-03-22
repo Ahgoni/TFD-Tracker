@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
 
@@ -97,7 +97,7 @@ export function FriendsTab({ sharePrivacy, onPrivacyChange, shareToken, onGenera
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [copied, setCopied] = useState<"profile" | "share" | "id" | null>(null);
-  const addFormRef = useRef<HTMLDivElement>(null);
+
 
   const username = (session?.user as Record<string, unknown> | undefined)?.username as string | null;
   const origin = typeof window !== "undefined" ? window.location.origin : "";
@@ -111,12 +111,12 @@ export function FriendsTab({ sharePrivacy, onPrivacyChange, shareToken, onGenera
 
   useEffect(() => {
     fetch("/api/friends")
-      .then((r) => r.json())
+      .then((r) => { if (!r.ok) throw new Error(); return r.json(); })
       .then((d) => { setFriends(d.friends ?? []); setLoading(false); })
       .catch(() => setLoading(false));
     const interval = setInterval(() => {
       fetch("/api/friends")
-        .then((r) => r.json())
+        .then((r) => { if (!r.ok) throw new Error(); return r.json(); })
         .then((d) => setFriends(d.friends ?? []))
         .catch(() => {});
     }, 60_000);
@@ -127,7 +127,7 @@ export function FriendsTab({ sharePrivacy, onPrivacyChange, shareToken, onGenera
     navigator.clipboard.writeText(text).then(() => {
       setCopied(which);
       setTimeout(() => setCopied(null), 2000);
-    });
+    }).catch(() => {});
   }, []);
 
   async function saveUsername(e: React.FormEvent) {
@@ -205,8 +205,11 @@ export function FriendsTab({ sharePrivacy, onPrivacyChange, shareToken, onGenera
   }
 
   async function removeFriend(id: string) {
-    await fetch(`/api/friends/${id}`, { method: "DELETE" });
-    setFriends((prev) => prev.filter((f) => f.id !== id));
+    try {
+      const res = await fetch(`/api/friends/${id}`, { method: "DELETE" });
+      if (!res.ok) return;
+      setFriends((prev) => prev.filter((f) => f.id !== id));
+    } catch { /* network error — leave list unchanged */ }
   }
 
   const onlineFriends = friends.filter((f) => getStatus(f.lastSeen) === "online");
@@ -349,7 +352,7 @@ export function FriendsTab({ sharePrivacy, onPrivacyChange, shareToken, onGenera
 
       {/* Add friend form (collapsible) */}
       {showAddForm && (
-        <div className="social-add-form-wrap" ref={addFormRef}>
+        <div className="social-add-form-wrap">
           <p className="social-add-intro">
             Add a friend by their <strong>username</strong> (e.g. <code>@void_hunter</code>) or paste their profile/share link.
           </p>

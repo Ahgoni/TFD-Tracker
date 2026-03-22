@@ -170,7 +170,7 @@ async function createShareToken(): Promise<string | null> {
 // ── Main component ────────────────────────────────────────────────────────────
 
 export function TrackerClient() {
-  const { data: session } = useSession();
+  useSession();
   const [state, setState] = useState<TrackerState>(DEFAULT_STATE);
   const [saveStatus, setSaveStatus] = useState<"loading" | "loaded" | "saving" | "saved" | "error">("loading");
   const [shareToken, setShareToken] = useState<string | null>(null);
@@ -182,39 +182,39 @@ export function TrackerClient() {
   // Load state from server on mount
   useEffect(() => {
     (async () => {
-      const res = await fetch("/api/state", { cache: "no-store" });
-      if (!res.ok) { setSaveStatus("error"); return; }
-      const data = await res.json();
+      try {
+        const res = await fetch("/api/state", { cache: "no-store" });
+        if (!res.ok) { setSaveStatus("error"); return; }
+        const data = await res.json();
 
-      let loaded: TrackerState = {
-        ...DEFAULT_STATE,
-        ...(data.state ?? {}),
-        weaponFilters: { ...DEFAULT_STATE.weaponFilters, ...(data.state?.weaponFilters ?? {}) },
-        goalsFilters: { ...DEFAULT_STATE.goalsFilters, ...(data.state?.goalsFilters ?? {}) },
-        filters: { ...DEFAULT_STATE.filters, ...(data.state?.filters ?? {}) },
-        notesTabs: { ...DEFAULT_STATE.notesTabs, ...(data.state?.notesTabs ?? {}) },
-      };
+        let loaded: TrackerState = {
+          ...DEFAULT_STATE,
+          ...(data.state ?? {}),
+          weaponFilters: { ...DEFAULT_STATE.weaponFilters, ...(data.state?.weaponFilters ?? {}) },
+          goalsFilters: { ...DEFAULT_STATE.goalsFilters, ...(data.state?.goalsFilters ?? {}) },
+          filters: { ...DEFAULT_STATE.filters, ...(data.state?.filters ?? {}) },
+          notesTabs: { ...DEFAULT_STATE.notesTabs, ...(data.state?.notesTabs ?? {}) },
+        };
 
-      // Ensure Friends tab is always present
-      if (!loaded.tabs.includes("Friends")) {
-        loaded.tabs = [...loaded.tabs, "Friends"];
+        if (!loaded.tabs.includes("Friends")) {
+          loaded.tabs = [...loaded.tabs, "Friends"];
+        }
+        loaded.tabs = loaded.tabs.filter((t) => t !== "Progression");
+
+        if (Array.isArray(loaded.weapons)) {
+          loaded.weapons = loaded.weapons.map((w) => ({
+            ...w,
+            icon: (w.icon ?? "").replace("./Images", "/Images"),
+          }));
+        }
+
+        loaded.weapons = await fetchAndMergeWeaponsCatalog(loaded.weapons);
+        setState(loaded);
+        setSaveStatus("loaded");
+        initialized.current = true;
+      } catch {
+        setSaveStatus("error");
       }
-      // Remove deprecated tabs
-      loaded.tabs = loaded.tabs.filter((t) => t !== "Progression");
-
-      // Normalize weapon icons from relative to absolute paths
-      if (Array.isArray(loaded.weapons)) {
-        loaded.weapons = loaded.weapons.map((w) => ({
-          ...w,
-          icon: (w.icon ?? "").replace("./Images", "/Images"),
-        }));
-      }
-
-      // Merge weapons catalog (adds new weapons, fixes metadata)
-      loaded.weapons = await fetchAndMergeWeaponsCatalog(loaded.weapons);
-      setState(loaded);
-      setSaveStatus("loaded");
-      initialized.current = true;
     })();
   }, []);
 
@@ -279,7 +279,7 @@ export function TrackerClient() {
     navigator.clipboard.writeText(url).then(() => {
       setShareCopied(true);
       setTimeout(() => setShareCopied(false), 2000);
-    });
+    }).catch(() => {});
   }
 
   const statusText =

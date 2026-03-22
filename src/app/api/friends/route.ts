@@ -29,28 +29,38 @@ export async function GET() {
 
   const enriched = await Promise.all(
     friends.map(async (f) => {
+      const safe = {
+        id: f.id,
+        token: f.token,
+        nickname: f.nickname,
+        createdAt: f.createdAt.toISOString(),
+      };
       try {
         const friendUserId = await resolveFriendUserId(f.token);
-        if (!friendUserId) return { ...f, lastSeen: null, friendName: null, friendImage: null, friendUsername: null };
+        if (!friendUserId) return { ...safe, lastSeen: null, friendName: null, friendImage: null, friendUsername: null };
 
         const user = await prisma.user.findUnique({
           where: { id: friendUserId },
           select: { lastSeen: true, name: true, image: true, username: true },
         });
         return {
-          ...f,
+          ...safe,
           lastSeen: user?.lastSeen?.toISOString() ?? null,
           friendName: user?.name ?? null,
           friendImage: user?.image ?? null,
           friendUsername: user?.username ?? null,
         };
       } catch {
-        return { ...f, lastSeen: null, friendName: null, friendImage: null, friendUsername: null };
+        return { ...safe, lastSeen: null, friendName: null, friendImage: null, friendUsername: null };
       }
     })
   );
 
   return NextResponse.json({ friends: enriched });
+}
+
+function sanitizeFriend(f: { id: string; token: string; nickname: string; createdAt: Date }) {
+  return { id: f.id, token: f.token, nickname: f.nickname, createdAt: f.createdAt.toISOString() };
 }
 
 export async function POST(req: Request) {
@@ -80,7 +90,7 @@ export async function POST(req: Request) {
       update: { nickname: nickname.trim().slice(0, 40) },
     });
 
-    return NextResponse.json({ friend });
+    return NextResponse.json({ friend: sanitizeFriend(friend) });
   }
 
   if (token.startsWith("user:")) {
@@ -104,7 +114,7 @@ export async function POST(req: Request) {
       update: { nickname: nickname.trim().slice(0, 40) },
     });
 
-    return NextResponse.json({ friend });
+    return NextResponse.json({ friend: sanitizeFriend(friend) });
   }
 
   const shareToken = await prisma.shareToken.findUnique({ where: { token } });
@@ -117,5 +127,5 @@ export async function POST(req: Request) {
     update: { nickname: nickname.trim().slice(0, 40) },
   });
 
-  return NextResponse.json({ friend });
+  return NextResponse.json({ friend: sanitizeFriend(friend) });
 }

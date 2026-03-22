@@ -167,9 +167,14 @@ export function DescendantsTab({ state, setState }: Props) {
                         src={d.portrait}
                         alt={d.name}
                         className="portrait"
-                        onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }}
+                        onError={(e) => {
+                          const img = e.target as HTMLImageElement;
+                          img.style.display = "none";
+                          const fallback = img.nextElementSibling as HTMLElement | null;
+                          if (fallback) fallback.style.display = "";
+                        }}
                       />
-                      <span className="portrait" style={{ display: "none" }}>{initials}</span>
+                      <span className="portrait portrait-initials" style={{ display: "none" }}>{initials}</span>
                       {d.name}
                     </span>
                   </td>

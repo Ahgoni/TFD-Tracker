@@ -190,8 +190,10 @@ export function WelcomeTab({ state, setTab }: Props) {
                   key={r.id}
                   className={`welcome-activity-item${tab ? " clickable" : ""}`}
                   onClick={tab ? () => setTab(tab) : undefined}
+                  onKeyDown={tab ? (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); setTab(tab); } } : undefined}
                   role={tab ? "button" : undefined}
                   tabIndex={tab ? 0 : undefined}
+                  aria-label={tab ? `Go to ${tab}` : undefined}
                 >
                   <span className="welcome-activity-dot" />
                   <span className="welcome-activity-text">{r.text}</span>
