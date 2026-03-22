@@ -1626,6 +1626,13 @@ td .badge { display: inline-flex; align-items: center; gap: 0.35rem; }
   background: rgba(0, 200, 240, 0.04);
 }
 
+.welcome-activity-item.clickable {
+  cursor: pointer;
+}
+.welcome-activity-item.clickable:hover .welcome-activity-text {
+  color: var(--accent);
+}
+
 .welcome-activity-dot {
   width: 6px;
   height: 6px;
@@ -2620,11 +2627,9 @@ td .badge { display: inline-flex; align-items: center; gap: 0.35rem; }
   color: var(--accent) !important;
 }
 
-/* Primary rounds icon is white — needs dark outline in light mode */
-[data-theme="light"] .filter-chip img[src*="general"],
-[data-theme="light"] .skill-chip img[src*="general"],
-[data-theme="light"] .badge img[src*="general"] {
-  filter: drop-shadow(0 0 1px rgba(0,0,0,0.5));
+/* Primary rounds icon is white — make it black in light mode */
+[data-theme="light"] img[src*="general.webp"] {
+  filter: brightness(0);
 }
 
 /* ── Table body cells ───────────────────────────────────────── */

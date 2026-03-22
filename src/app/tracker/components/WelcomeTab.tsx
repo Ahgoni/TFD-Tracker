@@ -72,22 +72,17 @@ const SECTION_CARDS = [
     desc: "Set active farming targets, check them off, and filter to your active grind.",
     accent: "#ef4444",
   },
-  {
-    tab: "Progression",
-    icon: (
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-        <polyline points="14 2 14 8 20 8" />
-        <line x1="16" y1="13" x2="8" y2="13" />
-        <line x1="16" y1="17" x2="8" y2="17" />
-        <polyline points="10 9 9 9 8 9" />
-      </svg>
-    ),
-    title: "Progression Notes",
-    desc: "Track goals, notes, and personal milestones across weapons, reactors, and builds.",
-    accent: "#6366f1",
-  },
 ];
+
+function activityToTab(text: string): string | null {
+  const t = text.toLowerCase();
+  if (t.includes("weapon") || t.includes("acquired")) return "Weapons";
+  if (t.includes("reactor")) return "Reactors";
+  if (t.includes("descendant")) return "Descendants";
+  if (t.includes("material")) return "Materials";
+  if (t.includes("goal") || t.includes("farming")) return "Farming";
+  return null;
+}
 
 export function WelcomeTab({ state, setTab }: Props) {
   const { data: session } = useSession();
@@ -188,15 +183,24 @@ export function WelcomeTab({ state, setTab }: Props) {
           </div>
         ) : (
           <ul className="welcome-activity-list">
-            {recent.map((r) => (
-              <li key={r.id} className="welcome-activity-item">
-                <span className="welcome-activity-dot" />
-                <span className="welcome-activity-text">{r.text}</span>
-                <span className="welcome-activity-time">
-                  {new Date(r.at).toLocaleString(undefined, { month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" })}
-                </span>
-              </li>
-            ))}
+            {recent.map((r) => {
+              const tab = activityToTab(r.text);
+              return (
+                <li
+                  key={r.id}
+                  className={`welcome-activity-item${tab ? " clickable" : ""}`}
+                  onClick={tab ? () => setTab(tab) : undefined}
+                  role={tab ? "button" : undefined}
+                  tabIndex={tab ? 0 : undefined}
+                >
+                  <span className="welcome-activity-dot" />
+                  <span className="welcome-activity-text">{r.text}</span>
+                  <span className="welcome-activity-time">
+                    {new Date(r.at).toLocaleString(undefined, { month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" })}
+                  </span>
+                </li>
+              );
+            })}
           </ul>
         )}
       </section>

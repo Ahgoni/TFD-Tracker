@@ -8,7 +8,6 @@ import { WeaponsTab } from "./components/WeaponsTab";
 import { ReactorsTab } from "./components/ReactorsTab";
 import { MaterialsTab } from "./components/MaterialsTab";
 import { FarmingTab } from "./components/FarmingTab";
-import { NotesTab } from "./components/NotesTab";
 import { ProfileMenu } from "./components/ProfileMenu";
 import { FriendsTab } from "./components/FriendsTab";
 import { normalizeWeaponName } from "@/lib/tracker-data";
@@ -97,7 +96,7 @@ export interface TrackerState {
 }
 
 const DEFAULT_STATE: TrackerState = {
-  tabs: ["Welcome", "Descendants", "Weapons", "Reactors", "Materials", "Farming", "Progression", "Friends"],
+  tabs: ["Welcome", "Descendants", "Weapons", "Reactors", "Materials", "Farming", "Friends"],
   activeTab: "Welcome",
   activities: [],
   weapons: [],
@@ -200,11 +199,8 @@ export function TrackerClient() {
       if (!loaded.tabs.includes("Friends")) {
         loaded.tabs = [...loaded.tabs, "Friends"];
       }
-      // Remove Reactors from notesTabs if leftover
-      if (loaded.notesTabs && "Reactors" in loaded.notesTabs) {
-        const { Reactors: _, ...rest } = loaded.notesTabs;
-        loaded.notesTabs = rest;
-      }
+      // Remove deprecated tabs
+      loaded.tabs = loaded.tabs.filter((t) => t !== "Progression");
 
       // Normalize weapon icons from relative to absolute paths
       if (Array.isArray(loaded.weapons)) {
@@ -298,8 +294,6 @@ export function TrackerClient() {
     : "";
 
   const activeTab = state.tabs.includes(state.activeTab) ? state.activeTab : "Welcome";
-  const notesTabs = ["Weapons", "Progression"];
-
   return (
     <div className="app">
       <header className="topbar">
@@ -381,9 +375,6 @@ export function TrackerClient() {
         )}
         {activeTab === "Farming" && (
           <FarmingTab state={state} setState={setState} />
-        )}
-        {notesTabs.includes(activeTab) && (
-          <NotesTab tabName={activeTab} state={state} setState={setState} />
         )}
         {activeTab === "Friends" && (
           <FriendsTab
