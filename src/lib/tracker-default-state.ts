@@ -1,0 +1,15 @@
+export const defaultTrackerState = {
+  tabs: ["Welcome", "Descendants", "Weapons", "Reactors", "Materials", "Farming", "Progression"],
+  activeTab: "Welcome",
+  activities: [],
+  weapons: [],
+  reactors: [],
+  materials: [],
+  descendants: [],
+  goals: [],
+  goalsFilters: { hideCompleted: false, onlyActive: false },
+  weaponFilters: { search: "", rarity: "all", rounds: "all", sort: "name-asc", ownership: "all" },
+  filters: { element: "all", skill: "all" },
+  descFilter: "all",
+  notesTabs: { Weapons: [], Progression: [], Reactors: [] },
+};
