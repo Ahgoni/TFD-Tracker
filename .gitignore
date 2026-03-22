@@ -43,3 +43,5 @@ yarn-error.log*
 
 # local symlink created by scripts/link-public.js (Images/ lives at repo root)
 /public/Images
+tfd-web/node_modules/
+tfd-web/.next/
