@@ -29,8 +29,8 @@
   --line: #d0d9f0;
   --glow: rgba(0, 136, 170, 0.12);
   --glow2: rgba(139, 68, 212, 0.1);
-  --chip-bg: rgba(0, 136, 170, 0.08);
-  --chip-border: rgba(0, 136, 170, 0.22);
+  --chip-bg: #e8f0fa;
+  --chip-border: #c0d0e8;
   --chip-text: #0c1830;
   --portrait-bg: linear-gradient(160deg, #c0d8f0, #dce8ff);
   --portrait-border: rgba(0, 136, 170, 0.2);
@@ -2620,11 +2620,11 @@ td .badge { display: inline-flex; align-items: center; gap: 0.35rem; }
   color: var(--accent) !important;
 }
 
-/* Darken only the white/near-white ammo icons (General/Primary rounds) in light mode */
+/* Primary rounds icon is white — needs dark outline in light mode */
 [data-theme="light"] .filter-chip img[src*="general"],
 [data-theme="light"] .skill-chip img[src*="general"],
 [data-theme="light"] .badge img[src*="general"] {
-  filter: brightness(0);
+  filter: drop-shadow(0 0 1px rgba(0,0,0,0.5));
 }
 
 /* ── Table body cells ───────────────────────────────────────── */
