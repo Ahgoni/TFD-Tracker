@@ -2026,11 +2026,7 @@ td .badge { display: inline-flex; align-items: center; gap: 0.35rem; }
   color: var(--text);
 }
 
-[data-theme="light"] button:not(.profile-trigger):not(.profile-action):not(.tab-nav button):not(.theme-toggle):not(.btn):not(.filter-chip):not(.quick-nav-btn):not(.mini-btn):not(.discord-btn) {
-  background: rgba(0, 136, 170, 0.08);
-  border-color: rgba(0, 136, 170, 0.3);
-  color: var(--accent);
-}
+/* Intentionally removed — specific overrides handle each element */
 
 [data-theme="light"] .filter-chip {
   background: #ffffff;
@@ -2536,154 +2532,166 @@ td .badge { display: inline-flex; align-items: center; gap: 0.35rem; }
 
 /* ══════════════════════════════════════════════════════════════
    LIGHT MODE — COMPREHENSIVE TRACKER FIXES
-   Every hardcoded dark-mode colour is overridden below.
+   Override every hardcoded dark-mode colour.
 ══════════════════════════════════════════════════════════════ */
 
-/* Welcome hero username (was white on light bg) */
-[data-theme="light"] .welcome-name {
-  color: var(--accent);
-  -webkit-text-fill-color: var(--accent);
-}
-[data-theme="light"] .welcome-sub { color: var(--muted); }
-[data-theme="light"] .welcome-tagline { color: var(--muted); }
+/* ── Welcome hero ──────────────────────────────────────────── */
+[data-theme="light"] .welcome-name      { color: var(--text) !important; -webkit-text-fill-color: var(--text) !important; }
+[data-theme="light"] .welcome-sub       { color: var(--muted); }
+[data-theme="light"] .welcome-tagline   { color: var(--muted); }
 
-/* Skill-type chips — dark navy → light teal pill */
+/* ── Activity feed text (was hardcoded light-blue #c8d6f0) ── */
+[data-theme="light"] .welcome-activity-text { color: var(--text); }
+[data-theme="light"] .welcome-activity-item { border-bottom-color: rgba(0,0,0,0.06); }
+[data-theme="light"] .welcome-card-title    { color: var(--text); }
+[data-theme="light"] .welcome-card-desc     { color: var(--muted); }
+[data-theme="light"] .welcome-card-icon     { color: var(--accent); }
+
+/* ── Skill-type chips (was #0a1525 navy) ────────────────────── */
 [data-theme="light"] .skill-chip {
-  background: rgba(0, 136, 170, 0.1);
-  border-color: rgba(0, 136, 170, 0.25);
-  color: var(--text);
+  background: rgba(0, 136, 170, 0.1) !important;
+  border-color: rgba(0, 136, 170, 0.25) !important;
+  color: var(--text) !important;
 }
-[data-theme="light"] .skill-chip strong { color: var(--text); }
+[data-theme="light"] .skill-chip strong,
+[data-theme="light"] .skill-chip span { color: var(--text) !important; }
 
-/* Rarity chips — adapt for white bg readability */
-[data-theme="light"] .rarity-chip-normal  { color: #0077aa; border-color: rgba(0, 119, 170, 0.3); background: rgba(0, 119, 170, 0.06); }
-[data-theme="light"] .rarity-chip-rare    { color: #7b28cc; border-color: rgba(123, 40, 204, 0.3); background: rgba(123, 40, 204, 0.07); }
-[data-theme="light"] .rarity-chip-ultimate { color: #a05c00; border-color: rgba(160, 92, 0, 0.35); background: rgba(160, 92, 0, 0.08); }
+/* ── Rarity chips ───────────────────────────────────────────── */
+[data-theme="light"] .rarity-chip-normal  { color: #0077aa !important; border-color: rgba(0,119,170,0.3) !important; background: rgba(0,119,170,0.06) !important; }
+[data-theme="light"] .rarity-chip-rare    { color: #7b28cc !important; border-color: rgba(123,40,204,0.3) !important; background: rgba(123,40,204,0.07) !important; }
+[data-theme="light"] .rarity-chip-ultimate { color: #a05c00 !important; border-color: rgba(160,92,0,0.35) !important; background: rgba(160,92,0,0.08) !important; }
 
-/* Tier pills — dark navy → white */
-[data-theme="light"] .tier-pill {
-  background: #f0f4ff;
-  border-color: var(--line);
-}
-[data-theme="light"] .tier-ultimate { color: #a05c00; border-color: rgba(160, 92, 0, 0.35); }
-[data-theme="light"] .tier-rare     { color: #7b28cc; border-color: rgba(123, 40, 204, 0.3); }
-[data-theme="light"] .tier-common   { color: #0077aa; border-color: rgba(0, 119, 170, 0.3); }
+/* ── Tier pills (was #0a1525) ───────────────────────────────── */
+[data-theme="light"] .tier-pill       { background: #f0f4ff !important; border-color: var(--line) !important; }
+[data-theme="light"] .tier-ultimate   { color: #a05c00; border-color: rgba(160,92,0,0.35); }
+[data-theme="light"] .tier-rare       { color: #7b28cc; border-color: rgba(123,40,204,0.3); }
+[data-theme="light"] .tier-common     { color: #0077aa; border-color: rgba(0,119,170,0.3); }
 
-/* User chip in topbar */
+/* ── User chip in topbar (was #0a1525) ──────────────────────── */
 [data-theme="light"] .user-chip {
-  background: rgba(0, 136, 170, 0.08);
-  border-color: rgba(0, 136, 170, 0.2);
-  color: var(--text);
+  background: rgba(0,136,170,0.08) !important;
+  border-color: rgba(0,136,170,0.2) !important;
+  color: var(--text) !important;
 }
 
-/* Tab nav active — readable on light bg */
+/* ── Descendant portrait avatar (was dark navy gradient) ────── */
+[data-theme="light"] .portrait {
+  background: linear-gradient(160deg, #c0d8f0, #dce8ff) !important;
+  border-color: rgba(0,136,170,0.2) !important;
+}
+
+/* ── Tab nav ────────────────────────────────────────────────── */
 [data-theme="light"] .tab-nav button.active {
-  color: var(--accent);
-  text-shadow: none;
-  background: rgba(0, 136, 170, 0.09);
+  color: var(--accent) !important;
+  text-shadow: none !important;
+  background: rgba(0,136,170,0.09) !important;
 }
 [data-theme="light"] .tab-nav button:hover {
-  color: var(--accent);
-  box-shadow: none;
+  color: var(--accent) !important;
+  box-shadow: none !important;
 }
 
-/* Save status */
+/* ── Save status ────────────────────────────────────────────── */
 [data-theme="light"] .save-status.ok { color: var(--good); }
 
-/* Panel headings */
+/* ── Panel headings ─────────────────────────────────────────── */
 [data-theme="light"] .panel h2,
 [data-theme="light"] .panel h3 { color: var(--text); }
 
-/* Filter chips */
+/* ── Form labels ────────────────────────────────────────────── */
+[data-theme="light"] label,
+[data-theme="light"] .form-grid label { color: var(--text); }
+
+/* ── Filter chips (was #0a1525) ─────────────────────────────── */
 [data-theme="light"] .filter-chip {
-  background: #eef2fc;
-  border-color: #d0d9f0;
-  color: var(--muted);
+  background: #eef2fc !important;
+  border-color: #d0d9f0 !important;
+  color: var(--muted) !important;
 }
 [data-theme="light"] .filter-chip.active {
-  background: rgba(0, 136, 170, 0.12);
-  border-color: var(--accent);
-  color: var(--accent);
+  background: rgba(0,136,170,0.12) !important;
+  border-color: var(--accent) !important;
+  color: var(--accent) !important;
 }
-[data-theme="light"] .filter-chip img { filter: none; }
 
-/* Table body cells */
+/* ── Table body cells ───────────────────────────────────────── */
 [data-theme="light"] td { color: var(--text); }
+[data-theme="light"] th { color: var(--muted); }
 [data-theme="light"] td input,
 [data-theme="light"] td select {
   background: #f8faff;
   border-color: #d0d9f0;
   color: var(--text);
 }
-[data-theme="light"] tbody tr:nth-child(even) td { background: rgba(0, 0, 0, 0.015); }
+[data-theme="light"] tbody tr:nth-child(even) td { background: rgba(0,0,0,0.015); }
 
-/* Weapon icon border */
+/* ── Weapon icon border ─────────────────────────────────────── */
 [data-theme="light"] .weapon-icon {
-  border-color: rgba(0, 136, 170, 0.12);
+  border-color: rgba(0,136,170,0.12);
   background: #f0f4ff;
 }
 
-/* Profile dropdown items */
-[data-theme="light"] .profile-name { color: var(--text); }
+/* ── Profile dropdown ───────────────────────────────────────── */
+[data-theme="light"] .profile-name      { color: var(--text) !important; }
+[data-theme="light"] .profile-sub       { color: var(--muted) !important; }
 [data-theme="light"] .profile-initial,
-[data-theme="light"] .profile-initial-lg { background: rgba(0, 136, 170, 0.15); color: var(--accent); }
+[data-theme="light"] .profile-initial-lg { background: rgba(0,136,170,0.15); color: var(--accent); }
+[data-theme="light"] .profile-caret     { color: var(--muted); }
 
-/* Friends / social elements */
-[data-theme="light"] .friends-item-name { color: var(--text); }
-[data-theme="light"] .friends-tip-text strong { color: var(--text); }
+/* ── Profile menu action text ───────────────────────────────── */
+[data-theme="light"] .profile-action svg { color: var(--muted); }
 
-/* Welcome card title (hardcoded light blue) */
-[data-theme="light"] .welcome-card-icon { color: var(--accent); }
-
-/* Activity list */
-[data-theme="light"] .welcome-activity-item {
-  border-bottom-color: rgba(0, 0, 0, 0.06);
-}
-
-/* btn-ghost */
+/* ── btn-ghost (was #0a1525) ────────────────────────────────── */
 [data-theme="light"] .btn-ghost {
-  background: #eef2fc;
-  border-color: #c8d0e8;
-  color: var(--text);
+  background: #eef2fc !important;
+  border-color: #c8d0e8 !important;
+  color: var(--text) !important;
 }
 [data-theme="light"] .btn-ghost:hover {
-  background: rgba(0, 136, 170, 0.12);
-  border-color: var(--accent);
-  color: var(--accent);
+  background: rgba(0,136,170,0.12) !important;
+  border-color: var(--accent) !important;
+  color: var(--accent) !important;
 }
 
-/* Mini buttons (remove) */
+/* ── Generic buttons catch-all — remove the wide :not() rule ── */
+[data-theme="light"] .danger {
+  background: rgba(204,34,68,0.07) !important;
+  border-color: rgba(204,34,68,0.3) !important;
+  color: var(--danger) !important;
+}
+
+/* ── Mini buttons (remove) ──────────────────────────────────── */
 [data-theme="light"] .mini-btn {
-  background: rgba(204, 34, 68, 0.07);
-  border-color: rgba(204, 34, 68, 0.25);
+  background: rgba(204,34,68,0.07);
+  border-color: rgba(204,34,68,0.25);
   color: var(--danger);
 }
 
-/* Share link row */
+/* ── Share link row ─────────────────────────────────────────── */
 [data-theme="light"] .share-link-row input {
   background: #f0f4ff;
   border-color: #c8d4f0;
   color: var(--text);
 }
 
-/* Privacy opts */
+/* ── Privacy opts ───────────────────────────────────────────── */
 [data-theme="light"] .privacy-opt {
   background: #eef2fc;
   border-color: #c8d0e8;
   color: var(--muted);
 }
 [data-theme="light"] .privacy-opt.active {
-  background: rgba(0, 136, 170, 0.12);
+  background: rgba(0,136,170,0.12);
   border-color: var(--accent);
   color: var(--accent);
 }
 
 /* ── Social panel light mode ─────────────────────────────────── */
 [data-theme="light"] .social-panel { background: #ffffff; border-color: var(--line); }
-[data-theme="light"] .social-header { background: rgba(0, 136, 170, 0.04); }
+[data-theme="light"] .social-header { background: rgba(0,136,170,0.04); }
 [data-theme="light"] .social-your-link-box { background: #eef4ff; border-color: #c8d8f8; }
 [data-theme="light"] .social-add-form-wrap { background: #f4f7ff; border-color: var(--line); }
-[data-theme="light"] .social-friend-row { background: #f8faff; border-bottom-color: rgba(0,0,0,0.04); }
+[data-theme="light"] .social-friend-row { background: transparent; border-bottom-color: rgba(0,0,0,0.04); }
 [data-theme="light"] .social-friend-row:hover { background: #eef4ff; }
 [data-theme="light"] .social-friend-name { color: var(--text); }
 [data-theme="light"] .social-friend-meta { color: var(--muted); }
@@ -2695,5 +2703,5 @@ td .badge { display: inline-flex; align-items: center; gap: 0.35rem; }
 [data-theme="light"] .social-friend-avatar-wrap .social-status-dot { border-color: #ffffff; }
 [data-theme="light"] .social-remove-btn { border-color: rgba(204,34,68,0.3); color: var(--danger); background: rgba(204,34,68,0.06); }
 
-/* Remove inner radial glow from panels in light mode */
+/* ── Remove inner radial glow from panels ───────────────────── */
 [data-theme="light"] .panel::before { display: none; }
