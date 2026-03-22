@@ -2620,6 +2620,13 @@ td .badge { display: inline-flex; align-items: center; gap: 0.35rem; }
   color: var(--accent) !important;
 }
 
+/* Darken light-coloured icons so they're visible on white chips */
+[data-theme="light"] .filter-chip img,
+[data-theme="light"] .badge img,
+[data-theme="light"] .skill-chip img {
+  filter: brightness(0.3);
+}
+
 /* ── Table body cells ───────────────────────────────────────── */
 [data-theme="light"] td { color: var(--text); }
 [data-theme="light"] th { color: var(--muted); }
