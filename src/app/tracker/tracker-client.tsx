@@ -109,7 +109,7 @@ const DEFAULT_STATE: TrackerState = {
   weaponFilters: { search: "", rarity: "all", rounds: "all", sort: "name-asc", ownership: "all" },
   filters: { element: "all", skill: "all" },
   descFilter: "all",
-  notesTabs: { Weapons: [], Progression: [], Reactors: [] },
+  notesTabs: { Weapons: [], Progression: [] },
   sharePrivacy: "open",
 };
 
@@ -195,6 +195,16 @@ export function TrackerClient() {
         filters: { ...DEFAULT_STATE.filters, ...(data.state?.filters ?? {}) },
         notesTabs: { ...DEFAULT_STATE.notesTabs, ...(data.state?.notesTabs ?? {}) },
       };
+
+      // Ensure Friends tab is always present
+      if (!loaded.tabs.includes("Friends")) {
+        loaded.tabs = [...loaded.tabs, "Friends"];
+      }
+      // Remove Reactors from notesTabs if leftover
+      if (loaded.notesTabs && "Reactors" in loaded.notesTabs) {
+        const { Reactors: _, ...rest } = loaded.notesTabs;
+        loaded.notesTabs = rest;
+      }
 
       // Normalize weapon icons from relative to absolute paths
       if (Array.isArray(loaded.weapons)) {
@@ -288,7 +298,7 @@ export function TrackerClient() {
     : "";
 
   const activeTab = state.tabs.includes(state.activeTab) ? state.activeTab : "Welcome";
-  const notesTabs = ["Weapons", "Progression", "Reactors"];
+  const notesTabs = ["Weapons", "Progression"];
 
   return (
     <div className="app">

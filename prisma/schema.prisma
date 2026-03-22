@@ -26,6 +26,7 @@ model User {
   notes         NoteEntry[]
   shareTokens   ShareToken[]
   savedFriends  SavedFriend[]
+  lastSeen      DateTime?
   createdAt     DateTime         @default(now())
   updatedAt     DateTime         @updatedAt
 }

@@ -3,7 +3,7 @@ import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { NextResponse } from "next/server";
 
-// GET /api/friends — list saved friends
+// GET /api/friends — list saved friends with online presence
 export async function GET() {
   const session = await getServerSession(authOptions);
   if (!session?.user?.id) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -13,7 +13,35 @@ export async function GET() {
     orderBy: { createdAt: "asc" },
   });
 
-  return NextResponse.json({ friends });
+  const enriched = await Promise.all(
+    friends.map(async (f) => {
+      try {
+        let friendUserId: string | null = null;
+        if (f.token.startsWith("user:")) {
+          friendUserId = f.token.slice(5);
+        } else {
+          const st = await prisma.shareToken.findUnique({ where: { token: f.token } });
+          friendUserId = st?.userId ?? null;
+        }
+        if (!friendUserId) return { ...f, lastSeen: null, friendName: null, friendImage: null };
+
+        const user = await prisma.user.findUnique({
+          where: { id: friendUserId },
+          select: { lastSeen: true, name: true, image: true },
+        });
+        return {
+          ...f,
+          lastSeen: user?.lastSeen?.toISOString() ?? null,
+          friendName: user?.name ?? null,
+          friendImage: user?.image ?? null,
+        };
+      } catch {
+        return { ...f, lastSeen: null, friendName: null, friendImage: null };
+      }
+    })
+  );
+
+  return NextResponse.json({ friends: enriched });
 }
 
 // POST /api/friends — add a friend by share token OR profile URL (user:userId)

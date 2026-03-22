@@ -7,9 +7,17 @@ import { defaultTrackerState } from "@/lib/tracker-default-state";
 
 const statePayload = z.record(z.string(), z.unknown());
 
+function touchLastSeen(userId: string) {
+  prisma.user
+    .update({ where: { id: userId }, data: { lastSeen: new Date() } })
+    .catch(() => {});
+}
+
 export async function GET() {
   const userId = await requireUserId();
   if (!userId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+  touchLastSeen(userId);
 
   const row = await prisma.appState.findUnique({ where: { userId } });
   if (!row) return NextResponse.json({ state: defaultTrackerState });
@@ -19,6 +27,8 @@ export async function GET() {
 export async function PUT(request: Request) {
   const userId = await requireUserId();
   if (!userId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+  touchLastSeen(userId);
 
   const json = await request.json();
   const parsed = statePayload.safeParse(json?.state);
