@@ -1,0 +1,40 @@
+---
+description: TFD Tracker UI — Overframe-style hierarchy, Nexon-adjacent tier tokens, module “chipset” patterns
+alwaysApply: true
+---
+
+# Design system & UX (TFD Tracker)
+
+## North star
+- **Discovery first:** persistent navigation, categorized tabs, filters that stay useful across patches — not decorative empty chrome.
+- **Data-dense & scannable:** build cards and lists should surface *target, type, key modules, reactor, sets* at a glance (Overframe-style density).
+- **Game-native feel:** tier colors and bordered “chip” controls should echo the in-game module UI without copying copyrighted assets.
+
+## Tier tokens (map to Nexon `module_tier_id` / in-game labels)
+Use these **semantic names** in new CSS and components; align with existing classes in `globals.css`:
+
+| Token | Nexon tier | Role | Existing UI hooks (examples) |
+|-------|------------|------|------------------------------|
+| **tier1** | Tier1 / Normal | baseline | `.tier-normal`, `.tier-common`, `.tier-norm` |
+| **tier2** | Tier2 / Rare | mid | `.tier-rare`, `.rarity-chip-rare` |
+| **tier3** | Tier3 / Ultimate | high | `.tier-ultimate`, `.rarity-chip-ultimate` |
+| **tier4** | Tier4 / Transcendent | top | `.tier-transcendent`, Transcendent borders in builder |
+
+Prefer **CSS variables** on `:root` for new work (e.g. `--tier-t4`, `--tier-t3`) and reference them from tier classes — avoid hardcoding one-off hex codes for tier colors in new components.
+
+## Module / “chipset” aesthetic
+- **Borders + compact metadata:** capacity number, socket pill, tier strip — same information hierarchy as the build planner library cards.
+- **Chips:** `filter-chip`, skill chips, socket labels — rounded rects, subtle border, readable at small sizes.
+
+## Build calculator (math engine)
+- **Capacity, sockets, and Nexon JSON** are authoritative — see `tfd-nexon-data.mdc` and `src/lib/tfd-modules.ts`.
+- New mechanics (catalysts, auto-socket rules, etc.) belong in **typed lib code** with tests or clear comments; do not duplicate magic numbers in components.
+
+## What not to do
+- Don’t invent tier colors or module stats — use Nexon Open API + library.
+- Don’t replace scannable lists with hero-only landing art on functional pages.
+- Don’t add new global styles without checking `globals.css` for duplicates (see HANDOFF history).
+
+## References
+- `public/data/README.md` — data refresh
+- `docs/ARCHITECTURE_ROADMAP.md` — long-term UX, schema, and patch lifecycle
