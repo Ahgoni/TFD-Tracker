@@ -1,4 +1,9 @@
 import type { NextConfig } from "next";
+import path from "path";
+import { fileURLToPath } from "url";
+
+/** Directory containing this config file (real app root). Stops Turbopack from picking a parent folder when multiple lockfiles exist. */
+const appDir = path.dirname(fileURLToPath(import.meta.url));
 
 const securityHeaders = [
   { key: "X-Frame-Options", value: "SAMEORIGIN" },
@@ -12,6 +17,11 @@ const securityHeaders = [
 
 const nextConfig: NextConfig = {
   productionBrowserSourceMaps: false,
+
+  /** When the repo is cloned as `.../TFD/tfd-web` and a stray `package-lock.json` exists in `.../TFD/`, Next would otherwise resolve `@/` to the wrong `src/`. */
+  turbopack: {
+    root: appDir,
+  },
 
   async headers() {
     return [

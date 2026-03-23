@@ -230,6 +230,16 @@ On Linux, paths are case-sensitive. Ensure the file exists as **`src/lib/auth.ts
 
 Keep a **single** `package-lock.json` in the app root and remove stray lockfiles from parent folders, or always run npm from the same directory as `package.json`.
 
+If the app lives in **`~/apps/TFD/tfd-web`** but there is also **`~/apps/TFD/package-lock.json`**, Next.js may infer the **wrong workspace root** and every `@/…` import fails (“module not found”). Fix:
+
+1. **Preferred:** Delete the **parent** lockfile if it is not needed (only if nothing else uses it):
+   ```bash
+   rm -f ~/apps/TFD/package-lock.json ~/apps/TFD/package.json
+   ```
+2. **Or:** rely on `turbopack.root` in `next.config.ts` (committed in this repo) so the app root stays the folder with `next.config.ts`.
+
+Always run **`npm install` / `npm run build`** from the directory that contains **`next.config.ts`** and **`src/`**.
+
 ---
 
 ## 13) Database backups (nightly)
