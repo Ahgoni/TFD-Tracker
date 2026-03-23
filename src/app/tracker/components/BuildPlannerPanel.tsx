@@ -583,13 +583,20 @@ function BuildPlannerPanelInner({
     const idx = o.index;
 
     if (mod.tier === "Transcendent" && mod.descendantIds?.length > 0) {
+      const isSkillMod = !!mod.preview;
+      const isResolution = !mod.preview;
       const existing = slots.some((s, si) => {
         if (!s || si === idx) return false;
         const em = moduleById.get(s.moduleId);
-        return em?.tier === "Transcendent" && (em.descendantIds?.length ?? 0) > 0;
+        if (em?.tier !== "Transcendent" || (em.descendantIds?.length ?? 0) === 0) return false;
+        if (isSkillMod) return !!em.preview;
+        if (isResolution) return !em.preview;
+        return false;
       });
       if (existing) {
-        window.alert("Only one Transcendent (skill) module can be equipped per build.");
+        window.alert(isSkillMod
+          ? "Only one Transcendent skill module can be equipped per build. (Resolution mods are allowed alongside.)"
+          : "Only one Resolution module can be equipped per build.");
         return;
       }
     }
@@ -661,7 +668,7 @@ function BuildPlannerPanelInner({
     for (const s of slots) {
       if (!s) continue;
       const m = moduleById.get(s.moduleId);
-      if (m?.tier === "Transcendent" && (m.descendantIds?.length ?? 0) > 0) return { mod: m, level: s.level };
+      if (m?.tier === "Transcendent" && (m.descendantIds?.length ?? 0) > 0 && !!m.preview) return { mod: m, level: s.level };
     }
     return null;
   }, [slots, moduleById]);
@@ -743,22 +750,37 @@ function BuildPlannerPanelInner({
                           <span className="builder-skill-num">{idx + 1}</span>
                           {hoveredSkill === sk.name && full && (
                             <div className="skill-tooltip">
-                              <div className="skill-tooltip-head">
-                                <strong>{String(full.name ?? "")}</strong>
-                                <span className="skill-tooltip-type">{String(full.type ?? "")}</span>
+                              <div className="skill-tooltip-header">
+                                {elementIcon && <img src={elementIcon} alt="" className="skill-tooltip-element-icon" />}
+                                <span className="skill-tooltip-attr">
+                                  {String(full.element ?? "")} Attribute
+                                  {full.arche ? ` \u00b7 ${String(full.arche)}` : ""}
+                                </span>
                               </div>
-                              <div className="skill-tooltip-tags">
-                                {elementIcon && <span className="skill-tooltip-tag"><img src={elementIcon} alt="" />{String(full.element ?? "")}</span>}
-                                {archeIcon && <span className="skill-tooltip-tag"><img src={archeIcon} alt="" />{String(full.arche ?? "")}</span>}
-                              </div>
-                              {full.description && <p className="skill-tooltip-desc">{String(full.description ?? "")}</p>}
+                              <h4 className="skill-tooltip-name">{String(full.name ?? "")}</h4>
+                              <span className="skill-tooltip-type">{String(full.type ?? "")}</span>
                               {isAffected && equippedTranscendent && (
-                                <div className="skill-tooltip-mod">
-                                  <span className="skill-tooltip-mod-label">Modified by Transcendent Mod</span>
-                                  <span className="skill-tooltip-mod-name">{String(equippedTranscendent.mod.name ?? "")}</span>
-                                  <p className="skill-tooltip-mod-desc">{String(equippedTranscendent.mod.preview ?? "")}</p>
+                                <div className="skill-tooltip-mod-banner">
+                                  <img src={equippedTranscendent.mod.image} alt="" className="skill-tooltip-mod-icon" />
+                                  <span className="skill-tooltip-mod-badge">Modified by {String(equippedTranscendent.mod.name ?? "")}</span>
                                 </div>
                               )}
+                              <div className="skill-tooltip-body">
+                                <span className="skill-tooltip-section-label">Skill Description</span>
+                                {isAffected && equippedTranscendent?.mod.preview ? (
+                                  <>
+                                    <p className="skill-tooltip-desc skill-tooltip-desc-modded">{String(equippedTranscendent.mod.preview ?? "")}</p>
+                                    {full.description && (
+                                      <details className="skill-tooltip-original">
+                                        <summary>Original Description</summary>
+                                        <p className="skill-tooltip-desc">{String(full.description ?? "")}</p>
+                                      </details>
+                                    )}
+                                  </>
+                                ) : (
+                                  full.description && <p className="skill-tooltip-desc">{String(full.description ?? "")}</p>
+                                )}
+                              </div>
                             </div>
                           )}
                         </div>
