@@ -72,6 +72,7 @@ export function BuildsTab({ state, setState }: Props) {
     plannerSlots: (PlacedModule | null)[];
     reactor: BuildReactor | null;
     targetLevel: number;
+    archeLevel: number;
     reactorNotes: string;
     notes: string;
   }>({
@@ -82,6 +83,7 @@ export function BuildsTab({ state, setState }: Props) {
     plannerSlots: emptyPlannerSlots("descendant"),
     reactor: null,
     targetLevel: 40,
+    archeLevel: 0,
     reactorNotes: "",
     notes: "",
   });
@@ -141,6 +143,7 @@ export function BuildsTab({ state, setState }: Props) {
       plannerSlots: emptyPlannerSlots("descendant"),
       reactor: null,
       targetLevel: 40,
+      archeLevel: 0,
       reactorNotes: "",
       notes: "",
     });
@@ -178,6 +181,7 @@ export function BuildsTab({ state, setState }: Props) {
       plannerSlots: (form.plannerSlots ?? []).some(Boolean) ? [...form.plannerSlots] : null,
       reactor: form.reactor ?? null,
       targetLevel: form.targetLevel,
+      archeLevel: form.archeLevel,
       reactorNotes: form.reactorNotes.trim(),
       notes: form.notes.trim(),
       updatedAt: now,
@@ -221,6 +225,7 @@ export function BuildsTab({ state, setState }: Props) {
       plannerSlots: planner,
       reactor: b.reactor ?? null,
       targetLevel: b.targetLevel ?? (b.targetType === "weapon" ? 100 : 40),
+      archeLevel: ((b as unknown as Record<string, unknown>).archeLevel as number) ?? 0,
       reactorNotes: b.reactorNotes ?? "",
       notes: b.notes ?? "",
     });
@@ -273,9 +278,10 @@ export function BuildsTab({ state, setState }: Props) {
         badges: [
           { label: d.owned ? "In roster" : "Not marked owned", tone: d.owned ? "accent" : "default" },
           { label: `Lv ${d.level}`, tone: "default" },
-          { label: `Arch ${d.archeLevel}`, tone: "default" },
+          { label: `Arch ${form.archeLevel || d.archeLevel || 0}`, tone: "default" },
         ],
         metaLine: `Catalysts: ${d.catalysts} · stats from your Descendants tab`,
+        archeLevel: form.archeLevel || d.archeLevel || 0,
       };
     }
     const w = weaponOptions.find((x) => x.slug === form.targetKey);
@@ -296,7 +302,7 @@ export function BuildsTab({ state, setState }: Props) {
       ],
       metaLine: `Core: ${w.weaponCore} · sync from Weapons tab`,
     };
-  }, [form.targetKey, form.targetType, descendantOptions, weaponOptions, weaponTypeByName]);
+  }, [form.targetKey, form.targetType, form.archeLevel, descendantOptions, weaponOptions, weaponTypeByName]);
 
   const setPlannerSlice: React.Dispatch<React.SetStateAction<PlannerFormSlice>> = (action) => {
     if (typeof action === "function") {
@@ -380,13 +386,16 @@ export function BuildsTab({ state, setState }: Props) {
               {form.targetType === "descendant" ? "Descendant" : "Weapon"}
               <select
                 value={form.targetKey}
-                onChange={(e) =>
+                onChange={(e) => {
+                  const key = e.target.value;
+                  const d = descendantOptions.find((x) => x.name === key);
                   setForm((f) => ({
                     ...f,
-                    targetKey: e.target.value,
+                    targetKey: key,
                     plannerSlots: emptyPlannerSlots(f.targetType),
-                  }))
-                }
+                    archeLevel: d?.archeLevel ?? f.archeLevel,
+                  }));
+                }}
                 required
               >
                 <option value="">Select…</option>
@@ -423,6 +432,8 @@ export function BuildsTab({ state, setState }: Props) {
               onReactorChange={(r) => setForm((f) => ({ ...f, reactor: r }))}
               targetLevel={form.targetLevel}
               onTargetLevelChange={(lv) => setForm((f) => ({ ...f, targetLevel: lv }))}
+              archeLevel={form.archeLevel}
+              onArcheLevelChange={(lv) => setForm((f) => ({ ...f, archeLevel: lv }))}
               savedReactors={state.reactors?.map((r) => ({
                 id: r.id,
                 name: r.name,

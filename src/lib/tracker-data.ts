@@ -29,10 +29,10 @@ export const skillDefs: IconDef[] = [
 
 export const ammoDefs: IconDef[] = [
   { id: "all", label: "All Rounds", icon: null },
-  { id: "General Rounds", label: "Primary", icon: "/game-ammo/general.svg" },
-  { id: "Impact Rounds", label: "Impact", icon: "/game-ammo/impact.svg" },
-  { id: "Special Rounds", label: "Special", icon: "/game-ammo/special.svg" },
-  { id: "High-Power Rounds", label: "Heavy", icon: "/game-ammo/high-power.svg" },
+  { id: "General Rounds", label: "Primary", icon: "/game-ammo/general-rounds.png" },
+  { id: "Impact Rounds", label: "Impact", icon: "/game-ammo/impact-rounds.png" },
+  { id: "Special Rounds", label: "Special", icon: "/game-ammo/special-rounds.png" },
+  { id: "High-Power Rounds", label: "Heavy", icon: "/game-ammo/heavy-rounds.png" },
 ];
 
 // ── Substat options ──────────────────────────────────────────────────────────

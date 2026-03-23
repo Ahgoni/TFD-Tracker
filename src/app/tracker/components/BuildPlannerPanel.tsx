@@ -76,6 +76,7 @@ export interface PlannerHeroProps {
   badges: { label: string; tone?: "default" | "accent" | "warn" }[];
   metaLine?: string;
   skills?: { name: string; image: string; type?: string }[];
+  archeLevel?: number;
 }
 
 export interface PlannerFormSlice {
@@ -96,6 +97,8 @@ interface Props {
   onReactorChange?: (r: BuildReactor | null) => void;
   targetLevel?: number;
   onTargetLevelChange?: (lv: number) => void;
+  archeLevel?: number;
+  onArcheLevelChange?: (lv: number) => void;
   savedReactors?: { id: string; name: string; element: string; skillType: string; level: number; enhancement: string; substats: ReactorSubstat[] }[];
 }
 
@@ -445,7 +448,8 @@ function fmt(v: number): string {
 
 export function BuildPlannerPanel({
   form, setForm, moduleCatalog, moduleById, weaponNexonType, descendantGameId,
-  hero = null, reactor = null, onReactorChange, targetLevel, onTargetLevelChange, savedReactors,
+  hero = null, reactor = null, onReactorChange, targetLevel, onTargetLevelChange,
+  archeLevel, onArcheLevelChange, savedReactors,
 }: Props) {
   const [activeDrag, setActiveDrag] = useState<ModuleRecord | null>(null);
   const [libSearch, setLibSearch] = useState("");
@@ -614,62 +618,73 @@ export function BuildPlannerPanel({
   }
 
   const heroSkills = hero?.skills ?? descSkills;
+  const archLv = archeLevel ?? hero?.archeLevel ?? 0;
 
   return (
     <DndContext sensors={sensors} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
       <div className="builder-stage">
-        {/* ── Hero with portrait background ──────────────────────────── */}
-        <header className="builder-hero builder-hero-portrait">
+        {/* ── Overframe-style hero ──────────────────────────────────── */}
+        <header className="builder-hero builder-hero-overframe">
           {hero?.imageUrl && (
             <img src={hero.imageUrl} alt="" className="builder-portrait-bg" aria-hidden="true" />
           )}
-          <div className="builder-hero-content">
-            <div className="builder-hero-text">
-              <span className="builder-hero-kicker">
-                {form.targetType === "weapon" ? "Weapon Build" : "Descendant Build"}
-              </span>
-              <h3 className="builder-hero-title">{hero?.title ?? form.targetKey}</h3>
-              {hero?.subtitle && <p className="builder-hero-sub">{hero.subtitle}</p>}
-              {hero?.badges && hero.badges.length > 0 && (
-                <div className="builder-hero-badges">
-                  {hero.badges.map((b) => (
-                    <span key={b.label} className={`builder-hero-badge builder-hero-badge-${b.tone ?? "default"}`}>{b.label}</span>
-                  ))}
+          <div className="builder-hero-inner">
+            {hero?.imageUrl && (
+              <div className="builder-portrait-wrap">
+                <img src={hero.imageUrl} alt={hero?.title ?? ""} className="builder-portrait-img" />
+              </div>
+            )}
+            <div className="builder-hero-right">
+              <div className="builder-hero-text">
+                <span className="builder-hero-kicker">
+                  {form.targetType === "weapon" ? "WEAPON BUILD" : "DESCENDANT BUILD"}
+                </span>
+                <h3 className="builder-hero-title">{hero?.title ?? form.targetKey}</h3>
+                {hero?.subtitle && <p className="builder-hero-sub">{hero.subtitle}</p>}
+                {hero?.badges && hero.badges.length > 0 && (
+                  <div className="builder-hero-badges">
+                    {hero.badges.map((b) => (
+                      <span key={b.label} className={`builder-hero-badge builder-hero-badge-${b.tone ?? "default"}`}>{b.label}</span>
+                    ))}
+                  </div>
+                )}
+              </div>
+              {heroSkills.length > 0 && (
+                <div className="builder-skills-section">
+                  <div className="builder-skills-row">
+                    {heroSkills.map((sk, idx) => {
+                      const full = descSkills.find((s) => s.name === sk.name);
+                      const elementIcon = elementDefs.find((d) => d.label === (full?.element ?? ""))?.icon;
+                      const archeIcon = skillDefs.find((d) => d.label === (full?.arche ?? ""))?.icon;
+                      return (
+                        <div
+                          key={sk.name}
+                          className={`builder-skill-icon${hoveredSkill === sk.name ? " skill-active" : ""}`}
+                          onMouseEnter={() => setHoveredSkill(sk.name)}
+                          onMouseLeave={() => setHoveredSkill(null)}
+                        >
+                          <img src={sk.image} alt={sk.name} />
+                          <span className="builder-skill-num">{idx + 1}</span>
+                          {hoveredSkill === sk.name && full && (
+                            <div className="skill-tooltip">
+                              <div className="skill-tooltip-head">
+                                <strong>{full.name}</strong>
+                                <span className="skill-tooltip-type">{full.type}</span>
+                              </div>
+                              <div className="skill-tooltip-tags">
+                                {elementIcon && <span className="skill-tooltip-tag"><img src={elementIcon} alt="" />{full.element}</span>}
+                                {archeIcon && <span className="skill-tooltip-tag"><img src={archeIcon} alt="" />{full.arche}</span>}
+                              </div>
+                              {full.description && <p className="skill-tooltip-desc">{full.description}</p>}
+                            </div>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
                 </div>
               )}
             </div>
-            {heroSkills.length > 0 && (
-              <div className="builder-skills-row">
-                {heroSkills.map((sk) => {
-                  const full = descSkills.find((s) => s.name === sk.name);
-                  const elementIcon = elementDefs.find((d) => d.label === (full?.element ?? ""))?.icon;
-                  const archeIcon = skillDefs.find((d) => d.label === (full?.arche ?? ""))?.icon;
-                  return (
-                    <div
-                      key={sk.name}
-                      className={`builder-skill-icon${hoveredSkill === sk.name ? " skill-active" : ""}`}
-                      onMouseEnter={() => setHoveredSkill(sk.name)}
-                      onMouseLeave={() => setHoveredSkill(null)}
-                    >
-                      <img src={sk.image} alt={sk.name} />
-                      {hoveredSkill === sk.name && full && (
-                        <div className="skill-tooltip">
-                          <div className="skill-tooltip-head">
-                            <strong>{full.name}</strong>
-                            <span className="skill-tooltip-type">{full.type}</span>
-                          </div>
-                          <div className="skill-tooltip-tags">
-                            {elementIcon && <span className="skill-tooltip-tag"><img src={elementIcon} alt="" />{full.element}</span>}
-                            {archeIcon && <span className="skill-tooltip-tag"><img src={archeIcon} alt="" />{full.arche}</span>}
-                          </div>
-                          {full.description && <p className="skill-tooltip-desc">{full.description}</p>}
-                        </div>
-                      )}
-                    </div>
-                  );
-                })}
-              </div>
-            )}
           </div>
         </header>
 
@@ -690,6 +705,19 @@ export function BuildPlannerPanel({
                     className="builder-level-input"
                   />
                 </label>
+                {form.targetType === "descendant" && (
+                  <label className="builder-level-label">
+                    Arche Lv
+                    <input
+                      type="number"
+                      min={0}
+                      max={40}
+                      value={archLv}
+                      onChange={(e) => onArcheLevelChange?.(Number(e.target.value))}
+                      className="builder-level-input"
+                    />
+                  </label>
+                )}
               </div>
               <StatSheet stats={computedStats} groups={statGroups} />
             </div>
