@@ -424,6 +424,7 @@ export function TrackerClient() {
               shareActive={showShare}
               sharePrivacy={state.sharePrivacy}
               onPrivacyChange={(p) => setState((prev) => ({ ...prev, sharePrivacy: p }))}
+              onImportFromBrowser={importFromLocalStorage}
             />
           </div>
         </div>

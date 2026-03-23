@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { BuildHashScroll } from "./build-hash-scroll";
-import { PublicBuildsSection, type PublicBuild } from "@/components/public-builds-section";
+import { PublicBuildsSection } from "@/components/public-builds-section";
+import type { PublicBuild } from "@/lib/public-build-types";
 
 interface SharedState {
   tabs?: string[];
@@ -17,6 +18,15 @@ interface SharedState {
     displayName: string;
     imageUrl: string;
     moduleSlots: string[];
+    plannerSlots?: Array<{
+      moduleId: string;
+      level: number;
+      name: string;
+      image: string;
+      capacity: number;
+      socket: string;
+      tier: string;
+    } | null> | null;
     reactorNotes: string;
     notes: string;
     updatedAt: string;
@@ -113,6 +123,7 @@ export default async function UsernameProfilePage({ params }: { params: Promise<
         {[
           { label: "Total Reactors", value: (state.reactors ?? []).length },
           { label: "Owned Weapons", value: ownedWeapons.length },
+          { label: "Named Builds", value: (state.builds ?? []).filter((b) => b?.name).length },
           { label: "Max Enhancement Reactors", value: maxedReactors.length },
           { label: "Active Farming Goals", value: activeGoals.length },
           { label: "Total Materials", value: (state.materials ?? []).reduce((s, m) => s + Number(m.qty ?? 0), 0) },

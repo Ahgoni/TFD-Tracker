@@ -30,8 +30,15 @@ docker --version
 ```bash
 mkdir -p ~/apps
 git clone https://github.com/Ahgoni/TFD-Tracker.git ~/apps/TFD
-cd ~/apps/TFD/tfd-web
+cd ~/apps/TFD
 ```
+
+**Important:** Use the directory that contains **`package.json`** and **`scripts/`** side by side.
+
+- If your repo has the Next app at the **repo root** (this project: `package.json` next to `scripts/`), stay in `~/apps/TFD`.
+- If your fork uses a nested folder **`tfd-web/`**, then `cd ~/apps/TFD/tfd-web` instead.
+
+Running `npm install` from the wrong level causes **`Cannot find module '.../scripts/link-public.js'`** because `postinstall` expects `scripts/` next to `package.json`.
 
 ---
 
@@ -180,16 +187,48 @@ git commit -m "describe changes"
 git push
 ```
 
-On Ubuntu:
+On Ubuntu (adjust path if your app lives in a `tfd-web/` subfolder):
 ```bash
 cd ~/apps/TFD
 git pull
-cd tfd-web
 npm install
 npx prisma migrate deploy
 npm run build
 pm2 restart tfd-web
 ```
+
+### 12a) Prisma: `column "…" already exists` (P3018)
+
+The database already has the column (e.g. from an old `db push` or manual SQL), but Prisma still thinks that migration must run.
+
+1. Read the **migration name** in the error (folder under `prisma/migrations/`, e.g. `0004_user_username` or `0005_user_last_seen`).
+2. Mark it as already applied (**does not** re-run SQL):
+
+```bash
+npx prisma migrate resolve --applied 0004_user_username
+```
+
+Repeat for each failing migration name, then:
+
+```bash
+npx prisma migrate deploy
+```
+
+**Examples you might need (only if the error names them):**
+
+| Error mentions | Command |
+|----------------|---------|
+| `0004_user_last_seen` | `npx prisma migrate resolve --applied 0004_user_last_seen` |
+| `0004_user_username` | `npx prisma migrate resolve --applied 0004_user_username` |
+| `0005_user_last_seen` | `npx prisma migrate resolve --applied 0005_user_last_seen` |
+
+### 12b) `Cannot find module '@/lib/auth'`
+
+On Linux, paths are case-sensitive. Ensure the file exists as **`src/lib/auth.ts`** and you run **`npm run build`** from the app root. Pull the latest code; missing files usually mean an incomplete `git pull` or deploying from the wrong directory.
+
+### 12c) Multiple lockfiles warning
+
+Keep a **single** `package-lock.json` in the app root and remove stray lockfiles from parent folders, or always run npm from the same directory as `package.json`.
 
 ---
 

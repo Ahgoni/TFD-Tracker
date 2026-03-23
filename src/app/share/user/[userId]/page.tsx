@@ -1,5 +1,6 @@
 import Link from "next/link";
-import { PublicBuildsSection, type PublicBuild } from "@/components/public-builds-section";
+import { PublicBuildsSection } from "@/components/public-builds-section";
+import type { PublicBuild } from "@/lib/public-build-types";
 
 interface SharedState {
   tabs?: string[];
@@ -101,6 +102,7 @@ export default async function UserProfileSharePage({ params }: { params: Promise
         {[
           { label: "Total Reactors", value: (state.reactors ?? []).length },
           { label: "Owned Weapons", value: ownedWeapons.length },
+          { label: "Named Builds", value: (state.builds ?? []).filter((b) => b?.name).length },
           { label: "Max Enhancement Reactors", value: maxedReactors.length },
           { label: "Active Farming Goals", value: activeGoals.length },
           { label: "Total Materials", value: (state.materials ?? []).reduce((s, m) => s + Number(m.qty ?? 0), 0) },

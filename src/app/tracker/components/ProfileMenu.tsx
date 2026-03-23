@@ -10,9 +10,11 @@ interface Props {
   shareActive?: boolean;
   sharePrivacy: "open" | "link_only";
   onPrivacyChange: (p: "open" | "link_only") => void;
+  /** One-time migration: import legacy localStorage backup into cloud state */
+  onImportFromBrowser?: () => void | Promise<void>;
 }
 
-export function ProfileMenu({ onShare, shareActive, sharePrivacy, onPrivacyChange }: Props) {
+export function ProfileMenu({ onShare, shareActive, sharePrivacy, onPrivacyChange, onImportFromBrowser }: Props) {
   const { data: session } = useSession();
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
@@ -126,6 +128,28 @@ export function ProfileMenu({ onShare, shareActive, sharePrivacy, onPrivacyChang
           </div>
 
           <div className="profile-sep" />
+
+          {onImportFromBrowser && (
+            <>
+              <button
+                role="menuitem"
+                className="profile-action"
+                onClick={() => {
+                  void onImportFromBrowser();
+                  setOpen(false);
+                }}
+                title="If you used TFD Tracker before cloud save, data may still be in this browser"
+              >
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                  <polyline points="7 10 12 15 17 10" />
+                  <line x1="12" y1="15" x2="12" y2="3" />
+                </svg>
+                Import from browser backup
+              </button>
+              <div className="profile-sep" />
+            </>
+          )}
 
           {/* Theme toggle */}
           <div style={{ padding: "0.4rem 0.75rem" }}>

@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useState, type Dispatch, type SetStateAction } from "react";
 import {
   DndContext,
   DragOverlay,
@@ -15,7 +15,6 @@ import {
 import type { PlacedModule } from "../tracker-client";
 import {
   type ModuleRecord,
-  WEAPON_TYPE_TO_NEXON,
   capacityAtLevel,
   filterModuleLibrary,
   matchesModuleFilters,
@@ -23,6 +22,17 @@ import {
   slotCountForTarget,
   totalPlacedCapacity,
 } from "@/lib/tfd-modules";
+import {
+  computePlannerMetrics,
+  effectSummaryLine,
+  scalePreviewPercentagesForLevel,
+} from "@/lib/build-planner-stats";
+
+function truncatePreview(s: string, max: number) {
+  const t = s.trim();
+  if (t.length <= max) return t;
+  return `${t.slice(0, max - 1)}…`;
+}
 
 const LIB_PREFIX = "lib:";
 const SLOT_PREFIX = "slot:";
@@ -41,6 +51,14 @@ function parseDragId(id: string | number): { kind: "lib"; moduleId: string } | {
   return null;
 }
 
+export interface PlannerHeroProps {
+  imageUrl: string;
+  title: string;
+  subtitle: string;
+  badges: { label: string; tone?: "default" | "accent" | "warn" }[];
+  metaLine?: string;
+}
+
 function ModuleLibraryCard({ mod, disabled }: { mod: ModuleRecord; disabled?: boolean }) {
   const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({
     id: draggableLibId(mod.id),
@@ -50,13 +68,16 @@ function ModuleLibraryCard({ mod, disabled }: { mod: ModuleRecord; disabled?: bo
     ? { transform: `translate3d(${transform.x}px, ${transform.y}px, 0)` }
     : undefined;
 
+  const tierClass =
+    mod.tier === "Ultimate" ? "tier-ult" : mod.tier === "Rare" ? "tier-rare" : "tier-norm";
+
   return (
     <div
       ref={setNodeRef}
       style={style}
       {...listeners}
       {...attributes}
-      className={`mod-lib-card${isDragging ? " is-dragging" : ""}${disabled ? " is-disabled" : ""}`}
+      className={`mod-lib-card ${tierClass}${isDragging ? " is-dragging" : ""}${disabled ? " is-disabled" : ""}`}
     >
       {mod.image ? <img src={mod.image} alt="" className="mod-lib-img" /> : <div className="mod-lib-img mod-lib-img-ph" />}
       <div className="mod-lib-body">
@@ -65,7 +86,11 @@ function ModuleLibraryCard({ mod, disabled }: { mod: ModuleRecord; disabled?: bo
           {mod.socket && <span className="mod-lib-socket" title={mod.socket}>{mod.socket}</span>}
         </div>
         <div className="mod-lib-name">{mod.name}</div>
-        <div className="mod-lib-tier">{mod.tier}</div>
+        <div className="mod-lib-meta-row">
+          <span className="mod-lib-tier">{mod.tier}</span>
+          <span className="mod-lib-class">{mod.moduleClass}</span>
+        </div>
+        {mod.preview && <p className="mod-lib-preview">{mod.preview}</p>}
       </div>
     </div>
   );
@@ -102,22 +127,44 @@ function SlotDrop({
           <button type="button" className="builder-slot-x" onClick={onClear} aria-label="Remove module">
             ×
           </button>
-          {mod?.image || placed.image ? (
-            <img src={mod?.image || placed.image} alt="" className="builder-slot-icon" />
-          ) : (
-            <div className="builder-slot-icon builder-slot-icon-ph" />
-          )}
-          <div className="builder-slot-title">{placed.name}</div>
-          <div className="builder-slot-meta">
-            <span>{placed.socket}</span>
-            <span className="builder-slot-cap">{placed.capacity} cap</span>
+          <div className="builder-slot-body">
+            {mod?.image || placed.image ? (
+              <img src={mod?.image || placed.image} alt="" className="builder-slot-icon" />
+            ) : (
+              <div className="builder-slot-icon builder-slot-icon-ph" />
+            )}
+            <div className="builder-slot-title" title={placed.name}>
+              {placed.name}
+            </div>
+            <div className="builder-slot-meta">
+              <span className="builder-slot-socket">{placed.socket}</span>
+              <span className="builder-slot-cap">{placed.capacity} cap</span>
+            </div>
+            {mod?.preview && (
+              <p
+                className="builder-slot-preview"
+                title={scalePreviewPercentagesForLevel(mod, placed.level)}
+              >
+                {truncatePreview(scalePreviewPercentagesForLevel(mod, placed.level), 96)}
+              </p>
+            )}
           </div>
-          <div className="builder-slot-lvl">
-            <button type="button" onClick={() => onLevel(-1)} disabled={placed.level <= 0}>
+          <div className="builder-slot-lvl" role="group" aria-label="Module level">
+            <button
+              type="button"
+              className="builder-lvl-btn"
+              onClick={() => onLevel(-1)}
+              disabled={placed.level <= 0}
+            >
               −
             </button>
-            <span>Lv {placed.level}</span>
-            <button type="button" onClick={() => onLevel(1)} disabled={placed.level >= 10}>
+            <span className="builder-lvl-num">Lv {placed.level}</span>
+            <button
+              type="button"
+              className="builder-lvl-btn"
+              onClick={() => onLevel(1)}
+              disabled={placed.level >= 10}
+            >
               +
             </button>
           </div>
@@ -135,11 +182,13 @@ export interface PlannerFormSlice {
 
 interface Props {
   form: PlannerFormSlice;
-  setForm: React.Dispatch<React.SetStateAction<PlannerFormSlice>>;
+  setForm: Dispatch<SetStateAction<PlannerFormSlice>>;
   moduleCatalog: ModuleRecord[];
   moduleById: Map<string, ModuleRecord>;
   weaponNexonType: string | null;
   descendantGameId: string | null;
+  /** Portrait + badges from tracker (Descendants / Weapons tab). */
+  hero?: PlannerHeroProps | null;
 }
 
 export function BuildPlannerPanel({
@@ -149,6 +198,7 @@ export function BuildPlannerPanel({
   moduleById,
   weaponNexonType,
   descendantGameId,
+  hero = null,
 }: Props) {
   const [activeDrag, setActiveDrag] = useState<ModuleRecord | null>(null);
   const [libSearch, setLibSearch] = useState("");
@@ -165,6 +215,11 @@ export function BuildPlannerPanel({
     while (arr.length < nSlots) arr.push(null);
     return arr.slice(0, nSlots);
   }, [form.plannerSlots, nSlots]);
+
+  const metrics = useMemo(
+    () => computePlannerMetrics(slots, moduleById, maxCap),
+    [slots, moduleById, maxCap]
+  );
 
   const libraryBase = useMemo(
     () =>
@@ -311,90 +366,239 @@ export function BuildPlannerPanel({
 
   return (
     <DndContext sensors={sensors} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
-      <div className="builder-shell">
-        <aside className="builder-col builder-col-left">
-          <div className="builder-capacity-block">
-            <div className="builder-cap-label">Capacity</div>
-            <div className="builder-cap-numbers">
-              <span className={total > maxCap ? "cap-bad" : "cap-ok"}>{total}</span>
-              <span className="cap-sep">/</span>
-              <span>{maxCap}</span>
+      <div className="builder-stage">
+        {hero && (
+          <header className="builder-hero">
+            <div className="builder-hero-portrait-wrap">
+              {hero.imageUrl ? (
+                <img src={hero.imageUrl} alt="" className="builder-hero-portrait" />
+              ) : (
+                <div className="builder-hero-portrait builder-hero-portrait-ph" aria-hidden />
+              )}
             </div>
-            <div className="builder-cap-bar">
-              <div className="builder-cap-fill" style={{ width: `${Math.min(100, (total / maxCap) * 100)}%` }} />
+            <div className="builder-hero-text">
+              <span className="builder-hero-kicker">{form.targetType === "weapon" ? "Weapon loadout" : "Descendant loadout"}</span>
+              <h3 className="builder-hero-title">{hero.title}</h3>
+              <p className="builder-hero-sub">{hero.subtitle}</p>
+              <div className="builder-hero-badges">
+                {hero.badges.map((b) => (
+                  <span key={b.label} className={`hero-badge hero-badge-${b.tone ?? "default"}`}>
+                    {b.label}
+                  </span>
+                ))}
+              </div>
+              {hero.metaLine && <p className="builder-hero-meta muted">{hero.metaLine}</p>}
             </div>
-            <p className="builder-hint muted">
-              Drag modules from the right into slots. Levels change capacity cost (Nexon data).
-            </p>
-          </div>
-        </aside>
+          </header>
+        )}
 
-        <section className="builder-col builder-col-center" aria-label="Module slots">
-          <div className={`builder-slots-grid builder-slots-${form.targetType}`}>
-            {slots.map((placed, index) => (
-              <SlotDrop
-                key={index}
-                index={index}
-                placed={placed}
-                moduleById={moduleById}
-                onClear={() => setSlot(index, null)}
-                onLevel={(d) => changeLevel(index, d)}
-              />
-            ))}
-          </div>
-        </section>
-
-        <aside className="builder-col builder-col-right">
-          <div className="builder-lib-header">Module library</div>
-          <div className="builder-lib-filters">
-            <input
-              className="builder-lib-search"
-              placeholder="Search name or effect…"
-              value={libSearch}
-              onChange={(e) => setLibSearch(e.target.value)}
-              aria-label="Search modules"
-            />
-            <div className="builder-lib-row">
-              <label>
-                Tier
-                <select value={libTier} onChange={(e) => setLibTier(e.target.value)}>
-                  <option value="all">All</option>
-                  <option value="Normal">Normal</option>
-                  <option value="Rare">Rare</option>
-                  <option value="Ultimate">Ultimate</option>
-                </select>
-              </label>
-              <label>
-                Socket
-                <select value={libSocket} onChange={(e) => setLibSocket(e.target.value)}>
-                  <option value="all">All</option>
-                  {sockets.map((s) => (
-                    <option key={s} value={s}>
-                      {s}
-                    </option>
-                  ))}
-                </select>
-              </label>
+        <div className="builder-main">
+          <aside className="builder-stats-panel" aria-label="Build statistics">
+            <div className="builder-stats-section">
+              <h4 className="builder-stats-h">Capacity</h4>
+              <div className="builder-cap-numbers builder-cap-numbers-lg">
+                <span className={total > maxCap ? "cap-bad" : "cap-ok"}>{total}</span>
+                <span className="cap-sep">/</span>
+                <span>{maxCap}</span>
+              </div>
+              <div className="builder-cap-bar">
+                <div className="builder-cap-fill" style={{ width: `${Math.min(100, (total / maxCap) * 100)}%` }} />
+              </div>
+              <p className="builder-hint muted">Module capacity cost scales with level (official Nexon values).</p>
             </div>
-          </div>
-          <div className="builder-lib-scroll">
-            {libraryFiltered.length === 0 ? (
-              <p className="muted" style={{ padding: "0.5rem" }}>
-                No modules match. Adjust filters — only modules valid for this {form.targetType} are listed.
+
+            <div className="builder-stats-section">
+              <h4 className="builder-stats-h">Loadout summary</h4>
+              <dl className="builder-stat-dl">
+                <div>
+                  <dt>Modules equipped</dt>
+                  <dd>
+                    {metrics.equippedCount} / {metrics.slotsTotal}{" "}
+                    <span className="muted">({metrics.fillPercent}%)</span>
+                  </dd>
+                </div>
+                <div>
+                  <dt>Avg. module level</dt>
+                  <dd>{metrics.equippedCount ? metrics.avgModuleLevel : "—"}</dd>
+                </div>
+                <div>
+                  <dt>Power budget</dt>
+                  <dd>{metrics.totalCapacity} cap used</dd>
+                </div>
+                <div>
+                  <dt>Tier mix</dt>
+                  <dd className="builder-tier-mix">
+                    {Object.keys(metrics.tierCounts).length === 0 ? (
+                      <span className="muted">—</span>
+                    ) : (
+                      Object.entries(metrics.tierCounts).map(([t, n]) => (
+                        <span key={t} className="tier-pill">
+                          {t} ×{n}
+                        </span>
+                      ))
+                    )}
+                  </dd>
+                </div>
+                {metrics.socketsUsed.length > 0 && (
+                  <div>
+                    <dt>Sockets</dt>
+                    <dd className="builder-socket-line">{metrics.socketsUsed.join(" · ")}</dd>
+                  </div>
+                )}
+              </dl>
+            </div>
+
+            <div className="builder-stats-section">
+              <h4 className="builder-stats-h">Estimated stat modifiers</h4>
+              <p className="builder-disclaimer muted" style={{ marginTop: 0 }}>
+                % values from each module&apos;s official preview, scaled by{" "}
+                <strong>capacity ratio</strong> (Lv → Lv0 cost). Same category sums are additive — conditional / proc text is still parsed as static numbers for comparison only.
               </p>
-            ) : (
-              libraryFiltered.map((m) => (
-                <ModuleLibraryCard key={m.id} mod={m} disabled={false} />
-              ))
+              {metrics.modifierRollup.length === 0 ? (
+                <p className="muted">No % modifiers detected in equipped previews.</p>
+              ) : (
+                <table className="builder-mod-table">
+                  <thead>
+                    <tr>
+                      <th scope="col">Category</th>
+                      <th scope="col">Net Δ%</th>
+                      <th scope="col">Lines</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {metrics.modifierRollup.map((row) => (
+                      <tr key={row.bucket}>
+                        <td>{row.bucket}</td>
+                        <td className={row.netPercent > 0 ? "mod-pos" : row.netPercent < 0 ? "mod-neg" : ""}>
+                          {row.netPercent > 0 ? "+" : ""}
+                          {row.netPercent}%
+                        </td>
+                        <td className="muted">{row.hits}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              )}
+              {metrics.capacityRatios.length > 0 && (
+                <details className="builder-details">
+                  <summary>Per-module capacity scaling</summary>
+                  <ul className="builder-ratio-list">
+                    {metrics.capacityRatios.map((r) => (
+                      <li key={r.name}>
+                        <strong>{r.name}</strong> · Lv {r.level} → ×{r.ratio}
+                      </li>
+                    ))}
+                  </ul>
+                </details>
+              )}
+            </div>
+
+            {metrics.valueTokens.length > 0 && (
+              <div className="builder-stats-section">
+                <h4 className="builder-stats-h">Raw % tokens (preview text)</h4>
+                <div className="builder-token-row">
+                  {metrics.valueTokens.map((t) => (
+                    <span key={t} className="builder-token">
+                      {t}
+                    </span>
+                  ))}
+                </div>
+              </div>
             )}
-          </div>
-          <p className="muted builder-lib-foot">{libraryFiltered.length} shown · {libraryBase.length} for this loadout type</p>
-        </aside>
+
+            <div className="builder-stats-section builder-effects-section">
+              <h4 className="builder-stats-h">Module effects (preview)</h4>
+              {slots.filter(Boolean).length === 0 ? (
+                <p className="muted">Equip modules to see effect lines.</p>
+              ) : (
+                <ul className="builder-effect-list">
+                  {slots.map((p, i) => {
+                    if (!p) return null;
+                    const m = moduleById.get(p.moduleId);
+                    const line = effectSummaryLine(m, p.level);
+                    return (
+                      <li key={`${p.moduleId}-${i}`}>
+                        <strong>
+                          {p.name} · Lv {p.level}
+                        </strong>
+                        {line && <p className="builder-effect-txt">{line}</p>}
+                      </li>
+                    );
+                  })}
+                </ul>
+              )}
+            </div>
+          </aside>
+
+          <section className="builder-slots-wrap" aria-label="Module slots">
+            <div className="builder-slots-head">
+              <span>Module grid</span>
+              <span className="muted">{form.targetType === "weapon" ? "10 slots" : "12 slots"}</span>
+            </div>
+            <div className={`builder-slots-grid builder-slots-${form.targetType}`}>
+              {slots.map((placed, index) => (
+                <SlotDrop
+                  key={index}
+                  index={index}
+                  placed={placed}
+                  moduleById={moduleById}
+                  onClear={() => setSlot(index, null)}
+                  onLevel={(d) => changeLevel(index, d)}
+                />
+              ))}
+            </div>
+          </section>
+
+          <aside className="builder-col-right" aria-label="Module library">
+            <div className="builder-lib-header">Module library</div>
+            <div className="builder-lib-filters">
+              <input
+                className="builder-lib-search"
+                placeholder="Search name or effect…"
+                value={libSearch}
+                onChange={(e) => setLibSearch(e.target.value)}
+                aria-label="Search modules"
+              />
+              <div className="builder-lib-row">
+                <label>
+                  Tier
+                  <select value={libTier} onChange={(e) => setLibTier(e.target.value)}>
+                    <option value="all">All</option>
+                    <option value="Normal">Normal</option>
+                    <option value="Rare">Rare</option>
+                    <option value="Ultimate">Ultimate</option>
+                  </select>
+                </label>
+                <label>
+                  Socket
+                  <select value={libSocket} onChange={(e) => setLibSocket(e.target.value)}>
+                    <option value="all">All</option>
+                    {sockets.map((s) => (
+                      <option key={s} value={s}>
+                        {s}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+              </div>
+            </div>
+            <div className="builder-lib-scroll">
+              {libraryFiltered.length === 0 ? (
+                <p className="muted" style={{ padding: "0.5rem" }}>
+                  No modules match. Adjust filters — only modules valid for this {form.targetType} are listed.
+                </p>
+              ) : (
+                libraryFiltered.map((m) => <ModuleLibraryCard key={m.id} mod={m} disabled={false} />)
+              )}
+            </div>
+            <p className="muted builder-lib-foot">{libraryFiltered.length} shown · {libraryBase.length} for this loadout type</p>
+          </aside>
+        </div>
       </div>
 
       <DragOverlay dropAnimation={null}>
         {activeDrag ? (
-          <div className="mod-lib-card mod-lib-card-overlay">
+          <div className="mod-lib-card mod-lib-card-overlay tier-ult">
             {activeDrag.image ? <img src={activeDrag.image} alt="" className="mod-lib-img" /> : null}
             <div className="mod-lib-name">{activeDrag.name}</div>
           </div>

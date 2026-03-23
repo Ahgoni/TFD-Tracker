@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useSession } from "next-auth/react";
 import type { TrackerState, BuildEntry, PlacedModule } from "../tracker-client";
 import { uuid } from "@/lib/uuid";
-import { BuildPlannerPanel, type PlannerFormSlice } from "./BuildPlannerPanel";
+import { BuildPlannerPanel, type PlannerFormSlice, type PlannerHeroProps } from "./BuildPlannerPanel";
 import { WEAPON_TYPE_TO_NEXON, type ModuleRecord, slotCountForTarget } from "@/lib/tfd-modules";
 
 interface Props {
@@ -246,6 +246,48 @@ export function BuildsTab({ state, setState }: Props) {
     plannerSlots: form.plannerSlots,
   };
 
+  const plannerHero: PlannerHeroProps | null = useMemo(() => {
+    if (!form.targetKey) return null;
+    if (form.targetType === "descendant") {
+      const d = descendantOptions.find((x) => x.name === form.targetKey);
+      if (!d) return null;
+      const raw = d.portrait?.trim() ?? "";
+      const imageUrl =
+        raw.startsWith("http") || raw.startsWith("/")
+          ? raw
+          : raw.replace(/^\.\//, "/");
+      return {
+        imageUrl,
+        title: d.name,
+        subtitle: [d.element, ...(d.skills ?? []).slice(0, 2)].filter(Boolean).join(" · ") || "Descendant",
+        badges: [
+          { label: d.owned ? "In roster" : "Not marked owned", tone: d.owned ? "accent" : "default" },
+          { label: `Lv ${d.level}`, tone: "default" },
+          { label: `Arch ${d.archeLevel}`, tone: "default" },
+        ],
+        metaLine: `Catalysts: ${d.catalysts} · stats from your Descendants tab`,
+      };
+    }
+    const w = weaponOptions.find((x) => x.slug === form.targetKey);
+    if (!w) return null;
+    const wt = weaponTypeByName[w.name];
+    const rawIcon = w.icon?.trim() ?? "";
+    const imageUrl = rawIcon
+      ? rawIcon.replace(/^\.\//, "/").replace(/^Images\//, "/Images/")
+      : "";
+    return {
+      imageUrl,
+      title: w.name,
+      subtitle: [w.rarity, w.roundsType, wt].filter(Boolean).join(" · ") || "Weapon",
+      badges: [
+        { label: w.acquired ? "Acquired" : "Not acquired", tone: w.acquired ? "accent" : "default" },
+        { label: `Lv ${w.level}`, tone: "default" },
+        { label: `Enh +${w.enhancement}`, tone: "default" },
+      ],
+      metaLine: `Core: ${w.weaponCore} · sync from Weapons tab`,
+    };
+  }, [form.targetKey, form.targetType, descendantOptions, weaponOptions, weaponTypeByName]);
+
   const setPlannerSlice: React.Dispatch<React.SetStateAction<PlannerFormSlice>> = (action) => {
     if (typeof action === "function") {
       setForm((f) => {
@@ -366,6 +408,7 @@ export function BuildsTab({ state, setState }: Props) {
               moduleById={moduleById}
               weaponNexonType={weaponNexonType}
               descendantGameId={descendantGameId}
+              hero={plannerHero}
             />
           )}
 

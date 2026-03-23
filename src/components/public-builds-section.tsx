@@ -1,30 +1,28 @@
 /** Read-only build cards for share & profile pages */
 
-export interface PublicPlacedModule {
-  moduleId: string;
-  level: number;
-  name: string;
-  image: string;
-  capacity: number;
-  socket: string;
-  tier: string;
-}
+import { PublicBuildStatRollup } from "@/components/public-build-stats-client";
+import type { PublicBuild, PublicPlacedModule } from "@/lib/public-build-types";
 
-export interface PublicBuild {
-  id: string;
-  name: string;
-  targetType: string;
-  displayName: string;
-  imageUrl: string;
-  moduleSlots: string[];
-  plannerSlots?: (PublicPlacedModule | null)[] | null;
-  reactorNotes: string;
-  notes: string;
-}
+export type { PublicBuild, PublicPlacedModule };
 
 export function PublicBuildsSection({ builds }: { builds: PublicBuild[] }) {
   const list = builds.filter((b) => b?.name);
-  if (list.length === 0) return null;
+  if (!builds?.length) {
+    return (
+      <section className="panel public-builds-empty" style={{ marginBottom: "1rem" }}>
+        <h2>Builds</h2>
+        <p className="muted">No saved builds in this snapshot.</p>
+      </section>
+    );
+  }
+  if (list.length === 0) {
+    return (
+      <section className="panel public-builds-empty" style={{ marginBottom: "1rem" }}>
+        <h2>Builds ({builds.length})</h2>
+        <p className="muted">Builds exist but need a name to appear here.</p>
+      </section>
+    );
+  }
 
   return (
     <section className="panel" style={{ marginBottom: "1rem" }}>
@@ -58,6 +56,7 @@ export function PublicBuildsSection({ builds }: { builds: PublicBuild[] }) {
                       )
                   )}
                 </ul>
+                <PublicBuildStatRollup build={b} />
                 <ul className="build-module-list">
                   {b.plannerSlots.map(
                     (s, i) =>
