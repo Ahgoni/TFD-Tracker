@@ -12,19 +12,19 @@ export interface IconDef {
  */
 export const elementDefs: IconDef[] = [
   { id: "all", label: "All", icon: null },
-  { id: "chill", label: "Chill", icon: "/game-icons/chill.svg" },
-  { id: "electric", label: "Electric", icon: "/game-icons/electric.svg" },
-  { id: "fire", label: "Fire", icon: "/game-icons/fire.svg" },
-  { id: "nonattribute", label: "Non-Attribute", icon: "/game-icons/nonattribute.svg" },
-  { id: "toxic", label: "Toxic", icon: "/game-icons/toxic.svg" },
+  { id: "chill", label: "Chill", icon: "/game-icons/chill.png" },
+  { id: "electric", label: "Electric", icon: "/game-icons/electric.png" },
+  { id: "fire", label: "Fire", icon: "/game-icons/fire.png" },
+  { id: "nonattribute", label: "Non-Attribute", icon: "/game-icons/nonattribute.png" },
+  { id: "toxic", label: "Toxic", icon: "/game-icons/toxic.png" },
 ];
 
 export const skillDefs: IconDef[] = [
   { id: "all", label: "All", icon: null },
-  { id: "dimension", label: "Dimension", icon: "/game-icons/dimension.svg" },
-  { id: "fusion", label: "Fusion", icon: "/game-icons/fusion.svg" },
-  { id: "singular", label: "Singular", icon: "/game-icons/singular.svg" },
-  { id: "tech", label: "Tech", icon: "/game-icons/tech.svg" },
+  { id: "dimension", label: "Dimension", icon: "/game-icons/dimension.png" },
+  { id: "fusion", label: "Fusion", icon: "/game-icons/fusion.png" },
+  { id: "singular", label: "Singular", icon: "/game-icons/singular.png" },
+  { id: "tech", label: "Tech", icon: "/game-icons/tech.png" },
 ];
 
 export const ammoDefs: IconDef[] = [

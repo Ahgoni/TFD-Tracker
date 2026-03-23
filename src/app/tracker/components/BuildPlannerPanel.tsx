@@ -261,7 +261,7 @@ function AncestorEditor({
 
 // ── Child: Inline reactor form ───────────────────────────────────────────────
 
-const ENHANCEMENTS = ["0", "1", "2", "3", "4", "5", "Max"] as const;
+const ENHANCEMENTS = ["0", "1", "2", "3", "4", "5"] as const;
 
 function ReactorSection({
   reactor, onChange, savedReactors,

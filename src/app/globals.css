@@ -1029,11 +1029,11 @@ td .badge { display: inline-flex; align-items: center; gap: 0.35rem; }
 
 /* ── Animations ───────────────────────────────────────────────── */
 
-.tab-content { animation: sectionIn 130ms ease both; }
+.tab-content { animation: sectionIn 130ms ease forwards; }
 
 @keyframes sectionIn {
   from { opacity: 0; transform: translateX(4px) translateY(2px); }
-  to   { opacity: 1; transform: translateX(0)   translateY(0); }
+  to   { opacity: 1; transform: none; }
 }
 
 @keyframes rowIn {
@@ -3418,11 +3418,13 @@ td .badge { display: inline-flex; align-items: center; gap: 0.35rem; }
 
 .builder-slot {
   position: relative;
-  min-height: 118px;
+  min-height: 160px;
   border-radius: 10px;
   border: 1px dashed rgba(255,255,255,0.12);
   background: rgba(0,0,0,0.2);
   transition: border-color 0.15s, box-shadow 0.15s;
+  display: flex;
+  flex-direction: column;
 }
 .builder-slot.slot-over {
   border-color: var(--accent);
@@ -3442,7 +3444,7 @@ td .badge { display: inline-flex; align-items: center; gap: 0.35rem; }
   opacity: 0.7;
 }
 .builder-slot-empty {
-  height: 100%;
+  flex: 1;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -3454,6 +3456,7 @@ td .badge { display: inline-flex; align-items: center; gap: 0.35rem; }
   text-align: center;
 }
 .builder-slot-filled {
+  flex: 1;
   padding: 1.35rem 0.35rem 0.35rem;
   display: flex;
   flex-direction: column;
@@ -3796,7 +3799,7 @@ td .badge { display: inline-flex; align-items: center; gap: 0.35rem; }
 /* ── Portrait background (Overframe-style hero) ──────────────────── */
 .builder-hero.builder-hero-portrait {
   position: relative;
-  overflow: hidden;
+  overflow: visible;
   grid-template-columns: 1fr;
   min-height: 120px;
 }
@@ -3807,10 +3810,11 @@ td .badge { display: inline-flex; align-items: center; gap: 0.35rem; }
   height: 100%;
   object-fit: cover;
   object-position: top center;
-  opacity: 0.12;
+  opacity: 0.22;
   z-index: 0;
   pointer-events: none;
-  filter: blur(2px) saturate(0.65);
+  filter: blur(1px) saturate(0.7);
+  clip-path: inset(0 round 12px);
 }
 .builder-hero-content {
   position: relative;
