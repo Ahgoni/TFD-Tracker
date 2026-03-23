@@ -18,6 +18,6 @@ export interface PublicBuild {
   imageUrl: string;
   moduleSlots: string[];
   plannerSlots?: (PublicPlacedModule | null)[] | null;
-  reactorNotes: string;
+  reactorNotes?: string;
   notes: string;
 }

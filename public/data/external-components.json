@@ -112,6 +112,30 @@
     "Volcanic": {
       "2pc": "Fire Skill Power +2.8%",
       "4pc": "Handgun / Handcannon / Shotgun ATK +6.6%, Charged Sub Attack Damage +6.6%. After reload: Skill Power +3.5% for 5s (up to 3 stacks; cleared on skill use)."
+    },
+    "Acrobat": {
+      "2pc": "Skill Power +1.7%, Firearm ATK +2.8%",
+      "4pc": "Firearm Critical Hit Rate +5.9%, Skill Critical Hit Rate +21%"
+    },
+    "Battle Aesthetics": {
+      "2pc": "DEF +25%",
+      "4pc": "Rare set — see [External Components DB](https://tfd.gameslantern.com/external-components) for full 4-piece text."
+    },
+    "Decimator": {
+      "2pc": "Firearm ATK +2.8%, Skill Power +1.7%",
+      "4pc": "Rare set — see Games Lantern for full 4-piece bonuses."
+    },
+    "Hungry Sonic": {
+      "2pc": "Electric Skill Power / modifier bonuses (Ultimate set)",
+      "4pc": "See Games Lantern individual Hungry Sonic pieces for full 4-piece effect."
+    },
+    "Glacial": {
+      "2pc": "Chill Skill Power +6.2%",
+      "4pc": "Chill / frostbite synergy — confirm 4pc on wiki."
+    },
+    "Tomb Vanguard": {
+      "2pc": "Survivability",
+      "4pc": "Tank / sustain — confirm 4pc on wiki."
     }
   }
 }

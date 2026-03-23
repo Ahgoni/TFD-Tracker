@@ -1,6 +1,11 @@
 import type { PlacedModule } from "@/app/tracker/tracker-client";
 import type { ModuleRecord } from "@/lib/tfd-modules";
-import { capacityAtLevel, totalPlacedCapacity } from "@/lib/tfd-modules";
+import {
+  capacityAtLevel,
+  isChargedSubAttackModule,
+  subAttackMaxCapacityBonusAtLevel,
+  totalCapacityCost,
+} from "@/lib/tfd-modules";
 
 export interface BuildPlannerMetrics {
   equippedCount: number;
@@ -93,6 +98,7 @@ function rollupRows(rows: { bucket: string; value: number }[]): ModifierRollupRo
  */
 export function scalePreviewPercentagesForLevel(mod: ModuleRecord, level: number): string {
   const text = mod.preview ?? "";
+  if (isChargedSubAttackModule(mod)) return text;
   const c0 = capacityAtLevel(mod, 0);
   const cL = capacityAtLevel(mod, level);
   const denom = c0 > 0 ? c0 : 1;
@@ -115,7 +121,7 @@ export function computePlannerMetrics(
 ): BuildPlannerMetrics {
   const placed = slots.filter((s): s is PlacedModule => Boolean(s));
   const n = slots.length;
-  const totalCapacity = totalPlacedCapacity(
+  const totalCapacity = totalCapacityCost(
     slots.map((s) => (s ? { moduleId: s.moduleId, level: s.level } : null)),
     moduleById
   );
@@ -139,10 +145,18 @@ export function computePlannerMetrics(
     });
 
     if (m) {
-      const c0 = capacityAtLevel(m, 0);
-      const cL = capacityAtLevel(m, p.level);
-      const ratio = c0 > 0 ? cL / c0 : 1;
-      capacityRatios.push({ name: p.name, ratio: Math.round(ratio * 1000) / 1000, level: p.level });
+      let ratio = 1;
+      if (isChargedSubAttackModule(m)) {
+        const b0 = subAttackMaxCapacityBonusAtLevel(m, 0);
+        const bL = subAttackMaxCapacityBonusAtLevel(m, p.level);
+        ratio = b0 > 0 ? bL / b0 : p.level > 0 ? 1 : 0;
+        capacityRatios.push({ name: p.name, ratio: Math.round(ratio * 1000) / 1000, level: p.level });
+      } else {
+        const c0 = capacityAtLevel(m, 0);
+        const cL = capacityAtLevel(m, p.level);
+        ratio = c0 > 0 ? cL / c0 : 1;
+        capacityRatios.push({ name: p.name, ratio: Math.round(ratio * 1000) / 1000, level: p.level });
+      }
       const contribs = extractPercentContributions(text);
       for (const row of contribs) {
         allContribs.push({ bucket: row.bucket, value: row.value * ratio });
@@ -171,6 +185,10 @@ export function computePlannerMetrics(
 export function effectSummaryLine(mod: ModuleRecord | undefined, level: number): string {
   if (!mod?.preview) return "";
   const scaled = scalePreviewPercentagesForLevel(mod, level);
+  if (isChargedSubAttackModule(mod)) {
+    const bonus = subAttackMaxCapacityBonusAtLevel(mod, level);
+    return `${scaled} · +${bonus} max cap`;
+  }
   const cap = capacityAtLevel(mod, level);
   return `${scaled} · ${cap} cap`;
 }

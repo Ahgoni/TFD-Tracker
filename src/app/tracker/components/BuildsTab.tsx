@@ -6,6 +6,7 @@ import type { TrackerState, BuildEntry, PlacedModule, BuildReactor, ExternalComp
 import { uuid } from "@/lib/uuid";
 import { BuildPlannerPanel, type PlannerFormSlice, type PlannerHeroProps } from "./BuildPlannerPanel";
 import { WEAPON_TYPE_TO_NEXON, type ModuleRecord, slotCountForTarget } from "@/lib/tfd-modules";
+import { formatExternalComponentSetsSummary } from "@/lib/external-components-summary";
 
 interface Props {
   state: TrackerState;
@@ -74,7 +75,6 @@ export function BuildsTab({ state, setState }: Props) {
     targetLevel: number;
     archeLevel: number;
     externalComponents: ExternalComponent[];
-    reactorNotes: string;
     notes: string;
   }>({
     name: "",
@@ -86,7 +86,6 @@ export function BuildsTab({ state, setState }: Props) {
     targetLevel: 40,
     archeLevel: 0,
     externalComponents: [],
-    reactorNotes: "",
     notes: "",
   });
 
@@ -147,7 +146,6 @@ export function BuildsTab({ state, setState }: Props) {
       targetLevel: 40,
       archeLevel: 0,
       externalComponents: [],
-      reactorNotes: "",
       notes: "",
     });
     setEditingId(null);
@@ -186,7 +184,7 @@ export function BuildsTab({ state, setState }: Props) {
       targetLevel: form.targetLevel,
       archeLevel: form.archeLevel,
       externalComponents: form.externalComponents.length > 0 ? form.externalComponents : undefined,
-      reactorNotes: form.reactorNotes.trim(),
+      reactorNotes: "",
       notes: form.notes.trim(),
       updatedAt: now,
     };
@@ -231,7 +229,6 @@ export function BuildsTab({ state, setState }: Props) {
       targetLevel: b.targetLevel ?? (b.targetType === "weapon" ? 100 : 40),
       archeLevel: ((b as unknown as Record<string, unknown>).archeLevel as number) ?? 0,
       externalComponents: b.externalComponents ?? [],
-      reactorNotes: b.reactorNotes ?? "",
       notes: b.notes ?? "",
     });
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -454,15 +451,6 @@ export function BuildsTab({ state, setState }: Props) {
           )}
 
           <label>
-            Reactor / pairing notes
-            <textarea
-              rows={2}
-              value={form.reactorNotes}
-              onChange={(e) => setForm((f) => ({ ...f, reactorNotes: e.target.value }))}
-              placeholder="Reactor element, skill type, substat goals…"
-            />
-          </label>
-          <label>
             Notes
             <textarea
               rows={2}
@@ -569,6 +557,11 @@ export function BuildsTab({ state, setState }: Props) {
                     {b.reactor.substats?.length > 0 && (
                       <span className="muted"> — {b.reactor.substats.map((s) => `${s.stat}: ${s.value}`).join(", ")}</span>
                     )}
+                  </p>
+                )}
+                {b.targetType === "descendant" && formatExternalComponentSetsSummary(b.externalComponents) && (
+                  <p className="build-extra">
+                    <strong>External:</strong> {formatExternalComponentSetsSummary(b.externalComponents)}
                   </p>
                 )}
                 {!b.reactor && b.reactorNotes && (

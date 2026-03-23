@@ -42,7 +42,33 @@ export function capacityAtLevel(mod: ModuleRecord, level: number): number {
   return typeof c === "number" ? c : 0;
 }
 
-export function totalPlacedCapacity(
+/** Malachite “Charged Sub Attack” style modules — only one may be equipped; they add to max capacity budget when leveled. */
+const CHARGED_SUB_ATTACK_PREVIEW = "Modifies the Charged Sub Attack.";
+
+export function isChargedSubAttackModule(mod: ModuleRecord | undefined): boolean {
+  if (!mod?.preview) return false;
+  return mod.preview.trim() === CHARGED_SUB_ATTACK_PREVIEW;
+}
+
+/** Capacity consumed from the module budget (sub-attack mods cost 0 — they expand the budget instead). */
+export function capacityCostAtLevel(mod: ModuleRecord, level: number): number {
+  if (isChargedSubAttackModule(mod)) return 0;
+  return capacityAtLevel(mod, level);
+}
+
+/**
+ * Bonus added to max descendant module capacity from a leveled sub-attack module.
+ * Uses `capacities[level]` when &gt; 0 (see modules.json); otherwise +1 per level.
+ */
+export function subAttackMaxCapacityBonusAtLevel(mod: ModuleRecord, level: number): number {
+  if (!isChargedSubAttackModule(mod)) return 0;
+  const lv = Math.min(10, Math.max(0, level));
+  const c = mod.capacities?.[lv];
+  if (typeof c === "number" && c > 0) return c;
+  return lv;
+}
+
+export function totalCapacityCost(
   slots: Array<{ moduleId: string; level: number } | null | undefined>,
   byId: Map<string, ModuleRecord>
 ): number {
@@ -51,9 +77,41 @@ export function totalPlacedCapacity(
     if (!s) continue;
     const m = byId.get(s.moduleId);
     if (!m) continue;
-    sum += capacityAtLevel(m, s.level);
+    sum += capacityCostAtLevel(m, s.level);
   }
   return sum;
+}
+
+export function totalSubAttackCapacityBonus(
+  slots: Array<{ moduleId: string; level: number } | null | undefined>,
+  byId: Map<string, ModuleRecord>
+): number {
+  let sum = 0;
+  for (const s of slots) {
+    if (!s) continue;
+    const m = byId.get(s.moduleId);
+    if (!m) continue;
+    sum += subAttackMaxCapacityBonusAtLevel(m, s.level);
+  }
+  return sum;
+}
+
+/** @deprecated use totalCapacityCost */
+export function totalPlacedCapacity(
+  slots: Array<{ moduleId: string; level: number } | null | undefined>,
+  byId: Map<string, ModuleRecord>
+): number {
+  return totalCapacityCost(slots, byId);
+}
+
+export function effectiveMaxCapacity(
+  targetType: "descendant" | "weapon",
+  slots: Array<{ moduleId: string; level: number } | null | undefined>,
+  byId: Map<string, ModuleRecord>
+): number {
+  const base = maxCapacityForTarget(targetType);
+  if (targetType === "weapon") return base;
+  return base + totalSubAttackCapacityBonus(slots, byId);
 }
 
 const WEAPON_MODULE_CLASSES = new Set([

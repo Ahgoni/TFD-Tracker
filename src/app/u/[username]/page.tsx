@@ -27,7 +27,7 @@ interface SharedState {
       socket: string;
       tier: string;
     } | null> | null;
-    reactorNotes: string;
+    reactorNotes?: string;
     notes: string;
     updatedAt: string;
   }>;

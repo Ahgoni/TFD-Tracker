@@ -41,11 +41,15 @@ import type { PlacedModule, BuildReactor, ReactorSubstat, ExternalComponent, Anc
 import {
   type ModuleRecord,
   capacityAtLevel,
+  capacityCostAtLevel,
+  effectiveMaxCapacity,
   filterModuleLibrary,
+  isChargedSubAttackModule,
   matchesModuleFilters,
   maxCapacityForTarget,
   slotCountForTarget,
-  totalPlacedCapacity,
+  subAttackMaxCapacityBonusAtLevel,
+  totalCapacityCost,
 } from "@/lib/tfd-modules";
 import {
   computePlannerMetrics,
@@ -185,7 +189,11 @@ function ModuleLibraryCard({ mod, disabled, expanded }: { mod: ModuleRecord; dis
       {mod.image ? <img src={mod.image} alt="" className="mod-lib-img" /> : <div className="mod-lib-img mod-lib-img-ph" />}
       <div className="mod-lib-body">
         <div className="mod-lib-card-top">
-          <span className="mod-lib-cap">{capacityAtLevel(mod, 0)}</span>
+          <span className="mod-lib-cap">
+            {isChargedSubAttackModule(mod)
+              ? `+${subAttackMaxCapacityBonusAtLevel(mod, 0)} max`
+              : capacityAtLevel(mod, 0)}
+          </span>
           {mod.socket && <span className="mod-lib-socket" title={mod.socket}>{mod.socket}</span>}
         </div>
         <div className={`mod-lib-name ${tierClass}`}>{mod.name}</div>
@@ -233,7 +241,11 @@ function SlotDrop({
             <div className={`builder-slot-title ${mod?.tier === "Transcendent" ? "tier-transcendent" : mod?.tier === "Ultimate" ? "tier-ultimate" : mod?.tier === "Rare" ? "tier-rare" : ""}`} title={placed.name}>{placed.name}</div>
             <div className="builder-slot-meta">
               <span className={`builder-slot-socket ${mod?.tier === "Transcendent" ? "tier-transcendent" : ""}`}>{placed.socket}</span>
-              <span className="builder-slot-cap">{placed.capacity} cap</span>
+              <span className={`builder-slot-cap${mod && isChargedSubAttackModule(mod) ? " builder-slot-cap-bonus" : ""}`}>
+                {mod && isChargedSubAttackModule(mod)
+                  ? `+${subAttackMaxCapacityBonusAtLevel(mod, placed.level)} max cap`
+                  : `${placed.capacity} cap`}
+              </span>
             </div>
             {isAncestor && placed.ancestorStats ? (
               <div className="builder-slot-ancestor-stats">
@@ -446,7 +458,7 @@ function ExternalComponentsSection({
   const [db, setDb] = useState<ExtCompDb | null>(null);
   useEffect(() => {
     // Cache-bust so updated set names / substats load after deploy (CDN/browser cache).
-    fetch("/data/external-components.json?v=2025-03-20-sets2", { cache: "no-store" })
+    fetch("/data/external-components.json?v=2025-03-21-sets4", { cache: "no-store" })
       .then((r) => r.ok ? r.json() : null)
       .then((d) => setDb(d))
       .catch(() => {});
@@ -538,6 +550,7 @@ function ExternalComponentsSection({
             {activeSets.map(([name, count]) => (
               <div key={name} className="builder-comp-set-bonus">
                 <span className="comp-set-name">{name}</span>
+                <span className="comp-set-pieces">{count}/4</span>
                 <span className="comp-set-effect">{db.sets[name]?.["2pc"]}</span>
                 {count >= 4 && <span className="comp-set-effect comp-set-4pc">{db.sets[name]?.["4pc"]}</span>}
               </div>
@@ -781,7 +794,6 @@ function BuildPlannerPanelInner({
   }, [clearSkillTipLeaveTimer]);
 
   const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 6 } }));
-  const maxCap = maxCapacityForTarget(form.targetType);
   const nSlots = slotCountForTarget(form.targetType);
   const defaultLevel = form.targetType === "weapon" ? 100 : 40;
   const level = targetLevel ?? defaultLevel;
@@ -792,10 +804,20 @@ function BuildPlannerPanelInner({
     return arr.slice(0, nSlots);
   }, [form.plannerSlots, nSlots]);
 
+  const maxCap = useMemo(
+    () =>
+      effectiveMaxCapacity(
+        form.targetType,
+        slots.map((s) => (s ? { moduleId: s.moduleId, level: s.level } : null)),
+        moduleById,
+      ),
+    [form.targetType, slots, moduleById],
+  );
+
   const metrics = useMemo(() => computePlannerMetrics(slots, moduleById, maxCap), [slots, moduleById, maxCap]);
 
   const total = useMemo(
-    () => totalPlacedCapacity(slots.map((s) => (s ? { moduleId: s.moduleId, level: s.level } : null)), moduleById),
+    () => totalCapacityCost(slots.map((s) => (s ? { moduleId: s.moduleId, level: s.level } : null)), moduleById),
     [slots, moduleById],
   );
 
@@ -887,16 +909,41 @@ function BuildPlannerPanelInner({
         return;
       }
     }
-    const cap = capacityAtLevel(mod, 0);
+
+    if (form.targetType === "descendant" && isChargedSubAttackModule(mod)) {
+      const existingSub = slots.some((s, si) => {
+        if (!s || si === idx) return false;
+        const em = moduleById.get(s.moduleId);
+        return em ? isChargedSubAttackModule(em) : false;
+      });
+      if (existingSub) {
+        window.alert(
+          "Only one Charged Sub Attack module (Shortsword, Tonfa, Dual Claw, etc.) can be equipped at a time.",
+        );
+        return;
+      }
+    }
+
     const row = [...slots];
-    const prev = row[idx];
-    const prevCost = prev && moduleById.get(prev.moduleId) ? capacityAtLevel(moduleById.get(prev.moduleId)!, prev.level) : 0;
-    const oldTotal = totalPlacedCapacity(row.map((s) => (s ? { moduleId: s.moduleId, level: s.level } : null)), moduleById);
-    if (oldTotal - prevCost + cap > maxCap) {
-      window.alert(`Over capacity (max ${maxCap}). Remove a module or lower levels.`);
+    const displayCap = isChargedSubAttackModule(mod) ? subAttackMaxCapacityBonusAtLevel(mod, 0) : capacityCostAtLevel(mod, 0);
+    const placed: PlacedModule = {
+      moduleId: mod.id,
+      level: 0,
+      name: mod.name,
+      image: mod.image,
+      capacity: displayCap,
+      socket: mod.socket,
+      tier: mod.tier,
+    };
+    const nextRow = [...row];
+    nextRow[idx] = placed;
+    const payload = nextRow.map((s) => (s ? { moduleId: s.moduleId, level: s.level } : null));
+    const tot = totalCapacityCost(payload, moduleById);
+    const effMax = effectiveMaxCapacity(form.targetType, payload, moduleById);
+    if (tot > effMax) {
+      window.alert(`Over capacity (max ${effMax}). Remove a module or lower levels.`);
       return;
     }
-    const placed: PlacedModule = { moduleId: mod.id, level: 0, name: mod.name, image: mod.image, capacity: cap, socket: mod.socket, tier: mod.tier };
     setForm((f) => {
       const next = [...(f.plannerSlots ?? [])];
       while (next.length < nSlots) next.push(null);
@@ -909,11 +956,12 @@ function BuildPlannerPanelInner({
     setForm((f) => {
       const row = [...(f.plannerSlots ?? [])];
       while (row.length < nSlots) row.push(null);
-      const prev = row[index];
-      const prevCost = prev && moduleById.get(prev.moduleId) ? capacityAtLevel(moduleById.get(prev.moduleId)!, prev.level) : 0;
-      const nextCost = next && moduleById.get(next.moduleId) ? capacityAtLevel(moduleById.get(next.moduleId)!, next.level) : 0;
-      const oldTotal = totalPlacedCapacity(row.map((s) => (s ? { moduleId: s.moduleId, level: s.level } : null)), moduleById);
-      if (oldTotal - prevCost + nextCost > maxCap) return f;
+      const testRow = [...row];
+      testRow[index] = next;
+      const payload = testRow.map((s) => (s ? { moduleId: s.moduleId, level: s.level } : null));
+      const tot = totalCapacityCost(payload, moduleById);
+      const effMax = effectiveMaxCapacity(form.targetType, payload, moduleById);
+      if (tot > effMax) return f;
       row[index] = next;
       return { ...f, plannerSlots: row };
     });
@@ -928,11 +976,14 @@ function BuildPlannerPanelInner({
       const mod = moduleById.get(cur.moduleId);
       if (!mod) return f;
       const nextLv = Math.min(10, Math.max(0, cur.level + delta));
-      const oldCap = capacityAtLevel(mod, cur.level);
-      const newCap = capacityAtLevel(mod, nextLv);
-      const oldTotal = totalPlacedCapacity(row.map((s) => (s ? { moduleId: s.moduleId, level: s.level } : null)), moduleById);
-      if (oldTotal - oldCap + newCap > maxCap) return f;
-      row[slotIndex] = { ...cur, level: nextLv, capacity: newCap };
+      const displayCap = isChargedSubAttackModule(mod) ? subAttackMaxCapacityBonusAtLevel(mod, nextLv) : capacityCostAtLevel(mod, nextLv);
+      const nextRow = [...row];
+      nextRow[slotIndex] = { ...cur, level: nextLv, capacity: displayCap };
+      const payload = nextRow.map((s) => (s ? { moduleId: s.moduleId, level: s.level } : null));
+      const tot = totalCapacityCost(payload, moduleById);
+      const effMax = effectiveMaxCapacity(form.targetType, payload, moduleById);
+      if (tot > effMax) return f;
+      row[slotIndex] = nextRow[slotIndex]!;
       return { ...f, plannerSlots: row };
     });
   }
@@ -1374,18 +1425,27 @@ function BuildPlannerPanelInner({
                     if (!p) return null;
                     const m = moduleById.get(p.moduleId);
                     const spans = splitEffectSpans(m, p.level);
-                    const cap = m ? capacityAtLevel(m, p.level) : 0;
+                    const capLabel = m
+                      ? isChargedSubAttackModule(m)
+                        ? `+${subAttackMaxCapacityBonusAtLevel(m, p.level)} max cap`
+                        : `${capacityAtLevel(m, p.level)} cap`
+                      : "";
                     return (
                       <li key={`${p.moduleId}-${i}`}>
                         <strong>{p.name} {"\u00b7"} Lv {p.level}</strong>
-                        {spans.length > 0 && (
+                        {(spans.length > 0 || capLabel) && (
                           <div className="builder-effect-txt">
                             {spans.map((sp, si) => (
                               <span key={si} className={sp.negative ? "effect-neg" : "effect-pos"}>
                                 {sp.text}{si < spans.length - 1 ? " " : ""}
                               </span>
                             ))}
-                            <span className="effect-cap"> {"\u00b7"} {cap} cap</span>
+                            {capLabel && (
+                              <span className="effect-cap">
+                                {spans.length > 0 ? " \u00b7 " : ""}
+                                {capLabel}
+                              </span>
+                            )}
                           </div>
                         )}
                       </li>

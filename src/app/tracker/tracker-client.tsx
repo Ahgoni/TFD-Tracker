@@ -145,7 +145,8 @@ export interface BuildEntry {
   archeLevel?: number;
   /** 4 external component slots for descendant builds. */
   externalComponents?: ExternalComponent[];
-  reactorNotes: string;
+  /** @deprecated Optional legacy field; pairing notes field removed from editor. */
+  reactorNotes?: string;
   notes: string;
   updatedAt: string;
 }
