@@ -90,6 +90,20 @@ export interface PlacedModule {
   capacity: number;
   socket: string;
   tier: string;
+  /** For ancestor/resolution modules where the user edits effect values. */
+  customPreview?: string;
+}
+
+/** Reactor attached to a specific build (may or may not be saved in inventory). */
+export interface BuildReactor {
+  /** Links to a saved reactor ID in state.reactors (optional). */
+  id?: string;
+  name: string;
+  element: string;
+  skillType: string;
+  level: number;
+  enhancement: string;
+  substats: ReactorSubstat[];
 }
 
 /** Saved loadout for a descendant or weapon (modules + notes). Shared with friends via profile/share. */
@@ -105,6 +119,10 @@ export interface BuildEntry {
   moduleSlots: string[];
   /** Nexon-style planner: 10 slots (weapon) or 12 (descendant). */
   plannerSlots?: (PlacedModule | null)[] | null;
+  /** Reactor paired with this build (inline or imported from inventory). */
+  reactor?: BuildReactor | null;
+  /** Target level for stat calculations (descendant 1-40, weapon 1-100). */
+  targetLevel?: number;
   reactorNotes: string;
   notes: string;
   updatedAt: string;

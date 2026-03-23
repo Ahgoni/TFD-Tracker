@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { useSession } from "next-auth/react";
-import type { TrackerState, BuildEntry, PlacedModule } from "../tracker-client";
+import type { TrackerState, BuildEntry, PlacedModule, BuildReactor } from "../tracker-client";
 import { uuid } from "@/lib/uuid";
 import { BuildPlannerPanel, type PlannerFormSlice, type PlannerHeroProps } from "./BuildPlannerPanel";
 import { WEAPON_TYPE_TO_NEXON, type ModuleRecord, slotCountForTarget } from "@/lib/tfd-modules";
@@ -70,6 +70,8 @@ export function BuildsTab({ state, setState }: Props) {
     targetKey: string;
     moduleSlots: string[];
     plannerSlots: (PlacedModule | null)[];
+    reactor: BuildReactor | null;
+    targetLevel: number;
     reactorNotes: string;
     notes: string;
   }>({
@@ -78,6 +80,8 @@ export function BuildsTab({ state, setState }: Props) {
     targetKey: "",
     moduleSlots: Array(12).fill(""),
     plannerSlots: emptyPlannerSlots("descendant"),
+    reactor: null,
+    targetLevel: 40,
     reactorNotes: "",
     notes: "",
   });
@@ -135,6 +139,8 @@ export function BuildsTab({ state, setState }: Props) {
       targetKey: "",
       moduleSlots: Array(12).fill(""),
       plannerSlots: emptyPlannerSlots("descendant"),
+      reactor: null,
+      targetLevel: 40,
       reactorNotes: "",
       notes: "",
     });
@@ -170,6 +176,8 @@ export function BuildsTab({ state, setState }: Props) {
       imageUrl: resolved.imageUrl,
       moduleSlots: legacyLines,
       plannerSlots: (form.plannerSlots ?? []).some(Boolean) ? [...form.plannerSlots] : null,
+      reactor: form.reactor ?? null,
+      targetLevel: form.targetLevel,
       reactorNotes: form.reactorNotes.trim(),
       notes: form.notes.trim(),
       updatedAt: now,
@@ -211,6 +219,8 @@ export function BuildsTab({ state, setState }: Props) {
       targetKey: b.targetKey,
       moduleSlots: [...(b.moduleSlots ?? []), ...Array(12)].slice(0, 12).map((x) => (typeof x === "string" ? x : "")),
       plannerSlots: planner,
+      reactor: b.reactor ?? null,
+      targetLevel: b.targetLevel ?? (b.targetType === "weapon" ? 100 : 40),
       reactorNotes: b.reactorNotes ?? "",
       notes: b.notes ?? "",
     });
@@ -409,6 +419,19 @@ export function BuildsTab({ state, setState }: Props) {
               weaponNexonType={weaponNexonType}
               descendantGameId={descendantGameId}
               hero={plannerHero}
+              reactor={form.reactor}
+              onReactorChange={(r) => setForm((f) => ({ ...f, reactor: r }))}
+              targetLevel={form.targetLevel}
+              onTargetLevelChange={(lv) => setForm((f) => ({ ...f, targetLevel: lv }))}
+              savedReactors={state.reactors?.map((r) => ({
+                id: r.id,
+                name: r.name,
+                element: r.element,
+                skillType: r.skillType,
+                level: r.level,
+                enhancement: r.enhancement,
+                substats: r.substats ?? [],
+              }))}
             />
           )}
 
@@ -522,7 +545,15 @@ export function BuildsTab({ state, setState }: Props) {
                     )}
                   </ul>
                 )}
-                {b.reactorNotes && (
+                {b.reactor && (
+                  <p className="build-extra">
+                    <strong>Reactor:</strong> {b.reactor.name} (Lv {b.reactor.level}, +{b.reactor.enhancement})
+                    {b.reactor.substats?.length > 0 && (
+                      <span className="muted"> — {b.reactor.substats.map((s) => `${s.stat}: ${s.value}`).join(", ")}</span>
+                    )}
+                  </p>
+                )}
+                {!b.reactor && b.reactorNotes && (
                   <p className="build-extra">
                     <strong>Reactor:</strong> {b.reactorNotes}
                   </p>

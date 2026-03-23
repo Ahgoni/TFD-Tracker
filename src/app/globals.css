@@ -3788,6 +3788,326 @@ td .badge { display: inline-flex; align-items: center; gap: 0.35rem; }
   border: 1px dashed var(--line);
 }
 
+/* ── Portrait background (Overframe-style hero) ──────────────────── */
+.builder-hero.builder-hero-portrait {
+  position: relative;
+  overflow: hidden;
+  grid-template-columns: 1fr;
+  min-height: 120px;
+}
+.builder-portrait-bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top center;
+  opacity: 0.12;
+  z-index: 0;
+  pointer-events: none;
+  filter: blur(2px) saturate(0.65);
+}
+.builder-hero-content {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+/* ── Skill icon row ──────────────────────────────────────────────── */
+.builder-skills-row {
+  display: flex;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+.builder-skill-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid rgba(255,255,255,0.15);
+  background: rgba(0,0,0,0.35);
+}
+.builder-skill-icon img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+@media (max-width: 600px) {
+  .builder-skill-icon { width: 36px; height: 36px; }
+  .builder-skills-row { gap: 0.35rem; }
+}
+
+/* ── Center column ───────────────────────────────────────────────── */
+.builder-center-col {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  min-width: 0;
+}
+
+/* ── Level selector ──────────────────────────────────────────────── */
+.builder-level-row {
+  margin-bottom: 0.75rem;
+}
+.builder-level-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--muted);
+}
+.builder-level-input {
+  width: 60px;
+  text-align: center;
+  font-size: 0.85rem;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── Stat sheet ──────────────────────────────────────────────────── */
+.builder-stat-sheet {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+.builder-stat-group {
+  padding-bottom: 0.5rem;
+}
+.builder-stat-group + .builder-stat-group {
+  border-top: 1px solid rgba(255,255,255,0.06);
+  padding-top: 0.5rem;
+}
+.builder-stat-group-h {
+  margin: 0 0 0.4rem;
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--accent);
+  font-weight: 800;
+}
+.builder-stat-row {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  gap: 0.45rem;
+  align-items: baseline;
+  font-size: 0.76rem;
+  line-height: 1.55;
+  font-variant-numeric: tabular-nums;
+}
+.builder-stat-name {
+  color: var(--muted);
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.builder-stat-base {
+  color: var(--muted);
+  opacity: 0.65;
+  font-size: 0.7rem;
+  text-align: right;
+}
+.builder-stat-final {
+  font-weight: 800;
+  text-align: right;
+}
+.builder-stat-final.stat-up { color: #4ade80; }
+.builder-stat-final.stat-down { color: #f87171; }
+.builder-stat-delta {
+  display: inline-block;
+  margin-left: 0.25rem;
+  font-size: 0.62rem;
+  font-weight: 600;
+  opacity: 0.85;
+}
+
+/* ── Reactor section ─────────────────────────────────────────────── */
+.builder-reactor-section {
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 0.75rem 0.85rem;
+  background: rgba(0,200,240,0.04);
+}
+.builder-reactor-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+.builder-reactor-actions {
+  display: flex;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.builder-reactor-import {
+  font-size: 0.8rem;
+  max-width: 200px;
+}
+.builder-reactor-form {
+  margin-top: 0.65rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+}
+.builder-reactor-chips {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+.builder-reactor-label {
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.builder-reactor-fields {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  gap: 0.4rem;
+}
+.builder-reactor-fields label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  font-size: 0.78rem;
+}
+.builder-reactor-fields input,
+.builder-reactor-fields select {
+  font-size: 0.82rem;
+  width: 100%;
+}
+.autofill-display {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--line);
+  cursor: default;
+}
+
+/* ── Ancestor module editor ──────────────────────────────────────── */
+.builder-slot-edit {
+  position: absolute;
+  top: 5px;
+  right: 32px;
+  z-index: 3;
+  width: 24px;
+  height: 24px;
+  border: none;
+  border-radius: 50%;
+  background: rgba(80,130,220,0.9);
+  color: #fff;
+  font-size: 13px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.3);
+}
+.builder-slot-edit:hover {
+  background: rgba(100,150,255,1);
+}
+.builder-ancestor-editor {
+  border: 1px solid var(--accent);
+  border-radius: 12px;
+  padding: 0.85rem 1rem;
+  background: rgba(0,200,240,0.06);
+  margin-top: 0.5rem;
+}
+.builder-ancestor-editor h4 {
+  margin: 0 0 0.35rem;
+  font-size: 0.85rem;
+}
+.builder-ancestor-row {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-bottom: 0.35rem;
+  font-size: 0.8rem;
+}
+.builder-ancestor-label {
+  flex: 1;
+  min-width: 0;
+  color: var(--muted);
+  font-size: 0.72rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.builder-ancestor-input {
+  width: 70px;
+  text-align: center;
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+.builder-ancestor-actions {
+  display: flex;
+  gap: 0.4rem;
+  margin-top: 0.5rem;
+}
+
+/* ── Expanded module cards ───────────────────────────────────────── */
+.mod-lib-expanded {
+  flex-direction: column;
+  align-items: stretch;
+}
+.mod-lib-expanded .mod-lib-img {
+  width: 100%;
+  height: auto;
+  max-height: 120px;
+  object-fit: contain;
+}
+.mod-lib-preview-full {
+  margin: 0.35rem 0 0;
+  font-size: 0.72rem;
+  line-height: 1.4;
+  color: var(--muted);
+  white-space: pre-wrap;
+}
+.builder-expand-toggle {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.72rem;
+  color: var(--muted);
+  cursor: pointer;
+}
+.builder-expand-toggle input {
+  width: auto;
+}
+.mod-lib-meta-row {
+  display: flex;
+  gap: 0.35rem;
+  font-size: 0.62rem;
+  color: var(--muted);
+  margin-top: 0.1rem;
+}
+.mod-lib-class {
+  opacity: 0.65;
+}
+
+/* ── Btn helper ──────────────────────────────────────────────────── */
+.btn-sm {
+  font-size: 0.78rem;
+  padding: 0.35rem 0.85rem;
+  border-radius: 8px;
+  border: 1px solid var(--accent);
+  background: rgba(0,200,240,0.12);
+  color: var(--accent);
+  font-weight: 700;
+  cursor: pointer;
+}
+.btn-sm:hover {
+  background: rgba(0,200,240,0.22);
+}
+
+/* ── Light mode overrides ────────────────────────────────────────── */
 [data-theme="light"] .builder-slot {
   background: #f4f7ff;
   border-color: rgba(0,0,0,0.08);
@@ -3797,4 +4117,40 @@ td .badge { display: inline-flex; align-items: center; gap: 0.35rem; }
 }
 [data-theme="light"] .mod-lib-card {
   background: #f8fafc;
+}
+[data-theme="light"] .builder-portrait-bg {
+  filter: blur(2px) saturate(0.5);
+  opacity: 0.1;
+}
+[data-theme="light"] .builder-stat-group + .builder-stat-group {
+  border-color: rgba(0,0,0,0.08);
+}
+[data-theme="light"] .builder-reactor-section {
+  background: rgba(0,100,200,0.04);
+}
+[data-theme="light"] .builder-ancestor-editor {
+  background: rgba(0,100,200,0.04);
+}
+[data-theme="light"] .builder-skill-icon {
+  border-color: rgba(0,0,0,0.12);
+  background: rgba(0,0,0,0.06);
+}
+[data-theme="light"] .builder-slot-edit {
+  background: rgba(60,110,200,0.85);
+}
+[data-theme="light"] .builder-stat-final.stat-up { color: #16a34a; }
+[data-theme="light"] .builder-stat-final.stat-down { color: #dc2626; }
+[data-theme="light"] .builder-stat-name { color: #374151; }
+[data-theme="light"] .builder-stat-base { color: #9ca3af; }
+[data-theme="light"] .autofill-display {
+  background: rgba(0,0,0,0.03);
+}
+[data-theme="light"] .mod-lib-expanded .mod-lib-img {
+  border-color: rgba(0,0,0,0.08);
+}
+[data-theme="light"] .builder-cap-bar {
+  background: rgba(0,0,0,0.06);
+}
+[data-theme="light"] .mod-lib-preview-full {
+  color: #6b7280;
 }
