@@ -122,9 +122,9 @@ function ModuleLibraryCard({ mod, disabled, expanded }: { mod: ModuleRecord; dis
           <span className="mod-lib-cap">{capacityAtLevel(mod, 0)}</span>
           {mod.socket && <span className="mod-lib-socket" title={mod.socket}>{mod.socket}</span>}
         </div>
-        <div className="mod-lib-name">{mod.name}</div>
+        <div className={`mod-lib-name ${tierClass}`}>{mod.name}</div>
         <div className="mod-lib-meta-row">
-          <span className="mod-lib-tier">{mod.tier}</span>
+          <span className={`mod-lib-tier ${tierClass}`}>{mod.tier}</span>
           {mod.moduleClass && <span className="mod-lib-class">{mod.moduleClass}</span>}
         </div>
         {expanded && mod.preview && <p className="mod-lib-preview-full">{mod.preview}</p>}
@@ -164,16 +164,17 @@ function SlotDrop({
             {mod?.image || placed.image
               ? <img src={mod?.image || placed.image} alt="" className="builder-slot-icon" />
               : <div className="builder-slot-icon builder-slot-icon-ph" />}
-            <div className="builder-slot-title" title={placed.name}>{placed.name}</div>
+            <div className={`builder-slot-title ${mod?.tier === "Transcendent" ? "tier-transcendent" : mod?.tier === "Ultimate" ? "tier-ultimate" : mod?.tier === "Rare" ? "tier-rare" : ""}`} title={placed.name}>{placed.name}</div>
             <div className="builder-slot-meta">
-              <span className="builder-slot-socket">{placed.socket}</span>
+              <span className={`builder-slot-socket ${mod?.tier === "Transcendent" ? "tier-transcendent" : ""}`}>{placed.socket}</span>
               <span className="builder-slot-cap">{placed.capacity} cap</span>
             </div>
             {mod?.preview && (() => {
               const text = placed.customPreview ?? scalePreviewPercentagesForLevel(mod, placed.level);
-              const hasNeg = /-\d+(?:\.\d+)?%/.test(text);
+              const spans = splitEffectSpans(mod, placed.level);
+              const hasRealNeg = spans.some((s) => s.negative);
               return (
-                <p className={`builder-slot-preview${hasNeg ? " slot-has-neg" : ""}`} title={text}>
+                <p className={`builder-slot-preview${hasRealNeg ? " slot-has-neg" : ""}`} title={text}>
                   {truncate(text, 96)}
                 </p>
               );
@@ -547,6 +548,19 @@ export function BuildPlannerPanel({
     const mod = moduleById.get(a.moduleId);
     if (!mod) return;
     const idx = o.index;
+
+    if (mod.tier === "Transcendent" && mod.descendantIds?.length > 0) {
+      const existing = slots.some((s, si) => {
+        if (!s || si === idx) return false;
+        const em = moduleById.get(s.moduleId);
+        return em?.tier === "Transcendent" && (em.descendantIds?.length ?? 0) > 0;
+      });
+      if (existing) {
+        window.alert("Only one Transcendent (skill) module can be equipped per build.");
+        return;
+      }
+    }
+
     const cap = capacityAtLevel(mod, 0);
     const row = [...slots];
     const prev = row[idx];
@@ -620,6 +634,28 @@ export function BuildPlannerPanel({
   const heroSkills = hero?.skills ?? descSkills;
   const archLv = archeLevel ?? hero?.archeLevel ?? 0;
 
+  const equippedTranscendent = useMemo(() => {
+    for (const s of slots) {
+      if (!s) continue;
+      const m = moduleById.get(s.moduleId);
+      if (m?.tier === "Transcendent" && (m.descendantIds?.length ?? 0) > 0) return m;
+    }
+    return null;
+  }, [slots, moduleById]);
+
+  const affectedSkillNames = useMemo(() => {
+    if (!equippedTranscendent?.preview || descSkills.length === 0) return new Set<string>();
+    const text = equippedTranscendent.preview.toLowerCase();
+    const names = new Set<string>();
+    for (const sk of descSkills) {
+      if (text.includes(sk.name.toLowerCase())) names.add(sk.name);
+    }
+    if (names.size === 0 && descSkills.length > 0) {
+      descSkills.forEach((sk) => names.add(sk.name));
+    }
+    return names;
+  }, [equippedTranscendent, descSkills]);
+
   return (
     <DndContext sensors={sensors} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
       <div className="builder-stage">
@@ -658,10 +694,11 @@ export function BuildPlannerPanel({
                       const full = descSkills.find((s) => s.name === sk.name);
                       const elementIcon = elementDefs.find((d) => d.label === (full?.element ?? ""))?.icon;
                       const archeIcon = skillDefs.find((d) => d.label === (full?.arche ?? ""))?.icon;
+                      const isAffected = equippedTranscendent && affectedSkillNames.has(sk.name);
                       return (
                         <div
                           key={sk.name}
-                          className={`builder-skill-icon${hoveredSkill === sk.name ? " skill-active" : ""}`}
+                          className={`builder-skill-icon${hoveredSkill === sk.name ? " skill-active" : ""}${isAffected ? " skill-affected" : ""}`}
                           onMouseEnter={() => setHoveredSkill(sk.name)}
                           onMouseLeave={() => setHoveredSkill(null)}
                         >
@@ -678,6 +715,13 @@ export function BuildPlannerPanel({
                                 {archeIcon && <span className="skill-tooltip-tag"><img src={archeIcon} alt="" />{full.arche}</span>}
                               </div>
                               {full.description && <p className="skill-tooltip-desc">{full.description}</p>}
+                              {isAffected && equippedTranscendent && (
+                                <div className="skill-tooltip-mod">
+                                  <span className="skill-tooltip-mod-label">Modified by:</span>
+                                  <span className="skill-tooltip-mod-name">{equippedTranscendent.name}</span>
+                                  <p className="skill-tooltip-mod-desc">{equippedTranscendent.preview}</p>
+                                </div>
+                              )}
                             </div>
                           )}
                         </div>

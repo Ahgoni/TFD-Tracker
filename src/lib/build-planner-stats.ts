@@ -175,7 +175,9 @@ export function effectSummaryLine(mod: ModuleRecord | undefined, level: number):
   return `${scaled} · ${cap} cap`;
 }
 
-const NEG_KEYWORDS = /\b(reduces?|decreases?|lowers?|less|penalty|but)\b/i;
+const NEG_KEYWORDS = /\b(penalty)\b/i;
+
+const LOWER_IS_BETTER = /\b(cooldown|reload|recoil|skill cost|mp cost|spread|skill consumption)\b/i;
 
 export interface EffectSpan {
   text: string;
@@ -184,7 +186,7 @@ export interface EffectSpan {
 
 /**
  * Split a module's scaled preview into spans, marking negative effects in red.
- * Negative = contains a minus-sign % value OR negative-sentiment keywords.
+ * A minus % is negative UNLESS the stat is "lower is better" (cooldown, reload, etc.).
  */
 export function splitEffectSpans(mod: ModuleRecord | undefined, level: number): EffectSpan[] {
   if (!mod?.preview) return [];
@@ -192,7 +194,14 @@ export function splitEffectSpans(mod: ModuleRecord | undefined, level: number): 
   const sentences = scaled.split(/(?<=[.;])\s+|(?=\n)/);
   return sentences.filter(Boolean).map((s) => {
     const hasMinus = /-\d+(?:\.\d+)?%/.test(s);
-    const hasNegWord = NEG_KEYWORDS.test(s);
-    return { text: s.trim(), negative: hasMinus || hasNegWord };
+    const hasPlus = /\+\d+(?:\.\d+)?%/.test(s);
+    const lowerIsBetter = LOWER_IS_BETTER.test(s);
+
+    let isNeg = false;
+    if (hasMinus && !lowerIsBetter) isNeg = true;
+    if (hasPlus && lowerIsBetter) isNeg = true;
+    if (NEG_KEYWORDS.test(s)) isNeg = true;
+
+    return { text: s.trim(), negative: isNeg };
   });
 }
