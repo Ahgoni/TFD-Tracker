@@ -936,6 +936,7 @@ td .badge { display: inline-flex; align-items: center; gap: 0.35rem; }
   background: var(--chip-bg, #0a1525);
 }
 
+.tier-transcendent { color: #f87171; border-color: rgba(248,113,113,0.4); background: rgba(248,113,113,0.06) !important; }
 .tier-ultimate { color: #fbbf24; border-color: rgba(251, 191, 36, 0.3); }
 .tier-rare     { color: #c084fc; border-color: rgba(192, 132, 252, 0.3); }
 .tier-common   { color: #4dd9ff; border-color: rgba(77, 217, 255, 0.25); }
@@ -2632,6 +2633,7 @@ td .badge { display: inline-flex; align-items: center; gap: 0.35rem; }
 
 /* ── Tier pills (was #0a1525) ───────────────────────────────── */
 [data-theme="light"] .tier-pill       { background: #f0f4ff !important; border-color: var(--line) !important; }
+[data-theme="light"] .tier-transcendent { color: #dc2626; border-color: rgba(220,38,38,0.3); background: rgba(220,38,38,0.04) !important; }
 [data-theme="light"] .tier-ultimate   { color: #a05c00; border-color: rgba(160,92,0,0.35); }
 [data-theme="light"] .tier-rare       { color: #7b28cc; border-color: rgba(123,40,204,0.3); }
 [data-theme="light"] .tier-common     { color: #0077aa; border-color: rgba(0,119,170,0.3); }
@@ -3336,6 +3338,55 @@ td .badge { display: inline-flex; align-items: center; gap: 0.35rem; }
 .effect-cap { color: var(--muted); opacity: 0.7; }
 .slot-has-neg { color: #f87171; }
 .builder-slot-preview:not(.slot-has-neg) { color: #a3e635; }
+
+/* ── Transcendent / Skill modification mods ─────────────────────── */
+.builder-transcendent-section {
+  background: rgba(248,113,113,0.05);
+  border: 1px solid rgba(248,113,113,0.2);
+  border-radius: 8px;
+  padding: 0.6rem 0.75rem;
+}
+.transcendent-h {
+  color: #f87171 !important;
+  font-size: 0.82rem;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+}
+.builder-transcendent-list {
+  list-style: none;
+  margin: 0.4rem 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.builder-transcendent-item {
+  display: flex;
+  gap: 0.5rem;
+  align-items: flex-start;
+}
+.builder-transcendent-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 6px;
+  object-fit: cover;
+  flex-shrink: 0;
+  border: 1px solid rgba(248,113,113,0.3);
+}
+.builder-transcendent-name {
+  font-weight: 700;
+  font-size: 0.8rem;
+  color: #fbbf24;
+  display: block;
+  margin-bottom: 0.15rem;
+}
+.builder-transcendent-desc {
+  margin: 0;
+  font-size: 0.76rem;
+  line-height: 1.45;
+  color: #cbd5e1;
+  white-space: pre-line;
+}
 
 /* ── Negative effects / warnings ────────────────────────────────── */
 .builder-warnings-section {
@@ -4341,6 +4392,9 @@ td .badge { display: inline-flex; align-items: center; gap: 0.35rem; }
 [data-theme="light"] .effect-neg { color: #dc2626; }
 [data-theme="light"] .slot-has-neg { color: #dc2626; }
 [data-theme="light"] .builder-slot-preview:not(.slot-has-neg) { color: #16a34a; }
+[data-theme="light"] .builder-transcendent-section { background: rgba(220,38,38,0.04); border-color: rgba(220,38,38,0.15); }
+[data-theme="light"] .builder-transcendent-desc { color: #475569; }
+[data-theme="light"] .builder-transcendent-name { color: #b45309; }
 [data-theme="light"] .builder-slot-edit {
   background: rgba(60,110,200,0.85);
 }

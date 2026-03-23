@@ -49,6 +49,7 @@ function inferSkillTypes(skills) {
 }
 
 function tierFromId(tierId) {
+  if (tierId === "Tier4") return "Transcendent";
   if (tierId === "Tier3") return "Ultimate";
   if (tierId === "Tier2") return "Rare";
   return "Normal";
@@ -67,10 +68,11 @@ function capacitiesFromStats(moduleStat) {
   return caps;
 }
 
-function previewFromStats(moduleStat) {
+function previewFromStats(moduleStat, isTranscendent = false) {
   const row = Array.isArray(moduleStat) ? moduleStat.find((r) => r.level === 0) : null;
   const v = row?.value;
   if (typeof v !== "string") return "";
+  if (isTranscendent) return v;
   const line = v.split("\n")[0] ?? v;
   return line.length > 160 ? `${line.slice(0, 157)}…` : line;
 }
@@ -117,19 +119,22 @@ async function main() {
 
   console.log("Fetching modules...");
   const modRaw = await fetch(MODULE_URL).then((r) => r.json());
-  const modules = modRaw.map((m) => ({
-    id: m.module_id,
-    name: m.module_name,
-    image: m.image_url,
-    type: m.module_type ?? "",
-    tier: tierFromId(m.module_tier_id),
-    socket: m.module_socket_type ?? "",
-    moduleClass: m.module_class ?? "",
-    weaponTypes: m.available_weapon_type ?? [],
-    descendantIds: m.available_descendant_id ?? [],
-    capacities: capacitiesFromStats(m.module_stat),
-    preview: previewFromStats(m.module_stat),
-  }));
+  const modules = modRaw.map((m) => {
+    const isTranscendent = m.module_tier_id === "Tier4";
+    return {
+      id: m.module_id,
+      name: m.module_name,
+      image: m.image_url,
+      type: m.module_type ?? "",
+      tier: tierFromId(m.module_tier_id),
+      socket: m.module_socket_type ?? "",
+      moduleClass: m.module_class ?? "",
+      weaponTypes: m.available_weapon_type ?? [],
+      descendantIds: m.available_descendant_id ?? [],
+      capacities: capacitiesFromStats(m.module_stat),
+      preview: previewFromStats(m.module_stat, isTranscendent),
+    };
+  });
 
   writeFileSync(resolve(OUT, "modules.json"), JSON.stringify(modules, null, 2));
   console.log(`  Wrote ${modules.length} modules`);

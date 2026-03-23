@@ -16590,7 +16590,7 @@
     "name": "Increased Efficiency",
     "image": "https://open.api.nexon.com/static/tfd/img/afe466e8c83ae8197e4dc995cf74f9b8",
     "type": "",
-    "tier": "Normal",
+    "tier": "Transcendent",
     "socket": "Rutile",
     "moduleClass": "Descendant",
     "weaponTypes": [],
@@ -16611,14 +16611,14 @@
       8,
       7
     ],
-    "preview": "MP is no longer consumed while Unique Weapon is active."
+    "preview": "MP is no longer consumed while Unique Weapon is active.\nIt consumes MP when attacking with Unique Weapon.\nIt recovers MP when Unique Weapon lands a Critical Hit."
   },
   {
     "id": "254001002",
     "name": "Power Unit Change",
     "image": "https://open.api.nexon.com/static/tfd/img/fd4de30a1306bdf519964c73eeedfa9a",
     "type": "",
-    "tier": "Normal",
+    "tier": "Transcendent",
     "socket": "Malachite",
     "moduleClass": "Descendant",
     "weaponTypes": [],
@@ -16639,14 +16639,14 @@
       6,
       5
     ],
-    "preview": "Overclock no longer increases Skill Power."
+    "preview": "Overclock no longer increases Skill Power.\nIncreases Firearm ATK instead."
   },
   {
     "id": "254001003",
     "name": "Regenerative Braking",
     "image": "https://open.api.nexon.com/static/tfd/img/f5d7f23b3a6b0c75ebb3920e1b28efa2",
     "type": "",
-    "tier": "Normal",
+    "tier": "Transcendent",
     "socket": "Almandine",
     "moduleClass": "Descendant",
     "weaponTypes": [],
@@ -16674,7 +16674,7 @@
     "name": "Nerve Infiltration",
     "image": "https://open.api.nexon.com/static/tfd/img/58b5b1358447efc66880367b59c5f9d3",
     "type": "",
-    "tier": "Normal",
+    "tier": "Transcendent",
     "socket": "Xantic",
     "moduleClass": "Descendant",
     "weaponTypes": [],
@@ -16695,14 +16695,14 @@
       5,
       4
     ],
-    "preview": "Applies stackable Burn."
+    "preview": "Applies stackable Burn.\nModifies Grenade Throw to deal Additional Damage per Burn stack."
   },
   {
     "id": "254002001",
     "name": "Void Explosion : Focus",
     "image": "https://open.api.nexon.com/static/tfd/img/99233158e839f9fd7eba3c921530aae1",
     "type": "",
-    "tier": "Normal",
+    "tier": "Transcendent",
     "socket": "Cerulean",
     "moduleClass": "Descendant",
     "weaponTypes": [],
@@ -16723,14 +16723,14 @@
       5,
       4
     ],
-    "preview": "Using Expulsion grants Void Explosion that causes an explosion on the next melee attack."
+    "preview": "Using Expulsion grants Void Explosion that causes an explosion on the next melee attack.\nWhen used as an Enhanced Skill, triggers a chain explosion."
   },
   {
     "id": "254002002",
     "name": "Void Charge",
     "image": "https://open.api.nexon.com/static/tfd/img/de5681ec73f578ad67e2101162f541a4",
     "type": "",
-    "tier": "Normal",
+    "tier": "Transcendent",
     "socket": "Almandine",
     "moduleClass": "Descendant",
     "weaponTypes": [],
@@ -16751,14 +16751,14 @@
       6,
       5
     ],
-    "preview": "Modifies Void Walk to be stackable, and Void Walk and Expulsion damage increases proportionally to DEF."
+    "preview": "Modifies Void Walk to be stackable, and Void Walk and Expulsion damage increases proportionally to DEF.\nWhen used as an Enhanced Skill, Cooldown resets."
   },
   {
     "id": "254002003",
     "name": "Matrix Recomputation",
     "image": "https://open.api.nexon.com/static/tfd/img/3a72be0a73b57062176c97bf3160f8ac",
     "type": "",
-    "tier": "Normal",
+    "tier": "Transcendent",
     "socket": "Cerulean",
     "moduleClass": "Descendant",
     "weaponTypes": [],
@@ -16786,7 +16786,7 @@
     "name": "Body Enhancement",
     "image": "https://open.api.nexon.com/static/tfd/img/c990741879f741b8f60c62d6a1fad053",
     "type": "",
-    "tier": "Normal",
+    "tier": "Transcendent",
     "socket": "Almandine",
     "moduleClass": "Descendant",
     "weaponTypes": [],
@@ -16814,7 +16814,7 @@
     "name": "Glacial Cloud",
     "image": "https://open.api.nexon.com/static/tfd/img/866ff29071a0ec2f22e39c131f0ff946",
     "type": "",
-    "tier": "Normal",
+    "tier": "Transcendent",
     "socket": "Cerulean",
     "moduleClass": "Descendant",
     "weaponTypes": [],
@@ -16842,7 +16842,7 @@
     "name": "Hypothermia",
     "image": "https://open.api.nexon.com/static/tfd/img/02866260ee83dd898b3166037e6690d7",
     "type": "",
-    "tier": "Normal",
+    "tier": "Transcendent",
     "socket": "Cerulean",
     "moduleClass": "Descendant",
     "weaponTypes": [],
@@ -16863,14 +16863,14 @@
       7,
       6
     ],
-    "preview": "When using skill, inflicts Ice Needle instead of Ice Shackle."
+    "preview": "When using skill, inflicts Ice Needle instead of Ice Shackle.\nWhen Ice Needle reaches a certain number of stacks, passive skills are triggered.\nIce Needle: Continuous damage to the target. Damage increases as it stacks."
   },
   {
     "id": "254003003",
     "name": "Cold Snap Watch",
     "image": "https://open.api.nexon.com/static/tfd/img/328ed9f2afd6635a268a469cbb420299",
     "type": "",
-    "tier": "Normal",
+    "tier": "Transcendent",
     "socket": "Cerulean",
     "moduleClass": "Descendant",
     "weaponTypes": [],
@@ -16891,14 +16891,14 @@
       6,
       5
     ],
-    "preview": "Creates a Cold Snap zone in front that remains for a certain period of time."
+    "preview": "Creates a Cold Snap zone in front that remains for a certain period of time.\nEnemies entering the Cold Snap zone are inflicted with Ice Shackle and suffer continuous damage."
   },
   {
     "id": "254003004",
     "name": "Cold-Bloodedness",
     "image": "https://open.api.nexon.com/static/tfd/img/3df9f70315dcd8c782c5fe1f616ab19b",
     "type": "",
-    "tier": "Normal",
+    "tier": "Transcendent",
     "socket": "Rutile",
     "moduleClass": "Descendant",
     "weaponTypes": [],
@@ -16919,14 +16919,14 @@
       6,
       5
     ],
-    "preview": "When using skill, increases Skill Power and decreases Skill Cost and Skill Cooldown."
+    "preview": "When using skill, increases Skill Power and decreases Skill Cost and Skill Cooldown.\nFrost Roads are not created when moving."
   },
   {
     "id": "254004001",
     "name": "Explosive Stacks",
     "image": "https://open.api.nexon.com/static/tfd/img/ad2ba2564d944f40e74f045d9d8657c6",
     "type": "",
-    "tier": "Normal",
+    "tier": "Transcendent",
     "socket": "Rutile",
     "moduleClass": "Descendant",
     "weaponTypes": [],
@@ -16946,14 +16946,14 @@
       7,
       6
     ],
-    "preview": "Modifies Grenade Throw to be replenished a certain number of times."
+    "preview": "Modifies Grenade Throw to be replenished a certain number of times.\nGrenade is replenished once every time a certain amount of ammo is consumed."
   },
   {
     "id": "254004002",
     "name": "Firearms Master",
     "image": "https://open.api.nexon.com/static/tfd/img/c65d85b2e5ac81b29d720faa9d801d94",
     "type": "",
-    "tier": "Normal",
+    "tier": "Transcendent",
     "socket": "Malachite",
     "moduleClass": "Descendant",
     "weaponTypes": [],
@@ -16973,14 +16973,14 @@
       6,
       5
     ],
-    "preview": "Reloading increases Skill Range."
+    "preview": "Reloading increases Skill Range.\nUsing Grenade Throw or Traction Grenade grants an additional effect depending on the Weapon."
   },
   {
     "id": "254005001",
     "name": "Turret Engineering",
     "image": "https://open.api.nexon.com/static/tfd/img/9b56468bec6cae83b99b8a57e8bdb0cc",
     "type": "",
-    "tier": "Normal",
+    "tier": "Transcendent",
     "socket": "Malachite",
     "moduleClass": "Descendant",
     "weaponTypes": [],
@@ -17007,7 +17007,7 @@
     "name": "Immediate Purge Code",
     "image": "https://open.api.nexon.com/static/tfd/img/b5939b27015c45b954dd56afa9d6b199",
     "type": "",
-    "tier": "Normal",
+    "tier": "Transcendent",
     "socket": "Almandine",
     "moduleClass": "Descendant",
     "weaponTypes": [],
@@ -17027,14 +17027,14 @@
       7,
       6
     ],
-    "preview": "When using skill, instantly explodes all turrets and inflicts damage on nearby enemies."
+    "preview": "When using skill, instantly explodes all turrets and inflicts damage on nearby enemies.\nCreates Lightning AoE that deals continuous damage where the turrets exploded."
   },
   {
     "id": "254005003",
     "name": "Medical Compulsion",
     "image": "https://open.api.nexon.com/static/tfd/img/4cfe05b155af4345e5baead96417ec3d",
     "type": "",
-    "tier": "Normal",
+    "tier": "Transcendent",
     "socket": "Xantic",
     "moduleClass": "Descendant",
     "weaponTypes": [],
@@ -17061,7 +17061,7 @@
     "name": "Attacking Compulsion",
     "image": "https://open.api.nexon.com/static/tfd/img/9d6da715d41a76abfc2c8637d079a05c",
     "type": "",
-    "tier": "Normal",
+    "tier": "Transcendent",
     "socket": "Almandine",
     "moduleClass": "Descendant",
     "weaponTypes": [],
@@ -17088,7 +17088,7 @@
     "name": "Electric Condense",
     "image": "https://open.api.nexon.com/static/tfd/img/410f287f649be2e9f4dcb875ad90d3d4",
     "type": "",
-    "tier": "Normal",
+    "tier": "Transcendent",
     "socket": "Xantic",
     "moduleClass": "Descendant",
     "weaponTypes": [],
@@ -17116,7 +17116,7 @@
     "name": "Electric Transition",
     "image": "https://open.api.nexon.com/static/tfd/img/5149d5e9e9f9a0cfc04dbad5bd95ff53",
     "type": "",
-    "tier": "Normal",
+    "tier": "Transcendent",
     "socket": "Cerulean",
     "moduleClass": "Descendant",
     "weaponTypes": [],
@@ -17144,7 +17144,7 @@
     "name": "Superconductor",
     "image": "https://open.api.nexon.com/static/tfd/img/4f44ea6163b439c55e6f5c0dd5a3bc5d",
     "type": "",
-    "tier": "Normal",
+    "tier": "Transcendent",
     "socket": "Xantic",
     "moduleClass": "Descendant",
     "weaponTypes": [],
@@ -17172,7 +17172,7 @@
     "name": "Bionic Fuel",
     "image": "https://open.api.nexon.com/static/tfd/img/e979af719ff6920d8569e9a6abd260af",
     "type": "",
-    "tier": "Normal",
+    "tier": "Transcendent",
     "socket": "Rutile",
     "moduleClass": "Descendant",
     "weaponTypes": [],
@@ -17200,7 +17200,7 @@
     "name": "Mobile Fortress",
     "image": "https://open.api.nexon.com/static/tfd/img/bd8fa02a63634261fb0da1da1d655b0b",
     "type": "",
-    "tier": "Normal",
+    "tier": "Transcendent",
     "socket": "Malachite",
     "moduleClass": "Descendant",
     "weaponTypes": [],
@@ -17227,7 +17227,7 @@
     "name": "Barrier Charge : Explosion",
     "image": "https://open.api.nexon.com/static/tfd/img/c234210e9e7dd2994014bd3b3f4d89e8",
     "type": "",
-    "tier": "Normal",
+    "tier": "Transcendent",
     "socket": "Malachite",
     "moduleClass": "Descendant",
     "weaponTypes": [],
@@ -17247,14 +17247,14 @@
       6,
       5
     ],
-    "preview": "Changes to a skill to charge forward while holding an Orbit Barrier to deal damage to enemies and knock them back."
+    "preview": "Changes to a skill to charge forward while holding an Orbit Barrier to deal damage to enemies and knock them back.\nUsing Expulsion grants Void Explosion effect that causes an explosion on the next melee attack.\nWhen used as an Enhanced Skill, triggers a chain explosion."
   },
   {
     "id": "254008001",
     "name": "Contagion",
     "image": "https://open.api.nexon.com/static/tfd/img/d41269831ff36ac2f1b3009c15b4dc09",
     "type": "",
-    "tier": "Normal",
+    "tier": "Transcendent",
     "socket": "Rutile",
     "moduleClass": "Descendant",
     "weaponTypes": [],
@@ -17275,14 +17275,14 @@
       8,
       7
     ],
-    "preview": "When an enemy inflicted with Room 0 Trauma is killed,"
+    "preview": "When an enemy inflicted with Room 0 Trauma is killed,\na contagion of Room 0 Trauma surrounds it."
   },
   {
     "id": "254008002",
     "name": "Toxic Stimulation",
     "image": "https://open.api.nexon.com/static/tfd/img/4a0cabe4ce58843fa70e279f21d09fc9",
     "type": "",
-    "tier": "Normal",
+    "tier": "Transcendent",
     "socket": "Cerulean",
     "moduleClass": "Descendant",
     "weaponTypes": [],
@@ -17303,14 +17303,14 @@
       6,
       5
     ],
-    "preview": "Defense Mechanism skill conversion."
+    "preview": "Defense Mechanism skill conversion.\nGrants Plague Bodyarmor to nearby allies."
   },
   {
     "id": "254008003",
     "name": "Venom Synthesis",
     "image": "https://open.api.nexon.com/static/tfd/img/979719de04ce07925d8d18bd7055c35c",
     "type": "",
-    "tier": "Normal",
+    "tier": "Transcendent",
     "socket": "Rutile",
     "moduleClass": "Descendant",
     "weaponTypes": [],
@@ -17331,14 +17331,14 @@
       5,
       4
     ],
-    "preview": "Putrid Venom skill conversion."
+    "preview": "Putrid Venom skill conversion.\nLeaves behind a Toxic Footprint after every step.\nInflicts Room 0 Trauma on enemies coming in contact with Toxic Footprint."
   },
   {
     "id": "254008004",
     "name": "Neurotoxin Synthesis",
     "image": "https://open.api.nexon.com/static/tfd/img/255aa0a8e96c19b251d2642a69e8dc27",
     "type": "",
-    "tier": "Normal",
+    "tier": "Transcendent",
     "socket": "Xantic",
     "moduleClass": "Descendant",
     "weaponTypes": [],
@@ -17359,14 +17359,14 @@
       7,
       6
     ],
-    "preview": "Modifies the effects of Room 0 Trauma."
+    "preview": "Modifies the effects of Room 0 Trauma.\nDoes not spread Poison, but inflicts ATK reduction and Weaken Regeneration."
   },
   {
     "id": "254008005",
     "name": "Venom Injection",
     "image": "https://open.api.nexon.com/static/tfd/img/b8fd8ee77748d90352a6ee3beacd63f0",
     "type": "",
-    "tier": "Normal",
+    "tier": "Transcendent",
     "socket": "Rutile",
     "moduleClass": "Descendant",
     "weaponTypes": [],
@@ -17386,14 +17386,14 @@
       5,
       4
     ],
-    "preview": "When using skill, continuously consumes resources to grant self Toxic Sense."
+    "preview": "When using skill, continuously consumes resources to grant self Toxic Sense.\nWhile Toxic Sense is active, hitting an enemy with a firearm or a Skill inflicts Corrosion."
   },
   {
     "id": "254008006",
     "name": "Toxic Mixture",
     "image": "https://open.api.nexon.com/static/tfd/img/f465b5e76a7e95fb6c543110e6641379",
     "type": "",
-    "tier": "Normal",
+    "tier": "Transcendent",
     "socket": "Xantic",
     "moduleClass": "Descendant",
     "weaponTypes": [],
@@ -17413,14 +17413,14 @@
       7,
       6
     ],
-    "preview": "Modifies the Room 0 Trauma effect to Necrosis."
+    "preview": "Modifies the Room 0 Trauma effect to Necrosis.\nFirearm ATK increases with the number of Necrosis stacks."
   },
   {
     "id": "254009001",
     "name": "Super Senses",
     "image": "https://open.api.nexon.com/static/tfd/img/35c5ee65184247d6681526c43bad563d",
     "type": "",
-    "tier": "Normal",
+    "tier": "Transcendent",
     "socket": "Malachite",
     "moduleClass": "Descendant",
     "weaponTypes": [],
@@ -17441,14 +17441,14 @@
       4,
       3
     ],
-    "preview": "Inflicts Bleed with Life Siphon."
+    "preview": "Inflicts Bleed with Life Siphon.\nAttacking targets with Bleed with a Unique Weapon, increases damage."
   },
   {
     "id": "254009002",
     "name": "Massive Sanguification",
     "image": "https://open.api.nexon.com/static/tfd/img/fefffe572c4e896462b59ef92c982e53",
     "type": "",
-    "tier": "Normal",
+    "tier": "Transcendent",
     "socket": "Almandine",
     "moduleClass": "Descendant",
     "weaponTypes": [],
@@ -17476,7 +17476,7 @@
     "name": "Predator Instinct",
     "image": "https://open.api.nexon.com/static/tfd/img/b573d2eaf9b9ac49e8085c396defe1d9",
     "type": "",
-    "tier": "Normal",
+    "tier": "Transcendent",
     "socket": "Malachite",
     "moduleClass": "Descendant",
     "weaponTypes": [],
@@ -17497,14 +17497,14 @@
       7,
       6
     ],
-    "preview": "While Frenzied, HP is not consumed."
+    "preview": "While Frenzied, HP is not consumed.\nUsing a firearm while Frenzied gradually increases Firearm ATK."
   },
   {
     "id": "254009004",
     "name": "Blood and Iron",
     "image": "https://open.api.nexon.com/static/tfd/img/728a001436a72fefd4067c2e39adf4bd",
     "type": "",
-    "tier": "Normal",
+    "tier": "Transcendent",
     "socket": "Xantic",
     "moduleClass": "Descendant",
     "weaponTypes": [],
@@ -17525,14 +17525,14 @@
       6,
       5
     ],
-    "preview": "When defeating enemies with a melee weapon, gains Life Spheres."
+    "preview": "When defeating enemies with a melee weapon, gains Life Spheres.\nWhen attacking enemies with a melee weapon, gains Power of Life.\nNo longer uses a Unique Weapon, instead, firearms to deal AoE damage."
   },
   {
     "id": "254009005",
     "name": "Explosive Life",
     "image": "https://open.api.nexon.com/static/tfd/img/e1f2a9cadb509ea759cc642cb7ccdec3",
     "type": "",
-    "tier": "Normal",
+    "tier": "Transcendent",
     "socket": "Malachite",
     "moduleClass": "Descendant",
     "weaponTypes": [],
@@ -17552,14 +17552,14 @@
       7,
       6
     ],
-    "preview": "The chance to create a Life Sphere is slightly increased. Detonates all nearby Life Spheres to deal damage instead of absorbing HP."
+    "preview": "The chance to create a Life Sphere is slightly increased. Detonates all nearby Life Spheres to deal damage instead of absorbing HP.\nRecovers Power of Life based on the number of Life Spheres exploded."
   },
   {
     "id": "254009006",
     "name": "Demonic Modification",
     "image": "https://open.api.nexon.com/static/tfd/img/dab05baea17b29744e358eb9536dbfb6",
     "type": "",
-    "tier": "Normal",
+    "tier": "Transcendent",
     "socket": "Malachite",
     "moduleClass": "Descendant",
     "weaponTypes": [],
@@ -17579,14 +17579,14 @@
       4,
       3
     ],
-    "preview": "The Unique Weapon consumes HP based on the duration of True Aim."
+    "preview": "The Unique Weapon consumes HP based on the duration of True Aim.\nThe Explosion Damage of bullets increases proportionally to the HP consumed, and attacking Weak Points increases the chance of HP Recovery."
   },
   {
     "id": "254010001",
     "name": "Cold Cohesion",
     "image": "https://open.api.nexon.com/static/tfd/img/4cd3f6d963e47f620278cf7e010d3b1f",
     "type": "",
-    "tier": "Normal",
+    "tier": "Transcendent",
     "socket": "Cerulean",
     "moduleClass": "Descendant",
     "weaponTypes": [],
@@ -17613,7 +17613,7 @@
     "name": "Absolute-Zero",
     "image": "https://open.api.nexon.com/static/tfd/img/ad68586b42101dd26f41df4d31dddc3c",
     "type": "",
-    "tier": "Normal",
+    "tier": "Transcendent",
     "socket": "Xantic",
     "moduleClass": "Descendant",
     "weaponTypes": [],
@@ -17633,14 +17633,14 @@
       5,
       4
     ],
-    "preview": "When using skill, Ice Shackle is not inflicted."
+    "preview": "When using skill, Ice Shackle is not inflicted.\nWhen the skill lands a Critical Hit, inflicts Frostbite on the target.\nSuccessfully inflicting Frostbite triggers Ice Sphere."
   },
   {
     "id": "254011001",
     "name": "Release Cutting Force",
     "image": "https://open.api.nexon.com/static/tfd/img/ad66117d633746e491fa796b8a0a0362",
     "type": "",
-    "tier": "Normal",
+    "tier": "Transcendent",
     "socket": "Xantic",
     "moduleClass": "Descendant",
     "weaponTypes": [],
@@ -17668,7 +17668,7 @@
     "name": "Overcharged Edge",
     "image": "https://open.api.nexon.com/static/tfd/img/623136efda5da814d0a05444e4bf9f45",
     "type": "",
-    "tier": "Normal",
+    "tier": "Transcendent",
     "socket": "Cerulean",
     "moduleClass": "Descendant",
     "weaponTypes": [],
@@ -17689,14 +17689,14 @@
       5,
       4
     ],
-    "preview": "While Active Camouflage is active, attacking with a Melee Weapon or the Cutoff Beam skill converts to Overcharged Edge and consumes Shield to maintain the ef…"
+    "preview": "While Active Camouflage is active, attacking with a Melee Weapon or the Cutoff Beam skill converts to Overcharged Edge and consumes Shield to maintain the effect."
   },
   {
     "id": "254011003",
     "name": "Focused Edge",
     "image": "https://open.api.nexon.com/static/tfd/img/ad1c02287a35bb0004b87df95ecafbe9",
     "type": "",
-    "tier": "Normal",
+    "tier": "Transcendent",
     "socket": "Xantic",
     "moduleClass": "Descendant",
     "weaponTypes": [],
@@ -17717,14 +17717,14 @@
       5,
       4
     ],
-    "preview": "Changes Flash Shortsword to Focused Edge that increases the number of Shortswords through attacking or defeating Assassination Targets."
+    "preview": "Changes Flash Shortsword to Focused Edge that increases the number of Shortswords through attacking or defeating Assassination Targets.\nIncreases enemy targeting speed and range."
   },
   {
     "id": "254011004",
     "name": "Battlesuit Melting Rounds",
     "image": "https://open.api.nexon.com/static/tfd/img/ecdae6fee0b307526e1b95788c4125ff",
     "type": "",
-    "tier": "Normal",
+    "tier": "Transcendent",
     "socket": "Cerulean",
     "moduleClass": "Descendant",
     "weaponTypes": [],
@@ -17745,14 +17745,14 @@
       4,
       3
     ],
-    "preview": "Modifies to stackable skill."
+    "preview": "Modifies to stackable skill.\nDecreases the enemy's Electric Resistance instead of stunning them."
   },
   {
     "id": "254011005",
     "name": "Area Suppression",
     "image": "https://open.api.nexon.com/static/tfd/img/291c42298b4aa8bdeceab4eea139e336",
     "type": "",
-    "tier": "Normal",
+    "tier": "Transcendent",
     "socket": "Cerulean",
     "moduleClass": "Descendant",
     "weaponTypes": [],
@@ -17779,7 +17779,7 @@
     "name": "Ambushed",
     "image": "https://open.api.nexon.com/static/tfd/img/4bb48e585df66aa3eac74430497fcda4",
     "type": "",
-    "tier": "Normal",
+    "tier": "Transcendent",
     "socket": "Cerulean",
     "moduleClass": "Descendant",
     "weaponTypes": [],
@@ -17799,14 +17799,14 @@
       4,
       3
     ],
-    "preview": "Modifies so that killing an enemy in Active Camouflage returns the user to the same state. In Active Camouflage, agility increases, and Shock Bomb skill is c…"
+    "preview": "Modifies so that killing an enemy in Active Camouflage returns the user to the same state. In Active Camouflage, agility increases, and Shock Bomb skill is converted to an attack skill."
   },
   {
     "id": "254012001",
     "name": "Noise Surge",
     "image": "https://open.api.nexon.com/static/tfd/img/5afb4b45f6bc7807ccec0f014d405ba9",
     "type": "",
-    "tier": "Normal",
+    "tier": "Transcendent",
     "socket": "Malachite",
     "moduleClass": "Descendant",
     "weaponTypes": [],
@@ -17827,14 +17827,14 @@
       8,
       7
     ],
-    "preview": "When using skill, deals damage to nearby enemies but doesn't buff allies."
+    "preview": "When using skill, deals damage to nearby enemies but doesn't buff allies.\nGrants a stackable buff to Luna that is enhanced with each stack."
   },
   {
     "id": "254012002",
     "name": "Nimble Footsteps",
     "image": "https://open.api.nexon.com/static/tfd/img/5ff8aae52b1bcbd74e09622c4dd0d745",
     "type": "",
-    "tier": "Normal",
+    "tier": "Transcendent",
     "socket": "Malachite",
     "moduleClass": "Descendant",
     "weaponTypes": [],
@@ -17862,7 +17862,7 @@
     "name": "Aggressive Melody",
     "image": "https://open.api.nexon.com/static/tfd/img/b60f3fda8b3aed470a7106651afd7f09",
     "type": "",
-    "tier": "Normal",
+    "tier": "Transcendent",
     "socket": "Malachite",
     "moduleClass": "Descendant",
     "weaponTypes": [],
@@ -17890,7 +17890,7 @@
     "name": "Singer's Mercy",
     "image": "https://open.api.nexon.com/static/tfd/img/647a26658f16dc4d6256b5a074f76637",
     "type": "",
-    "tier": "Normal",
+    "tier": "Transcendent",
     "socket": "Xantic",
     "moduleClass": "Descendant",
     "weaponTypes": [],
@@ -17918,7 +17918,7 @@
     "name": "Battlefield Concert",
     "image": "https://open.api.nexon.com/static/tfd/img/eeae7068263a6648834a877a92d96f2a",
     "type": "",
-    "tier": "Normal",
+    "tier": "Transcendent",
     "socket": "Rutile",
     "moduleClass": "Descendant",
     "weaponTypes": [],
@@ -17938,14 +17938,14 @@
       6,
       5
     ],
-    "preview": "Modifies Unique Weapon to inflict debuffs on enemies."
+    "preview": "Modifies Unique Weapon to inflict debuffs on enemies.\nWhen using an Enhanced Skill, deals damage to the enemy and temporarily stops Note usage."
   },
   {
     "id": "254012006",
     "name": "Battlefield Artist",
     "image": "https://open.api.nexon.com/static/tfd/img/a70cddac50f7bc1019a7dd024408b0ae",
     "type": "",
-    "tier": "Normal",
+    "tier": "Transcendent",
     "socket": "Almandine",
     "moduleClass": "Descendant",
     "weaponTypes": [],
@@ -17965,14 +17965,14 @@
       6,
       5
     ],
-    "preview": "Removes Unique Weapon."
+    "preview": "Removes Unique Weapon.\nModifies effect to grant a Firearm buff to self."
   },
   {
     "id": "254013001",
     "name": "Water Play",
     "image": "https://open.api.nexon.com/static/tfd/img/5405551ec0fbe265b0735b45266dfd82",
     "type": "",
-    "tier": "Normal",
+    "tier": "Transcendent",
     "socket": "Malachite",
     "moduleClass": "Descendant",
     "weaponTypes": [],
@@ -18000,7 +18000,7 @@
     "name": "Supply Moisture",
     "image": "https://open.api.nexon.com/static/tfd/img/4443e41d60a5371b2cb9f6fb431c10ae",
     "type": "",
-    "tier": "Normal",
+    "tier": "Transcendent",
     "socket": "Malachite",
     "moduleClass": "Descendant",
     "weaponTypes": [],
@@ -18021,14 +18021,14 @@
       5,
       4
     ],
-    "preview": "While on water, increases Firearm Critical Hit Rate, Skill Critical Hit Rate, Skill Duration, and Firearm Attribute Trigger Rate."
+    "preview": "While on water, increases Firearm Critical Hit Rate, Skill Critical Hit Rate, Skill Duration, and Firearm Attribute Trigger Rate.\nMP recovery is not applied."
   },
   {
     "id": "254013003",
     "name": "Tidal Wave",
     "image": "https://open.api.nexon.com/static/tfd/img/4672736ee2edde358f85026e11c52c23",
     "type": "",
-    "tier": "Normal",
+    "tier": "Transcendent",
     "socket": "Cerulean",
     "moduleClass": "Descendant",
     "weaponTypes": [],
@@ -18049,14 +18049,14 @@
       5,
       4
     ],
-    "preview": "Does not leave watery trails when moving."
+    "preview": "Does not leave watery trails when moving.\nWhen moving through a monster, inflicts skill damage on them.\nWhen the skill ends, deals Burst Damage to nearby enemies."
   },
   {
     "id": "254013004",
     "name": "Singing Water",
     "image": "https://open.api.nexon.com/static/tfd/img/cc3abd844935d967deb02b072bbb3d50",
     "type": "",
-    "tier": "Normal",
+    "tier": "Transcendent",
     "socket": "Rutile",
     "moduleClass": "Descendant",
     "weaponTypes": [],
@@ -18077,14 +18077,14 @@
       6,
       5
     ],
-    "preview": "Spawns a Seduction of Water where the Unique Weapon's bullet explodes."
+    "preview": "Spawns a Seduction of Water where the Unique Weapon's bullet explodes.\nUntil it is destroyed, the spawned Seduction of Water taunts surrounding monsters and inflicts Laundry on them.\nWhen destroyed, it explodes and deals damage to nearby enemies."
   },
   {
     "id": "254013005",
     "name": "Hydro Pressure Bomb",
     "image": "https://open.api.nexon.com/static/tfd/img/685a25659f88f8b1bb90f6c696582ef1",
     "type": "",
-    "tier": "Normal",
+    "tier": "Transcendent",
     "socket": "Malachite",
     "moduleClass": "Descendant",
     "weaponTypes": [],
@@ -18104,14 +18104,14 @@
       6,
       5
     ],
-    "preview": "Leaps forward without creating a Puddle and deals damage to the surrounding enemies on landing."
+    "preview": "Leaps forward without creating a Puddle and deals damage to the surrounding enemies on landing.\nThe more enemies with Laundry, the more damage inflicted."
   },
   {
     "id": "254013006",
     "name": "Spiral Tidal Wave",
     "image": "https://open.api.nexon.com/static/tfd/img/c5f5bb1c0704cb17852d0887c3f9b66f",
     "type": "",
-    "tier": "Normal",
+    "tier": "Transcendent",
     "socket": "Malachite",
     "moduleClass": "Descendant",
     "weaponTypes": [],
@@ -18131,14 +18131,14 @@
       5,
       4
     ],
-    "preview": "Bubbles no longer bounce off the ground, but are now projectiles fired forward."
+    "preview": "Bubbles no longer bounce off the ground, but are now projectiles fired forward.\nAttracts Gluttony's impurities."
   },
   {
     "id": "254014001",
     "name": "Superconductive Bombing MARK 2",
     "image": "https://open.api.nexon.com/static/tfd/img/b3c24d95e85e7f7055b08eaf84d9562b",
     "type": "",
-    "tier": "Normal",
+    "tier": "Transcendent",
     "socket": "Almandine",
     "moduleClass": "Descendant",
     "weaponTypes": [],
@@ -18158,14 +18158,14 @@
       7,
       6
     ],
-    "preview": "When used on the ground, takes off and launches Superconductive Bombing in midair."
+    "preview": "When used on the ground, takes off and launches Superconductive Bombing in midair.\nWhen used in midair, immediately launches Superconductive Bombing MARK 2."
   },
   {
     "id": "254014002",
     "name": "Self-Directed Eruption",
     "image": "https://open.api.nexon.com/static/tfd/img/e26e9a47617c9fd7560aca67fe228ef2",
     "type": "",
-    "tier": "Normal",
+    "tier": "Transcendent",
     "socket": "Almandine",
     "moduleClass": "Descendant",
     "weaponTypes": [],
@@ -18185,14 +18185,14 @@
       6,
       5
     ],
-    "preview": "Consumes Magnetic Force every second when used to pull enemies in front of Kyle."
+    "preview": "Consumes Magnetic Force every second when used to pull enemies in front of Kyle.\nDeals great damage to nearby enemies when the skill ends.\nBut removes the ally Shield recovery effect."
   },
   {
     "id": "254014003",
     "name": "Diamagnetic Bulwark",
     "image": "https://open.api.nexon.com/static/tfd/img/688ae9342295935a0be430cf52ee16d4",
     "type": "",
-    "tier": "Normal",
+    "tier": "Transcendent",
     "socket": "Malachite",
     "moduleClass": "Descendant",
     "weaponTypes": [],
@@ -18212,14 +18212,14 @@
       5,
       4
     ],
-    "preview": "Instead of Magnetic Bulwark's projectile defense, knocks back enemies on contact."
+    "preview": "Instead of Magnetic Bulwark's projectile defense, knocks back enemies on contact.\nRecovers Magnetic Force based on the number of Knockbacks."
   },
   {
     "id": "254014004",
     "name": "Superconductive Bombing",
     "image": "https://open.api.nexon.com/static/tfd/img/6b711da5c717b699e5b46aab90061077",
     "type": "",
-    "tier": "Normal",
+    "tier": "Transcendent",
     "socket": "Xantic",
     "moduleClass": "Descendant",
     "weaponTypes": [],
@@ -18239,14 +18239,14 @@
       7,
       6
     ],
-    "preview": "While airborne, continuously consumes Magnetic Force to drop bombs."
+    "preview": "While airborne, continuously consumes Magnetic Force to drop bombs.\nThe bombing stops when Magnetic Force is completely depleted, and additional damage from Magnetic Force is not triggered on collision.\nAirborne duration increases as the Skill Duration increases, but the base airborne duration decreases."
   },
   {
     "id": "254015001",
     "name": "Explosive Evade",
     "image": "https://open.api.nexon.com/static/tfd/img/5d1e3e69faa748af6c10aba722ad7a5d",
     "type": "",
-    "tier": "Normal",
+    "tier": "Transcendent",
     "socket": "Malachite",
     "moduleClass": "Descendant",
     "weaponTypes": [],
@@ -18273,7 +18273,7 @@
     "name": "Cluster Bomb",
     "image": "https://open.api.nexon.com/static/tfd/img/6eeae8d8fb02ccc1fda038fccc68f612",
     "type": "",
-    "tier": "Normal",
+    "tier": "Transcendent",
     "socket": "Malachite",
     "moduleClass": "Descendant",
     "weaponTypes": [],
@@ -18300,7 +18300,7 @@
     "name": "Explosive Propaganda",
     "image": "https://open.api.nexon.com/static/tfd/img/9ab6457b90e13d6e445c632ad3d28d6e",
     "type": "",
-    "tier": "Normal",
+    "tier": "Transcendent",
     "socket": "Malachite",
     "moduleClass": "Descendant",
     "weaponTypes": [],
@@ -18320,14 +18320,14 @@
       5,
       4
     ],
-    "preview": "Generates Explosive Propaganda."
+    "preview": "Generates Explosive Propaganda.\nThe generated Explosive Propaganda taunts nearby monsters until destroyed,\nupon which it explodes and causes great damage to nearby enemies."
   },
   {
     "id": "254015004",
     "name": "Creative Explosion",
     "image": "https://open.api.nexon.com/static/tfd/img/81a91fba2693b33752009a2d788caf1f",
     "type": "",
-    "tier": "Normal",
+    "tier": "Transcendent",
     "socket": "Xantic",
     "moduleClass": "Descendant",
     "weaponTypes": [],
@@ -18347,14 +18347,14 @@
       7,
       6
     ],
-    "preview": "After a dash, uses up all available bombs to inflict great damage to nearby enemies."
+    "preview": "After a dash, uses up all available bombs to inflict great damage to nearby enemies.\nThe more bombs available, the greater the damage inflicted."
   },
   {
     "id": "254016001",
     "name": "Compressed Bullet",
     "image": "https://open.api.nexon.com/static/tfd/img/68d011074d884ce892546dd4133bd304",
     "type": "",
-    "tier": "Normal",
+    "tier": "Transcendent",
     "socket": "Malachite",
     "moduleClass": "Descendant",
     "weaponTypes": [],
@@ -18381,7 +18381,7 @@
     "name": "Supply Firearm Enhancer",
     "image": "https://open.api.nexon.com/static/tfd/img/347f48197a8eaa9cbf8939859d97bb83",
     "type": "",
-    "tier": "Normal",
+    "tier": "Transcendent",
     "socket": "Malachite",
     "moduleClass": "Descendant",
     "weaponTypes": [],
@@ -18401,14 +18401,14 @@
       5,
       4
     ],
-    "preview": "Summons a Firearm Enhancement Device."
+    "preview": "Summons a Firearm Enhancement Device.\nTouching the device grants Weak Point Damage and Firearm Critical Hit Rate Up."
   },
   {
     "id": "254016003",
     "name": "Reinforce Front Line",
     "image": "https://open.api.nexon.com/static/tfd/img/4c6a309ec7bbf20fcb222919680f71fe",
     "type": "",
-    "tier": "Normal",
+    "tier": "Transcendent",
     "socket": "Malachite",
     "moduleClass": "Descendant",
     "weaponTypes": [],
@@ -18435,7 +18435,7 @@
     "name": "Focus Fire",
     "image": "https://open.api.nexon.com/static/tfd/img/50ce255d9c18a47d2f8dc314bd25dcf4",
     "type": "",
-    "tier": "Normal",
+    "tier": "Transcendent",
     "socket": "Xantic",
     "moduleClass": "Descendant",
     "weaponTypes": [],
@@ -18455,14 +18455,14 @@
       7,
       6
     ],
-    "preview": "Attaches a Combat Drone to himself."
+    "preview": "Attaches a Combat Drone to himself.\nOn Firearm Critical Hit attack, increases the drone's duration.\nIncreases the Max Stack of Explosive Drone."
   },
   {
     "id": "254017001",
     "name": "First Aid Kit",
     "image": "https://open.api.nexon.com/static/tfd/img/bf16279e464ab638acc90c806b236fe6",
     "type": "",
-    "tier": "Normal",
+    "tier": "Transcendent",
     "socket": "Malachite",
     "moduleClass": "Descendant",
     "weaponTypes": [],
@@ -18490,7 +18490,7 @@
     "name": "Proliferating Allergy",
     "image": "https://open.api.nexon.com/static/tfd/img/8ff00d3d386dfe29cc8ac3bdc9e41b6d",
     "type": "",
-    "tier": "Normal",
+    "tier": "Transcendent",
     "socket": "Malachite",
     "moduleClass": "Descendant",
     "weaponTypes": [],
@@ -18511,14 +18511,14 @@
       5,
       4
     ],
-    "preview": "Inflicts Explosive Reaction."
+    "preview": "Inflicts Explosive Reaction.\nDeals damage to nearby enemies when the effect ends or the enemy dies.\nInflicts the same effect to nearby enemies when the enemy dies."
   },
   {
     "id": "254017003",
     "name": "Duty and Sacrifice",
     "image": "https://open.api.nexon.com/static/tfd/img/e4b8f825bd94b5e17f3813372b7336c1",
     "type": "",
-    "tier": "Normal",
+    "tier": "Transcendent",
     "socket": "Malachite",
     "moduleClass": "Descendant",
     "weaponTypes": [],
@@ -18546,7 +18546,7 @@
     "name": "Efficient Treatment",
     "image": "https://open.api.nexon.com/static/tfd/img/8915c3d4e1b669a0761124b9e9680458",
     "type": "",
-    "tier": "Normal",
+    "tier": "Transcendent",
     "socket": "Xantic",
     "moduleClass": "Descendant",
     "weaponTypes": [],
@@ -18574,7 +18574,7 @@
     "name": "Combat Protocol",
     "image": "https://open.api.nexon.com/static/tfd/img/5ea3fa7cd0800e439323a2988ed93b84",
     "type": "",
-    "tier": "Normal",
+    "tier": "Transcendent",
     "socket": "Cerulean",
     "moduleClass": "Descendant",
     "weaponTypes": [],
@@ -18601,7 +18601,7 @@
     "name": "Battlefield Medic",
     "image": "https://open.api.nexon.com/static/tfd/img/95dffe56f924d0539a6d89fadc733683",
     "type": "",
-    "tier": "Normal",
+    "tier": "Transcendent",
     "socket": "Xantic",
     "moduleClass": "Descendant",
     "weaponTypes": [],
@@ -18628,7 +18628,7 @@
     "name": "Incendiary Bomb",
     "image": "https://open.api.nexon.com/static/tfd/img/87dd5cbc3526d32cd1a9619ec4405a3c",
     "type": "",
-    "tier": "Normal",
+    "tier": "Transcendent",
     "socket": "Almandine",
     "moduleClass": "Descendant",
     "weaponTypes": [],
@@ -18656,7 +18656,7 @@
     "name": "Truly Deadly Cuisine",
     "image": "https://open.api.nexon.com/static/tfd/img/6a0e018ac3f2c7de823cb1ad094c2cbe",
     "type": "",
-    "tier": "Normal",
+    "tier": "Transcendent",
     "socket": "Almandine",
     "moduleClass": "Descendant",
     "weaponTypes": [],
@@ -18677,14 +18677,14 @@
       6,
       5
     ],
-    "preview": "Significantly increases the damage of Giant Fireball."
+    "preview": "Significantly increases the damage of Giant Fireball.\nWhen Giant Fireball explodes, Small Fireballs and Flame Zones do not spawn."
   },
   {
     "id": "254018003",
     "name": "Backdraft",
     "image": "https://open.api.nexon.com/static/tfd/img/489a5c4028a312f12898619c2a5926fd",
     "type": "",
-    "tier": "Normal",
+    "tier": "Transcendent",
     "socket": "Malachite",
     "moduleClass": "Descendant",
     "weaponTypes": [],
@@ -18712,7 +18712,7 @@
     "name": "Classic Chef",
     "image": "https://open.api.nexon.com/static/tfd/img/0cd335fc3cfcf426ed76b381d01c8f2c",
     "type": "",
-    "tier": "Normal",
+    "tier": "Transcendent",
     "socket": "Xantic",
     "moduleClass": "Descendant",
     "weaponTypes": [],
@@ -18733,14 +18733,14 @@
       7,
       6
     ],
-    "preview": "Modifies the increase to Skill Critical Hit Rate to 9 based on the Flame Zone count."
+    "preview": "Modifies the increase to Skill Critical Hit Rate to 9 based on the Flame Zone count.\nUsing Deadly Cuisine increases the number of Flame Zones created to 5."
   },
   {
     "id": "254018005",
     "name": "Killer Recipe",
     "image": "https://open.api.nexon.com/static/tfd/img/f22d0ca7fe65060c56360564a6cf8a4b",
     "type": "",
-    "tier": "Normal",
+    "tier": "Transcendent",
     "socket": "Almandine",
     "moduleClass": "Descendant",
     "weaponTypes": [],
@@ -18760,14 +18760,14 @@
       7,
       6
     ],
-    "preview": "Now applies an additional effect when attacking enemies afflicted with Burn."
+    "preview": "Now applies an additional effect when attacking enemies afflicted with Burn.\nChanged to fire a Meatball without generating a Flame Zone.\nChanged to generate Chef’s Touch when attacking or defeating enemies with Burn, and deal damage by targeting the enemy."
   },
   {
     "id": "254018006",
     "name": "Next-level Recipe",
     "image": "https://open.api.nexon.com/static/tfd/img/93df9382ac87b2d8d519d576f719af11",
     "type": "",
-    "tier": "Normal",
+    "tier": "Transcendent",
     "socket": "Almandine",
     "moduleClass": "Descendant",
     "weaponTypes": [],
@@ -18787,14 +18787,14 @@
       6,
       5
     ],
-    "preview": "Changed to create Flame Zones after moving a certain distance."
+    "preview": "Changed to create Flame Zones after moving a certain distance.\nChanged to Fire flames forward while moving quickly."
   },
   {
     "id": "254019001",
     "name": "Electric Charge",
     "image": "https://open.api.nexon.com/static/tfd/img/c8cd4aaaf6e01e2766dc5618ae89e96a",
     "type": "",
-    "tier": "Normal",
+    "tier": "Transcendent",
     "socket": "Malachite",
     "moduleClass": "Descendant",
     "weaponTypes": [],
@@ -18814,14 +18814,14 @@
       4,
       3
     ],
-    "preview": "Increases the landing damage after Rabbit Foot's Double Jump."
+    "preview": "Increases the landing damage after Rabbit Foot's Double Jump.\nDouble Jump deals significantly increased damage after hitting enemies with the skill a certain number of times."
   },
   {
     "id": "254019002",
     "name": "High-Voltage",
     "image": "https://open.api.nexon.com/static/tfd/img/3c0c31b3c22aec5af03d62901ff01aaa",
     "type": "",
-    "tier": "Normal",
+    "tier": "Transcendent",
     "socket": "Malachite",
     "moduleClass": "Descendant",
     "weaponTypes": [],
@@ -18841,14 +18841,14 @@
       6,
       5
     ],
-    "preview": "Reduces the number of enemies that Thrill Bomb and Lightning Emission can strike."
+    "preview": "Reduces the number of enemies that Thrill Bomb and Lightning Emission can strike.\nIncreases range and damage instead."
   },
   {
     "id": "254021001",
     "name": "Cryogenic Cluster Shot",
     "image": "https://open.api.nexon.com/static/tfd/img/811094c76ba270677e2c861081872c05",
     "type": "",
-    "tier": "Normal",
+    "tier": "Transcendent",
     "socket": "Xantic",
     "moduleClass": "Descendant",
     "weaponTypes": [],
@@ -18868,14 +18868,14 @@
       7,
       6
     ],
-    "preview": "Modifies the Cryo effect to Cryogenic, reducing the number of maximum stacks and effect strength, but dealing additional AoE damage to nearby enemies when th…"
+    "preview": "Modifies the Cryo effect to Cryogenic, reducing the number of maximum stacks and effect strength, but dealing additional AoE damage to nearby enemies when the effect is removed."
   },
   {
     "id": "254021002",
     "name": "Supercooled Kuiper Round",
     "image": "https://open.api.nexon.com/static/tfd/img/8f58e9176e8013b338e2403baac44c35",
     "type": "",
-    "tier": "Normal",
+    "tier": "Transcendent",
     "socket": "Malachite",
     "moduleClass": "Descendant",
     "weaponTypes": [],
@@ -18895,14 +18895,14 @@
       4,
       3
     ],
-    "preview": "Equipping a Unique Weapon decreases Additional Firearm ATK and Fire Rate, but increases Weak Point Damage and successfully attacking a Weak Point recovers Sh…"
+    "preview": "Equipping a Unique Weapon decreases Additional Firearm ATK and Fire Rate, but increases Weak Point Damage and successfully attacking a Weak Point recovers Shield instead of MP.\nThe increase in Weak Point Damage decreases when firing a Unique Weapon, but increases again on a successful Weak Point attack."
   },
   {
     "id": "254021003",
     "name": "Camouflaged Sniping",
     "image": "https://open.api.nexon.com/static/tfd/img/a3e5eb544e7030eff65b45254af56cae",
     "type": "",
-    "tier": "Normal",
+    "tier": "Transcendent",
     "socket": "Almandine",
     "moduleClass": "Descendant",
     "weaponTypes": [],
@@ -18929,7 +18929,7 @@
     "name": "Cold Heart",
     "image": "https://open.api.nexon.com/static/tfd/img/3b115177417f40c17ce4d69be5ddaf4f",
     "type": "",
-    "tier": "Normal",
+    "tier": "Transcendent",
     "socket": "Cerulean",
     "moduleClass": "Descendant",
     "weaponTypes": [],
@@ -18949,14 +18949,14 @@
       7,
       6
     ],
-    "preview": "Changes to a skill that attacks nearby targets with Chill when her Unique Weapon is not in use."
+    "preview": "Changes to a skill that attacks nearby targets with Chill when her Unique Weapon is not in use.\nCryo changes to Ultra Cryo.\nUltra Cryo: Max stacks remain the same, but when attacking with a skill, removes all stacked effects and deals additional damage."
   },
   {
     "id": "254024001",
     "name": "Focus on Prey",
     "image": "https://open.api.nexon.com/static/tfd/img/d001a46df3e15cdd3e9f2ec049abce18",
     "type": "",
-    "tier": "Normal",
+    "tier": "Transcendent",
     "socket": "Xantic",
     "moduleClass": "Descendant",
     "weaponTypes": [],
@@ -18976,14 +18976,14 @@
       6,
       5
     ],
-    "preview": "Increases the number of projectiles fired and modifies Void Corrosion to target a single enemy."
+    "preview": "Increases the number of projectiles fired and modifies Void Corrosion to target a single enemy.\nIncreases the maximum stacks of Acidic Decay."
   },
   {
     "id": "254024002",
     "name": "Mobile Strike",
     "image": "https://open.api.nexon.com/static/tfd/img/1f23c92afb53486cbb5ed811d21eec90",
     "type": "",
-    "tier": "Normal",
+    "tier": "Transcendent",
     "socket": "Malachite",
     "moduleClass": "Descendant",
     "weaponTypes": [],
@@ -19003,14 +19003,14 @@
       8,
       7
     ],
-    "preview": "Septic Gust is adjusted to deal no damage. Grants the Adventurer's Spirit effect to self, preventing Onslaught stack reduction during the effect duration and…"
+    "preview": "Septic Gust is adjusted to deal no damage. Grants the Adventurer's Spirit effect to self, preventing Onslaught stack reduction during the effect duration and applying Corrosion Acceleration to pierced targets."
   },
   {
     "id": "254024003",
     "name": "Fierce Attack",
     "image": "https://open.api.nexon.com/static/tfd/img/f6ec3a20184b793b76d8ceeb13c65c4b",
     "type": "",
-    "tier": "Normal",
+    "tier": "Transcendent",
     "socket": "Almandine",
     "moduleClass": "Descendant",
     "weaponTypes": [],
@@ -19030,14 +19030,14 @@
       8,
       7
     ],
-    "preview": "Increases the number of Fierce Attack hits and adds Tow when using Septic Turbulence."
+    "preview": "Increases the number of Fierce Attack hits and adds Tow when using Septic Turbulence.\nUsing Tremor increases Fierce Attack stacks unconditionally."
   },
   {
     "id": "254024004",
     "name": "Septic Torrent",
     "image": "https://open.api.nexon.com/static/tfd/img/32a6ba47c55c90b0ffdef8ed36dc54d3",
     "type": "",
-    "tier": "Normal",
+    "tier": "Transcendent",
     "socket": "Rutile",
     "moduleClass": "Descendant",
     "weaponTypes": [],
@@ -19057,14 +19057,14 @@
       8,
       7
     ],
-    "preview": "When attacking enemies with a Melee Weapon increases Acidic Infusion Level"
+    "preview": "When attacking enemies with a Melee Weapon increases Acidic Infusion Level\nWhen using Hunt, quickly approaches the target and unleashes an AoE attack\nWhen using Septic Torrent, unleashes a continuous damage attack on surrounding targets"
   },
   {
     "id": "254026001",
     "name": "Plasma Ball",
     "image": "https://open.api.nexon.com/static/tfd/img/21b0999ce435c438244faf9bbecd0cbf",
     "type": "",
-    "tier": "Normal",
+    "tier": "Transcendent",
     "socket": "Rutile",
     "moduleClass": "Descendant",
     "weaponTypes": [],
@@ -19084,14 +19084,14 @@
       4,
       3
     ],
-    "preview": "Removes the increase Skill Critical Hit Rate proportional to Max MP effect of the passive skill."
+    "preview": "Removes the increase Skill Critical Hit Rate proportional to Max MP effect of the passive skill.\nInstead, creates a barrier of plasma at regular intervals."
   },
   {
     "id": "254026002",
     "name": "Time of the Hunting Hounds",
     "image": "https://open.api.nexon.com/static/tfd/img/f7a6306eefcbc6e6945cd05b5e2dd853",
     "type": "",
-    "tier": "Normal",
+    "tier": "Transcendent",
     "socket": "Rutile",
     "moduleClass": "Descendant",
     "weaponTypes": [],
@@ -19111,14 +19111,14 @@
       6,
       5
     ],
-    "preview": "Changes to a skill that quickly Dashes toward enemies. Deals damage and inflicts Conductor on all enemies in the path."
+    "preview": "Changes to a skill that quickly Dashes toward enemies. Deals damage and inflicts Conductor on all enemies in the path.\nReduces the number of bounces of Chain Lightning and modifies it to be stackable.\nModifies the Arche type of the modified skills to Tech."
   },
   {
     "id": "254027001",
     "name": "Divine Surge",
     "image": "https://open.api.nexon.com/static/tfd/img/4a640d67f3bd1d161df0ffb417eb4055",
     "type": "",
-    "tier": "Normal",
+    "tier": "Transcendent",
     "socket": "Rutile",
     "moduleClass": "Descendant",
     "weaponTypes": [],
@@ -19138,14 +19138,14 @@
       4,
       3
     ],
-    "preview": "Flies forward, inflicting Knockback on enemies in the path and deals large amounts of damage on landing."
+    "preview": "Flies forward, inflicting Knockback on enemies in the path and deals large amounts of damage on landing.\nAdditionally, creates a path of fire in her wake that deals continuous damage to enemies within range."
   },
   {
     "id": "254027002",
     "name": "Hymn",
     "image": "https://open.api.nexon.com/static/tfd/img/360638fdd6d71cbe950d0daf2164cd82",
     "type": "",
-    "tier": "Normal",
+    "tier": "Transcendent",
     "socket": "Rutile",
     "moduleClass": "Descendant",
     "weaponTypes": [],
@@ -19165,14 +19165,14 @@
       6,
       5
     ],
-    "preview": "When used on the ground, creates a zone that increases the Jump of allies. When used in midair, temporarily increases the Movement Speed of nearby allies and…"
+    "preview": "When used on the ground, creates a zone that increases the Jump of allies. When used in midair, temporarily increases the Movement Speed of nearby allies and increases maximum movement distance."
   },
   {
     "id": "254029001",
     "name": "Restored Heart",
     "image": "https://open.api.nexon.com/static/tfd/img/5e5d2ecd1fcc807dc031ff95ec423436",
     "type": "",
-    "tier": "Normal",
+    "tier": "Transcendent",
     "socket": "Rutile",
     "moduleClass": "Descendant",
     "weaponTypes": [],
@@ -19199,7 +19199,7 @@
     "name": "Shattered Heart",
     "image": "https://open.api.nexon.com/static/tfd/img/f590a631a0e6ab4d0729116a0655c8e0",
     "type": "",
-    "tier": "Normal",
+    "tier": "Transcendent",
     "socket": "Rutile",
     "moduleClass": "Descendant",
     "weaponTypes": [],
@@ -19219,14 +19219,14 @@
       7,
       6
     ],
-    "preview": "Changes Gaze of the Abyss to an attack skill."
+    "preview": "Changes Gaze of the Abyss to an attack skill.\nBuilds up Suspicion stacks using Breach Spikes, then fires enhanced Breach Spikes."
   },
   {
     "id": "254031001",
     "name": "Focused Supervision",
     "image": "https://open.api.nexon.com/static/tfd/img/94b7ae170f4e191083148fb881354108",
     "type": "",
-    "tier": "Normal",
+    "tier": "Transcendent",
     "socket": "Rutile",
     "moduleClass": "Descendant",
     "weaponTypes": [],
@@ -19246,14 +19246,14 @@
       4,
       3
     ],
-    "preview": "Changes the Crushing Charge and Waste Disposal Skills"
+    "preview": "Changes the Crushing Charge and Waste Disposal Skills\nChanges the Crushing Charge Skill to a Ranged Attack Skill that fires a laser forward.\nThe Waste Disposal Skill now continuously consumes Toxin but deals massive damage."
   },
   {
     "id": "254031002",
     "name": "Safety Training",
     "image": "https://open.api.nexon.com/static/tfd/img/c94c716d76545a6fe966141c3cccfa4f",
     "type": "",
-    "tier": "Normal",
+    "tier": "Transcendent",
     "socket": "Cerulean",
     "moduleClass": "Descendant",
     "weaponTypes": [],
@@ -19273,14 +19273,14 @@
       7,
       6
     ],
-    "preview": "Changes the Site Intrusion and Designate Danger Zone Skills"
+    "preview": "Changes the Site Intrusion and Designate Danger Zone Skills\nStrengthens the Protective Barrier of the Site Intrusion Skill\nChanges the Designate Danger Zone Skill to provide a Protective Barrier to nearby allies."
   },
   {
     "id": "254033001",
     "name": "Blooming Ecstasy",
     "image": "https://open.api.nexon.com/static/tfd/img/6dbf150d6866410b435087bfd222e4fb",
     "type": "",
-    "tier": "Normal",
+    "tier": "Transcendent",
     "socket": "Rutile",
     "moduleClass": "Descendant",
     "weaponTypes": [],
@@ -19300,14 +19300,14 @@
       4,
       3
     ],
-    "preview": "When attacking enemies with Snowflake Clash, applies Snowflake to enemies."
+    "preview": "When attacking enemies with Snowflake Clash, applies Snowflake to enemies.\nSnowflake deals AoE Explosion damage to targets.\nChanges Frozen Spire to Frost Bloom, and charging enhances Frost Bloom."
   },
   {
     "id": "254033002",
     "name": "Chill Brand",
     "image": "https://open.api.nexon.com/static/tfd/img/c4325606f23f5f8397b9ad81632a7fcf",
     "type": "",
-    "tier": "Normal",
+    "tier": "Transcendent",
     "socket": "Cerulean",
     "moduleClass": "Descendant",
     "weaponTypes": [],
@@ -19327,7 +19327,7 @@
       7,
       6
     ],
-    "preview": "When damage is dealt to enemies with skills, creates Chill Brand. On skill attack while there are Chill Brands, deals additional damage proportional to the n…"
+    "preview": "When damage is dealt to enemies with skills, creates Chill Brand. On skill attack while there are Chill Brands, deals additional damage proportional to the number of Chill Brands\nUsing the Glacial Wedge skill on enemies inflicts Wedge Tracking and consumes Chill Brands to deal massive damage"
   },
   {
     "id": "252043008",
@@ -23715,7 +23715,7 @@
     "name": "Grenadier's Resolution",
     "image": "https://open.api.nexon.com/static/tfd/img/fe1ac6e07b5bbf66f14a1b387c7eaa99",
     "type": "Ancestors",
-    "tier": "Normal",
+    "tier": "Transcendent",
     "socket": "",
     "moduleClass": "Descendant",
     "weaponTypes": [],
@@ -23743,7 +23743,7 @@
     "name": "Guardian's Resolution",
     "image": "https://open.api.nexon.com/static/tfd/img/5587bf0becc51aa8c53a992bd42c98a7",
     "type": "Ancestors",
-    "tier": "Normal",
+    "tier": "Transcendent",
     "socket": "",
     "moduleClass": "Descendant",
     "weaponTypes": [],
@@ -23771,7 +23771,7 @@
     "name": "Hunter's Resolution",
     "image": "https://open.api.nexon.com/static/tfd/img/e57fc4588610fc1bf078fce63f6a8949",
     "type": "Ancestors",
-    "tier": "Normal",
+    "tier": "Transcendent",
     "socket": "",
     "moduleClass": "Descendant",
     "weaponTypes": [],
@@ -23799,7 +23799,7 @@
     "name": "Tech Expert's Resolution",
     "image": "https://open.api.nexon.com/static/tfd/img/311a6e9818246d20157d41425d5ead78",
     "type": "Ancestors",
-    "tier": "Normal",
+    "tier": "Transcendent",
     "socket": "",
     "moduleClass": "Descendant",
     "weaponTypes": [],
@@ -23826,7 +23826,7 @@
     "name": "Runner's Resolution",
     "image": "https://open.api.nexon.com/static/tfd/img/c2c377859a251513e40c5f17ca5fa760",
     "type": "Ancestors",
-    "tier": "Normal",
+    "tier": "Transcendent",
     "socket": "",
     "moduleClass": "Descendant",
     "weaponTypes": [],
@@ -23854,7 +23854,7 @@
     "name": "Dominator's Resolution",
     "image": "https://open.api.nexon.com/static/tfd/img/530133d5cb5466df45726630a443ead7",
     "type": "Ancestors",
-    "tier": "Normal",
+    "tier": "Transcendent",
     "socket": "",
     "moduleClass": "Descendant",
     "weaponTypes": [],
@@ -23882,7 +23882,7 @@
     "name": "Thirster's Resolution",
     "image": "https://open.api.nexon.com/static/tfd/img/6cc707189550c6f00d280e4dc065b44d",
     "type": "Ancestors",
-    "tier": "Normal",
+    "tier": "Transcendent",
     "socket": "",
     "moduleClass": "Descendant",
     "weaponTypes": [],
@@ -23910,7 +23910,7 @@
     "name": "Assassin's Resolution",
     "image": "https://open.api.nexon.com/static/tfd/img/158d6aaada2fab1d2bcc7801b9cd8804",
     "type": "Ancestors",
-    "tier": "Normal",
+    "tier": "Transcendent",
     "socket": "",
     "moduleClass": "Descendant",
     "weaponTypes": [],
@@ -23938,7 +23938,7 @@
     "name": "Chef's Resolution",
     "image": "https://open.api.nexon.com/static/tfd/img/142580b76c0ce27d0db52e5bacce5a57",
     "type": "Ancestors",
-    "tier": "Normal",
+    "tier": "Transcendent",
     "socket": "",
     "moduleClass": "Descendant",
     "weaponTypes": [],
@@ -23966,7 +23966,7 @@
     "name": "Shape of Water's Resolution",
     "image": "https://open.api.nexon.com/static/tfd/img/e1d6bc308bce457ccc5c07166de4b365",
     "type": "Ancestors",
-    "tier": "Normal",
+    "tier": "Transcendent",
     "socket": "",
     "moduleClass": "Descendant",
     "weaponTypes": [],
@@ -23994,7 +23994,7 @@
     "name": "Controller's Resolution",
     "image": "https://open.api.nexon.com/static/tfd/img/500897fb8e6d079555b51eb1b89cf34c",
     "type": "Ancestors",
-    "tier": "Normal",
+    "tier": "Transcendent",
     "socket": "",
     "moduleClass": "Descendant",
     "weaponTypes": [],
@@ -24021,7 +24021,7 @@
     "name": "Explosives Master's Resolution",
     "image": "https://open.api.nexon.com/static/tfd/img/f683ae6b9c5b9e616c52a6cf0add6d04",
     "type": "Ancestors",
-    "tier": "Normal",
+    "tier": "Transcendent",
     "socket": "",
     "moduleClass": "Descendant",
     "weaponTypes": [],
@@ -24048,7 +24048,7 @@
     "name": "Quartermaster's Resolution",
     "image": "https://open.api.nexon.com/static/tfd/img/23fdd8ce0f7cbb4c380f1b2c58b341af",
     "type": "Ancestors",
-    "tier": "Normal",
+    "tier": "Transcendent",
     "socket": "",
     "moduleClass": "Descendant",
     "weaponTypes": [],
@@ -24075,7 +24075,7 @@
     "name": "Medic's Resolution",
     "image": "https://open.api.nexon.com/static/tfd/img/b2a97847217a75455c361146b5e7c623",
     "type": "Ancestors",
-    "tier": "Normal",
+    "tier": "Transcendent",
     "socket": "",
     "moduleClass": "Descendant",
     "weaponTypes": [],
@@ -24103,7 +24103,7 @@
     "name": "Artist's Resolution",
     "image": "https://open.api.nexon.com/static/tfd/img/a1899880773d00ee88d711d3cdd005ad",
     "type": "Ancestors",
-    "tier": "Normal",
+    "tier": "Transcendent",
     "socket": "",
     "moduleClass": "Descendant",
     "weaponTypes": [],
@@ -24131,7 +24131,7 @@
     "name": "Marksman's Resolution",
     "image": "https://open.api.nexon.com/static/tfd/img/7171da244b8b5c08fe4e3392aff63e05",
     "type": "Ancestors",
-    "tier": "Normal",
+    "tier": "Transcendent",
     "socket": "",
     "moduleClass": "Descendant",
     "weaponTypes": [],
@@ -24158,7 +24158,7 @@
     "name": "Adventurer's Resolution",
     "image": "https://open.api.nexon.com/static/tfd/img/1b5e69b424692a48ccb3983ca1037434",
     "type": "Ancestors",
-    "tier": "Normal",
+    "tier": "Transcendent",
     "socket": "",
     "moduleClass": "Descendant",
     "weaponTypes": [],
@@ -24185,7 +24185,7 @@
     "name": "Snare's Resolution",
     "image": "https://open.api.nexon.com/static/tfd/img/e0ee5b8ed98766ed5694f5f09e189c1f",
     "type": "Ancestors",
-    "tier": "Normal",
+    "tier": "Transcendent",
     "socket": "",
     "moduleClass": "Descendant",
     "weaponTypes": [],
@@ -24212,7 +24212,7 @@
     "name": "Hope's Resolution",
     "image": "https://open.api.nexon.com/static/tfd/img/5f71b173e174605654ee0a72275dca6e",
     "type": "Ancestors",
-    "tier": "Normal",
+    "tier": "Transcendent",
     "socket": "",
     "moduleClass": "Descendant",
     "weaponTypes": [],
@@ -24239,7 +24239,7 @@
     "name": "Tactician's Resolution",
     "image": "https://open.api.nexon.com/static/tfd/img/3ceb37e4aa4e5d369c66702609ed61ed",
     "type": "Ancestors",
-    "tier": "Normal",
+    "tier": "Transcendent",
     "socket": "",
     "moduleClass": "Descendant",
     "weaponTypes": [],
@@ -24266,7 +24266,7 @@
     "name": "Pioneer's Resolution",
     "image": "https://open.api.nexon.com/static/tfd/img/7d3cabf2f8987164899c689c353ac29b",
     "type": "Ancestors",
-    "tier": "Normal",
+    "tier": "Transcendent",
     "socket": "",
     "moduleClass": "Descendant",
     "weaponTypes": [],
@@ -24293,7 +24293,7 @@
     "name": "Delightful Resolution",
     "image": "https://open.api.nexon.com/static/tfd/img/8a274901c53e549cb05741b8b6612275",
     "type": "Ancestors",
-    "tier": "Normal",
+    "tier": "Transcendent",
     "socket": "",
     "moduleClass": "Descendant",
     "weaponTypes": [],

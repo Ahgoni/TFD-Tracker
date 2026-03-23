@@ -106,7 +106,7 @@ interface Props {
 
 function ModuleLibraryCard({ mod, disabled, expanded }: { mod: ModuleRecord; disabled?: boolean; expanded?: boolean }) {
   const { attributes, listeners, setNodeRef, isDragging } = useDraggable({ id: draggableLibId(mod.id), disabled });
-  const tierClass = mod.tier === "Ultimate" ? "tier-ultimate" : mod.tier === "Rare" ? "tier-rare" : "tier-norm";
+  const tierClass = mod.tier === "Transcendent" ? "tier-transcendent" : mod.tier === "Ultimate" ? "tier-ultimate" : mod.tier === "Rare" ? "tier-rare" : "tier-norm";
 
   return (
     <div
@@ -745,30 +745,54 @@ export function BuildPlannerPanel({
               )}
             </div>
 
-            {/* Red / Negative mod warnings */}
+            {/* Transcendent / Skill Modification mods */}
             {(() => {
+              const skillMods: { modName: string; text: string; image?: string }[] = [];
               const warnings: { modName: string; text: string }[] = [];
               slots.forEach((p) => {
                 if (!p) return;
                 const m = moduleById.get(p.moduleId);
+                if (!m) return;
+                if (m.tier === "Transcendent" && m.descendantIds?.length > 0) {
+                  skillMods.push({ modName: m.name, text: m.preview, image: m.image });
+                }
                 const spans = splitEffectSpans(m, p.level);
                 spans.filter((s) => s.negative).forEach((s) => {
                   warnings.push({ modName: p.name, text: s.text });
                 });
               });
-              if (warnings.length === 0) return null;
               return (
-                <div className="builder-stats-section builder-warnings-section">
-                  <h4 className="builder-stats-h effect-neg-h">Negative Effects</h4>
-                  <ul className="builder-warning-list">
-                    {warnings.map((w, i) => (
-                      <li key={i} className="builder-warning-item">
-                        <span className="builder-warning-mod">{w.modName}</span>
-                        <span className="builder-warning-text">{w.text}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
+                <>
+                  {skillMods.length > 0 && (
+                    <div className="builder-stats-section builder-transcendent-section">
+                      <h4 className="builder-stats-h transcendent-h">Skill Modifications</h4>
+                      <ul className="builder-transcendent-list">
+                        {skillMods.map((sm, i) => (
+                          <li key={i} className="builder-transcendent-item">
+                            {sm.image && <img src={sm.image} alt="" className="builder-transcendent-icon" />}
+                            <div>
+                              <span className="builder-transcendent-name">{sm.modName}</span>
+                              <p className="builder-transcendent-desc">{sm.text}</p>
+                            </div>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                  {warnings.length > 0 && (
+                    <div className="builder-stats-section builder-warnings-section">
+                      <h4 className="builder-stats-h effect-neg-h">Negative Effects</h4>
+                      <ul className="builder-warning-list">
+                        {warnings.map((w, i) => (
+                          <li key={i} className="builder-warning-item">
+                            <span className="builder-warning-mod">{w.modName}</span>
+                            <span className="builder-warning-text">{w.text}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                </>
               );
             })()}
 
@@ -865,6 +889,7 @@ export function BuildPlannerPanel({
                     <option value="Normal">Normal</option>
                     <option value="Rare">Rare</option>
                     <option value="Ultimate">Ultimate</option>
+                    <option value="Transcendent">Transcendent</option>
                   </select>
                 </label>
                 <label>
@@ -897,7 +922,7 @@ export function BuildPlannerPanel({
       {/* ── Drag overlay (no modifiers = follows grab point correctly) ── */}
       <DragOverlay dropAnimation={null} zIndex={10000}>
         {activeDrag ? (
-          <div className={`mod-lib-card mod-lib-card-overlay ${activeDrag.tier === "Ultimate" ? "tier-ultimate" : activeDrag.tier === "Rare" ? "tier-rare" : "tier-norm"}`}>
+          <div className={`mod-lib-card mod-lib-card-overlay ${activeDrag.tier === "Transcendent" ? "tier-transcendent" : activeDrag.tier === "Ultimate" ? "tier-ultimate" : activeDrag.tier === "Rare" ? "tier-rare" : "tier-norm"}`}>
             {activeDrag.image ? <img src={activeDrag.image} alt="" className="mod-lib-img" /> : null}
             <div className="mod-lib-body">
               <div className="mod-lib-name">{activeDrag.name}</div>
