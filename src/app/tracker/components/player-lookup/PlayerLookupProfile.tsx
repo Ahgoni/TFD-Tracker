@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, type ReactNode } from "react";
 import type {
   DescendantCatalogRow,
   ExternalComponentCatalogRow,
@@ -9,7 +9,11 @@ import type {
 import type { ModuleRecord } from "@/lib/tfd-modules";
 import { capacityCostAtLevel } from "@/lib/tfd-modules";
 import { inferTierFromValue, tierColors } from "@/lib/tracker-data";
-import { buildDescendantModuleGrid } from "./descendant-slot-grid";
+import {
+  buildDescendantModuleGrid,
+  filterDescendantBodyMods,
+  findTriggerModule,
+} from "./descendant-slot-grid";
 import type { ComputedStats } from "@/lib/tfd-stat-engine";
 import { computeDescendantStats, computeWeaponStats } from "@/lib/tfd-stat-engine";
 import {
@@ -387,56 +391,118 @@ function DescendantModuleInventory({
   moduleById: Map<string, ModuleRecord>;
 }) {
   if (mods.length === 0) return <p className="muted">No modules reported.</p>;
-  const cells = buildDescendantModuleGrid(mods, moduleById);
+
+  const triggerSlot = findTriggerModule(mods, moduleById);
+  const bodyMods = filterDescendantBodyMods(mods, moduleById);
+  const cells = buildDescendantModuleGrid(bodyMods, moduleById);
+
+  const accentCellClass = (a: string | null) =>
+    a === "skill-teal"
+      ? styles.slotAccentSkill
+      : a === "sub-melee-gold"
+        ? styles.slotAccentSubMelee
+        : "";
+
+  let triggerBlock: ReactNode;
+  if (triggerSlot) {
+    const m = triggerSlot;
+    const rec = moduleById.get(m.moduleId);
+    const cost = rec ? capacityCostAtLevel(rec, m.enchantLevel) : 0;
+    const name = rec?.name ?? `Module ${m.moduleId}`;
+    const img = rec?.image ?? "";
+    triggerBlock = (
+      <div
+        className={`${styles.moduleCard} ${styles.triggerModuleCard} ${rec ? tierClass(rec.tier) : ""}`}
+        title="Trigger module"
+      >
+        <span className={styles.cost}>{cost}</span>
+        {img ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img className={styles.modImg} src={img} alt="" />
+        ) : (
+          <div className={styles.modImg} />
+        )}
+        <p className={styles.modName}>{name}</p>
+        <div className={styles.modMeta}>
+          Trigger
+          <br />
+          {rec?.socket ?? "—"} · +{m.enchantLevel}
+        </div>
+      </div>
+    );
+  } else {
+    triggerBlock = (
+      <div className={styles.triggerEmpty} aria-hidden>
+        <span className={styles.triggerEmptyHint}>No trigger</span>
+      </div>
+    );
+  }
+
   return (
-    <div className={styles.descGrid}>
-      {cells.map((cell, i) => {
-        if (!cell) {
-          return (
-            <div key={`empty-${i}`} className={`${styles.emptyModCell} ${styles.descGridCell}`} aria-hidden />
-          );
-        }
-        const m = cell.moduleSlot;
-        const rec = cell.rec;
-        const cost = rec ? capacityCostAtLevel(rec, m.enchantLevel) : 0;
-        const name = rec?.name ?? `Module ${m.moduleId}`;
-        const img = rec?.image ?? "";
-        const slotAccent =
-          cell.accent === "melee-gold"
-            ? styles.slotBarGold
-            : cell.accent === "sub-green"
-              ? styles.slotBarGreen
-              : "";
-        return (
-          <div key={`${m.slotId}-${m.moduleId}-${i}`} className={styles.descGridCell}>
-            <div
-              className={`${styles.moduleCard} ${rec ? tierClass(rec.tier) : ""} ${slotAccent}`}
-              title={
-                cell.accent === "melee-gold"
-                  ? "Melee (Charged Sub Attack)"
-                  : cell.accent === "sub-green"
-                    ? "Sub slot (descendant / red mod)"
-                    : undefined
-              }
-            >
-              <span className={styles.cost}>{cost}</span>
-              {img ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img className={styles.modImg} src={img} alt="" />
-              ) : (
-                <div className={styles.modImg} />
-              )}
-              <p className={styles.modName}>{name}</p>
-              <div className={styles.modMeta}>
-                {rec?.type ?? "—"}
-                <br />
-                {rec?.socket ?? "—"} · +{m.enchantLevel}
+    <div className={styles.descendantModuleBoard}>
+      <div className={styles.triggerColumn}>
+        <span className={styles.boardColumnLabel}>Trigger</span>
+        {triggerBlock}
+      </div>
+
+      <div className={styles.bodyGridWrap}>
+        <div className={styles.descGrid}>
+          {cells.map((cell, i) => {
+            if (!cell) {
+              return (
+                <div
+                  key={`empty-${i}`}
+                  className={`${styles.emptyModCell} ${styles.descGridCell}`}
+                  aria-hidden
+                />
+              );
+            }
+            const m = cell.moduleSlot;
+            const rec = cell.rec;
+            const cost = rec ? capacityCostAtLevel(rec, m.enchantLevel) : 0;
+            const name = rec?.name ?? `Module ${m.moduleId}`;
+            const img = rec?.image ?? "";
+            const cap =
+              cell.accent === "sub-melee-gold"
+                ? "Sub Module"
+                : cell.accent === "skill-teal"
+                  ? "Skill Modules"
+                  : null;
+            return (
+              <div
+                key={`${m.slotId}-${m.moduleId}-${i}`}
+                className={`${styles.descGridCell} ${accentCellClass(cell.accent)}`}
+              >
+                <div
+                  className={`${styles.moduleCard} ${styles.descBoardCard} ${rec ? tierClass(rec.tier) : ""}`}
+                  title={
+                    cell.accent === "sub-melee-gold"
+                      ? "Sub Module — Charged Sub Attack (melee)"
+                      : cell.accent === "skill-teal"
+                        ? "Skill Modules — Sub 1 (skill / red slot)"
+                        : undefined
+                  }
+                >
+                  <span className={styles.cost}>{cost}</span>
+                  {img ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img className={styles.modImg} src={img} alt="" />
+                  ) : (
+                    <div className={styles.modImg} />
+                  )}
+                  <p className={styles.modName}>{name}</p>
+                  <div className={styles.modMeta}>
+                    {rec?.type?.trim() ? rec.type : "Descendant"}
+                    <br />
+                    {rec?.socket ?? "—"} · +{m.enchantLevel}
+                  </div>
+                  {cap ? <div className={styles.slotCaption}>{cap}</div> : null}
+                </div>
               </div>
-              {m.slotId ? <div className={styles.modMeta}>Slot {m.slotId}</div> : null}
-            </div>
-          </div>
-        );
-      })}
+            );
+          })}
+        </div>
+      </div>
     </div>
   );
 }
@@ -619,7 +685,8 @@ export function PlayerLookupProfile({ data, catalogs }: Props) {
         </p>
         <CapacityBar used={build.moduleUsedCapacity} max={Math.max(build.moduleMaxCapacity, 1)} />
         <p className="muted" style={{ fontSize: "0.72rem", margin: "0 0 0.35rem" }}>
-          6×2 board: top-left green = Sub slot; bottom-left gold = Melee (Charged Sub Attack).
+          Matches in-game layout: Trigger (left), then 6×2 — top-left teal = Skill Modules, bottom-left gold =
+          Sub Module (melee).
         </p>
         <DescendantModuleInventory mods={build.modules} moduleById={moduleById} />
         {mods.length > 0 ? (

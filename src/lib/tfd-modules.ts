@@ -56,6 +56,11 @@ export function isChargedSubAttackModule(mod: ModuleRecord | undefined): boolean
   return mod.preview.trim() === CHARGED_SUB_ATTACK_PREVIEW;
 }
 
+/** Descendant-only: Trigger modules sit in the tall slot left of the 6×2 board (not in the 12 body cells). */
+export function isTriggerModule(mod: ModuleRecord | undefined): boolean {
+  return mod?.type === "Trigger";
+}
+
 /** Capacity consumed from the module budget (sub-attack mods cost 0 — they expand the budget instead). */
 export function capacityCostAtLevel(mod: ModuleRecord, level: number): number {
   if (isChargedSubAttackModule(mod)) return 0;

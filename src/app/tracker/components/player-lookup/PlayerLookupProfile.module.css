@@ -420,6 +420,79 @@
   font-weight: 600;
 }
 
+/* ── Descendant module board: Trigger + 6×2 (in-game layout) ─────────────── */
+
+.descendantModuleBoard {
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  gap: 0.65rem;
+  width: 100%;
+}
+
+.triggerColumn {
+  flex: 0 0 118px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  min-width: 0;
+}
+
+.boardColumnLabel {
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+}
+
+.triggerModuleCard {
+  flex: 1;
+  min-height: 228px;
+  justify-content: flex-start;
+  padding-top: 0.5rem;
+  background:
+    linear-gradient(180deg, rgba(212, 164, 26, 0.08) 0%, transparent 42%),
+    repeating-linear-gradient(
+      90deg,
+      transparent,
+      transparent 10px,
+      rgba(34, 211, 238, 0.04) 10px,
+      rgba(34, 211, 238, 0.04) 11px
+    ),
+    var(--panel-2);
+  border-width: 2px;
+}
+
+.triggerEmpty {
+  flex: 1;
+  min-height: 228px;
+  border-radius: 10px;
+  border: 2px dashed var(--line);
+  background: rgba(0, 0, 0, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.55;
+}
+
+.triggerEmptyHint {
+  font-size: 0.72rem;
+  color: var(--muted);
+}
+
+.bodyGridWrap {
+  flex: 1;
+  min-width: 0;
+  padding: 0.45rem 0.5rem;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  background:
+    radial-gradient(ellipse 80% 60% at 15% 20%, rgba(34, 211, 238, 0.07), transparent 55%),
+    radial-gradient(ellipse 70% 50% at 90% 80%, rgba(212, 164, 26, 0.06), transparent 50%),
+    var(--panel);
+}
+
 .descGrid {
   display: grid;
   grid-template-columns: repeat(6, minmax(0, 1fr));
@@ -431,8 +504,66 @@
   min-width: 0;
 }
 
+/* Teal ring = Skill Modules (top-left); gold ring = Sub Module / melee (bottom-left) */
+.slotAccentSkill {
+  padding: 2px;
+  border-radius: 12px;
+  background: linear-gradient(145deg, rgba(6, 182, 212, 0.22), rgba(6, 182, 212, 0.04));
+  box-shadow:
+    inset 0 0 0 1px rgba(34, 211, 238, 0.65),
+    0 0 14px rgba(34, 211, 238, 0.12);
+}
+
+.slotAccentSubMelee {
+  padding: 2px;
+  border-radius: 12px;
+  background: linear-gradient(145deg, rgba(245, 158, 11, 0.2), rgba(212, 164, 26, 0.06));
+  box-shadow:
+    inset 0 0 0 1px rgba(251, 191, 36, 0.55),
+    0 0 14px rgba(251, 191, 36, 0.1);
+}
+
+.descBoardCard {
+  min-height: 108px;
+  width: 100%;
+  padding: 0.3rem 0.35rem 1.15rem;
+  background:
+    repeating-linear-gradient(
+      90deg,
+      transparent,
+      transparent 9px,
+      rgba(148, 163, 184, 0.06) 9px,
+      rgba(148, 163, 184, 0.06) 10px
+    ),
+    var(--panel-2);
+}
+
+.slotCaption {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 2px;
+  text-align: center;
+  font-size: 0.58rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+  pointer-events: none;
+}
+
+.slotAccentSkill .slotCaption {
+  color: #22d3ee;
+  text-shadow: 0 0 8px rgba(34, 211, 238, 0.35);
+}
+
+.slotAccentSubMelee .slotCaption {
+  color: #fbbf24;
+  text-shadow: 0 0 8px rgba(251, 191, 36, 0.25);
+}
+
 .emptyModCell {
-  min-height: 112px;
+  min-height: 108px;
   border-radius: 10px;
   border: 1px dashed var(--line);
   background: rgba(0, 0, 0, 0.15);
@@ -440,30 +571,21 @@
 }
 
 .descGrid .moduleCard {
-  min-height: 112px;
+  min-height: 108px;
   padding: 0.35rem;
 }
 
 .descGrid .modImg {
-  width: 44px;
-  height: 44px;
+  width: 42px;
+  height: 42px;
 }
 
 .descGrid .modName {
-  font-size: 0.65rem;
+  font-size: 0.62rem;
 }
 
 .descGrid .cost {
-  font-size: 0.65rem;
-}
-
-/* Bottom accent bars — use border so they stack with Ultimate gold glow (box-shadow). */
-.slotBarGreen {
-  border-bottom: 3px solid #22c55e;
-}
-
-.slotBarGold {
-  border-bottom: 3px solid #ffc857;
+  font-size: 0.62rem;
 }
 
 .reactorStrip {

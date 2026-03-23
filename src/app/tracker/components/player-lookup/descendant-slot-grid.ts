@@ -1,13 +1,13 @@
 /**
- * In-game–style 6×2 descendant module board: top-left = Sub 1 (green / “red” mod),
- * bottom-left = Charged Sub Attack melee (gold). Matches common TFD inventory layout.
+ * Trigger column + 6×2 body grid (in-game layout).
+ * Top-left = Skill / “red” slot (teal); bottom-left = Sub / melee (gold).
  */
 
 import type { ModuleRecord } from "@/lib/tfd-modules";
-import { isChargedSubAttackModule } from "@/lib/tfd-modules";
+import { isChargedSubAttackModule, isTriggerModule } from "@/lib/tfd-modules";
 import type { DescendantBuildParsed } from "./nexonPlayerPayload";
 
-export type SlotAccent = "melee-gold" | "sub-green" | null;
+export type SlotAccent = "skill-teal" | "sub-melee-gold" | null;
 
 export type DescendantGridCell = {
   index: number;
@@ -49,10 +49,25 @@ function modKey(m: { slotId: string; moduleId: string }): string {
   return `${m.slotId}::${m.moduleId}`;
 }
 
+/** Body modules only — Trigger sits in the separate column left of the 6×2 grid. */
+export function filterDescendantBodyMods(
+  mods: DescendantBuildParsed["modules"],
+  moduleById: Map<string, ModuleRecord>,
+): DescendantBuildParsed["modules"] {
+  return mods.filter((m) => !isTriggerModule(moduleById.get(m.moduleId)));
+}
+
+export function findTriggerModule(
+  mods: DescendantBuildParsed["modules"],
+  moduleById: Map<string, ModuleRecord>,
+): DescendantBuildParsed["modules"][0] | undefined {
+  return mods.find((m) => isTriggerModule(moduleById.get(m.moduleId)));
+}
+
 /**
  * Fixed 12 cells: indices 0–5 top row, 6–11 bottom row (6 cols × 2 rows).
- * - [0] top-left: Sub 1 when it is not the melee module (green accent).
- * - [6] bottom-left: Charged Sub Attack / melee module (gold accent).
+ * - [0] top-left: Sub 1 when it is not the melee module (teal “Skill Modules” accent).
+ * - [6] bottom-left: Charged Sub Attack / melee module (gold “Sub Module” accent).
  * - [1]–[5]: Main 1–5 when present.
  * - Remaining modules fill empty slots in slot order.
  */
@@ -71,14 +86,14 @@ export function buildDescendantModuleGrid(
   }
 
   const meleeMod = mods.find((m) => isChargedSubAttackModule(moduleById.get(m.moduleId)));
-  if (meleeMod) placeAt(6, meleeMod, "melee-gold");
+  if (meleeMod) placeAt(6, meleeMod, "sub-melee-gold");
 
   const sub1 = mods.find((m) => {
     if (placed.has(modKey(m))) return false;
     return normalizeSlotId(m.slotId) === "Sub 1";
   });
   if (sub1 && !isChargedSubAttackModule(moduleById.get(sub1.moduleId))) {
-    placeAt(0, sub1, "sub-green");
+    placeAt(0, sub1, "skill-teal");
   }
 
   for (let n = 1; n <= 5; n++) {
@@ -95,8 +110,8 @@ export function buildDescendantModuleGrid(
     if (!m) break;
     const rec = moduleById.get(m.moduleId);
     let accent: SlotAccent = null;
-    if (isChargedSubAttackModule(rec)) accent = "melee-gold";
-    else if (normalizeSlotId(m.slotId) === "Sub 1") accent = "sub-green";
+    if (isChargedSubAttackModule(rec)) accent = "sub-melee-gold";
+    else if (normalizeSlotId(m.slotId) === "Sub 1") accent = "skill-teal";
     cells[i] = { index: i, moduleSlot: m, rec, accent };
     placed.add(modKey(m));
   }
