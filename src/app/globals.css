@@ -4103,8 +4103,28 @@ td .badge { display: inline-flex; align-items: center; gap: 0.35rem; }
   color: #f87171;
   font-weight: 700;
 }
-.skill-tooltip-body {
-  margin-top: 0.2rem;
+.skill-tooltip-wide {
+  min-width: 480px;
+  max-width: 620px;
+}
+.skill-tooltip-content {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 0.35rem;
+}
+.skill-tooltip-left {
+  flex: 1;
+  min-width: 0;
+}
+.skill-tooltip-right {
+  flex: 0 0 200px;
+  border-left: 1px solid rgba(255,255,255,0.08);
+  padding-left: 0.65rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  max-height: 320px;
+  overflow-y: auto;
 }
 .skill-tooltip-section-label {
   display: block;
@@ -4139,13 +4159,50 @@ td .badge { display: inline-flex; align-items: center; gap: 0.35rem; }
 .skill-tooltip-original .skill-tooltip-desc {
   margin-top: 0.25rem;
   font-size: 0.75rem;
+}
+
+/* ── Stat table sections (right panel) ──────────────────────────── */
+.stt-section {
+  margin-bottom: 0.15rem;
+}
+.stt-section-head {
+  font-size: 0.65rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 0.15rem 0;
+  margin-bottom: 0.15rem;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+.stt-head-basic { color: #22c55e; }
+.stt-head-effect { color: #38bdf8; }
+.stt-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 0.5rem;
+  padding: 0.1rem 0;
+  font-size: 0.68rem;
+  line-height: 1.35;
+}
+.stt-label {
   color: #94a3b8;
+  flex-shrink: 0;
+}
+.stt-value {
+  color: #e2e8f0;
+  font-weight: 600;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
 }
 @media (max-width: 600px) {
   .builder-skill-icon { width: 36px; height: 36px; }
   .builder-skill-icon > img { width: 32px; height: 32px; }
   .builder-skills-row { gap: 0.35rem; }
   .skill-tooltip { min-width: 220px; max-width: 280px; left: 0; transform: none; }
+  .skill-tooltip-wide { min-width: 220px; max-width: 280px; }
+  .skill-tooltip-content { flex-direction: column; }
+  .skill-tooltip-right { flex: none; border-left: none; padding-left: 0; border-top: 1px solid rgba(255,255,255,0.08); padding-top: 0.5rem; }
   .builder-skill-num { width: 14px; height: 14px; line-height: 14px; font-size: 0.55rem; }
 }
 

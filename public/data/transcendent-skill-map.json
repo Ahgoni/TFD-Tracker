@@ -1,590 +1,102 @@
 {
-  "254001001": {
-    "affectsSkill": null,
-    "modName": "Increased Efficiency",
-    "descendantIds": [
-      "101000001",
-      "101000004"
-    ]
-  },
-  "254001002": {
-    "affectsSkill": "Overclock",
-    "modName": "Power Unit Change"
-  },
-  "254001003": {
-    "affectsSkill": null,
-    "modName": "Regenerative Braking",
-    "descendantIds": [
-      "101000001",
-      "101000004"
-    ]
-  },
-  "254001004": {
-    "affectsSkill": "Grenade Throw",
-    "modName": "Nerve Infiltration"
-  },
-  "254002001": {
-    "affectsSkill": "Expulsion",
-    "modName": "Void Explosion : Focus"
-  },
-  "254002002": {
-    "affectsSkill": "Void Walk",
-    "modName": "Void Charge"
-  },
-  "254002003": {
-    "affectsSkill": "Expulsion",
-    "modName": "Matrix Recomputation"
-  },
-  "254002004": {
-    "affectsSkill": null,
-    "modName": "Body Enhancement",
-    "descendantIds": [
-      "101000002",
-      "101000007"
-    ]
-  },
-  "254003001": {
-    "affectsSkill": "Blizzard",
-    "modName": "Glacial Cloud"
-  },
-  "254003002": {
-    "affectsSkill": null,
-    "modName": "Hypothermia",
-    "descendantIds": [
-      "101000003",
-      "101000010"
-    ]
-  },
-  "254003003": {
-    "affectsSkill": "Cold Snap",
-    "modName": "Cold Snap Watch"
-  },
-  "254003004": {
-    "affectsSkill": "Frost Road",
-    "modName": "Cold-Bloodedness"
-  },
-  "254004001": {
-    "affectsSkill": "Grenade Throw",
-    "modName": "Explosive Stacks"
-  },
-  "254004002": {
-    "affectsSkill": "Grenade Throw",
-    "modName": "Firearms Master"
-  },
-  "254005001": {
-    "affectsSkill": null,
-    "modName": "Turret Engineering",
-    "descendantIds": [
-      "101000005"
-    ]
-  },
-  "254005002": {
-    "affectsSkill": null,
-    "modName": "Immediate Purge Code",
-    "descendantIds": [
-      "101000005"
-    ]
-  },
-  "254005003": {
-    "affectsSkill": null,
-    "modName": "Medical Compulsion",
-    "descendantIds": [
-      "101000005"
-    ]
-  },
-  "254005004": {
-    "affectsSkill": null,
-    "modName": "Attacking Compulsion",
-    "descendantIds": [
-      "101000005"
-    ]
-  },
-  "254006001": {
-    "affectsSkill": "Maximum Power",
-    "modName": "Electric Condense"
-  },
-  "254006002": {
-    "affectsSkill": "Speed of Light",
-    "modName": "Electric Transition"
-  },
-  "254006003": {
-    "affectsSkill": null,
-    "modName": "Superconductor",
-    "descendantIds": [
-      "101000006",
-      "101000019"
-    ]
-  },
-  "254006004": {
-    "affectsSkill": "Speed of Light",
-    "modName": "Bionic Fuel"
-  },
-  "254007001": {
-    "affectsSkill": "Orbit Barrier",
-    "modName": "Mobile Fortress"
-  },
-  "254007002": {
-    "affectsSkill": "Orbit Barrier",
-    "modName": "Barrier Charge : Explosion"
-  },
-  "254008001": {
-    "affectsSkill": "Contagion Links",
-    "modName": "Contagion"
-  },
-  "254008002": {
-    "affectsSkill": "Defense Mechanism",
-    "modName": "Toxic Stimulation"
-  },
-  "254008003": {
-    "affectsSkill": "Putrid Venom",
-    "modName": "Venom Synthesis"
-  },
-  "254008004": {
-    "affectsSkill": null,
-    "modName": "Neurotoxin Synthesis",
-    "descendantIds": [
-      "101000008",
-      "101000023"
-    ]
-  },
-  "254008005": {
-    "affectsSkill": null,
-    "modName": "Venom Injection",
-    "descendantIds": [
-      "101000023"
-    ]
-  },
-  "254008006": {
-    "affectsSkill": null,
-    "modName": "Toxic Mixture",
-    "descendantIds": [
-      "101000023"
-    ]
-  },
-  "254009001": {
-    "affectsSkill": "Life Siphon",
-    "modName": "Super Senses"
-  },
-  "254009002": {
-    "affectsSkill": "Frenzied",
-    "modName": "Massive Sanguification"
-  },
-  "254009003": {
-    "affectsSkill": "Frenzied",
-    "modName": "Predator Instinct"
-  },
-  "254009004": {
-    "affectsSkill": null,
-    "modName": "Blood and Iron",
-    "descendantIds": [
-      "101000009",
-      "101000020"
-    ]
-  },
-  "254009005": {
-    "affectsSkill": null,
-    "modName": "Explosive Life",
-    "descendantIds": [
-      "101000020"
-    ]
-  },
-  "254009006": {
-    "affectsSkill": null,
-    "modName": "Demonic Modification",
-    "descendantIds": [
-      "101000020"
-    ]
-  },
-  "254010001": {
-    "affectsSkill": "Ice Sphere",
-    "modName": "Cold Cohesion"
-  },
-  "254010002": {
-    "affectsSkill": "Ice Sphere",
-    "modName": "Absolute-Zero"
-  },
-  "254011001": {
-    "affectsSkill": "Cutoff Beam",
-    "modName": "Release Cutting Force"
-  },
-  "254011002": {
-    "affectsSkill": "Cutoff Beam",
-    "modName": "Overcharged Edge"
-  },
-  "254011003": {
-    "affectsSkill": "Flash Shortsword",
-    "modName": "Focused Edge"
-  },
-  "254011004": {
-    "affectsSkill": null,
-    "modName": "Battlesuit Melting Rounds",
-    "descendantIds": [
-      "101000011",
-      "101000025"
-    ]
-  },
-  "254011005": {
-    "affectsSkill": null,
-    "modName": "Area Suppression",
-    "descendantIds": [
-      "101000025"
-    ]
-  },
-  "254011006": {
-    "affectsSkill": "Active Camouflage",
-    "modName": "Ambushed"
-  },
-  "254012001": {
-    "affectsSkill": null,
-    "modName": "Noise Surge",
-    "descendantIds": [
-      "101000018",
-      "101000030"
-    ]
-  },
-  "254012002": {
-    "affectsSkill": null,
-    "modName": "Nimble Footsteps",
-    "descendantIds": [
-      "101000018",
-      "101000030"
-    ]
-  },
-  "254012003": {
-    "affectsSkill": "Passionate Stage",
-    "modName": "Aggressive Melody"
-  },
-  "254012004": {
-    "affectsSkill": null,
-    "modName": "Singer's Mercy",
-    "descendantIds": [
-      "101000018",
-      "101000030"
-    ]
-  },
-  "254012005": {
-    "affectsSkill": null,
-    "modName": "Battlefield Concert",
-    "descendantIds": [
-      "101000030"
-    ]
-  },
-  "254012006": {
-    "affectsSkill": null,
-    "modName": "Battlefield Artist",
-    "descendantIds": [
-      "101000030"
-    ]
-  },
-  "254013001": {
-    "affectsSkill": null,
-    "modName": "Water Play",
-    "descendantIds": [
-      "101000013",
-      "101000022"
-    ]
-  },
-  "254013002": {
-    "affectsSkill": null,
-    "modName": "Supply Moisture",
-    "descendantIds": [
-      "101000013",
-      "101000022"
-    ]
-  },
-  "254013003": {
-    "affectsSkill": null,
-    "modName": "Tidal Wave",
-    "descendantIds": [
-      "101000013",
-      "101000022"
-    ]
-  },
-  "254013004": {
-    "affectsSkill": null,
-    "modName": "Singing Water",
-    "descendantIds": [
-      "101000013",
-      "101000022"
-    ]
-  },
-  "254013005": {
-    "affectsSkill": null,
-    "modName": "Hydro Pressure Bomb",
-    "descendantIds": [
-      "101000022"
-    ]
-  },
-  "254013006": {
-    "affectsSkill": null,
-    "modName": "Spiral Tidal Wave",
-    "descendantIds": [
-      "101000022"
-    ]
-  },
-  "254014001": {
-    "affectsSkill": null,
-    "modName": "Superconductive Bombing MARK 2",
-    "descendantIds": [
-      "101000014"
-    ]
-  },
-  "254014002": {
-    "affectsSkill": null,
-    "modName": "Self-Directed Eruption",
-    "descendantIds": [
-      "101000014"
-    ]
-  },
-  "254014003": {
-    "affectsSkill": "Magnetic Bulwark",
-    "modName": "Diamagnetic Bulwark"
-  },
-  "254014004": {
-    "affectsSkill": null,
-    "modName": "Superconductive Bombing",
-    "descendantIds": [
-      "101000014"
-    ]
-  },
-  "254015001": {
-    "affectsSkill": "Guided Landmine",
-    "modName": "Explosive Evade"
-  },
-  "254015002": {
-    "affectsSkill": null,
-    "modName": "Cluster Bomb",
-    "descendantIds": [
-      "101000015"
-    ]
-  },
-  "254015003": {
-    "affectsSkill": null,
-    "modName": "Explosive Propaganda",
-    "descendantIds": [
-      "101000015"
-    ]
-  },
-  "254015004": {
-    "affectsSkill": null,
-    "modName": "Creative Explosion",
-    "descendantIds": [
-      "101000015"
-    ]
-  },
-  "254016001": {
-    "affectsSkill": null,
-    "modName": "Compressed Bullet",
-    "descendantIds": [
-      "101000016"
-    ]
-  },
-  "254016002": {
-    "affectsSkill": null,
-    "modName": "Supply Firearm Enhancer",
-    "descendantIds": [
-      "101000016"
-    ]
-  },
-  "254016003": {
-    "affectsSkill": null,
-    "modName": "Reinforce Front Line",
-    "descendantIds": [
-      "101000016"
-    ]
-  },
-  "254016004": {
-    "affectsSkill": "Explosive Drone",
-    "modName": "Focus Fire"
-  },
-  "254017001": {
-    "affectsSkill": null,
-    "modName": "First Aid Kit",
-    "descendantIds": [
-      "101000017",
-      "101000032"
-    ]
-  },
-  "254017002": {
-    "affectsSkill": null,
-    "modName": "Proliferating Allergy",
-    "descendantIds": [
-      "101000017",
-      "101000032"
-    ]
-  },
-  "254017003": {
-    "affectsSkill": "Duty and Sacrifice",
-    "modName": "Duty and Sacrifice"
-  },
-  "254017004": {
-    "affectsSkill": null,
-    "modName": "Efficient Treatment",
-    "descendantIds": [
-      "101000017",
-      "101000032"
-    ]
-  },
-  "254017005": {
-    "affectsSkill": null,
-    "modName": "Combat Protocol",
-    "descendantIds": [
-      "101000032"
-    ]
-  },
-  "254017006": {
-    "affectsSkill": null,
-    "modName": "Battlefield Medic",
-    "descendantIds": [
-      "101000032"
-    ]
-  },
-  "254018001": {
-    "affectsSkill": null,
-    "modName": "Incendiary Bomb",
-    "descendantIds": [
-      "101000012",
-      "101000028"
-    ]
-  },
-  "254018002": {
-    "affectsSkill": "Deadly Cuisine",
-    "modName": "Truly Deadly Cuisine"
-  },
-  "254018003": {
-    "affectsSkill": null,
-    "modName": "Backdraft",
-    "descendantIds": [
-      "101000012",
-      "101000028"
-    ]
-  },
-  "254018004": {
-    "affectsSkill": "Deadly Cuisine",
-    "modName": "Classic Chef"
-  },
-  "254018005": {
-    "affectsSkill": null,
-    "modName": "Killer Recipe",
-    "descendantIds": [
-      "101000028"
-    ]
-  },
-  "254018006": {
-    "affectsSkill": null,
-    "modName": "Next-level Recipe",
-    "descendantIds": [
-      "101000028"
-    ]
-  },
-  "254019001": {
-    "affectsSkill": "Rabbit Foot",
-    "modName": "Electric Charge"
-  },
-  "254019002": {
-    "affectsSkill": "Thrill Bomb",
-    "modName": "High-Voltage"
-  },
-  "254021001": {
-    "affectsSkill": null,
-    "modName": "Cryogenic Cluster Shot",
-    "descendantIds": [
-      "101000021"
-    ]
-  },
-  "254021002": {
-    "affectsSkill": null,
-    "modName": "Supercooled Kuiper Round",
-    "descendantIds": [
-      "101000021"
-    ]
-  },
-  "254021003": {
-    "affectsSkill": null,
-    "modName": "Camouflaged Sniping",
-    "descendantIds": [
-      "101000021"
-    ]
-  },
-  "254021004": {
-    "affectsSkill": null,
-    "modName": "Cold Heart",
-    "descendantIds": [
-      "101000021"
-    ]
-  },
-  "254024001": {
-    "affectsSkill": "Void Corrosion",
-    "modName": "Focus on Prey"
-  },
-  "254024002": {
-    "affectsSkill": "Onslaught",
-    "modName": "Mobile Strike"
-  },
-  "254024003": {
-    "affectsSkill": "Tremor",
-    "modName": "Fierce Attack"
-  },
-  "254024004": {
-    "affectsSkill": null,
-    "modName": "Septic Torrent",
-    "descendantIds": [
-      "101000024"
-    ]
-  },
-  "254026001": {
-    "affectsSkill": null,
-    "modName": "Plasma Ball",
-    "descendantIds": [
-      "101000026"
-    ]
-  },
-  "254026002": {
-    "affectsSkill": "Chain Lightning",
-    "modName": "Time of the Hunting Hounds"
-  },
-  "254027001": {
-    "affectsSkill": null,
-    "modName": "Divine Surge",
-    "descendantIds": [
-      "101000027"
-    ]
-  },
-  "254027002": {
-    "affectsSkill": null,
-    "modName": "Hymn",
-    "descendantIds": [
-      "101000027"
-    ]
-  },
-  "254029001": {
-    "affectsSkill": "Gravitic Reversal",
-    "modName": "Restored Heart"
-  },
-  "254029002": {
-    "affectsSkill": "Gaze of the Abyss",
-    "modName": "Shattered Heart"
-  },
-  "254031001": {
-    "affectsSkill": "Crushing Charge",
-    "modName": "Focused Supervision"
-  },
-  "254031002": {
-    "affectsSkill": "Site Intrusion",
-    "modName": "Safety Training"
-  },
-  "254033001": {
-    "affectsSkill": null,
-    "modName": "Blooming Ecstasy",
-    "descendantIds": [
-      "101000033"
-    ]
-  },
-  "254033002": {
-    "affectsSkill": null,
-    "modName": "Chill Brand",
-    "descendantIds": [
-      "101000033"
-    ]
-  }
+  "254001001": { "affectsSkill": "Overkill", "modName": "Increased Efficiency", "modifiedElement": null, "modifiedArche": "Tech" },
+  "254001002": { "affectsSkill": "Overclock", "modName": "Power Unit Change", "modifiedElement": null, "modifiedArche": null },
+  "254001003": { "affectsSkill": "Close Call", "modName": "Regenerative Braking", "modifiedElement": null, "modifiedArche": null },
+  "254001004": { "affectsSkill": "Grenade Throw", "modName": "Nerve Infiltration", "modifiedElement": null, "modifiedArche": null },
+  "254002001": { "affectsSkill": "Expulsion", "modName": "Void Explosion : Focus", "modifiedElement": null, "modifiedArche": null },
+  "254002002": { "affectsSkill": "Void Walk", "modName": "Void Charge", "modifiedElement": null, "modifiedArche": null },
+  "254002003": { "affectsSkill": "Expulsion", "modName": "Matrix Recomputation", "modifiedElement": null, "modifiedArche": null },
+  "254002004": { "affectsSkill": "Event Horizon", "modName": "Body Enhancement", "modifiedElement": null, "modifiedArche": null },
+  "254003001": { "affectsSkill": "Blizzard", "modName": "Glacial Cloud", "modifiedElement": null, "modifiedArche": null },
+  "254003002": { "affectsSkill": "Ice Sphere", "modName": "Hypothermia", "modifiedElement": null, "modifiedArche": null },
+  "254003003": { "affectsSkill": "Cold Snap", "modName": "Cold Snap Watch", "modifiedElement": null, "modifiedArche": null },
+  "254003004": { "affectsSkill": "Frost Road", "modName": "Cold-Bloodedness", "modifiedElement": null, "modifiedArche": null },
+  "254004001": { "affectsSkill": "Grenade Throw", "modName": "Explosive Stacks", "modifiedElement": null, "modifiedArche": null },
+  "254004002": { "affectsSkill": "Grenade Throw", "modName": "Firearms Master", "modifiedElement": null, "modifiedArche": null },
+  "254005001": { "affectsSkill": "Reactivate", "modName": "Turret Engineering", "modifiedElement": null, "modifiedArche": null },
+  "254005002": { "affectsSkill": "Reactivate", "modName": "Immediate Purge Code", "modifiedElement": null, "modifiedArche": null },
+  "254005003": { "affectsSkill": "Medical Turret", "modName": "Medical Compulsion", "modifiedElement": null, "modifiedArche": null },
+  "254005004": { "affectsSkill": "Assault Turret", "modName": "Attacking Compulsion", "modifiedElement": null, "modifiedArche": null },
+  "254006001": { "affectsSkill": "Maximum Power", "modName": "Electric Condense", "modifiedElement": null, "modifiedArche": "Fusion" },
+  "254006002": { "affectsSkill": "Speed of Light", "modName": "Electric Transition", "modifiedElement": null, "modifiedArche": null },
+  "254006003": { "affectsSkill": "Rabbit Foot", "modName": "Superconductor", "modifiedElement": null, "modifiedArche": null },
+  "254006004": { "affectsSkill": "Speed of Light", "modName": "Bionic Fuel", "modifiedElement": null, "modifiedArche": null },
+  "254007001": { "affectsSkill": "Orbit Barrier", "modName": "Mobile Fortress", "modifiedElement": null, "modifiedArche": null },
+  "254007002": { "affectsSkill": "Orbit Barrier", "modName": "Barrier Charge : Explosion", "modifiedElement": null, "modifiedArche": null },
+  "254008001": { "affectsSkill": "Contagion Links", "modName": "Contagion", "modifiedElement": null, "modifiedArche": null },
+  "254008002": { "affectsSkill": "Defense Mechanism", "modName": "Toxic Stimulation", "modifiedElement": null, "modifiedArche": null },
+  "254008003": { "affectsSkill": "Putrid Venom", "modName": "Venom Synthesis", "modifiedElement": null, "modifiedArche": null },
+  "254008004": { "affectsSkill": "Contagion Links", "modName": "Neurotoxin Synthesis", "modifiedElement": null, "modifiedArche": null },
+  "254008005": { "affectsSkill": "Defense Mechanism", "modName": "Venom Injection", "modifiedElement": null, "modifiedArche": null },
+  "254008006": { "affectsSkill": "Contagion Links", "modName": "Toxic Mixture", "modifiedElement": null, "modifiedArche": null },
+  "254009001": { "affectsSkill": "Life Siphon", "modName": "Super Senses", "modifiedElement": null, "modifiedArche": null },
+  "254009002": { "affectsSkill": "Frenzied", "modName": "Massive Sanguification", "modifiedElement": null, "modifiedArche": null },
+  "254009003": { "affectsSkill": "Frenzied", "modName": "Predator Instinct", "modifiedElement": null, "modifiedArche": null },
+  "254009004": { "affectsSkill": "Massacre", "modName": "Blood and Iron", "modifiedElement": null, "modifiedArche": null },
+  "254009005": { "affectsSkill": "Life Siphon", "modName": "Explosive Life", "modifiedElement": null, "modifiedArche": null },
+  "254009006": { "affectsSkill": "Massacre", "modName": "Demonic Modification", "modifiedElement": null, "modifiedArche": null },
+  "254010001": { "affectsSkill": "Ice Sphere", "modName": "Cold Cohesion", "modifiedElement": null, "modifiedArche": null },
+  "254010002": { "affectsSkill": "Ice Sphere", "modName": "Absolute-Zero", "modifiedElement": null, "modifiedArche": null },
+  "254011001": { "affectsSkill": "Cutoff Beam", "modName": "Release Cutting Force", "modifiedElement": null, "modifiedArche": null },
+  "254011002": { "affectsSkill": "Cutoff Beam", "modName": "Overcharged Edge", "modifiedElement": null, "modifiedArche": null },
+  "254011003": { "affectsSkill": "Flash Shortsword", "modName": "Focused Edge", "modifiedElement": null, "modifiedArche": null },
+  "254011004": { "affectsSkill": "Shock Nuts", "modName": "Battlesuit Melting Rounds", "modifiedElement": null, "modifiedArche": null },
+  "254011005": { "affectsSkill": "Flash Shortsword", "modName": "Area Suppression", "modifiedElement": null, "modifiedArche": null },
+  "254011006": { "affectsSkill": "Active Camouflage", "modName": "Ambushed", "modifiedElement": null, "modifiedArche": null },
+  "254012001": { "affectsSkill": "Stage Presence", "modName": "Noise Surge", "modifiedElement": null, "modifiedArche": null },
+  "254012002": { "affectsSkill": "Improvisation", "modName": "Nimble Footsteps", "modifiedElement": null, "modifiedArche": null },
+  "254012003": { "affectsSkill": "Passionate Stage", "modName": "Aggressive Melody", "modifiedElement": null, "modifiedArche": null },
+  "254012004": { "affectsSkill": "Relaxing Act", "modName": "Singer's Mercy", "modifiedElement": null, "modifiedArche": null },
+  "254012005": { "affectsSkill": "Delightful Stage", "modName": "Battlefield Concert", "modifiedElement": null, "modifiedArche": null },
+  "254012006": { "affectsSkill": "Delightful Stage", "modName": "Battlefield Artist", "modifiedElement": null, "modifiedArche": null },
+  "254013001": { "affectsSkill": "Plop Plop", "modName": "Water Play", "modifiedElement": null, "modifiedArche": null },
+  "254013002": { "affectsSkill": "Water Intake", "modName": "Supply Moisture", "modifiedElement": null, "modifiedArche": null },
+  "254013003": { "affectsSkill": "Clean Up", "modName": "Tidal Wave", "modifiedElement": null, "modifiedArche": null },
+  "254013004": { "affectsSkill": "Laundry Bomb", "modName": "Singing Water", "modifiedElement": null, "modifiedArche": null },
+  "254013005": { "affectsSkill": "Plop Plop", "modName": "Hydro Pressure Bomb", "modifiedElement": null, "modifiedArche": null },
+  "254013006": { "affectsSkill": "Bubble Bullet", "modName": "Spiral Tidal Wave", "modifiedElement": null, "modifiedArche": null },
+  "254014001": { "affectsSkill": "Superconductivity Thrusters", "modName": "Superconductive Bombing MARK 2", "modifiedElement": null, "modifiedArche": null },
+  "254014002": { "affectsSkill": "Magnetism Spurt", "modName": "Self-Directed Eruption", "modifiedElement": null, "modifiedArche": null },
+  "254014003": { "affectsSkill": "Magnetic Bulwark", "modName": "Diamagnetic Bulwark", "modifiedElement": null, "modifiedArche": null },
+  "254014004": { "affectsSkill": "Superconductivity Thrusters", "modName": "Superconductive Bombing", "modifiedElement": null, "modifiedArche": null },
+  "254015001": { "affectsSkill": "Guided Landmine", "modName": "Explosive Evade", "modifiedElement": null, "modifiedArche": null },
+  "254015002": { "affectsSkill": "Blast", "modName": "Cluster Bomb", "modifiedElement": null, "modifiedArche": null },
+  "254015003": { "affectsSkill": "Time Bomb", "modName": "Explosive Propaganda", "modifiedElement": null, "modifiedArche": null },
+  "254015004": { "affectsSkill": "Arche Explosion", "modName": "Creative Explosion", "modifiedElement": null, "modifiedArche": null },
+  "254016001": { "affectsSkill": "Firing Specialist", "modName": "Compressed Bullet", "modifiedElement": null, "modifiedArche": null },
+  "254016002": { "affectsSkill": "Start Supply", "modName": "Supply Firearm Enhancer", "modifiedElement": null, "modifiedArche": null },
+  "254016003": { "affectsSkill": "Perfect Support", "modName": "Reinforce Front Line", "modifiedElement": null, "modifiedArche": null },
+  "254016004": { "affectsSkill": "Explosive Drone", "modName": "Focus Fire", "modifiedElement": null, "modifiedArche": null },
+  "254017001": { "affectsSkill": "Solidarity Healing", "modName": "First Aid Kit", "modifiedElement": null, "modifiedArche": null },
+  "254017002": { "affectsSkill": "Restructure Serum", "modName": "Proliferating Allergy", "modifiedElement": null, "modifiedArche": null },
+  "254017003": { "affectsSkill": "Duty and Sacrifice", "modName": "Duty and Sacrifice", "modifiedElement": null, "modifiedArche": null },
+  "254017004": { "affectsSkill": "Stimulant Spray", "modName": "Efficient Treatment", "modifiedElement": null, "modifiedArche": null },
+  "254017005": { "affectsSkill": "Stop Overreacting", "modName": "Combat Protocol", "modifiedElement": null, "modifiedArche": null },
+  "254017006": { "affectsSkill": "Stop Overreacting", "modName": "Battlefield Medic", "modifiedElement": null, "modifiedArche": null },
+  "254018001": { "affectsSkill": "Blaze Up", "modName": "Incendiary Bomb", "modifiedElement": null, "modifiedArche": null },
+  "254018002": { "affectsSkill": "Deadly Cuisine", "modName": "Truly Deadly Cuisine", "modifiedElement": null, "modifiedArche": null },
+  "254018003": { "affectsSkill": "Extinguish", "modName": "Backdraft", "modifiedElement": null, "modifiedArche": null },
+  "254018004": { "affectsSkill": "Deadly Cuisine", "modName": "Classic Chef", "modifiedElement": null, "modifiedArche": null },
+  "254018005": { "affectsSkill": "Burn Taste", "modName": "Killer Recipe", "modifiedElement": null, "modifiedArche": null },
+  "254018006": { "affectsSkill": "Burn Taste", "modName": "Next-level Recipe", "modifiedElement": null, "modifiedArche": null },
+  "254019001": { "affectsSkill": "Rabbit Foot", "modName": "Electric Charge", "modifiedElement": null, "modifiedArche": null },
+  "254019002": { "affectsSkill": "Thrill Bomb", "modName": "High-Voltage", "modifiedElement": null, "modifiedArche": null },
+  "254021001": { "affectsSkill": "Cryo Round", "modName": "Cryogenic Cluster Shot", "modifiedElement": null, "modifiedArche": null },
+  "254021002": { "affectsSkill": "Zenith", "modName": "Supercooled Kuiper Round", "modifiedElement": null, "modifiedArche": null },
+  "254021003": { "affectsSkill": "Zenith", "modName": "Camouflaged Sniping", "modifiedElement": null, "modifiedArche": null },
+  "254021004": { "affectsSkill": "Cold Fury", "modName": "Cold Heart", "modifiedElement": null, "modifiedArche": null },
+  "254024001": { "affectsSkill": "Void Corrosion", "modName": "Focus on Prey", "modifiedElement": null, "modifiedArche": null },
+  "254024002": { "affectsSkill": "Onslaught", "modName": "Mobile Strike", "modifiedElement": null, "modifiedArche": null },
+  "254024003": { "affectsSkill": "Tremor", "modName": "Fierce Attack", "modifiedElement": null, "modifiedArche": null },
+  "254024004": { "affectsSkill": "Erosion", "modName": "Septic Torrent", "modifiedElement": null, "modifiedArche": null },
+  "254026001": { "affectsSkill": "Plasma Oscillation", "modName": "Plasma Ball", "modifiedElement": null, "modifiedArche": null },
+  "254026002": { "affectsSkill": "Chain Lightning", "modName": "Time of the Hunting Hounds", "modifiedElement": null, "modifiedArche": null },
+  "254027001": { "affectsSkill": "Soar", "modName": "Divine Surge", "modifiedElement": null, "modifiedArche": null },
+  "254027002": { "affectsSkill": "Ascension", "modName": "Hymn", "modifiedElement": null, "modifiedArche": null },
+  "254029001": { "affectsSkill": "Gravitic Reversal", "modName": "Restored Heart", "modifiedElement": null, "modifiedArche": null },
+  "254029002": { "affectsSkill": "Gaze of the Abyss", "modName": "Shattered Heart", "modifiedElement": null, "modifiedArche": null },
+  "254031001": { "affectsSkill": "Crushing Charge", "modName": "Focused Supervision", "modifiedElement": null, "modifiedArche": null },
+  "254031002": { "affectsSkill": "Site Intrusion", "modName": "Safety Training", "modifiedElement": null, "modifiedArche": null },
+  "254033001": { "affectsSkill": "Glacial Clash", "modName": "Blooming Ecstasy", "modifiedElement": null, "modifiedArche": null },
+  "254033002": { "affectsSkill": "Frozen Delight", "modName": "Chill Brand", "modifiedElement": null, "modifiedArche": null }
 }

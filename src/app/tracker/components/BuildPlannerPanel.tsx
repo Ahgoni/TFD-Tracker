@@ -73,6 +73,13 @@ import {
   inferTierFromValue,
 } from "@/lib/tracker-data";
 
+const ultimateToBase: Record<string, string> = {
+  "101000004": "101000001", "101000007": "101000002", "101000010": "101000003",
+  "101000019": "101000006", "101000020": "101000009", "101000022": "101000013",
+  "101000023": "101000008", "101000025": "101000011", "101000028": "101000012",
+  "101000030": "101000018", "101000032": "101000017",
+};
+
 // DnD helpers
 
 const LIB_PREFIX = "lib:";
@@ -673,11 +680,20 @@ function BuildPlannerPanelInner({
     return null;
   }, [slots, moduleById]);
 
-  const [skillMap, setSkillMap] = useState<Record<string, { affectsSkill: string | null }>>({});
+  const [skillMap, setSkillMap] = useState<Record<string, { affectsSkill: string | null; modifiedElement?: string | null; modifiedArche?: string | null }>>({});
   useEffect(() => {
     fetch("/data/transcendent-skill-map.json")
       .then((r) => (r.ok ? r.json() : {}))
       .then((d) => setSkillMap(d ?? {}))
+      .catch(() => {});
+  }, []);
+
+  type SkillStatEntry = { basicInfo: { label: string; value: string }[]; sections: { name: string; stats: { label: string; value: string }[] }[] };
+  const [skillDetailsDb, setSkillDetailsDb] = useState<Record<string, Record<string, SkillStatEntry>>>({});
+  useEffect(() => {
+    fetch("/data/skill-details.json")
+      .then((r) => (r.ok ? r.json() : {}))
+      .then((d) => setSkillDetailsDb(d ?? {}))
       .catch(() => {});
   }, []);
 
@@ -745,9 +761,14 @@ function BuildPlannerPanelInner({
                   <div className="builder-skills-row">
                     {heroSkills.map((sk, idx) => {
                       const full = descSkills.find((s) => s.name === sk.name);
-                      const elementIcon = elementDefs.find((d) => d.label === (full?.element ?? ""))?.icon;
-                      const archeIcon = skillDefs.find((d) => d.label === (full?.arche ?? ""))?.icon;
                       const isAffected = affectedSkillNames.has(String(sk.name ?? ""));
+                      const modMapping = isAffected && equippedTranscendent ? skillMap[equippedTranscendent.mod.id] : null;
+                      const displayElement = (modMapping?.modifiedElement || full?.element) ?? "";
+                      const displayArche = (modMapping?.modifiedArche || full?.arche) ?? "";
+                      const displayElementIcon = elementDefs.find((d) => d.label === displayElement)?.icon;
+                      const baseGameId = descendantGameId ? (skillDetailsDb[descendantGameId] ? descendantGameId : ultimateToBase[descendantGameId]) : null;
+                      const skillDetail = baseGameId ? skillDetailsDb[baseGameId]?.[String(full?.name ?? "")] : undefined;
+                      const hasStats = skillDetail && ((skillDetail.basicInfo?.length ?? 0) > 0 || (skillDetail.sections?.length ?? 0) > 0);
                       return (
                         <div
                           key={sk.name}
@@ -758,12 +779,12 @@ function BuildPlannerPanelInner({
                           <img src={isAffected && isSpecificMatch && equippedTranscendent ? equippedTranscendent.mod.image : sk.image} alt={sk.name} />
                           <span className="builder-skill-num">{idx + 1}</span>
                           {hoveredSkill === sk.name && full && (
-                            <div className="skill-tooltip">
+                            <div className={`skill-tooltip${hasStats ? " skill-tooltip-wide" : ""}`}>
                               <div className="skill-tooltip-header">
-                                {elementIcon && <img src={elementIcon} alt="" className="skill-tooltip-element-icon" />}
+                                {displayElementIcon && <img src={displayElementIcon} alt="" className="skill-tooltip-element-icon" />}
                                 <span className="skill-tooltip-attr">
-                                  {String(full.element ?? "")} Attribute
-                                  {full.arche ? ` \u00b7 ${String(full.arche)}` : ""}
+                                  {displayElement} Attribute
+                                  {displayArche ? ` \u00b7 ${displayArche}` : ""}
                                 </span>
                               </div>
                               <h4 className="skill-tooltip-name">
@@ -776,20 +797,48 @@ function BuildPlannerPanelInner({
                                   <span className="skill-tooltip-mod-badge">Modified by {String(equippedTranscendent.mod.name ?? "")}</span>
                                 </div>
                               )}
-                              <div className="skill-tooltip-body">
-                                <span className="skill-tooltip-section-label">Skill Description</span>
-                                {isAffected && equippedTranscendent?.mod.preview ? (
-                                  <>
-                                    <p className="skill-tooltip-desc skill-tooltip-desc-modded">{String(equippedTranscendent.mod.preview ?? "")}</p>
-                                    {full.description && (
-                                      <details className="skill-tooltip-original">
-                                        <summary>Original Description</summary>
-                                        <p className="skill-tooltip-desc">{String(full.description ?? "")}</p>
-                                      </details>
+                              <div className="skill-tooltip-content">
+                                <div className="skill-tooltip-left">
+                                  <span className="skill-tooltip-section-label">Skill Description</span>
+                                  {isAffected && equippedTranscendent?.mod.preview ? (
+                                    <>
+                                      <p className="skill-tooltip-desc skill-tooltip-desc-modded">{String(equippedTranscendent.mod.preview ?? "")}</p>
+                                      {full.description && (
+                                        <details className="skill-tooltip-original">
+                                          <summary>Original Description</summary>
+                                          <p className="skill-tooltip-desc">{String(full.description ?? "")}</p>
+                                        </details>
+                                      )}
+                                    </>
+                                  ) : (
+                                    full.description && <p className="skill-tooltip-desc">{String(full.description ?? "")}</p>
+                                  )}
+                                </div>
+                                {hasStats && (
+                                  <div className="skill-tooltip-right">
+                                    {(skillDetail.basicInfo?.length ?? 0) > 0 && (
+                                      <div className="stt-section">
+                                        <div className="stt-section-head stt-head-basic">Basic Info</div>
+                                        {skillDetail.basicInfo.map((s, si) => (
+                                          <div key={si} className="stt-row">
+                                            <span className="stt-label">{s.label}</span>
+                                            <span className="stt-value">{s.value}</span>
+                                          </div>
+                                        ))}
+                                      </div>
                                     )}
-                                  </>
-                                ) : (
-                                  full.description && <p className="skill-tooltip-desc">{String(full.description ?? "")}</p>
+                                    {skillDetail.sections?.map((sec, si) => (
+                                      <div key={si} className="stt-section">
+                                        <div className="stt-section-head stt-head-effect">{sec.name}</div>
+                                        {sec.stats.map((s, ri) => (
+                                          <div key={ri} className="stt-row">
+                                            <span className="stt-label">{s.label}</span>
+                                            <span className="stt-value">{s.value}</span>
+                                          </div>
+                                        ))}
+                                      </div>
+                                    ))}
+                                  </div>
                                 )}
                               </div>
                             </div>

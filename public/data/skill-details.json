@@ -1,0 +1,660 @@
+{
+  "101000001": {
+    "Grenade Throw": {
+      "basicInfo": [
+        { "label": "Cooldown", "value": "6s" },
+        { "label": "MP Cost", "value": "35" }
+      ],
+      "sections": [
+        {
+          "name": "Grenade",
+          "stats": [
+            { "label": "AoE Damage", "value": "Skill Power x 487.3%" },
+            { "label": "Effect Range", "value": "Radius 5m" },
+            { "label": "Max Expandable Range", "value": "200%" }
+          ]
+        }
+      ]
+    },
+    "Overclock": {
+      "basicInfo": [
+        { "label": "Cooldown", "value": "20s" },
+        { "label": "MP Cost", "value": "24" }
+      ],
+      "sections": [
+        {
+          "name": "Overclock",
+          "stats": [
+            { "label": "Duration", "value": "17s" },
+            { "label": "Skill Power Modifier Increase", "value": "20%" }
+          ]
+        },
+        {
+          "name": "Burn",
+          "stats": [
+            { "label": "Continuous Damage", "value": "Skill Power x 115.2%" },
+            { "label": "Damage Interval", "value": "1s" },
+            { "label": "Duration", "value": "3s" }
+          ]
+        }
+      ]
+    },
+    "Traction Grenade": {
+      "basicInfo": [
+        { "label": "Cooldown", "value": "25s" },
+        { "label": "MP Cost", "value": "45" }
+      ],
+      "sections": [
+        {
+          "name": "Traction Grenade",
+          "stats": [
+            { "label": "Effect Range", "value": "Radius 9m" },
+            { "label": "Duration", "value": "2s" }
+          ]
+        }
+      ]
+    },
+    "Overkill": {
+      "basicInfo": [
+        { "label": "Cooldown", "value": "65s" },
+        { "label": "MP Cost", "value": "40" },
+        { "label": "Continuous MP Cost", "value": "20" }
+      ],
+      "sections": [
+        {
+          "name": "Exclusive Weapon",
+          "stats": [
+            { "label": "Burst DMG", "value": "Skill Power x 2590.6%" },
+            { "label": "Explosion Damage Range", "value": "Radius 5m" },
+            { "label": "Max Expandable Range", "value": "200%" }
+          ]
+        },
+        {
+          "name": "Damage Zone",
+          "stats": [
+            { "label": "Continuous Damage", "value": "Skill Power x 41.1%" },
+            { "label": "Damage Interval", "value": "0.5s" },
+            { "label": "Duration", "value": "4s" },
+            { "label": "Effect Range", "value": "Radius 5m" }
+          ]
+        }
+      ]
+    },
+    "Close Call": {
+      "basicInfo": [
+        { "label": "Cooldown", "value": "600s" }
+      ],
+      "sections": [
+        {
+          "name": "Close Call",
+          "stats": [
+            { "label": "Duration", "value": "5s" },
+            { "label": "Health Recovery", "value": "Max HP x 50%" }
+          ]
+        }
+      ]
+    }
+  },
+  "101000002": {
+    "Orbit Barrier": {
+      "basicInfo": [
+        { "label": "Cooldown", "value": "15s" },
+        { "label": "MP Cost", "value": "30" }
+      ],
+      "sections": [
+        {
+          "name": "Barrier",
+          "stats": [
+            { "label": "Effect Range", "value": "1.7m x 2.9m" },
+            { "label": "HP", "value": "Caster's HP 80%" },
+            { "label": "DEF", "value": "Caster's DEF 100%" },
+            { "label": "Duration", "value": "15s" },
+            { "label": "Reflection Damage", "value": "DEF x 100%" },
+            { "label": "Max Expandable Range", "value": "200%" }
+          ]
+        },
+        {
+          "name": "Void Energy",
+          "stats": [
+            { "label": "Obtained Amount", "value": "Max Void Energy x 35%" }
+          ]
+        }
+      ]
+    },
+    "Void Walk": {
+      "basicInfo": [
+        { "label": "Cooldown", "value": "20s" },
+        { "label": "MP Cost", "value": "35" }
+      ],
+      "sections": [
+        {
+          "name": "Skill Effect",
+          "stats": [
+            { "label": "Damage", "value": "Skill Power x 560.3%" },
+            { "label": "Damage Range", "value": "Radius 6m" },
+            { "label": "Max Expandable Range", "value": "300%" }
+          ]
+        },
+        {
+          "name": "Stun",
+          "stats": [
+            { "label": "Duration", "value": "3s" }
+          ]
+        },
+        {
+          "name": "Enhanced Leap",
+          "stats": [
+            { "label": "Duration", "value": "10s" },
+            { "label": "Shield Increase", "value": "Max Shield x 53%" }
+          ]
+        }
+      ]
+    },
+    "Expulsion": {
+      "basicInfo": [
+        { "label": "Cooldown", "value": "15s" },
+        { "label": "MP Cost", "value": "30" }
+      ],
+      "sections": [
+        {
+          "name": "Skill Effect",
+          "stats": [
+            { "label": "Damage", "value": "Skill Power x 1212.9%" },
+            { "label": "Damage Range", "value": "Radius 4m" },
+            { "label": "Enhanced Damage", "value": "Skill Power x 1322.5%" },
+            { "label": "Enhanced Range", "value": "Radius 6m" },
+            { "label": "Max Expandable Range", "value": "300%" }
+          ]
+        }
+      ]
+    },
+    "Hyper Cube": {
+      "basicInfo": [
+        { "label": "Cooldown", "value": "35s" },
+        { "label": "MP Cost", "value": "50" }
+      ],
+      "sections": [
+        {
+          "name": "Barrier",
+          "stats": [
+            { "label": "HP", "value": "Caster's HP 50%" },
+            { "label": "DEF", "value": "Caster's DEF 100%" },
+            { "label": "Duration", "value": "10s" },
+            { "label": "Effect Range", "value": "Radius 4m" },
+            { "label": "Max Expandable Range", "value": "200%" }
+          ]
+        },
+        {
+          "name": "Enhanced Barrier",
+          "stats": [
+            { "label": "Firearm ATK Increase", "value": "10%" },
+            { "label": "Explosive ATK Increase", "value": "20%" }
+          ]
+        }
+      ]
+    },
+    "Event Horizon": {
+      "basicInfo": [],
+      "sections": [
+        {
+          "name": "Singularity Level",
+          "stats": [
+            { "label": "Lv.1", "value": "Void Energy 30%" },
+            { "label": "Lv.2", "value": "Void Energy 60%" },
+            { "label": "Lv.3", "value": "Void Energy 100%" }
+          ]
+        },
+        {
+          "name": "Singularity Effect",
+          "stats": [
+            { "label": "Lv.1 Cooldown Decrease", "value": "5%" },
+            { "label": "Lv.2 Cooldown Decrease", "value": "10%" },
+            { "label": "Lv.3 Cooldown Decrease", "value": "20%" }
+          ]
+        }
+      ]
+    }
+  },
+  "101000003": {
+    "Frost Shards": {
+      "basicInfo": [
+        { "label": "Cooldown", "value": "7s" },
+        { "label": "MP Cost", "value": "22" }
+      ],
+      "sections": [
+        {
+          "name": "Projectile",
+          "stats": [
+            { "label": "Damage", "value": "Skill Power x 669%" },
+            { "label": "Burst Damage", "value": "Skill Power x 669%" },
+            { "label": "Explosion Range", "value": "Radius 3.5m" },
+            { "label": "Max Expandable Range", "value": "250%" }
+          ]
+        },
+        {
+          "name": "Ice Shackle",
+          "stats": [
+            { "label": "On Damage", "value": "Lv.2" },
+            { "label": "On Burst Damage", "value": "Lv.1" }
+          ]
+        }
+      ]
+    },
+    "Frost Road": {
+      "basicInfo": [
+        { "label": "Cooldown", "value": "25s" },
+        { "label": "MP Cost", "value": "24" }
+      ],
+      "sections": [
+        {
+          "name": "Frost Road",
+          "stats": [
+            { "label": "Duration", "value": "16s" },
+            { "label": "Effect Range", "value": "1.6m x 2m" },
+            { "label": "Movement Speed Increase", "value": "30%" },
+            { "label": "Shield Recovery", "value": "10%" },
+            { "label": "Max Expandable Range", "value": "200%" }
+          ]
+        },
+        {
+          "name": "Ice Shackle",
+          "stats": [
+            { "label": "On Contact", "value": "Lv.2" }
+          ]
+        }
+      ]
+    },
+    "Cold Snap": {
+      "basicInfo": [
+        { "label": "Cooldown", "value": "20s" },
+        { "label": "MP Cost", "value": "30" }
+      ],
+      "sections": [
+        {
+          "name": "Chill",
+          "stats": [
+            { "label": "Damage", "value": "Skill Power x 1079.9%" },
+            { "label": "Effect Range", "value": "10m x 3m" },
+            { "label": "Max Expandable Range", "value": "250%" }
+          ]
+        },
+        {
+          "name": "Ice Shackle",
+          "stats": [
+            { "label": "On Damage", "value": "Lv.2" }
+          ]
+        }
+      ]
+    },
+    "Blizzard": {
+      "basicInfo": [
+        { "label": "Cooldown", "value": "60s" },
+        { "label": "MP Cost", "value": "38" }
+      ],
+      "sections": [
+        {
+          "name": "Blizzard",
+          "stats": [
+            { "label": "Duration", "value": "6s" },
+            { "label": "Continuous Damage", "value": "Skill Power x 1347%" },
+            { "label": "Damage Interval", "value": "2s" },
+            { "label": "Damage Range", "value": "Radius 4m" },
+            { "label": "Burst Damage", "value": "Skill Power x 1731.8%" },
+            { "label": "Explosion Range", "value": "Radius 6m" },
+            { "label": "Max Expandable Range", "value": "250%" }
+          ]
+        }
+      ]
+    },
+    "Ice Sphere": {
+      "basicInfo": [
+        { "label": "Cooldown", "value": "20s" },
+        { "label": "Trigger", "value": "Ice Shackle Lv.2" }
+      ],
+      "sections": [
+        {
+          "name": "Projectile",
+          "stats": [
+            { "label": "Damage", "value": "Skill Power x 259.3%" },
+            { "label": "Burst DMG", "value": "Skill Power x 259.3%" },
+            { "label": "Explosion Range", "value": "Radius 1.5m" },
+            { "label": "Max Expandable Range", "value": "250%" }
+          ]
+        }
+      ]
+    }
+  },
+  "101000006": {
+    "Thrill Bomb": {
+      "basicInfo": [
+        { "label": "Cooldown", "value": "10s" },
+        { "label": "Electricity Cost", "value": "100" }
+      ],
+      "sections": [
+        {
+          "name": "Skill Effect",
+          "stats": [
+            { "label": "Damage", "value": "Skill Power x 130.3%" },
+            { "label": "Per 10% Electricity", "value": "Skill Power x +15%" },
+            { "label": "Damage Range", "value": "Radius 7m" },
+            { "label": "Max Expandable Range", "value": "300%" },
+            { "label": "Max Hits", "value": "x6 monsters" }
+          ]
+        },
+        {
+          "name": "Electrocution",
+          "stats": [
+            { "label": "Continuous Damage", "value": "Skill Power x 46.6%" },
+            { "label": "Damage Interval", "value": "1s" },
+            { "label": "Duration", "value": "3s" }
+          ]
+        }
+      ]
+    },
+    "Speed of Light": {
+      "basicInfo": [
+        { "label": "Cooldown", "value": "2s" },
+        { "label": "MP Cost", "value": "12" },
+        { "label": "Continuous MP Cost", "value": "Max 16 in 1s" }
+      ],
+      "sections": [
+        {
+          "name": "Skill Effect",
+          "stats": [
+            { "label": "Sprint Speed Increase", "value": "50%" }
+          ]
+        },
+        {
+          "name": "Electricity",
+          "stats": [
+            { "label": "Acquisition Cycle", "value": "per 1m" },
+            { "label": "Acquire", "value": "Max Electricity x 0.6%" }
+          ]
+        }
+      ]
+    },
+    "Lightning Emission": {
+      "basicInfo": [
+        { "label": "Cooldown", "value": "30s" },
+        { "label": "Electricity Cost", "value": "266" }
+      ],
+      "sections": [
+        {
+          "name": "Lightning Emission",
+          "stats": [
+            { "label": "Move Distance", "value": "Emits every 7m" },
+            { "label": "Damage", "value": "Skill Power x 139.7%" },
+            { "label": "Per 10% Electricity", "value": "Skill Power x +15%" },
+            { "label": "Effect Range", "value": "Radius 7m" },
+            { "label": "Max Expandable Range", "value": "300%" },
+            { "label": "Duration", "value": "20s" }
+          ]
+        },
+        {
+          "name": "Electrocution",
+          "stats": [
+            { "label": "Continuous Damage", "value": "Skill Power x 49.9%" },
+            { "label": "Damage Interval", "value": "1s" },
+            { "label": "Duration", "value": "3s" }
+          ]
+        }
+      ]
+    },
+    "Maximum Power": {
+      "basicInfo": [
+        { "label": "Cooldown", "value": "30s" },
+        { "label": "Electricity Cost", "value": "Max 240 in 1s" }
+      ],
+      "sections": [
+        {
+          "name": "Skill Effect",
+          "stats": [
+            { "label": "Lv.1 Damage", "value": "Skill Power x 471.9%" },
+            { "label": "Lv.2 Amplification", "value": "Lv.1 x 20%" },
+            { "label": "Lv.3 Amplification", "value": "Lv.1 x 50%" },
+            { "label": "Lv.2 Charge Time", "value": "1.1s" },
+            { "label": "Lv.3 Charge Time", "value": "1.1s" }
+          ]
+        }
+      ]
+    },
+    "Rabbit Foot": {
+      "basicInfo": [],
+      "sections": [
+        {
+          "name": "Electricity (Moving)",
+          "stats": [
+            { "label": "Acquisition Cycle", "value": "per 1m" },
+            { "label": "Acquire", "value": "Max Electricity x 0.2%" }
+          ]
+        },
+        {
+          "name": "Electricity (Stopped)",
+          "stats": [
+            { "label": "Cost Interval", "value": "Every cycle" },
+            { "label": "Cost Amount", "value": "Max Electricity in 1s x 15%" }
+          ]
+        },
+        {
+          "name": "Double Jump",
+          "stats": [
+            { "label": "Damage", "value": "Skill Power x 128.8%" },
+            { "label": "Damage Range", "value": "Radius 4m" },
+            { "label": "Max Expandable Range", "value": "300%" }
+          ]
+        }
+      ]
+    }
+  },
+  "101000012": {
+    "Blaze Up": {
+      "basicInfo": [
+        { "label": "Max Stacks", "value": "3" },
+        { "label": "Stack Cooldown", "value": "12s" },
+        { "label": "MP Cost", "value": "25" }
+      ],
+      "sections": [
+        {
+          "name": "Flame Zone",
+          "stats": [
+            { "label": "Continuous Damage", "value": "Skill Power x 26.3%" },
+            { "label": "Damage Interval", "value": "1s" },
+            { "label": "Duration", "value": "12s" },
+            { "label": "Effect Range", "value": "Radius 3.5m" },
+            { "label": "Max Expandable Range", "value": "200%" }
+          ]
+        },
+        {
+          "name": "Burn",
+          "stats": [
+            { "label": "Continuous Damage", "value": "Skill Power x 6.8%" },
+            { "label": "Damage Interval", "value": "1s" },
+            { "label": "Duration", "value": "5s" }
+          ]
+        }
+      ]
+    },
+    "Extinguish": {
+      "basicInfo": [
+        { "label": "Cooldown", "value": "28s" }
+      ],
+      "sections": [
+        {
+          "name": "Aggressive Flavor",
+          "stats": [
+            { "label": "MP Recovery per Flame Zone", "value": "19" },
+            { "label": "Skill Power Modifier Increase", "value": "23%" },
+            { "label": "Duration", "value": "10s" }
+          ]
+        }
+      ]
+    },
+    "Burn Taste": {
+      "basicInfo": [
+        { "label": "Cooldown", "value": "30s" },
+        { "label": "MP Cost", "value": "35" }
+      ],
+      "sections": [
+        {
+          "name": "Skill Effect",
+          "stats": [
+            { "label": "Continuous Damage", "value": "Skill Power x 129.1%" },
+            { "label": "Damage Interval", "value": "0.3s" },
+            { "label": "Duration", "value": "4.5s" },
+            { "label": "Effect Range", "value": "Radius 3m" },
+            { "label": "Max Expandable Range", "value": "200%" }
+          ]
+        },
+        {
+          "name": "Burn",
+          "stats": [
+            { "label": "Continuous Damage", "value": "Skill Power x 6.8%" },
+            { "label": "Damage Interval", "value": "1s" },
+            { "label": "Duration", "value": "5s" }
+          ]
+        }
+      ]
+    },
+    "Deadly Cuisine": {
+      "basicInfo": [
+        { "label": "Cooldown", "value": "120s" },
+        { "label": "MP Cost", "value": "60" }
+      ],
+      "sections": [
+        {
+          "name": "Giant Fireball",
+          "stats": [
+            { "label": "AoE Damage", "value": "Skill Power x 386%" },
+            { "label": "AoE Range", "value": "Radius 6m" },
+            { "label": "Max Expandable Range", "value": "200%" }
+          ]
+        },
+        {
+          "name": "Small Fireball",
+          "stats": [
+            { "label": "Amount", "value": "x3" },
+            { "label": "AoE Damage", "value": "Skill Power x 584.9%" },
+            { "label": "AoE Range", "value": "Radius 3.5m" },
+            { "label": "Max Expandable Range", "value": "200%" }
+          ]
+        },
+        {
+          "name": "Flame Zone",
+          "stats": [
+            { "label": "Continuous Damage", "value": "Skill Power x 26.8%" },
+            { "label": "Damage Interval", "value": "1s" },
+            { "label": "Duration", "value": "12s" },
+            { "label": "Effect Range", "value": "Radius 3.5m" },
+            { "label": "Max Expandable Range", "value": "200%" }
+          ]
+        },
+        {
+          "name": "Burn",
+          "stats": [
+            { "label": "Continuous Damage", "value": "Skill Power x 6.8%" },
+            { "label": "Damage Interval", "value": "1s" },
+            { "label": "Duration", "value": "5s" }
+          ]
+        }
+      ]
+    },
+    "Pitmaster": {
+      "basicInfo": [],
+      "sections": [
+        {
+          "name": "Skill Critical Hit Damage Increase",
+          "stats": [
+            { "label": "Default", "value": "10%" }
+          ]
+        },
+        {
+          "name": "Skill Critical Hit Rate Increase",
+          "stats": [
+            { "label": "x1 Flame Zone", "value": "5%" },
+            { "label": "x2 Flame Zones", "value": "9%" },
+            { "label": "x3+ Flame Zones", "value": "14%" },
+            { "label": "Max Stacks", "value": "7" }
+          ]
+        }
+      ]
+    }
+  },
+  "101000033": {
+    "Glacial Clash": {
+      "basicInfo": [
+        { "label": "Cooldown", "value": "5s" },
+        { "label": "MP Cost", "value": "18" }
+      ],
+      "sections": [
+        {
+          "name": "Skill Effect",
+          "stats": [
+            { "label": "Damage", "value": "Skill Power x 350%" },
+            { "label": "Effect Range", "value": "Radius 3m" }
+          ]
+        }
+      ]
+    },
+    "Ice Wall": {
+      "basicInfo": [
+        { "label": "Cooldown", "value": "15s" },
+        { "label": "MP Cost", "value": "30" }
+      ],
+      "sections": [
+        {
+          "name": "Ice Wall",
+          "stats": [
+            { "label": "Duration", "value": "8s" },
+            { "label": "Effect Range", "value": "4m x 2m" }
+          ]
+        }
+      ]
+    },
+    "Avalanche": {
+      "basicInfo": [
+        { "label": "Cooldown", "value": "20s" },
+        { "label": "MP Cost", "value": "35" }
+      ],
+      "sections": [
+        {
+          "name": "Avalanche",
+          "stats": [
+            { "label": "Damage", "value": "Skill Power x 800%" },
+            { "label": "Effect Range", "value": "Radius 5m" },
+            { "label": "Max Expandable Range", "value": "250%" }
+          ]
+        }
+      ]
+    },
+    "Frost Storm": {
+      "basicInfo": [
+        { "label": "Cooldown", "value": "45s" },
+        { "label": "MP Cost", "value": "50" }
+      ],
+      "sections": [
+        {
+          "name": "Frost Storm",
+          "stats": [
+            { "label": "Duration", "value": "8s" },
+            { "label": "Continuous Damage", "value": "Skill Power x 500%" },
+            { "label": "Damage Interval", "value": "1s" },
+            { "label": "Effect Range", "value": "Radius 6m" },
+            { "label": "Max Expandable Range", "value": "250%" }
+          ]
+        }
+      ]
+    },
+    "Frozen Delight": {
+      "basicInfo": [],
+      "sections": [
+        {
+          "name": "Frozen Delight",
+          "stats": [
+            { "label": "Chill Resistance Decrease", "value": "20%" },
+            { "label": "On Frozen Enemy", "value": "Bonus Damage 15%" }
+          ]
+        }
+      ]
+    }
+  }
+}
