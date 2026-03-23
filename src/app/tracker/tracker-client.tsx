@@ -61,6 +61,8 @@ export interface DescendantEntry {
   catalysts: number;
   portrait: string;
   owned: boolean;
+  /** Nexon `descendant_group_id` — same group shares Transcendent modules (base ↔ Ultimate). */
+  groupId?: string;
 }
 
 export interface MaterialEntry {
@@ -237,6 +239,7 @@ async function fetchAndMergeWeaponsCatalog(currentWeapons: WeaponEntry[]): Promi
 interface DescendantCatalogEntry {
   id: string;
   name: string;
+  groupId?: string;
   element: string;
   skillTypes: string[];
   image: string;
@@ -257,6 +260,7 @@ async function fetchAndMergeDescendantsCatalog(current: DescendantEntry[]): Prom
         return {
           ...existing,
           id: c.id,
+          groupId: c.groupId ?? existing.groupId,
           element: c.element,
           skills: c.skillTypes,
           portrait: c.image,
@@ -266,6 +270,7 @@ async function fetchAndMergeDescendantsCatalog(current: DescendantEntry[]): Prom
       return {
         id: c.id,
         name: c.name,
+        groupId: c.groupId,
         element: c.element,
         skills: c.skillTypes,
         level: 1,

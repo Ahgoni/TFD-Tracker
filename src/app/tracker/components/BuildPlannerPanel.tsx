@@ -161,6 +161,8 @@ interface Props {
   moduleById: Map<string, ModuleRecord>;
   weaponNexonType: string | null;
   descendantGameId: string | null;
+  /** Same Nexon `descendant_group_id` as the selected build (base + Ultimate, etc.) ? unlocks Transcendent modules tied to sibling IDs. */
+  descendantPeerIds?: string[] | null;
   hero?: PlannerHeroProps | null;
   reactor?: BuildReactor | null;
   onReactorChange?: (r: BuildReactor | null) => void;
@@ -312,11 +314,13 @@ function qualityTier(value: number, range: [number, number], thresholds: Record<
 // Child: Ancestor module editor (structured substats)
 
 function AncestorEditor({
-  placed, mod, descendantGameId, onSave, onClose,
+  placed, mod, descendantGameId, descendantPeerIds, onSave, onClose,
 }: {
   placed: PlacedModule;
   mod: ModuleRecord;
   descendantGameId: string | null;
+  /** IDs in the same character group (see `filterModuleLibrary`). */
+  descendantPeerIds?: string[] | null;
   onSave: (stats: { positives: AncestorStat[]; negative?: AncestorStat }) => void;
   onClose: () => void;
 }) {
@@ -328,10 +332,17 @@ function AncestorEditor({
       .catch(() => {});
   }, []);
 
+  const peerSet = useMemo(() => {
+    const s = new Set<string>();
+    if (descendantGameId) s.add(descendantGameId);
+    for (const id of descendantPeerIds ?? []) s.add(id);
+    return s;
+  }, [descendantGameId, descendantPeerIds]);
+
   const ancestorMod = useMemo(() => {
-    if (!db || !descendantGameId) return null;
-    return db.modules.find((m) => m.descendantIds.includes(descendantGameId)) ?? null;
-  }, [db, descendantGameId]);
+    if (!db || peerSet.size === 0) return null;
+    return db.modules.find((m) => m.descendantIds.some((id) => peerSet.has(id))) ?? null;
+  }, [db, peerSet]);
 
   const statPool = useMemo(() => {
     if (!db || !ancestorMod) return [];
@@ -784,7 +795,7 @@ export function BuildPlannerPanel(props: Props) {
 }
 
 function BuildPlannerPanelInner({
-  form, setForm, moduleCatalog, moduleById, weaponNexonType, descendantGameId,
+  form, setForm, moduleCatalog, moduleById, weaponNexonType, descendantGameId, descendantPeerIds,
   hero = null, reactor = null, onReactorChange, targetLevel, onTargetLevelChange,
   archeLevel, onArcheLevelChange, savedReactors,
   externalComponents, onExternalComponentsChange,
@@ -851,8 +862,13 @@ function BuildPlannerPanelInner({
   );
 
   const libraryBase = useMemo(
-    () => filterModuleLibrary(moduleCatalog, form.targetType, { weaponNexonType, descendantId: descendantGameId }),
-    [moduleCatalog, form.targetType, weaponNexonType, descendantGameId],
+    () =>
+      filterModuleLibrary(moduleCatalog, form.targetType, {
+        weaponNexonType,
+        descendantId: descendantGameId,
+        descendantPeerIds,
+      }),
+    [moduleCatalog, form.targetType, weaponNexonType, descendantGameId, descendantPeerIds],
   );
   const libraryFiltered = useMemo(() => {
     const TIER_ORDER: Record<string, number> = { Transcendent: 0, Ultimate: 1, Rare: 2, Normal: 3 };
@@ -1530,6 +1546,7 @@ function BuildPlannerPanelInner({
                 placed={slots[editingSlot]!}
                 mod={moduleById.get(slots[editingSlot]!.moduleId)!}
                 descendantGameId={descendantGameId}
+                descendantPeerIds={descendantPeerIds}
                 onSave={(stats) => saveAncestorStats(editingSlot, stats)}
                 onClose={() => setEditingSlot(null)}
               />

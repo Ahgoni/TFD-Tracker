@@ -132,7 +132,15 @@ const WEAPON_MODULE_CLASSES = new Set([
 export function filterModuleLibrary(
   all: ModuleRecord[],
   targetType: "descendant" | "weapon",
-  opts: { weaponNexonType: string | null; descendantId: string | null }
+  opts: {
+    weaponNexonType: string | null;
+    descendantId: string | null;
+    /**
+     * All Nexon descendant IDs for this character (same `descendant_group_id`, e.g. base + Ultimate).
+     * Required when `module.available_descendant_id` lists another variant (e.g. Transcendent skill for Ultimate Ajax).
+     */
+    descendantPeerIds?: string[] | null;
+  }
 ): ModuleRecord[] {
   return all.filter((m) => {
     const isWeaponModule = WEAPON_MODULE_CLASSES.has(m.moduleClass);
@@ -149,8 +157,14 @@ export function filterModuleLibrary(
     if (isWeaponModule) return false;
     const ds = m.descendantIds ?? [];
     if (ds.length === 0) return true;
-    if (!opts.descendantId) return false;
-    return ds.includes(opts.descendantId);
+
+    const allowed = new Set<string>();
+    if (opts.descendantId) allowed.add(opts.descendantId);
+    if (opts.descendantPeerIds?.length) {
+      for (const id of opts.descendantPeerIds) allowed.add(id);
+    }
+    if (allowed.size === 0) return false;
+    return ds.some((id) => allowed.has(id));
   });
 }
 

@@ -17,6 +17,8 @@
 
 When in doubt, **match Nexon’s library pages**. If something looks wrong after a patch, re-run the fetch scripts and diff against the site.
 
+**Descendant groups:** Nexon ties some modules (often Transcendent) to a specific `descendant_id` (e.g. Ultimate form). The tracker treats everyone with the same `descendant_group_id` as **peers** so base and Ultimate builds share the same character-specific module list.
+
 ## Regenerate from Nexon
 
 ```bash

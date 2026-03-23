@@ -116,6 +116,13 @@ export function BuildsTab({ state, setState }: Props) {
     return d?.id ?? null;
   }, [descendantOptions, form.targetKey]);
 
+  /** Same Nexon character group (base + Ultimate) — Transcendent modules may list a sibling descendant_id. */
+  const descendantPeerIds = useMemo(() => {
+    const d = descendantOptions.find((x) => x.name === form.targetKey);
+    if (!d?.groupId) return undefined;
+    return descendantOptions.filter((x) => x.groupId === d.groupId).map((x) => x.id);
+  }, [descendantOptions, form.targetKey]);
+
   useEffect(() => {
     if (!form.targetKey) return;
     const n = slotCountForTarget(form.targetType);
@@ -436,6 +443,7 @@ export function BuildsTab({ state, setState }: Props) {
               moduleById={moduleById}
               weaponNexonType={weaponNexonType}
               descendantGameId={descendantGameId}
+              descendantPeerIds={descendantPeerIds}
               hero={plannerHero}
               reactor={form.reactor}
               onReactorChange={(r) => setForm((f) => ({ ...f, reactor: r }))}
