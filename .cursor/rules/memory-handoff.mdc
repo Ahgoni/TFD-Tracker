@@ -7,7 +7,8 @@ alwaysApply: true
 
 ## At the start of work
 - Read **`HANDOFF.md`** in the repo root to understand current state, recent decisions, and what must not regress (icons, DnD, deploy).
-- Optionally skim **`CURSOR_MEMORY.md`** — it points at `HANDOFF.md`.
+- For architecture orientation (AppState vs Prisma, Nexon pipeline, route map): **`docs/PROJECT_MAP.md`**.
+- Optionally skim **`CURSOR_MEMORY.md`** — it points at `HANDOFF.md` and `PROJECT_MAP.md`.
 
 ## When finishing a session or completing a major feature
 - If the user asks for a handoff (or you’re wrapping up substantive work), **update `HANDOFF.md`**: brief summary of what shipped, architecture choices, files touched, **what’s still broken or unverified**, and **immediate next steps**.

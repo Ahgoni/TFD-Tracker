@@ -1,9 +1,19 @@
 # TFD Tracker — handoff / session memory
 
-**Last updated:** 2026-03-20 (Overframe build planner overhaul)
+**Last updated:** 2026-03-23 (project map + FarmingTab hardening)
 
-At the **start** of a new chat or agent swap: read this file first.
+At the **start** of a new chat or agent swap: read this file first, then **`docs/PROJECT_MAP.md`** for architecture.
 At the **end** of a session or after a major feature: overwrite this file with what changed, decisions, and next steps.
+
+---
+
+## Deep-dive orientation
+
+| Doc | Purpose |
+|-----|---------|
+| **`docs/PROJECT_MAP.md`** | AppState vs Prisma tables, routes, Nexon pipeline, key files by feature, conventions |
+| **`docs/ARCHITECTURE_ROADMAP.md`** | Product vision, live catalog API, future patch tagging |
+| **`public/data/README.md`** | Nexon URLs, `fetch:data` / `fetch:stats`, static fallback behavior |
 
 ---
 
@@ -119,7 +129,7 @@ Ran a thorough audit of every key source file. Found and fixed **17 issues** lef
 - [ ] **Confirm production** shows icons correctly after deploy (hard refresh to bypass stale cache).
 - [x] **Build planner drag preview** — fixed: removed `snapCenterToCursor` entirely, DragOverlay follows grab point natively.
 - [ ] **Weapon/descendant art** still relies on `/Images/` symlink for portrait images and weapon icons. Long-term: commit or migrate to lowercase paths.
-- [ ] **`FarmingTab`** — `state.goals.filter(...)` could throw if `goals` is ever `undefined` from malformed saved state; safer: `(state.goals ?? []).filter(...)`.
+- [x] **`FarmingTab`** — hardened: `goals` / `goalsFilters` default safely when missing from saved state (2026-03-23).
 - [ ] **Light mode: `.portrait-initials`** class referenced in DescendantsTab but not styled.
 - [ ] Optional: use `findUnique` instead of `findFirst` for `@unique` username fields (cleaner, same behavior).
 - [ ] **Re-run `npm run fetch:stats`** periodically (after Nexon patches) to update descendant/weapon data.
@@ -155,5 +165,6 @@ After deploy: **hard refresh** to clear stale asset caches.
 
 | Date       | Summary |
 |-----------|---------|
+| 2026-03-23 | Added **`docs/PROJECT_MAP.md`** (AppState-centric data flow, dual Prisma tables, Nexon pipeline, file map). Hardened **`FarmingTab`** for missing `goals` / `goalsFilters`. Updated **AGENTS.md**, **CURSOR_MEMORY.md**, Cursor rules list in handoff. |
 | 2026-03-20 | Full audit + cleanup: fixed 17 issues (CSS duplication, dead code, hero-badge collision, mini-btn light mode, --card-bg, tier-norm, username normalization, import catalog merge, descFilter removal). Build passes clean. |
 | 2026-03-20 | **Overframe build planner overhaul**: Nexon stat data fetch script, stat engine, stat map, full panel rewrite (portrait BG, live stats, reactor integration, ancestor editor, expanded cards, fixed DnD). Data model expanded with `BuildReactor`, `customPreview`, `targetLevel`. Build passes clean. |

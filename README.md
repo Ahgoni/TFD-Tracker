@@ -13,7 +13,8 @@ This app adds Discord login and private per-user cloud state for The First Desce
 
 ## Architecture & UX vision
 
-Product direction (Overframe-tier discovery, TFD tier tokens, patch-aware roadmap) lives in **`docs/ARCHITECTURE_ROADMAP.md`**. Cursor agents follow **`.cursor/rules/design-system.mdc`** for UI consistency.
+- **Project map (read this first for a deep dive):** **`docs/PROJECT_MAP.md`** — how data flows, which APIs matter, Nexon pipeline.
+- Product direction (Overframe-tier discovery, TFD tier tokens, patch-aware roadmap): **`docs/ARCHITECTURE_ROADMAP.md`**. Cursor agents follow **`.cursor/rules/design-system.mdc`** for UI consistency.
 
 ## Game data (canonical: Nexon)
 

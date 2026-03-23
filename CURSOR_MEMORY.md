@@ -6,4 +6,5 @@ This file exists so tools and prompts that reference **`CURSOR_MEMORY.md`** reso
 
 ---
 
-→ **See [HANDOFF.md](./HANDOFF.md)** for full project state, decisions, and next steps.
+→ **See [HANDOFF.md](./HANDOFF.md)** for full project state, decisions, and next steps.  
+→ **Architecture map:** [`docs/PROJECT_MAP.md`](./docs/PROJECT_MAP.md) — data flow, routes, Nexon pipeline, conventions.

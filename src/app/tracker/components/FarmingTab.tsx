@@ -2,6 +2,7 @@
 
 import { useRef } from "react";
 import type { TrackerState, GoalEntry } from "../tracker-client";
+import { defaultTrackerState } from "@/lib/tracker-default-state";
 import { uuid } from "@/lib/uuid";
 
 interface Props {
@@ -25,15 +26,20 @@ export function FarmingTab({ state, setState }: Props) {
     const text = inputRef.current?.value.trim() ?? "";
     if (!text) return;
     const newGoal: GoalEntry = { id: uuid(), text, completed: false, active: true };
-    setState((prev) => pushActivity({ ...prev, goals: [...prev.goals, newGoal] }, `Added farming goal: ${text}`));
+    setState((prev) =>
+      pushActivity({ ...prev, goals: [...(prev.goals ?? []), newGoal] }, `Added farming goal: ${text}`),
+    );
     if (inputRef.current) inputRef.current.value = "";
   }
 
   function toggleFilter(key: "hideCompleted" | "onlyActive") {
-    setState((prev) => ({
-      ...prev,
-      goalsFilters: { ...prev.goalsFilters, [key]: !prev.goalsFilters[key] },
-    }));
+    setState((prev) => {
+      const gf = { ...defaultTrackerState.goalsFilters, ...(prev.goalsFilters ?? {}) };
+      return {
+        ...prev,
+        goalsFilters: { ...gf, [key]: !gf[key] },
+      };
+    });
   }
 
   function setGoalField(id: string, field: "active" | "completed", value: boolean) {
@@ -47,16 +53,18 @@ export function FarmingTab({ state, setState }: Props) {
 
   function removeGoal(id: string) {
     setState((prev) => {
-      const goal = prev.goals.find((g) => g.id === id);
+      const list = prev.goals ?? [];
+      const goal = list.find((g) => g.id === id);
       return pushActivity(
-        { ...prev, goals: prev.goals.filter((g) => g.id !== id) },
+        { ...prev, goals: list.filter((g) => g.id !== id) },
         `Removed farming goal: ${goal?.text}`
       );
     });
   }
 
-  const { hideCompleted, onlyActive } = state.goalsFilters;
-  const visible = state.goals.filter((g) => {
+  const goalsFilters = { ...defaultTrackerState.goalsFilters, ...(state.goalsFilters ?? {}) };
+  const { hideCompleted, onlyActive } = goalsFilters;
+  const visible = (state.goals ?? []).filter((g) => {
     if (hideCompleted && g.completed) return false;
     if (onlyActive && !g.active) return false;
     return true;

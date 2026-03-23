@@ -1,6 +1,6 @@
 # Agent instructions (TFD Tracker)
 
-**Session memory:** read **`HANDOFF.md`** at the start of substantive work; update it when the user asks for a handoff or after major changes. **`CURSOR_MEMORY.md`** points to the same workflow.
+**Session memory:** read **`HANDOFF.md`** at the start of substantive work; update it when the user asks for a handoff or after major changes. **`CURSOR_MEMORY.md`** points to the same workflow. For a **full codebase orientation**, read **`docs/PROJECT_MAP.md`** (AppState vs Prisma, Nexon data, key files).
 
 **Primary rules for Cursor:** see `.cursor/rules/*.mdc` (`memory-handoff.mdc`, `tfd-stack.mdc`, `tfd-api-state.mdc`, **`tfd-nexon-data.mdc`**, **`design-system.mdc`** — Overframe-style hierarchy, tier tokens, chipset UI), **`git-commit-push.mdc`** — commit + push after changes unless user opts out). Root **`.cursorrules`** duplicates the memory reminder for tools that only read the repo root.
 
