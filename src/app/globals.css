@@ -1039,8 +1039,8 @@ td .badge { display: inline-flex; align-items: center; gap: 0.35rem; }
 .tab-content { animation: sectionIn 130ms ease forwards; }
 
 @keyframes sectionIn {
-  from { opacity: 0; transform: translateX(4px) translateY(2px); }
-  to   { opacity: 1; transform: none; }
+  from { opacity: 0; }
+  to   { opacity: 1; }
 }
 
 @keyframes rowIn {
@@ -3337,6 +3337,42 @@ td .badge { display: inline-flex; align-items: center; gap: 0.35rem; }
 .slot-has-neg { color: #f87171; }
 .builder-slot-preview:not(.slot-has-neg) { color: #a3e635; }
 
+/* ── Negative effects / warnings ────────────────────────────────── */
+.builder-warnings-section {
+  background: rgba(248,113,113,0.06);
+  border: 1px solid rgba(248,113,113,0.2);
+  border-radius: 8px;
+  padding: 0.6rem 0.75rem;
+}
+.effect-neg-h {
+  color: #f87171 !important;
+  font-size: 0.78rem;
+}
+.builder-warning-list {
+  list-style: none;
+  margin: 0.35rem 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+.builder-warning-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  font-size: 0.76rem;
+  line-height: 1.4;
+}
+.builder-warning-mod {
+  font-weight: 700;
+  color: #fbbf24;
+  font-size: 0.7rem;
+}
+.builder-warning-text {
+  color: #f87171;
+  font-size: 0.75rem;
+}
+
 .builder-slots-wrap {
   min-width: 0;
 }
@@ -3810,10 +3846,19 @@ td .badge { display: inline-flex; align-items: center; gap: 0.35rem; }
 /* ── Overframe-style hero layout ─────────────────────────────────── */
 .builder-hero.builder-hero-overframe {
   position: relative;
-  overflow: hidden;
+  overflow: visible;
   grid-template-columns: 1fr;
   min-height: 140px;
   padding: 0;
+  clip-path: none;
+}
+.builder-hero-bg-clip {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  border-radius: 14px;
+  z-index: 0;
+  pointer-events: none;
 }
 .builder-portrait-bg {
   position: absolute;
@@ -3823,7 +3868,6 @@ td .badge { display: inline-flex; align-items: center; gap: 0.35rem; }
   object-fit: cover;
   object-position: top center;
   opacity: 0.15;
-  z-index: 0;
   pointer-events: none;
   filter: blur(8px) saturate(0.5) brightness(0.6);
 }

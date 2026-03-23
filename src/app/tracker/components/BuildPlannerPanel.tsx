@@ -626,7 +626,9 @@ export function BuildPlannerPanel({
         {/* ── Overframe-style hero ──────────────────────────────────── */}
         <header className="builder-hero builder-hero-overframe">
           {hero?.imageUrl && (
-            <img src={hero.imageUrl} alt="" className="builder-portrait-bg" aria-hidden="true" />
+            <div className="builder-hero-bg-clip">
+              <img src={hero.imageUrl} alt="" className="builder-portrait-bg" aria-hidden="true" />
+            </div>
           )}
           <div className="builder-hero-inner">
             {hero?.imageUrl && (
@@ -742,6 +744,33 @@ export function BuildPlannerPanel({
                 </table>
               )}
             </div>
+
+            {/* Red / Negative mod warnings */}
+            {(() => {
+              const warnings: { modName: string; text: string }[] = [];
+              slots.forEach((p) => {
+                if (!p) return;
+                const m = moduleById.get(p.moduleId);
+                const spans = splitEffectSpans(m, p.level);
+                spans.filter((s) => s.negative).forEach((s) => {
+                  warnings.push({ modName: p.name, text: s.text });
+                });
+              });
+              if (warnings.length === 0) return null;
+              return (
+                <div className="builder-stats-section builder-warnings-section">
+                  <h4 className="builder-stats-h effect-neg-h">Negative Effects</h4>
+                  <ul className="builder-warning-list">
+                    {warnings.map((w, i) => (
+                      <li key={i} className="builder-warning-item">
+                        <span className="builder-warning-mod">{w.modName}</span>
+                        <span className="builder-warning-text">{w.text}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              );
+            })()}
 
             <div className="builder-stats-section builder-effects-section">
               <h4 className="builder-stats-h">Module Effects</h4>
