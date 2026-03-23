@@ -8,6 +8,8 @@ import type {
 } from "@/lib/nexon-catalog-transform";
 import type { ModuleRecord } from "@/lib/tfd-modules";
 import { capacityCostAtLevel } from "@/lib/tfd-modules";
+import { inferTierFromValue, tierColors } from "@/lib/tracker-data";
+import { buildDescendantModuleGrid } from "./descendant-slot-grid";
 import type { ComputedStats } from "@/lib/tfd-stat-engine";
 import { computeDescendantStats, computeWeaponStats } from "@/lib/tfd-stat-engine";
 import {
@@ -100,6 +102,16 @@ function formatGearStatValue(name: string, val: unknown): string {
     return `${Math.round(n * 1000) / 10}%`;
   }
   return s;
+}
+
+function TieredStatValue({ statName, raw }: { statName: string; raw: unknown }) {
+  const display = formatGearStatValue(statName, raw);
+  const tier = inferTierFromValue(statName, String(raw ?? ""));
+  return (
+    <span className={styles.subValue} style={{ color: tierColors[tier] }}>
+      {display}
+    </span>
+  );
 }
 
 function externalSlotLabel(slotId: unknown): string {
@@ -224,7 +236,7 @@ function ExternalComponentCard({
               return (
                 <li key={`${name}-${i}`}>
                   <span>{name}</span>
-                  <span>{formatGearStatValue(name, val)}</span>
+                  <TieredStatValue statName={name} raw={val} />
                 </li>
               );
             })}
@@ -242,7 +254,7 @@ function ExternalComponentCard({
               return (
                 <li key={`${name}-${i}`}>
                   <span>{name}</span>
-                  <span>{formatGearStatValue(name, val)}</span>
+                  <TieredStatValue statName={name} raw={val} />
                 </li>
               );
             })}
@@ -303,7 +315,7 @@ function ReactorProfileCard({ row, index }: { row: Record<string, unknown>; inde
             return (
               <li key={`${sn}-${i}`}>
                 <span>{sn}</span>
-                <span>{formatGearStatValue(sn, sv)}</span>
+                <TieredStatValue statName={sn} raw={sv} />
               </li>
             );
           })}
@@ -325,7 +337,8 @@ function ReactorFallbackKv({ row }: { row: Record<string, unknown> }) {
     "reactorName",
     "reactor_display_name",
   ]);
-  const rows: { k: string; v: string }[] = [];
+  const rows: ({ k: string; raw: unknown; tiered: true } | { k: string; text: string; tiered: false })[] =
+    [];
   for (const [k, v] of Object.entries(row)) {
     if (skip.has(k)) continue;
     if (/_id$/i.test(k)) continue;
@@ -336,27 +349,95 @@ function ReactorFallbackKv({ row }: { row: Record<string, unknown> }) {
         for (const p of parsed) {
           const label = String(p.substat_name ?? p.stat_name ?? p.name ?? "Stat");
           const val = p.substat_value ?? p.stat_value ?? p.value;
-          rows.push({ k: label, v: formatGearStatValue(label, val) });
+          rows.push({ k: label, raw: val, tiered: true });
         }
         continue;
       }
     }
     if (typeof v === "object" && v !== null && !Array.isArray(v)) {
-      rows.push({ k, v: JSON.stringify(v) });
+      rows.push({ k, text: JSON.stringify(v), tiered: false });
     } else {
-      rows.push({ k, v: String(v) });
+      rows.push({ k, raw: v, tiered: true });
     }
   }
   if (rows.length === 0) return <p className="muted">No reactor details.</p>;
   return (
     <dl className={styles.kv}>
-      {rows.slice(0, 20).map(({ k, v }, i) => (
-        <div key={`${k}-${i}`}>
-          <dt>{k}</dt>
-          <dd>{v}</dd>
+      {rows.slice(0, 20).map((rowItem, i) => (
+        <div key={`${rowItem.k}-${i}`}>
+          <dt>{rowItem.k}</dt>
+          <dd>
+            {rowItem.tiered ? (
+              <TieredStatValue statName={rowItem.k} raw={rowItem.raw} />
+            ) : (
+              rowItem.text
+            )}
+          </dd>
         </div>
       ))}
     </dl>
+  );
+}
+
+function DescendantModuleInventory({
+  mods,
+  moduleById,
+}: {
+  mods: DescendantBuildParsed["modules"];
+  moduleById: Map<string, ModuleRecord>;
+}) {
+  if (mods.length === 0) return <p className="muted">No modules reported.</p>;
+  const cells = buildDescendantModuleGrid(mods, moduleById);
+  return (
+    <div className={styles.descGrid}>
+      {cells.map((cell, i) => {
+        if (!cell) {
+          return (
+            <div key={`empty-${i}`} className={`${styles.emptyModCell} ${styles.descGridCell}`} aria-hidden />
+          );
+        }
+        const m = cell.moduleSlot;
+        const rec = cell.rec;
+        const cost = rec ? capacityCostAtLevel(rec, m.enchantLevel) : 0;
+        const name = rec?.name ?? `Module ${m.moduleId}`;
+        const img = rec?.image ?? "";
+        const slotAccent =
+          cell.accent === "melee-gold"
+            ? styles.slotBarGold
+            : cell.accent === "sub-green"
+              ? styles.slotBarGreen
+              : "";
+        return (
+          <div key={`${m.slotId}-${m.moduleId}-${i}`} className={styles.descGridCell}>
+            <div
+              className={`${styles.moduleCard} ${rec ? tierClass(rec.tier) : ""} ${slotAccent}`}
+              title={
+                cell.accent === "melee-gold"
+                  ? "Melee (Charged Sub Attack)"
+                  : cell.accent === "sub-green"
+                    ? "Sub slot (descendant / red mod)"
+                    : undefined
+              }
+            >
+              <span className={styles.cost}>{cost}</span>
+              {img ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img className={styles.modImg} src={img} alt="" />
+              ) : (
+                <div className={styles.modImg} />
+              )}
+              <p className={styles.modName}>{name}</p>
+              <div className={styles.modMeta}>
+                {rec?.type ?? "—"}
+                <br />
+                {rec?.socket ?? "—"} · +{m.enchantLevel}
+              </div>
+              {m.slotId ? <div className={styles.modMeta}>Slot {m.slotId}</div> : null}
+            </div>
+          </div>
+        );
+      })}
+    </div>
   );
 }
 
@@ -512,20 +593,35 @@ export function PlayerLookupProfile({ data, catalogs }: Props) {
   const renderDescendantPanel = (bi: number) => {
     const build = descendantBuilds[bi];
     if (!build) return <p className="muted">No descendant data.</p>;
-    const row = descById.get(build.descendantId);
     const mods = formatModifierBlock(descStats[bi]?.modifiers ?? {});
     return (
       <div className={styles.inventoryPane}>
+        {reactors.length > 0 ? (
+          <button
+            type="button"
+            className={styles.reactorStrip}
+            onClick={() => setActiveTab("reactor")}
+          >
+            <span>
+              <strong>Reactor</strong>:{" "}
+              {String(
+                reactors[0].reactor_name ??
+                  reactors[0].reactorName ??
+                  reactors[0].reactor_display_name ??
+                  "Equipped reactor",
+              )}
+            </span>
+            <span className="muted">View →</span>
+          </button>
+        ) : null}
         <p className="muted" style={{ fontSize: "0.78rem", margin: 0 }}>
           Energy activator uses: {build.energyActivatorCount}
         </p>
         <CapacityBar used={build.moduleUsedCapacity} max={Math.max(build.moduleMaxCapacity, 1)} />
-        <ModuleGrid
-          mods={build.modules}
-          moduleById={moduleById}
-          emptyHint="No modules reported."
-          compact
-        />
+        <p className="muted" style={{ fontSize: "0.72rem", margin: "0 0 0.35rem" }}>
+          6×2 board: top-left green = Sub slot; bottom-left gold = Melee (Charged Sub Attack).
+        </p>
+        <DescendantModuleInventory mods={build.modules} moduleById={moduleById} />
         {mods.length > 0 ? (
           <details className={styles.statsPanel}>
             <summary>Applied module stats (estimated)</summary>

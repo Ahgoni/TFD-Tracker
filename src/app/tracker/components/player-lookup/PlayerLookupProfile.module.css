@@ -416,6 +416,76 @@
   border-bottom: none;
 }
 
+.subValue {
+  font-weight: 600;
+}
+
+.descGrid {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 0.4rem;
+  width: 100%;
+}
+
+.descGridCell {
+  min-width: 0;
+}
+
+.emptyModCell {
+  min-height: 112px;
+  border-radius: 10px;
+  border: 1px dashed var(--line);
+  background: rgba(0, 0, 0, 0.15);
+  opacity: 0.45;
+}
+
+.descGrid .moduleCard {
+  min-height: 112px;
+  padding: 0.35rem;
+}
+
+.descGrid .modImg {
+  width: 44px;
+  height: 44px;
+}
+
+.descGrid .modName {
+  font-size: 0.65rem;
+}
+
+.descGrid .cost {
+  font-size: 0.65rem;
+}
+
+/* Bottom accent bars — use border so they stack with Ultimate gold glow (box-shadow). */
+.slotBarGreen {
+  border-bottom: 3px solid #22c55e;
+}
+
+.slotBarGold {
+  border-bottom: 3px solid #ffc857;
+}
+
+.reactorStrip {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0.45rem 0.6rem;
+  border-radius: 8px;
+  border: 1px solid var(--line);
+  background: var(--panel-2);
+  font-size: 0.8rem;
+  cursor: pointer;
+  text-align: left;
+  width: 100%;
+  color: inherit;
+}
+
+.reactorStrip:hover {
+  border-color: var(--accent, #22d3ee);
+}
+
 .subHeading {
   font-size: 0.78rem;
   font-weight: 600;
@@ -425,8 +495,10 @@
   letter-spacing: 0.04em;
 }
 
+/* Ultimate — gold frame (matches reactor “ultimate” tier emphasis) */
 .tierUltimate {
-  border-color: #a855f7;
+  border-color: #d4a41a;
+  box-shadow: 0 0 0 1px rgba(212, 164, 26, 0.45), 0 0 12px rgba(255, 200, 87, 0.12);
 }
 .tierTranscendent {
   border-color: #f97316;

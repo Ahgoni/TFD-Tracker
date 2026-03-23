@@ -1,3 +1,5 @@
+import extCompRollData from "../../public/data/external-components.json";
+
 // ── Element / Skill / Ammo definitions ──────────────────────────────────────
 
 export interface IconDef {
@@ -83,6 +85,23 @@ export const reactorSubstatRanges: Record<string, { min: number; max: number; in
   "Additional Skill ATK When Attacking Legion of Darkness": { min: 1778.309, max: 2633.561 },
   "Additional Skill ATK When Attacking Order of Truth": { min: 1778.309, max: 2633.561 },
   "Additional Skill ATK When Attacking Legion of Immortality": { min: 1778.309, max: 2633.561 },
+};
+
+/** External component + core rolls — merged under reactor ranges where keys overlap. */
+const externalRollRanges: Record<string, { min: number; max: number; invert?: boolean }> = {};
+const sr = extCompRollData.substatRanges as Record<string, { min: number; max: number }>;
+for (const [k, v] of Object.entries(sr)) {
+  externalRollRanges[k] = { min: v.min, max: v.max };
+}
+const br = extCompRollData.baseStatRanges as Record<string, { min: number; max: number }>;
+for (const [k, v] of Object.entries(br)) {
+  externalRollRanges[k] = { min: v.min, max: v.max };
+}
+
+/** Reactor + external component substats/core — used for rarity color tiers (same thresholds as reactor UI). */
+export const allSubstatTierRanges: Record<string, { min: number; max: number; invert?: boolean }> = {
+  ...externalRollRanges,
+  ...reactorSubstatRanges,
 };
 
 // ── Descendant metadata ──────────────────────────────────────────────────────
@@ -185,7 +204,7 @@ export function inferTierFromValue(statName: string, rawValue: string): "common"
   const match = String(rawValue).match(/-?\d+(\.\d+)?/);
   if (!match) return "common";
   const numeric = Number(match[0]);
-  const range = reactorSubstatRanges[statName];
+  const range = allSubstatTierRanges[statName];
   if (!range || range.max <= range.min) return "common";
   const rawNorm = (numeric - range.min) / (range.max - range.min);
   const normalized = Math.max(0, Math.min(1, range.invert ? 1 - rawNorm : rawNorm));
