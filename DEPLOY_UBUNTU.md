@@ -197,6 +197,28 @@ npm run build
 pm2 restart tfd-web
 ```
 
+### 12d) `git pull` aborts: local changes to `public/data/*.json` (e.g. `modules.json`)
+
+**Error:** `Your local changes to the following files would be overwritten by merge` — often **`public/data/modules.json`** (or `descendants.json`, `weapons.json`).
+
+**Why:** A prior `npm run fetch:data` / `npm run refresh` on the server, or manual edits, left **uncommitted** changes. Git will not pull over them.
+
+**Typical fix (deploy should match the repo):** from the app root (folder with `package.json`):
+
+```bash
+git status
+git restore public/data/
+git pull
+npm install
+npx prisma migrate deploy
+npm run build
+pm2 restart tfd-web
+```
+
+**If you must keep server-only edits:** `git stash push -m "server data" -- public/data/` then `git pull`, then decide whether to `git stash pop` (may conflict).
+
+**Prevention:** Avoid running `fetch:data` on the VPS unless you intend local divergence; committed JSON + runtime **`/api/nexon/catalog/*`** is the intended model. See also **`docs/AI_HANDOFF.md`** §4.
+
 ### 12a) Prisma: `column "…" already exists` (P3018)
 
 The database already has the column (e.g. from an old `db push` or manual SQL), but Prisma still thinks that migration must run.

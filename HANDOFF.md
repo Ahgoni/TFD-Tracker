@@ -1,9 +1,9 @@
 # TFD Tracker — handoff / session memory
 
-**Last updated:** 2026-03-23 (project map + FarmingTab hardening)
+**Last updated:** 2026-03-23 (AI handoff process + deploy docs)
 
-At the **start** of a new chat or agent swap: read this file first, then **`docs/PROJECT_MAP.md`** for architecture.
-At the **end** of a session or after a major feature: overwrite this file with what changed, decisions, and next steps.
+At the **start** of a new chat or agent swap: **`HANDOFF.md`** → **`docs/PROJECT_MAP.md`** → **`docs/AI_HANDOFF.md`** (process + VPS git).
+At the **end** of a session or after a major feature: update this file + session log; update other docs per **`docs/AI_HANDOFF.md`**.
 
 ---
 
@@ -11,9 +11,11 @@ At the **end** of a session or after a major feature: overwrite this file with w
 
 | Doc | Purpose |
 |-----|---------|
+| **`docs/AI_HANDOFF.md`** | **Process for switching AI:** what to read/update, doc map, `git pull` + `public/data` on VPS |
 | **`docs/PROJECT_MAP.md`** | AppState vs Prisma tables, routes, Nexon pipeline, key files by feature, conventions |
 | **`docs/ARCHITECTURE_ROADMAP.md`** | Product vision, live catalog API, future patch tagging |
 | **`public/data/README.md`** | Nexon URLs, `fetch:data` / `fetch:stats`, static fallback behavior |
+| **`DEPLOY_UBUNTU.md`** | Ubuntu install, PM2, nginx, **§12d** local `public/data` blocking `git pull` |
 
 ---
 
@@ -165,6 +167,6 @@ After deploy: **hard refresh** to clear stale asset caches.
 
 | Date       | Summary |
 |-----------|---------|
-| 2026-03-23 | Added **`docs/PROJECT_MAP.md`** (AppState-centric data flow, dual Prisma tables, Nexon pipeline, file map). Hardened **`FarmingTab`** for missing `goals` / `goalsFilters`. Updated **AGENTS.md**, **CURSOR_MEMORY.md**, Cursor rules list in handoff. |
+| 2026-03-23 | **`docs/PROJECT_MAP.md`**, **`docs/AI_HANDOFF.md`** (AI continuity + VPS `git pull`/`public/data`). **`DEPLOY_UBUNTU.md`** §12d. **`FarmingTab`** hardened. Updated **AGENTS**, **CURSOR_MEMORY**, **`.cursorrules`**, **`memory-handoff.mdc`**, **README**. |
 | 2026-03-20 | Full audit + cleanup: fixed 17 issues (CSS duplication, dead code, hero-badge collision, mini-btn light mode, --card-bg, tier-norm, username normalization, import catalog merge, descFilter removal). Build passes clean. |
 | 2026-03-20 | **Overframe build planner overhaul**: Nexon stat data fetch script, stat engine, stat map, full panel rewrite (portrait BG, live stats, reactor integration, ancestor editor, expanded cards, fixed DnD). Data model expanded with `BuildReactor`, `customPreview`, `targetLevel`. Build passes clean. |

@@ -1,6 +1,6 @@
 # TFD Tracker — project map (deep dive)
 
-Use this file to orient before large changes. **Nexon data rules:** `.cursor/rules/tfd-nexon-data.mdc` · **Stack:** `.cursor/rules/tfd-stack.mdc`
+Use this file to orient before large changes. **AI continuity:** `docs/AI_HANDOFF.md` · **Nexon data rules:** `.cursor/rules/tfd-nexon-data.mdc` · **Stack:** `.cursor/rules/tfd-stack.mdc`
 
 ---
 

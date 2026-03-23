@@ -14,6 +14,7 @@ This app adds Discord login and private per-user cloud state for The First Desce
 ## Architecture & UX vision
 
 - **Project map (read this first for a deep dive):** **`docs/PROJECT_MAP.md`** — how data flows, which APIs matter, Nexon pipeline.
+- **Switching AI in Cursor:** **`docs/AI_HANDOFF.md`** — what to read at session start, what to update before end, VPS `git pull` / `public/data` conflicts, full doc index.
 - Product direction (Overframe-tier discovery, TFD tier tokens, patch-aware roadmap): **`docs/ARCHITECTURE_ROADMAP.md`**. Cursor agents follow **`.cursor/rules/design-system.mdc`** for UI consistency.
 
 ## Game data (canonical: Nexon)

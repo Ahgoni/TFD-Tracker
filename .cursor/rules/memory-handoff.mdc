@@ -8,11 +8,13 @@ alwaysApply: true
 ## At the start of work
 - Read **`HANDOFF.md`** in the repo root to understand current state, recent decisions, and what must not regress (icons, DnD, deploy).
 - For architecture orientation (AppState vs Prisma, Nexon pipeline, route map): **`docs/PROJECT_MAP.md`**.
-- Optionally skim **`CURSOR_MEMORY.md`** — it points at `HANDOFF.md` and `PROJECT_MAP.md`.
+- For **AI continuity process** (what to update when, VPS git issues): **`docs/AI_HANDOFF.md`**.
+- Optionally skim **`CURSOR_MEMORY.md`** — it points at `HANDOFF.md`, `PROJECT_MAP.md`, and `AI_HANDOFF.md`.
 
 ## When finishing a session or completing a major feature
-- If the user asks for a handoff (or you’re wrapping up substantive work), **update `HANDOFF.md`**: brief summary of what shipped, architecture choices, files touched, **what’s still broken or unverified**, and **immediate next steps**.
-- You may add a one-line row to the “Session log” table in `HANDOFF.md`.
+- **Document for the next AI:** update **`HANDOFF.md`** (summary, decisions, files touched, broken/unverified, next steps) **and** add a **Session log** row.
+- If architecture or routes changed, update **`docs/PROJECT_MAP.md`**. If deploy/git/VPS steps changed, update **`DEPLOY_UBUNTU.md`**. If Nexon/data pipeline changed, update **`public/data/README.md`** as needed.
+- Follow **`git-commit-push.mdc`**: commit and push unless the user opted out.
 
 ## User prompt to resume work
-- *“Read `@HANDOFF.md` and let’s continue.”*
+- *“Read `@HANDOFF.md` and `@docs/AI_HANDOFF.md` and let’s continue.”*
