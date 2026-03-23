@@ -4107,6 +4107,31 @@ td .badge { display: inline-flex; align-items: center; gap: 0.35rem; }
   min-width: 480px;
   max-width: 620px;
 }
+
+/* Portaled tooltips: width comes from fixed wrapper; stay inside viewport */
+.skill-tooltip-fixed-wrap {
+  pointer-events: auto;
+  max-height: min(78vh, 640px);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+.skill-tooltip.skill-tooltip-portal {
+  position: relative;
+  left: auto;
+  top: auto;
+  transform: none;
+  min-width: 0;
+  width: 100%;
+  max-width: none;
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+.skill-tooltip.skill-tooltip-portal.skill-tooltip-wide {
+  min-width: 0;
+}
 .skill-tooltip-content {
   display: flex;
   gap: 0.75rem;
@@ -4243,6 +4268,21 @@ td .badge { display: inline-flex; align-items: center; gap: 0.35rem; }
   flex-direction: column;
   gap: 0.85rem;
   min-width: 0;
+  overflow-x: visible;
+  container-type: inline-size;
+  container-name: builder-center;
+}
+
+/* Narrow center column: 2×2 component cards (viewport-wide breakpoints miss 3-column layouts) */
+@container builder-center (max-width: 760px) {
+  .builder-comp-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@container builder-center (max-width: 380px) {
+  .builder-comp-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
 }
 
 /* ── Level selector ──────────────────────────────────────────────── */
@@ -4533,12 +4573,17 @@ td .badge { display: inline-flex; align-items: center; gap: 0.35rem; }
   border-radius: 12px;
   padding: 0.75rem 0.85rem;
   background: rgba(168,85,247,0.04);
+  min-width: 0;
+  /* Allow horizontal scroll if the center column is narrow; grid uses minmax(0,1fr) so columns don't overflow. */
+  overflow-x: auto;
+  overflow-y: visible;
 }
 .builder-comp-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 0.55rem;
   margin-top: 0.5rem;
+  width: 100%;
 }
 .builder-comp-card {
   border: 1px solid var(--line);
@@ -4605,10 +4650,13 @@ td .badge { display: inline-flex; align-items: center; gap: 0.35rem; }
   color: #fbbf24;
 }
 @media (max-width: 1200px) {
-  .builder-comp-grid { grid-template-columns: repeat(2, 1fr); }
+  .builder-comp-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    min-width: 0;
+  }
 }
 @media (max-width: 600px) {
-  .builder-comp-grid { grid-template-columns: 1fr; }
+  .builder-comp-grid { grid-template-columns: minmax(0, 1fr); }
 }
 
 /* ── Expanded module cards ───────────────────────────────────────── */

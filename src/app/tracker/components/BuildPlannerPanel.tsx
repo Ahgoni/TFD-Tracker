@@ -1,6 +1,7 @@
 "use client";
 
-import React, { useCallback, useEffect, useMemo, useState, type Dispatch, type SetStateAction } from "react";
+import React, { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, type Dispatch, type SetStateAction } from "react";
+import { createPortal } from "react-dom";
 
 class BuildPlannerErrorBoundary extends React.Component<
   { children: React.ReactNode },
@@ -444,7 +445,8 @@ function ExternalComponentsSection({
 }) {
   const [db, setDb] = useState<ExtCompDb | null>(null);
   useEffect(() => {
-    fetch("/data/external-components.json")
+    // Cache-bust so updated set names / substats load after deploy (CDN/browser cache).
+    fetch("/data/external-components.json?v=2025-03-20-sets2", { cache: "no-store" })
       .then((r) => r.ok ? r.json() : null)
       .then((d) => setDb(d))
       .catch(() => {});
@@ -754,6 +756,29 @@ function BuildPlannerPanelInner({
   const [computedStats, setComputedStats] = useState<ComputedStats | null>(null);
   const [descSkills, setDescSkills] = useState<{ name: string; image: string; type?: string; element?: string; arche?: string | null; description?: string | null }[]>([]);
   const [hoveredSkill, setHoveredSkill] = useState<string | null>(null);
+  const skillIconRefs = useRef<Map<string, HTMLDivElement>>(new Map());
+  const skillTipLeaveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const [skillTipPos, setSkillTipPos] = useState<{ top: number; left: number; width: number } | null>(null);
+
+  const clearSkillTipLeaveTimer = useCallback(() => {
+    if (skillTipLeaveTimer.current) {
+      clearTimeout(skillTipLeaveTimer.current);
+      skillTipLeaveTimer.current = null;
+    }
+  }, []);
+
+  const onSkillIconEnter = useCallback((name: string) => {
+    clearSkillTipLeaveTimer();
+    setHoveredSkill(name);
+  }, [clearSkillTipLeaveTimer]);
+
+  const onSkillIconLeave = useCallback(() => {
+    clearSkillTipLeaveTimer();
+    skillTipLeaveTimer.current = setTimeout(() => {
+      setHoveredSkill(null);
+      setSkillTipPos(null);
+    }, 220);
+  }, [clearSkillTipLeaveTimer]);
 
   const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 6 } }));
   const maxCap = maxCapacityForTarget(form.targetType);
@@ -983,6 +1008,77 @@ function BuildPlannerPanelInner({
     return { affectedSkillNames: matched, isSpecificMatch: false };
   }, [equippedTranscendent, descSkills, skillMap]);
 
+  const hoveredSkillTooltip = useMemo(() => {
+    if (!hoveredSkill || !form.targetKey) return null;
+    const heroSkills = hero?.skills ?? descSkills;
+    const sk = heroSkills.find((h) => h.name === hoveredSkill);
+    const full = descSkills.find((s) => s.name === hoveredSkill);
+    if (!sk || !full) return null;
+    const isAffected = affectedSkillNames.has(String(sk.name ?? ""));
+    const modMapping = isAffected && equippedTranscendent ? skillMap[equippedTranscendent.mod.id] : null;
+    const skillOv = modMapping?.skillOverrides?.[String(full?.name ?? "")];
+    const displayElement = (skillOv?.modifiedElement ?? modMapping?.modifiedElement ?? full?.element) ?? "";
+    const displayArche = (skillOv?.modifiedArche ?? modMapping?.modifiedArche ?? full?.arche) ?? "";
+    const displayElementIcon = elementDefs.find((d) => d.label === displayElement)?.icon;
+    const baseGameId = descendantGameId ? (skillDetailsDb[descendantGameId] ? descendantGameId : ultimateToBase[descendantGameId]) : null;
+    const skillDetail = baseGameId ? skillDetailsDb[baseGameId]?.[String(full?.name ?? "")] : undefined;
+    const hasStats = !!(skillDetail && ((skillDetail.basicInfo?.length ?? 0) > 0 || (skillDetail.sections?.length ?? 0) > 0));
+    const calcLines = skillDetail ? formatSkillDetailLines(skillDetail) : [];
+    return {
+      sk,
+      full,
+      isAffected,
+      modMapping,
+      skillOv,
+      displayElement,
+      displayArche,
+      displayElementIcon,
+      skillDetail,
+      hasStats,
+      calcLines,
+    };
+  }, [
+    hoveredSkill,
+    form.targetKey,
+    hero?.skills,
+    descSkills,
+    affectedSkillNames,
+    equippedTranscendent,
+    skillMap,
+    descendantGameId,
+    skillDetailsDb,
+  ]);
+
+  useLayoutEffect(() => {
+    if (!hoveredSkill || !hoveredSkillTooltip) {
+      setSkillTipPos(null);
+      return;
+    }
+    const el = skillIconRefs.current.get(hoveredSkill);
+    if (!el) {
+      setSkillTipPos(null);
+      return;
+    }
+    const update = () => {
+      const r = el.getBoundingClientRect();
+      const pad = 12;
+      const wide = hoveredSkillTooltip.hasStats;
+      const maxW = Math.min(wide ? 620 : 360, window.innerWidth - pad * 2);
+      const center = r.left + r.width / 2;
+      let left = center - maxW / 2;
+      left = Math.max(pad, Math.min(left, window.innerWidth - maxW - pad));
+      const top = r.bottom + 8;
+      setSkillTipPos({ top, left, width: maxW });
+    };
+    update();
+    window.addEventListener("scroll", update, true);
+    window.addEventListener("resize", update);
+    return () => {
+      window.removeEventListener("scroll", update, true);
+      window.removeEventListener("resize", update);
+    };
+  }, [hoveredSkill, hoveredSkillTooltip]);
+
   // Render
 
   if (!form.targetKey) {
@@ -1027,106 +1123,20 @@ function BuildPlannerPanelInner({
                 <div className="builder-skills-section">
                   <div className="builder-skills-row">
                     {heroSkills.map((sk, idx) => {
-                      const full = descSkills.find((s) => s.name === sk.name);
                       const isAffected = affectedSkillNames.has(String(sk.name ?? ""));
-                      const modMapping = isAffected && equippedTranscendent ? skillMap[equippedTranscendent.mod.id] : null;
-                      const skillOv = modMapping?.skillOverrides?.[String(full?.name ?? "")];
-                      const displayElement = (skillOv?.modifiedElement ?? modMapping?.modifiedElement ?? full?.element) ?? "";
-                      const displayArche = (skillOv?.modifiedArche ?? modMapping?.modifiedArche ?? full?.arche) ?? "";
-                      const displayElementIcon = elementDefs.find((d) => d.label === displayElement)?.icon;
-                      const baseGameId = descendantGameId ? (skillDetailsDb[descendantGameId] ? descendantGameId : ultimateToBase[descendantGameId]) : null;
-                      const skillDetail = baseGameId ? skillDetailsDb[baseGameId]?.[String(full?.name ?? "")] : undefined;
-                      const hasStats = skillDetail && ((skillDetail.basicInfo?.length ?? 0) > 0 || (skillDetail.sections?.length ?? 0) > 0);
-                      const calcLines = skillDetail ? formatSkillDetailLines(skillDetail) : [];
                       return (
                         <div
                           key={sk.name}
+                          ref={(el) => {
+                            if (el) skillIconRefs.current.set(sk.name, el);
+                            else skillIconRefs.current.delete(sk.name);
+                          }}
                           className={`builder-skill-icon${hoveredSkill === sk.name ? " skill-active" : ""}${isAffected ? " skill-affected" : ""}`}
-                          onMouseEnter={() => setHoveredSkill(sk.name)}
-                          onMouseLeave={() => setHoveredSkill(null)}
+                          onMouseEnter={() => onSkillIconEnter(sk.name)}
+                          onMouseLeave={onSkillIconLeave}
                         >
                           <img src={isAffected && isSpecificMatch && equippedTranscendent ? equippedTranscendent.mod.image : sk.image} alt={sk.name} />
                           <span className="builder-skill-num">{idx + 1}</span>
-                          {hoveredSkill === sk.name && full && (
-                            <div className={`skill-tooltip${hasStats ? " skill-tooltip-wide" : ""}`}>
-                              <div className="skill-tooltip-header">
-                                {displayElementIcon && <img src={displayElementIcon} alt="" className="skill-tooltip-element-icon" />}
-                                <span className="skill-tooltip-attr">
-                                  {displayElement} Attribute
-                                  {displayArche ? ` \u00b7 ${displayArche}` : ""}
-                                </span>
-                              </div>
-                              <h4 className="skill-tooltip-name">
-                                {isAffected && isSpecificMatch && equippedTranscendent ? String(equippedTranscendent.mod.name ?? "") : String(full.name ?? "")}
-                              </h4>
-                              <span className="skill-tooltip-type">{String(full.type ?? "")}</span>
-                              {isAffected && equippedTranscendent && (
-                                <div className="skill-tooltip-mod-banner">
-                                  <img src={equippedTranscendent.mod.image} alt="" className="skill-tooltip-mod-icon" />
-                                  <span className="skill-tooltip-mod-badge">Modified by {String(equippedTranscendent.mod.name ?? "")}</span>
-                                </div>
-                              )}
-                              <div className="skill-tooltip-content">
-                                <div className="skill-tooltip-left">
-                                  {calcLines.length > 0 && (
-                                    <div className="skill-tooltip-calculations">
-                                      <span className="skill-tooltip-section-label">Skill calculations (reference)</span>
-                                      <ul className="skill-calc-list">
-                                        {calcLines.map((line, li) => (
-                                          <li key={li}>{line}</li>
-                                        ))}
-                                      </ul>
-                                      {isAffected && equippedTranscendent?.mod.preview && (
-                                        <p className="skill-tooltip-calc-note muted">
-                                          In-game values may differ when this Transcendent mod is equipped; compare with the mod text below.
-                                        </p>
-                                      )}
-                                    </div>
-                                  )}
-                                  <span className="skill-tooltip-section-label">Skill Description</span>
-                                  {isAffected && equippedTranscendent?.mod.preview ? (
-                                    <>
-                                      <p className="skill-tooltip-desc skill-tooltip-desc-modded">{String(equippedTranscendent.mod.preview ?? "")}</p>
-                                      {full.description && (
-                                        <details className="skill-tooltip-original">
-                                          <summary>Original Description</summary>
-                                          <p className="skill-tooltip-desc">{String(full.description ?? "")}</p>
-                                        </details>
-                                      )}
-                                    </>
-                                  ) : (
-                                    full.description && <p className="skill-tooltip-desc">{String(full.description ?? "")}</p>
-                                  )}
-                                </div>
-                                {hasStats && (
-                                  <div className="skill-tooltip-right">
-                                    {(skillDetail.basicInfo?.length ?? 0) > 0 && (
-                                      <div className="stt-section">
-                                        <div className="stt-section-head stt-head-basic">Basic Info</div>
-                                        {skillDetail.basicInfo.map((s, si) => (
-                                          <div key={si} className="stt-row">
-                                            <span className="stt-label">{s.label}</span>
-                                            <span className="stt-value">{s.value}</span>
-                                          </div>
-                                        ))}
-                                      </div>
-                                    )}
-                                    {skillDetail.sections?.map((sec, si) => (
-                                      <div key={si} className="stt-section">
-                                        <div className="stt-section-head stt-head-effect">{sec.name}</div>
-                                        {sec.stats.map((s, ri) => (
-                                          <div key={ri} className="stt-row">
-                                            <span className="stt-label">{s.label}</span>
-                                            <span className="stt-value">{s.value}</span>
-                                          </div>
-                                        ))}
-                                      </div>
-                                    ))}
-                                  </div>
-                                )}
-                              </div>
-                            </div>
-                          )}
                         </div>
                       );
                     })}
@@ -1136,6 +1146,112 @@ function BuildPlannerPanelInner({
             </div>
           </div>
         </header>
+
+        {typeof document !== "undefined" &&
+          skillTipPos &&
+          hoveredSkillTooltip &&
+          createPortal(
+            <div
+              className="skill-tooltip-fixed-wrap"
+              style={{
+                position: "fixed",
+                top: skillTipPos.top,
+                left: skillTipPos.left,
+                width: skillTipPos.width,
+                zIndex: 100000,
+              }}
+              onMouseEnter={clearSkillTipLeaveTimer}
+              onMouseLeave={onSkillIconLeave}
+            >
+              <div
+                className={`skill-tooltip skill-tooltip-portal${hoveredSkillTooltip.hasStats ? " skill-tooltip-wide" : ""}`}
+              >
+                <div className="skill-tooltip-header">
+                  {hoveredSkillTooltip.displayElementIcon && (
+                    <img src={hoveredSkillTooltip.displayElementIcon} alt="" className="skill-tooltip-element-icon" />
+                  )}
+                  <span className="skill-tooltip-attr">
+                    {hoveredSkillTooltip.displayElement} Attribute
+                    {hoveredSkillTooltip.displayArche ? ` \u00b7 ${hoveredSkillTooltip.displayArche}` : ""}
+                  </span>
+                </div>
+                <h4 className="skill-tooltip-name">
+                  {hoveredSkillTooltip.isAffected && isSpecificMatch && equippedTranscendent
+                    ? String(equippedTranscendent.mod.name ?? "")
+                    : String(hoveredSkillTooltip.full.name ?? "")}
+                </h4>
+                <span className="skill-tooltip-type">{String(hoveredSkillTooltip.full.type ?? "")}</span>
+                {hoveredSkillTooltip.isAffected && equippedTranscendent && (
+                  <div className="skill-tooltip-mod-banner">
+                    <img src={equippedTranscendent.mod.image} alt="" className="skill-tooltip-mod-icon" />
+                    <span className="skill-tooltip-mod-badge">Modified by {String(equippedTranscendent.mod.name ?? "")}</span>
+                  </div>
+                )}
+                <div className="skill-tooltip-content">
+                  <div className="skill-tooltip-left">
+                    {hoveredSkillTooltip.calcLines.length > 0 && (
+                      <div className="skill-tooltip-calculations">
+                        <span className="skill-tooltip-section-label">Skill calculations (reference)</span>
+                        <ul className="skill-calc-list">
+                          {hoveredSkillTooltip.calcLines.map((line, li) => (
+                            <li key={li}>{line}</li>
+                          ))}
+                        </ul>
+                        {hoveredSkillTooltip.isAffected && equippedTranscendent?.mod.preview && (
+                          <p className="skill-tooltip-calc-note muted">
+                            In-game values may differ when this Transcendent mod is equipped; compare with the mod text below.
+                          </p>
+                        )}
+                      </div>
+                    )}
+                    <span className="skill-tooltip-section-label">Skill Description</span>
+                    {hoveredSkillTooltip.isAffected && equippedTranscendent?.mod.preview ? (
+                      <>
+                        <p className="skill-tooltip-desc skill-tooltip-desc-modded">{String(equippedTranscendent.mod.preview ?? "")}</p>
+                        {hoveredSkillTooltip.full.description && (
+                          <details className="skill-tooltip-original">
+                            <summary>Original Description</summary>
+                            <p className="skill-tooltip-desc">{String(hoveredSkillTooltip.full.description ?? "")}</p>
+                          </details>
+                        )}
+                      </>
+                    ) : (
+                      hoveredSkillTooltip.full.description && (
+                        <p className="skill-tooltip-desc">{String(hoveredSkillTooltip.full.description ?? "")}</p>
+                      )
+                    )}
+                  </div>
+                  {hoveredSkillTooltip.hasStats && hoveredSkillTooltip.skillDetail && (
+                    <div className="skill-tooltip-right">
+                      {(hoveredSkillTooltip.skillDetail.basicInfo?.length ?? 0) > 0 && (
+                        <div className="stt-section">
+                          <div className="stt-section-head stt-head-basic">Basic Info</div>
+                          {hoveredSkillTooltip.skillDetail.basicInfo!.map((s, si) => (
+                            <div key={si} className="stt-row">
+                              <span className="stt-label">{s.label}</span>
+                              <span className="stt-value">{s.value}</span>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                      {hoveredSkillTooltip.skillDetail.sections?.map((sec, si) => (
+                        <div key={si} className="stt-section">
+                          <div className="stt-section-head stt-head-effect">{sec.name}</div>
+                          {sec.stats.map((s, ri) => (
+                            <div key={ri} className="stt-row">
+                              <span className="stt-label">{s.label}</span>
+                              <span className="stt-value">{s.value}</span>
+                            </div>
+                          ))}
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>,
+            document.body,
+          )}
 
         {/* Three-column layout */}
         <div className="builder-main">

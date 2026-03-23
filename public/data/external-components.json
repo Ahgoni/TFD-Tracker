@@ -2,19 +2,48 @@
   "slots": [
     {
       "name": "Auxiliary Power",
-      "substats": ["Fire Resistance", "MP Recovery Out of Combat", "Module Drop Rate", "Kuiper Drop Rate", "DBNO Duration"]
+      "substats": [
+        "Fire Resistance",
+        "MP Recovery Out of Combat",
+        "Module Drop Rate Increase Modifier",
+        "Kuiper Shard Drop Rate Increase Modifier",
+        "DBNO Duration"
+      ]
     },
     {
       "name": "Sensor",
-      "substats": ["Max MP", "Chill Resistance", "Shield Recovery Out of Combat", "Consumable Drop Rate", "Character EXP Gain", "MP Recovery in Combat", "HP Recovery Modifier"]
+      "substats": [
+        "Max MP",
+        "Chill Resistance",
+        "Shield Recovery Out of Combat",
+        "Consumable Drop Rate Increase Modifier",
+        "Character EXP Gain Modifier",
+        "MP Recovery In Combat",
+        "HP Recovery Modifier"
+      ]
     },
     {
       "name": "Memory",
-      "substats": ["DEF", "Electric Resistance", "Shield Recovery in Combat", "MP Recovery Modifier", "Gold Drop Rate", "Firearm Proficiency Gain", "Ecive Radius"]
+      "substats": [
+        "DEF",
+        "Electric Resistance",
+        "Shield Recovery In Combat",
+        "MP Recovery Modifier",
+        "Gold Drop Rate Increase Modifier",
+        "Firearm Proficiency Gain Modifier",
+        "Ecive Search Radius Increase Modifier"
+      ]
     },
     {
       "name": "Processor",
-      "substats": ["Max Shield", "Toxin Resistance", "Equipment Drop Rate", "Shield Recovery Modifier", "Item Acquisition Distance", "Ecive Display Time"]
+      "substats": [
+        "Max Shield",
+        "Toxin Resistance",
+        "Equipment Drop Rate Increase Modifier",
+        "Shield Recovery Modifier",
+        "Item Acquisition Distance Increase Modifier",
+        "Ecive Display Time"
+      ]
     }
   ],
   "baseStats": ["Max HP", "Max Shield", "DEF"],
@@ -33,64 +62,56 @@
     "Electric Resistance": { "min": 1608, "max": 3860, "unit": "" },
     "Toxin Resistance": { "min": 1608, "max": 3860, "unit": "" },
     "MP Recovery Out of Combat": { "min": 1.791, "max": 2.454, "unit": "" },
-    "MP Recovery in Combat": { "min": 0.208, "max": 0.287, "unit": "" },
+    "MP Recovery In Combat": { "min": 0.208, "max": 0.287, "unit": "" },
     "MP Recovery Modifier": { "min": 0.108, "max": 0.16, "unit": "x" },
     "Shield Recovery Out of Combat": { "min": 11.311, "max": 16.632, "unit": "" },
-    "Shield Recovery in Combat": { "min": 3.271, "max": 5.033, "unit": "" },
+    "Shield Recovery In Combat": { "min": 3.271, "max": 5.033, "unit": "" },
     "Shield Recovery Modifier": { "min": 0.057, "max": 0.085, "unit": "x" },
     "HP Recovery Modifier": { "min": 0.057, "max": 0.085, "unit": "x" },
-    "Module Drop Rate": { "min": 0.125, "max": 0.191, "unit": "x" },
-    "Kuiper Drop Rate": { "min": 0.111, "max": 0.168, "unit": "x" },
-    "Character EXP Gain": { "min": 0.125, "max": 0.191, "unit": "x" },
-    "Firearm Proficiency Gain": { "min": 0.125, "max": 0.191, "unit": "x" },
-    "Consumable Drop Rate": { "min": 0.125, "max": 0.191, "unit": "x" },
-    "Equipment Drop Rate": { "min": 0.125, "max": 0.191, "unit": "x" },
-    "Gold Drop Rate": { "min": 0.125, "max": 0.191, "unit": "x" },
+    "Module Drop Rate Increase Modifier": { "min": 0.125, "max": 0.191, "unit": "x" },
+    "Kuiper Shard Drop Rate Increase Modifier": { "min": 0.111, "max": 0.168, "unit": "x" },
+    "Character EXP Gain Modifier": { "min": 0.125, "max": 0.191, "unit": "x" },
+    "Firearm Proficiency Gain Modifier": { "min": 0.125, "max": 0.191, "unit": "x" },
+    "Consumable Drop Rate Increase Modifier": { "min": 0.125, "max": 0.191, "unit": "x" },
+    "Equipment Drop Rate Increase Modifier": { "min": 0.125, "max": 0.191, "unit": "x" },
+    "Gold Drop Rate Increase Modifier": { "min": 0.125, "max": 0.191, "unit": "x" },
     "DBNO Duration": { "min": 0.208, "max": 0.318, "unit": "x" },
-    "Item Acquisition Distance": { "min": 0.208, "max": 0.318, "unit": "x" },
-    "Ecive Radius": { "min": 0.208, "max": 0.318, "unit": "x" },
+    "Item Acquisition Distance Increase Modifier": { "min": 0.208, "max": 0.318, "unit": "x" },
+    "Ecive Search Radius Increase Modifier": { "min": 0.208, "max": 0.318, "unit": "x" },
     "Ecive Display Time": { "min": 0.208, "max": 0.318, "unit": "x" }
   },
   "sets": {
-    "Annihilation": {
-      "2pc": "Firearm ATK +7%",
-      "4pc": "Firearm ATK +15%, Firearm Critical Hit Rate +15%"
-    },
-    "Slayer": {
-      "2pc": "Skill Power +7%",
-      "4pc": "Skill Power +15%, Skill Critical Hit Rate +15%"
+    "Supernova": {
+      "2pc": "Electric Skill Modifier +8.6%",
+      "4pc": "Fusion Skill Modifier +12%. On Electric Skill Attack, activates Executioner's Thunderbolt at the target's location for additional Electric damage equal to 100% of Skill Power (50% chance, 2s cooldown)."
     },
     "Polar Night": {
-      "2pc": "Chill Skill Power +7%",
-      "4pc": "Chill Skill Power +22%"
+      "2pc": "Chill Skill Power +6.2%",
+      "4pc": "Per Frostbite stack: Firearm Critical Hit Damage +1.7%, Skill Critical Hit Damage +6% (up to 10 stacks, 5s, 30% chance). On kill vs Frostbite: 12.2% max HP damage in 2.5 radius (30% chance)."
     },
-    "Inferno": {
-      "2pc": "Fire Skill Power +7%",
-      "4pc": "Fire Skill Power +22%"
+    "Annihilation": {
+      "2pc": "Skill Duration +5.7%",
+      "4pc": "Firearm ATK scales with HP lost (up to 26%). Below 50% HP: MP Recovery −22%, HP Recovery +16.4 for 10s (30s cooldown)."
     },
-    "Thunderstrike": {
-      "2pc": "Electric Skill Power +7%",
-      "4pc": "Electric Skill Power +22%"
+    "Slayer": {
+      "2pc": "General Rounds Capacity +8%",
+      "4pc": "Rounds per Magazine +9%, Skill Cost +15%, Base Skill Power boost ratio +26.1%. On kill vs Towed: recover MP & Specialized Resource (17% at 12.2% chance)."
     },
-    "Venom": {
-      "2pc": "Toxin Skill Power +7%",
-      "4pc": "Toxin Skill Power +22%"
+    "Venom Essence": {
+      "2pc": "Toxic Skill Power +6.2%",
+      "4pc": "Tactical Rifle / Assault Rifle Attribute Effect Trigger +12%. Per Poison stack: Firearm ATK +2%, Skill Power Modifier +0.7% for 5s (up to 10 stacks, 30% chance)."
     },
-    "Tingling": {
-      "2pc": "Max Shield +14%",
-      "4pc": "Max Shield +30%, Shield Recovery in Combat +15%"
+    "Bravery": {
+      "2pc": "HP Recovery +1.8%, Max Shield +11.9%",
+      "4pc": "Skill Duration scales with Custom Resource ratio (up to 6.6%). On kill vs Stun: 35% chance to reduce a random skill cooldown by 1.63s."
     },
-    "Fortress": {
-      "2pc": "DEF +14%",
-      "4pc": "DEF +30%, Damage Reduction +3%"
+    "Frozen Heart": {
+      "2pc": "Sniper Rifle / Scout Rifle Critical Hit Rate +5%",
+      "4pc": "Skill Cooldown −4.7%. Ally buffs stack Frozen Heart Energy; at 4 stacks: Frozen Heart Essence — Weak Point DMG +18%, Skill Crit Rate +28%, Firearm Crit Rate +7.9% for 10s."
     },
-    "HP Collector": {
-      "2pc": "Max HP +14%",
-      "4pc": "Max HP +30%, HP Recovery Modifier +15%"
-    },
-    "MP Collector": {
-      "2pc": "Max MP +14%",
-      "4pc": "Max MP +30%, MP Recovery Modifier +15%"
+    "Volcanic": {
+      "2pc": "Fire Skill Power +2.8%",
+      "4pc": "Handgun / Handcannon / Shotgun ATK +6.6%, Charged Sub Attack Damage +6.6%. After reload: Skill Power +3.5% for 5s (up to 3 stacks; cleared on skill use)."
     }
   }
 }

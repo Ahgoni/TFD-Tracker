@@ -122,6 +122,25 @@ export const DESCENDANT_STAT_GROUPS: StatGroup[] = [
       "MP Recovery In Combat",
     ],
   },
+  {
+    label: "External component rolls",
+    stats: [
+      "Module Drop Rate Increase Modifier",
+      "Kuiper Shard Drop Rate Increase Modifier",
+      "DBNO Duration",
+      "Character EXP Gain Modifier",
+      "Consumable Drop Rate Increase Modifier",
+      "Equipment Drop Rate Increase Modifier",
+      "Firearm Proficiency Gain Modifier",
+      "Gold Drop Rate Increase Modifier",
+      "Ecive Search Radius Increase Modifier",
+      "Ecive Display Time",
+      "Item Acquisition Distance Increase Modifier",
+      "MP Recovery Modifier",
+      "Shield Recovery Modifier",
+      "HP Recovery Modifier",
+    ],
+  },
 ];
 
 export const WEAPON_STAT_GROUPS: StatGroup[] = [
@@ -180,6 +199,15 @@ export const STAT_SHORT: Record<string, string> = {
   "ATK Drop-off Modifier": "ATK Drop-off",
   "Hip Fire Accuracy": "Hip Accuracy",
   "Aimed Shot Accuracy": "Aim Accuracy",
+  "Module Drop Rate Increase Modifier": "Module Drop Rate",
+  "Kuiper Shard Drop Rate Increase Modifier": "Kuiper Drop Rate",
+  "Character EXP Gain Modifier": "Character EXP",
+  "Consumable Drop Rate Increase Modifier": "Consumable Drop Rate",
+  "Equipment Drop Rate Increase Modifier": "Equipment Drop Rate",
+  "Firearm Proficiency Gain Modifier": "Firearm Proficiency",
+  "Gold Drop Rate Increase Modifier": "Gold Drop Rate",
+  "Ecive Search Radius Increase Modifier": "Ecive Radius",
+  "Item Acquisition Distance Increase Modifier": "Pickup Range",
 };
 
 export function shortStatName(name: string): string {
