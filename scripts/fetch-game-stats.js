@@ -52,6 +52,7 @@ async function main() {
       element: sk.element_type,
       image: sk.skill_image_url,
       arche: sk.arche_type ?? null,
+      description: sk.skill_description ?? null,
     }));
 
     descendants[d.descendant_id] = {
@@ -102,6 +103,28 @@ async function main() {
   const weapPath = path.join(OUT_DIR, "weapon-stats.json");
   fs.writeFileSync(weapPath, JSON.stringify(weapons));
   console.log(`  ${Object.keys(weapons).length} weapons → ${weapPath}`);
+
+  // ── Patch weapons-catalog.json icons ─────────────────────────
+  const catalogPath = path.resolve(__dirname, "..", "public", "weapons-catalog.json");
+  if (fs.existsSync(catalogPath)) {
+    console.log("Patching weapons-catalog.json icons…");
+    const catalog = JSON.parse(fs.readFileSync(catalogPath, "utf-8"));
+    function toSlug(name) {
+      return name.toLowerCase().replace(/'/g, "").replace(/[^a-z0-9]+/g, "-").replace(/-+/g, "-").replace(/^-|-$/g, "");
+    }
+    let patched = 0;
+    for (const entry of catalog) {
+      const match = Object.values(weapons).find(
+        (w) => toSlug(w.name) === entry.slug
+      );
+      if (match && match.image) {
+        entry.icon = match.image;
+        patched++;
+      }
+    }
+    fs.writeFileSync(catalogPath, JSON.stringify(catalog, null, 2));
+    console.log(`  ${patched}/${catalog.length} weapon icons patched`);
+  }
 
   console.log("Done.");
 }

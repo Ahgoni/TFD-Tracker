@@ -174,3 +174,25 @@ export function effectSummaryLine(mod: ModuleRecord | undefined, level: number):
   const cap = capacityAtLevel(mod, level);
   return `${scaled} · ${cap} cap`;
 }
+
+const NEG_KEYWORDS = /\b(reduces?|decreases?|lowers?|less|penalty|but)\b/i;
+
+export interface EffectSpan {
+  text: string;
+  negative: boolean;
+}
+
+/**
+ * Split a module's scaled preview into spans, marking negative effects in red.
+ * Negative = contains a minus-sign % value OR negative-sentiment keywords.
+ */
+export function splitEffectSpans(mod: ModuleRecord | undefined, level: number): EffectSpan[] {
+  if (!mod?.preview) return [];
+  const scaled = scalePreviewPercentagesForLevel(mod, level);
+  const sentences = scaled.split(/(?<=[.;])\s+|(?=\n)/);
+  return sentences.filter(Boolean).map((s) => {
+    const hasMinus = /-\d+(?:\.\d+)?%/.test(s);
+    const hasNegWord = NEG_KEYWORDS.test(s);
+    return { text: s.trim(), negative: hasMinus || hasNegWord };
+  });
+}

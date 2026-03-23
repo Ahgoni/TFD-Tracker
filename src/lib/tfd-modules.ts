@@ -56,6 +56,13 @@ export function totalPlacedCapacity(
   return sum;
 }
 
+const WEAPON_MODULE_CLASSES = new Set([
+  "General Rounds",
+  "High-Power Rounds",
+  "Impact Rounds",
+  "Special Rounds",
+]);
+
 /** Modules usable for the selected weapon or descendant. */
 export function filterModuleLibrary(
   all: ModuleRecord[],
@@ -63,12 +70,18 @@ export function filterModuleLibrary(
   opts: { weaponNexonType: string | null; descendantId: string | null }
 ): ModuleRecord[] {
   return all.filter((m) => {
+    const isWeaponModule = WEAPON_MODULE_CLASSES.has(m.moduleClass);
+
     if (targetType === "weapon") {
+      if (!isWeaponModule) return false;
       const wt = m.weaponTypes ?? [];
       if (wt.length === 0) return true;
       if (!opts.weaponNexonType) return false;
       return wt.includes(opts.weaponNexonType);
     }
+
+    // Descendant: exclude weapon-class modules
+    if (isWeaponModule) return false;
     const ds = m.descendantIds ?? [];
     if (ds.length === 0) return true;
     if (!opts.descendantId) return false;

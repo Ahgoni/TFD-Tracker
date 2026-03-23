@@ -26,6 +26,7 @@ import {
   computePlannerMetrics,
   effectSummaryLine,
   scalePreviewPercentagesForLevel,
+  splitEffectSpans,
 } from "@/lib/build-planner-stats";
 import {
   computeDescendantStats,
@@ -165,11 +166,15 @@ function SlotDrop({
               <span className="builder-slot-socket">{placed.socket}</span>
               <span className="builder-slot-cap">{placed.capacity} cap</span>
             </div>
-            {mod?.preview && (
-              <p className="builder-slot-preview" title={scalePreviewPercentagesForLevel(mod, placed.level)}>
-                {truncate(placed.customPreview ?? scalePreviewPercentagesForLevel(mod, placed.level), 96)}
-              </p>
-            )}
+            {mod?.preview && (() => {
+              const text = placed.customPreview ?? scalePreviewPercentagesForLevel(mod, placed.level);
+              const hasNeg = /-\d+(?:\.\d+)?%/.test(text);
+              return (
+                <p className={`builder-slot-preview${hasNeg ? " slot-has-neg" : ""}`} title={text}>
+                  {truncate(text, 96)}
+                </p>
+              );
+            })()}
           </div>
           <div className="builder-slot-lvl" role="group" aria-label="Module level">
             <button type="button" className="builder-lvl-btn" onClick={() => onLevel(-1)} disabled={placed.level <= 0}>−</button>
@@ -449,7 +454,8 @@ export function BuildPlannerPanel({
   const [expandMods, setExpandMods] = useState(false);
   const [editingSlot, setEditingSlot] = useState<number | null>(null);
   const [computedStats, setComputedStats] = useState<ComputedStats | null>(null);
-  const [descSkills, setDescSkills] = useState<{ name: string; image: string; type?: string }[]>([]);
+  const [descSkills, setDescSkills] = useState<{ name: string; image: string; type?: string; element?: string; arche?: string | null; description?: string | null }[]>([]);
+  const [hoveredSkill, setHoveredSkill] = useState<string | null>(null);
 
   const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 6 } }));
   const maxCap = maxCapacityForTarget(form.targetType);
@@ -508,12 +514,14 @@ export function BuildPlannerPanel({
 
   useEffect(() => { recomputeStats(); }, [recomputeStats]);
 
-  // Load descendant skills for portrait
   useEffect(() => {
     if (form.targetType !== "descendant" || !descendantGameId) { setDescSkills([]); return; }
     loadDescStats().then((db) => {
       const entry = db[descendantGameId];
-      if (entry?.skills) setDescSkills(entry.skills.map((sk) => ({ name: sk.name, image: sk.image, type: sk.type })));
+      if (entry?.skills) setDescSkills(entry.skills.map((sk) => ({
+        name: sk.name, image: sk.image, type: sk.type,
+        element: sk.element, arche: sk.arche, description: sk.description,
+      })));
     }).catch(() => {});
   }, [descendantGameId, form.targetType]);
 
@@ -632,11 +640,34 @@ export function BuildPlannerPanel({
             </div>
             {heroSkills.length > 0 && (
               <div className="builder-skills-row">
-                {heroSkills.map((sk) => (
-                  <div key={sk.name} className="builder-skill-icon" title={sk.name}>
-                    <img src={sk.image} alt={sk.name} />
-                  </div>
-                ))}
+                {heroSkills.map((sk) => {
+                  const full = descSkills.find((s) => s.name === sk.name);
+                  const elementIcon = elementDefs.find((d) => d.label === (full?.element ?? ""))?.icon;
+                  const archeIcon = skillDefs.find((d) => d.label === (full?.arche ?? ""))?.icon;
+                  return (
+                    <div
+                      key={sk.name}
+                      className={`builder-skill-icon${hoveredSkill === sk.name ? " skill-active" : ""}`}
+                      onMouseEnter={() => setHoveredSkill(sk.name)}
+                      onMouseLeave={() => setHoveredSkill(null)}
+                    >
+                      <img src={sk.image} alt={sk.name} />
+                      {hoveredSkill === sk.name && full && (
+                        <div className="skill-tooltip">
+                          <div className="skill-tooltip-head">
+                            <strong>{full.name}</strong>
+                            <span className="skill-tooltip-type">{full.type}</span>
+                          </div>
+                          <div className="skill-tooltip-tags">
+                            {elementIcon && <span className="skill-tooltip-tag"><img src={elementIcon} alt="" />{full.element}</span>}
+                            {archeIcon && <span className="skill-tooltip-tag"><img src={archeIcon} alt="" />{full.arche}</span>}
+                          </div>
+                          {full.description && <p className="skill-tooltip-desc">{full.description}</p>}
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
               </div>
             )}
           </div>
@@ -693,11 +724,21 @@ export function BuildPlannerPanel({
                   {slots.map((p, i) => {
                     if (!p) return null;
                     const m = moduleById.get(p.moduleId);
-                    const line = effectSummaryLine(m, p.level);
+                    const spans = splitEffectSpans(m, p.level);
+                    const cap = m ? capacityAtLevel(m, p.level) : 0;
                     return (
                       <li key={`${p.moduleId}-${i}`}>
                         <strong>{p.name} · Lv {p.level}</strong>
-                        {line && <p className="builder-effect-txt">{line}</p>}
+                        {spans.length > 0 && (
+                          <div className="builder-effect-txt">
+                            {spans.map((sp, si) => (
+                              <span key={si} className={sp.negative ? "effect-neg" : "effect-pos"}>
+                                {sp.text}{si < spans.length - 1 ? " " : ""}
+                              </span>
+                            ))}
+                            <span className="effect-cap"> · {cap} cap</span>
+                          </div>
+                        )}
                       </li>
                     );
                   })}

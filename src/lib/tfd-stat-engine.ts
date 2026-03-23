@@ -42,7 +42,7 @@ let weapCache: Record<string, WeapStatsEntry> | null = null;
 interface DescStatsEntry {
   name: string;
   stats: Record<string, Record<string, number>>;
-  skills: { name: string; type: string; element: string; image: string; arche: string | null }[];
+  skills: { name: string; type: string; element: string; image: string; arche: string | null; description: string | null }[];
 }
 
 interface WeapStatsEntry {
