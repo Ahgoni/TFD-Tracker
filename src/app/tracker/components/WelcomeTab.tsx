@@ -93,7 +93,7 @@ const SECTION_CARDS = [
       </svg>
     ),
     title: "Player Lookup",
-    desc: "Query Nexon Open API by in-game name or OUID (basic, weapons, reactors — requires server API key).",
+    desc: "Search any player by in-game name — visual loadout with modules, weapons, reactor & components (Nexon Open API).",
     accent: "#38bdf8",
   },
   {

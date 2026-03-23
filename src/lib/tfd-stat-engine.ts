@@ -28,7 +28,8 @@ export interface ComputedStats {
   final: Record<string, number>;
 }
 
-interface PlacedSlot {
+/** Module placed in a build slot (same shape as builder / API import). */
+export interface PlacedSlot {
   moduleId: string;
   level: number;
   customPreview?: string;

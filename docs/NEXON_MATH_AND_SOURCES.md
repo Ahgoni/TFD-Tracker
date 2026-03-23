@@ -11,6 +11,7 @@
 | **Live** catalog | `GET /api/nexon/catalog/*` | Same transforms; falls back to `public/data/*.json` |
 | External components (builder) | `public/data/external-components.json` | Hand-curated; align sets/substats with [components](https://tfd.nexon.com/en/library/components) when updating |
 | **Player** (in-game profile) | Authenticated **game** API: `/tfd/v1/id`, `/tfd/v1/user/*` | `NEXON_OPEN_API_KEY` — see `src/lib/nexon-game-api.ts` |
+| **Player Lookup** (visual profile) | Same game API via `GET /api/nexon/player?include=all` | `PlayerLookupTab.tsx` + `player-lookup/*`: resolves IDs with `fetch-game-catalog`; **Applied module stats** use `computeDescendantStats` / `computeWeaponStats` (preview-based % estimates) |
 
 **Library sections (reference):**  
 [Descendants](https://tfd.nexon.com/en/library/descendants) · [Weapons](https://tfd.nexon.com/en/library/weapons) · [Modules](https://tfd.nexon.com/en/library/modules) · [Components](https://tfd.nexon.com/en/library/components) · [Enhancements](https://tfd.nexon.com/en/library/enhancements) · [Consumable](https://tfd.nexon.com/en/library/consumable)
