@@ -929,6 +929,7 @@ td .badge { display: inline-flex; align-items: center; gap: 0.35rem; }
 .tier-ultimate { color: #fbbf24; border-color: rgba(251, 191, 36, 0.3); }
 .tier-rare     { color: #c084fc; border-color: rgba(192, 132, 252, 0.3); }
 .tier-common   { color: #4dd9ff; border-color: rgba(77, 217, 255, 0.25); }
+.tier-norm     { color: #94a3b8; border-color: rgba(148, 163, 184, 0.35); }
 
 /* ── Share ────────────────────────────────────────────────────── */
 
@@ -3452,21 +3453,29 @@ td .badge { display: inline-flex; align-items: center; gap: 0.35rem; }
 }
 .builder-slot-x {
   position: absolute;
-  top: 2px;
-  right: 4px;
-  width: 22px;
-  height: 22px;
+  top: 5px;
+  right: 5px;
+  z-index: 3;
+  width: 24px;
+  height: 24px;
   border: none;
   border-radius: 50%;
-  background: rgba(204,34,68,0.25);
+  background: rgba(180, 30, 50, 0.92);
   color: #fff;
-  font-size: 1rem;
-  line-height: 1;
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 0;
+  letter-spacing: 0;
   cursor: pointer;
-  display: inline-flex;
+  display: flex;
   align-items: center;
   justify-content: center;
   padding: 0;
+  margin: 0;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.35);
+}
+.builder-slot-x:hover {
+  background: rgba(220, 50, 70, 1);
 }
 .builder-slot-icon {
   width: 40px;
@@ -3693,7 +3702,8 @@ td .badge { display: inline-flex; align-items: center; gap: 0.35rem; }
   touch-action: none;
 }
 .mod-lib-card:active { cursor: grabbing; }
-.mod-lib-card.is-dragging { opacity: 0.45; }
+/* Opacity handled inline while dragging (DragOverlay shows the card) */
+.mod-lib-card.is-dragging { pointer-events: none; }
 .mod-lib-card.is-disabled { opacity: 0.35; pointer-events: none; }
 .mod-lib-body { flex: 1; min-width: 0; }
 .mod-lib-card-top {
@@ -3737,11 +3747,14 @@ td .badge { display: inline-flex; align-items: center; gap: 0.35rem; }
 }
 
 .mod-lib-card-overlay {
-  width: 160px;
-  padding: 0.5rem;
-  box-shadow: 0 12px 40px rgba(0,0,0,0.5);
+  width: min(240px, 70vw);
+  max-width: 240px;
+  padding: 0.5rem 0.55rem;
+  box-shadow: 0 16px 48px rgba(0,0,0,0.55);
   background: var(--card-bg);
   border: 1px solid var(--accent);
+  cursor: grabbing;
+  pointer-events: none;
 }
 
 .build-planner-icons {

@@ -41,7 +41,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 
-# local symlink created by scripts/link-public.js (Images/ lives at repo root)
-/public/Images
+# Committed UI icons live under public/Images/ (symlink from postinstall only if folder is empty)
 tfd-web/node_modules/
 tfd-web/.next/

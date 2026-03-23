@@ -12,6 +12,7 @@ import {
   type DragEndEvent,
   type DragStartEvent,
 } from "@dnd-kit/core";
+import { snapCenterToCursor } from "@dnd-kit/modifiers";
 import type { PlacedModule } from "../tracker-client";
 import {
   type ModuleRecord,
@@ -51,6 +52,9 @@ function parseDragId(id: string | number): { kind: "lib"; moduleId: string } | {
   return null;
 }
 
+/** Keeps drag preview under the cursor; use with DragOverlay + no transform on source. */
+const dragModifiers = [snapCenterToCursor];
+
 export interface PlannerHeroProps {
   imageUrl: string;
   title: string;
@@ -60,21 +64,18 @@ export interface PlannerHeroProps {
 }
 
 function ModuleLibraryCard({ mod, disabled }: { mod: ModuleRecord; disabled?: boolean }) {
-  const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({
+  const { attributes, listeners, setNodeRef, isDragging } = useDraggable({
     id: draggableLibId(mod.id),
     disabled,
   });
-  const style = transform
-    ? { transform: `translate3d(${transform.x}px, ${transform.y}px, 0)` }
-    : undefined;
 
   const tierClass =
-    mod.tier === "Ultimate" ? "tier-ult" : mod.tier === "Rare" ? "tier-rare" : "tier-norm";
+    mod.tier === "Ultimate" ? "tier-ultimate" : mod.tier === "Rare" ? "tier-rare" : "tier-norm";
 
   return (
     <div
       ref={setNodeRef}
-      style={style}
+      style={{ opacity: isDragging ? 0 : undefined }}
       {...listeners}
       {...attributes}
       className={`mod-lib-card ${tierClass}${isDragging ? " is-dragging" : ""}${disabled ? " is-disabled" : ""}`}
@@ -365,7 +366,7 @@ export function BuildPlannerPanel({
   }
 
   return (
-    <DndContext sensors={sensors} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
+    <DndContext modifiers={dragModifiers} sensors={sensors} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
       <div className="builder-stage">
         {hero && (
           <header className="builder-hero">
@@ -596,11 +597,18 @@ export function BuildPlannerPanel({
         </div>
       </div>
 
-      <DragOverlay dropAnimation={null}>
+      <DragOverlay dropAnimation={null} modifiers={dragModifiers} zIndex={10000}>
         {activeDrag ? (
-          <div className="mod-lib-card mod-lib-card-overlay tier-ult">
+          <div
+            className={`mod-lib-card mod-lib-card-overlay ${activeDrag.tier === "Ultimate" ? "tier-ultimate" : activeDrag.tier === "Rare" ? "tier-rare" : "tier-norm"}`}
+          >
             {activeDrag.image ? <img src={activeDrag.image} alt="" className="mod-lib-img" /> : null}
-            <div className="mod-lib-name">{activeDrag.name}</div>
+            <div className="mod-lib-body">
+              <div className="mod-lib-name">{activeDrag.name}</div>
+              <div className="mod-lib-meta-row muted" style={{ fontSize: "0.65rem" }}>
+                Drag into a slot
+              </div>
+            </div>
           </div>
         ) : null}
       </DragOverlay>

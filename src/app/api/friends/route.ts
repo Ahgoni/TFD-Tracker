@@ -5,7 +5,7 @@ import { NextResponse } from "next/server";
 
 async function resolveFriendUserId(token: string): Promise<string | null> {
   if (token.startsWith("username:")) {
-    const user = await prisma.user.findUnique({
+    const user = await prisma.user.findFirst({
       where: { username: token.slice(9) },
       select: { id: true },
     });
@@ -73,7 +73,7 @@ export async function POST(req: Request) {
 
   if (token.startsWith("username:")) {
     const friendUsername = token.slice(9);
-    const friendUser = await prisma.user.findUnique({ where: { username: friendUsername }, select: { id: true } });
+    const friendUser = await prisma.user.findFirst({ where: { username: friendUsername }, select: { id: true } });
     if (!friendUser) return NextResponse.json({ error: `No user found with username @${friendUsername}` }, { status: 404 });
     if (friendUser.id === session.user.id) return NextResponse.json({ error: "That's your own username." }, { status: 400 });
 

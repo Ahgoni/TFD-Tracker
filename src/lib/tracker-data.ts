@@ -6,29 +6,30 @@ export interface IconDef {
   icon: string | null;
 }
 
+/** Served from `public/Images/...` (committed SVGs; symlinked folder can override with PNG/WebP). */
 export const elementDefs: IconDef[] = [
   { id: "all", label: "All", icon: null },
-  { id: "chill", label: "Chill", icon: "/Images/Icons/chill.png" },
-  { id: "electric", label: "Electric", icon: "/Images/Icons/electric.png" },
-  { id: "fire", label: "Fire", icon: "/Images/Icons/fire.png" },
-  { id: "nonattribute", label: "Non-Attribute", icon: "/Images/Icons/nonattribute.png" },
-  { id: "toxic", label: "Toxic", icon: "/Images/Icons/toxic.png" },
+  { id: "chill", label: "Chill", icon: "/Images/Icons/chill.svg" },
+  { id: "electric", label: "Electric", icon: "/Images/Icons/electric.svg" },
+  { id: "fire", label: "Fire", icon: "/Images/Icons/fire.svg" },
+  { id: "nonattribute", label: "Non-Attribute", icon: "/Images/Icons/nonattribute.svg" },
+  { id: "toxic", label: "Toxic", icon: "/Images/Icons/toxic.svg" },
 ];
 
 export const skillDefs: IconDef[] = [
   { id: "all", label: "All", icon: null },
-  { id: "dimension", label: "Dimension", icon: "/Images/Icons/Dimension.png" },
-  { id: "fusion", label: "Fusion", icon: "/Images/Icons/Fusion.png" },
-  { id: "singular", label: "Singular", icon: "/Images/Icons/Singular.png" },
-  { id: "tech", label: "Tech", icon: "/Images/Icons/Tech.png" },
+  { id: "dimension", label: "Dimension", icon: "/Images/Icons/dimension.svg" },
+  { id: "fusion", label: "Fusion", icon: "/Images/Icons/fusion.svg" },
+  { id: "singular", label: "Singular", icon: "/Images/Icons/singular.svg" },
+  { id: "tech", label: "Tech", icon: "/Images/Icons/tech.svg" },
 ];
 
 export const ammoDefs: IconDef[] = [
   { id: "all", label: "All Rounds", icon: null },
-  { id: "General Rounds", label: "Primary", icon: "/Images/Ammo/general.webp" },
-  { id: "Impact Rounds", label: "Impact", icon: "/Images/Ammo/impact.webp" },
-  { id: "Special Rounds", label: "Special", icon: "/Images/Ammo/special.webp" },
-  { id: "High-Power Rounds", label: "Heavy", icon: "/Images/Ammo/high-power.webp" },
+  { id: "General Rounds", label: "Primary", icon: "/Images/Ammo/general.svg" },
+  { id: "Impact Rounds", label: "Impact", icon: "/Images/Ammo/impact.svg" },
+  { id: "Special Rounds", label: "Special", icon: "/Images/Ammo/special.svg" },
+  { id: "High-Power Rounds", label: "Heavy", icon: "/Images/Ammo/high-power.svg" },
 ];
 
 // ── Substat options ──────────────────────────────────────────────────────────

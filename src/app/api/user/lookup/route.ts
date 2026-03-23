@@ -14,7 +14,7 @@ export async function GET(req: Request) {
     return NextResponse.json({ error: "Query must be at least 3 characters." }, { status: 400 });
   }
 
-  const user = await prisma.user.findUnique({
+  const user = await prisma.user.findFirst({
     where: { username: q },
     select: { username: true, name: true, image: true },
   });

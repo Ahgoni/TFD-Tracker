@@ -39,7 +39,7 @@ export async function PUT(req: Request) {
     return NextResponse.json({ error: "That username is reserved." }, { status: 400 });
   }
 
-  const existing = await prisma.user.findUnique({ where: { username: clean } });
+  const existing = await prisma.user.findFirst({ where: { username: clean } });
   if (existing && existing.id !== session.user.id) {
     return NextResponse.json({ error: "That username is already taken." }, { status: 409 });
   }

@@ -1,47 +1,77 @@
 #!/usr/bin/env node
 /**
- * Postinstall script: links Images/ and weapons-catalog.json into public/
- * so Next.js can serve them as static assets.
+ * Postinstall: link or ensure Images/ + weapons-catalog under public/
  *
- * Run automatically via "postinstall" in package.json, or manually:
- *   node scripts/link-public.js
+ * Images resolution order:
+ *   1) <appRoot>/Images          (repo contains game assets)
+ *   2) <appRoot>/../Images       (legacy: sibling folder next to repo)
+ *   3) <appRoot>/public/Images   (already present — skip symlink)
  */
 const fs = require("fs");
 const path = require("path");
 
-const root = path.resolve(__dirname, ".."); // tfd-web/
-const repoRoot = path.resolve(root, ".."); // TFD/
+const root = path.resolve(__dirname, "..");
 const publicDir = path.join(root, "public");
 
 if (!fs.existsSync(publicDir)) {
   fs.mkdirSync(publicDir, { recursive: true });
 }
 
-// --- Images symlink ---
-const imagesTarget = path.join(repoRoot, "Images");
-const imagesLink = path.join(publicDir, "Images");
+function resolveImagesDir() {
+  const inside = path.join(root, "Images");
+  const sibling = path.join(root, "..", "Images");
+  const alreadyPublic = path.join(publicDir, "Images");
 
-if (!fs.existsSync(imagesTarget)) {
-  console.log("⚠  Images/ not found at", imagesTarget, "— skipping symlink");
-} else if (fs.existsSync(imagesLink)) {
-  console.log("✓  public/Images already exists");
-} else {
-  try {
-    // 'junction' works on Windows dirs; regular symlink used on Linux/Mac
-    const type = process.platform === "win32" ? "junction" : "dir";
-    fs.symlinkSync(imagesTarget, imagesLink, type);
-    console.log("✓  Created public/Images ->", imagesTarget);
-  } catch (e) {
-    console.warn("⚠  Could not create Images symlink:", e.message);
-    console.warn("   Run manually: ln -s ../../Images tfd-web/public/Images");
+  if (fs.existsSync(alreadyPublic)) {
+    const st = fs.statSync(alreadyPublic);
+    if (st.isDirectory()) {
+      const files = fs.readdirSync(alreadyPublic);
+      if (files.length > 0) return { mode: "skip", target: alreadyPublic, reason: "public/Images has files" };
+    }
   }
+  if (fs.existsSync(inside) && fs.statSync(inside).isDirectory()) {
+    return { mode: "link", target: inside };
+  }
+  if (fs.existsSync(sibling) && fs.statSync(sibling).isDirectory()) {
+    return { mode: "link", target: sibling };
+  }
+  return { mode: "none", target: null };
+}
+
+const imagesLink = path.join(publicDir, "Images");
+const resolved = resolveImagesDir();
+
+if (resolved.mode === "skip") {
+  console.log("✓ ", resolved.reason, "—", imagesLink);
+} else if (resolved.mode === "link") {
+  if (fs.existsSync(imagesLink)) {
+    console.log("✓  public/Images already exists");
+  } else {
+    try {
+      const type = process.platform === "win32" ? "junction" : "dir";
+      fs.symlinkSync(resolved.target, imagesLink, type);
+      console.log("✓  Created public/Images ->", resolved.target);
+    } catch (e) {
+      console.warn("⚠  Could not create Images symlink:", e.message);
+      console.warn("   Expected Images at:", path.join(root, "Images"), "or", path.join(root, "..", "Images"));
+    }
+  }
+} else {
+  console.log("⚠  No Images folder found — element/skill icons use committed files under public/Images if present.");
 }
 
 // --- weapons-catalog.json copy ---
-const catalogSrc = path.join(repoRoot, "weapons-catalog.json");
+const catalogCandidates = [path.join(root, "weapons-catalog.json"), path.join(root, "..", "weapons-catalog.json")];
+let catalogSrc = null;
+for (const c of catalogCandidates) {
+  if (fs.existsSync(c)) {
+    catalogSrc = c;
+    break;
+  }
+}
 const catalogDst = path.join(publicDir, "weapons-catalog.json");
 
-if (!fs.existsSync(catalogSrc)) {
+if (!catalogSrc) {
   console.log("⚠  weapons-catalog.json not found — skipping copy");
 } else if (fs.existsSync(catalogDst)) {
   const srcMtime = fs.statSync(catalogSrc).mtimeMs;

@@ -8,7 +8,7 @@ export async function GET(
   const { username } = await params;
   const clean = username.trim().toLowerCase();
 
-  const user = await prisma.user.findUnique({
+  const user = await prisma.user.findFirst({
     where: { username: clean },
     select: { id: true, name: true, image: true, username: true },
   });
