@@ -19,6 +19,41 @@ At the **end** of a session or after a major feature: update this file + session
 
 ---
 
+## Chat session summary (2026-03-23) — read this for full context
+
+Single place for **everything shipped in the long Cursor thread** (build logic, Nexon pipeline, docs, deploy). The next AI should skim this section first.
+
+### Game / build planner
+
+- **Descendant capacity:** `effectiveMaxCapacity` = `min(85, 75 + melee bonus)` — base **75**, max **85** only with leveled **Charged Sub Attack** modules (Nexon preview **exactly** `"Modifies the Charged Sub Attack."`). Other Malachite subs (e.g. grappling / Mid-Air Maneuvering) **do not** add that cap bonus. See `src/lib/tfd-modules.ts`.
+- **Transcendent / character-specific modules:** Nexon lists modules under one **descendant_id** (e.g. Ultimate Ajax `101000007`). **Base + Ultimate share `descendant_group_id`.** `filterModuleLibrary` now matches if **`available_descendant_id` hits any peer in the same group** (`descendantPeerIds` from `BuildsTab`). Fixes missing mods like **Mobile Fortress** when the build targets **Ajax** instead of **Ultimate Ajax**. `DescendantEntry` stores optional **`groupId`** from catalog merge (`tracker-client.tsx`).
+- **UI:** External components grid min-width / set bonus line-splitting; capacity tooltip; copy feedback for profile/build links.
+- **Clipboard:** `src/lib/copy-to-clipboard.ts`; share token failure shows alert; Friends tab uses same helper.
+
+### Nexon data pipeline (canonical = library site + Open API)
+
+- **Transforms:** `src/lib/nexon-catalog-transform.ts` — single source for compact JSON shapes.
+- **Runtime:** `GET /api/nexon/catalog/{descendants|weapons|modules}` pulls Nexon server-side, cached; **`src/lib/fetch-game-catalog.ts`** tries API first, then **`/public/data/*.json`** fallback.
+- **Committed JSON:** `npm run fetch:data` runs **`tsx scripts/fetch-game-data.ts`** (replaced old **`fetch-game-data.mjs`**); **`tsx`** is a devDependency.
+- **Stats (per-level):** still `npm run fetch:stats` → `fetch-game-stats.js` (unchanged architecture).
+
+### Documentation & AI continuity
+
+- **`docs/PROJECT_MAP.md`** — AppState-centric tracker vs unused Prisma row APIs, routes, Nexon flow, conventions.
+- **`docs/AI_HANDOFF.md`** — start/end checklist for Cursor; **VPS `git pull` blocked by `public/data/*.json`** → `git restore public/data/` (documented in **`DEPLOY_UBUNTU.md` §12d**).
+- **`docs/ARCHITECTURE_ROADMAP.md`**, **`.cursor/rules/design-system.mdc`**, **`public/data/README.md`**, **`README.md`**, **`AGENTS.md`**, **`CURSOR_MEMORY.md`**, **`.cursorrules`**, **`.cursor/rules/memory-handoff.mdc`**, **`.cursor/rules/tfd-nexon-data.mdc`**, **`.cursor/rules/git-commit-push.mdc`** — linked and kept in sync.
+- **Rule:** After substantive work, **update this `HANDOFF.md`** + session log; **commit + push** unless user opts out.
+
+### Other code
+
+- **`FarmingTab`:** safe defaults if `goals` / `goalsFilters` missing from saved state.
+
+### Deploy note (VPS)
+
+If **`git pull`** errors on **`public/data/modules.json`**, server had local `fetch:data` or edits — **`git restore public/data/`** then pull/build/restart (see **`DEPLOY_UBUNTU.md` §12d**).
+
+---
+
 ## Canonical game data (Nexon)
 
 **Source of truth for copy, names, and mechanics:** Nexon’s official library, e.g. **https://tfd.nexon.com/en/library/descendants** (and `/weapons`, `/modules`). Repo scripts pull the matching machine-readable JSON from `https://open.api.nexon.com/static/tfd/meta/en/` — see `public/data/README.md`, `npm run fetch:data`, `npm run fetch:stats`.
@@ -158,8 +193,11 @@ After deploy: **hard refresh** to clear stale asset caches.
 
 - **`.cursor/rules/tfd-stack.mdc`** — stack conventions (always apply)
 - **`.cursor/rules/tfd-api-state.mdc`** — API validation (`src/app/api/**`)
-- **`.cursor/rules/memory-handoff.mdc`** — read/update HANDOFF.md (always apply)
-- **`.cursorrules`** — root pointer for tools that only check root
+- **`.cursor/rules/tfd-nexon-data.mdc`** — Nexon library + Open API + transforms
+- **`.cursor/rules/design-system.mdc`** — Overframe-tier UX, tier tokens, chipset UI
+- **`.cursor/rules/git-commit-push.mdc`** — commit + push after changes
+- **`.cursor/rules/memory-handoff.mdc`** — read/update HANDOFF + docs (always apply)
+- **`.cursorrules`** — root pointer + handoff doc list
 
 ---
 
@@ -167,6 +205,7 @@ After deploy: **hard refresh** to clear stale asset caches.
 
 | Date       | Summary |
 |-----------|---------|
+| 2026-03-23 | **`HANDOFF.md`**: added **“Chat session summary (2026-03-23)”** — full digest of thread (capacity, group peers, Nexon API, docs, deploy). Cursor rules list completed. |
 | 2026-03-23 | **`docs/PROJECT_MAP.md`**, **`docs/AI_HANDOFF.md`** (AI continuity + VPS `git pull`/`public/data`). **`DEPLOY_UBUNTU.md`** §12d. **`FarmingTab`** hardened. Updated **AGENTS**, **CURSOR_MEMORY**, **`.cursorrules`**, **`memory-handoff.mdc`**, **README**. |
 | 2026-03-20 | Full audit + cleanup: fixed 17 issues (CSS duplication, dead code, hero-badge collision, mini-btn light mode, --card-bg, tier-norm, username normalization, import catalog merge, descFilter removal). Build passes clean. |
 | 2026-03-20 | **Overframe build planner overhaul**: Nexon stat data fetch script, stat engine, stat map, full panel rewrite (portrait BG, live stats, reactor integration, ancestor editor, expanded cards, fixed DnD). Data model expanded with `BuildReactor`, `customPreview`, `targetLevel`. Build passes clean. |
