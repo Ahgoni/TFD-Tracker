@@ -1,0 +1,17 @@
+---
+description: After code or doc changes, commit and push to origin (unless user opts out)
+alwaysApply: true
+---
+
+# Git: commit and push
+
+When you **finish a batch of substantive edits** (code, config, docs, rules, data scripts):
+
+1. **`git status`** — confirm what changed.
+2. **`git add`** the relevant files (not secrets or local-only junk).
+3. **`git commit -m "…"`** with a short, clear message (type: `feat:`, `fix:`, `docs:`, `chore:` as appropriate).
+4. **`git push`** to **`origin`** on the current branch (usually `main`).
+
+Do this **before** ending the turn unless the user explicitly says not to commit/push or the repo is in a broken state that must be fixed first.
+
+If there is **nothing to commit**, skip. If **push fails** (auth/network), report the error and leave clear next steps.

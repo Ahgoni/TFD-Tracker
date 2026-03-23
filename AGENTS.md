@@ -2,7 +2,7 @@
 
 **Session memory:** read **`HANDOFF.md`** at the start of substantive work; update it when the user asks for a handoff or after major changes. **`CURSOR_MEMORY.md`** points to the same workflow.
 
-**Primary rules for Cursor:** see `.cursor/rules/*.mdc` (`memory-handoff.mdc`, `tfd-stack.mdc`, `tfd-api-state.mdc`, **`tfd-nexon-data.mdc`** — Nexon library + Open API as canonical game data). Root **`.cursorrules`** duplicates the memory reminder for tools that only read the repo root.
+**Primary rules for Cursor:** see `.cursor/rules/*.mdc` (`memory-handoff.mdc`, `tfd-stack.mdc`, `tfd-api-state.mdc`, **`tfd-nexon-data.mdc`**, **`git-commit-push.mdc`** — commit + push after changes unless user opts out). Root **`.cursorrules`** duplicates the memory reminder for tools that only read the repo root.
 
 **Game data:** Nexon’s official site (e.g. https://tfd.nexon.com/en/library/descendants) + `open.api.nexon.com/static/tfd/meta/en/` — see `public/data/README.md`.
 
