@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import type { PublicBuild } from "@/lib/public-build-types";
 import type { ModuleRecord } from "@/lib/tfd-modules";
-import { maxCapacityForTarget } from "@/lib/tfd-modules";
+import { effectiveMaxCapacity } from "@/lib/tfd-modules";
 import { computePlannerMetrics } from "@/lib/build-planner-stats";
 
 export function PublicBuildStatRollup({ build }: { build: PublicBuild }) {
@@ -29,8 +29,9 @@ export function PublicBuildStatRollup({ build }: { build: PublicBuild }) {
     if (!catalog?.length || slots.length === 0) return null;
     const moduleById = new Map(catalog.map((m) => [m.id, m]));
     const tt = build.targetType === "weapon" ? "weapon" : "descendant";
-    const maxCap = maxCapacityForTarget(tt);
     const row = [...(build.plannerSlots ?? [])];
+    const payload = row.map((s) => (s ? { moduleId: s.moduleId, level: s.level } : null));
+    const maxCap = effectiveMaxCapacity(tt, payload, moduleById);
     return computePlannerMetrics(row, moduleById, maxCap);
   }, [catalog, build.plannerSlots, build.targetType, slots.length]);
 

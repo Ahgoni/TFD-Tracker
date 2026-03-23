@@ -7,6 +7,7 @@ import { uuid } from "@/lib/uuid";
 import { BuildPlannerPanel, type PlannerFormSlice, type PlannerHeroProps } from "./BuildPlannerPanel";
 import { WEAPON_TYPE_TO_NEXON, type ModuleRecord, slotCountForTarget } from "@/lib/tfd-modules";
 import { formatExternalComponentSetsSummary } from "@/lib/external-components-summary";
+import { copyTextToClipboard } from "@/lib/copy-to-clipboard";
 
 interface Props {
   state: TrackerState;
@@ -65,6 +66,7 @@ export function BuildsTab({ state, setState }: Props) {
   }, []);
 
   const [editingId, setEditingId] = useState<string | null>(null);
+  const [copyLinkFeedback, setCopyLinkFeedback] = useState<string | null>(null);
   const [form, setForm] = useState<{
     name: string;
     targetType: "descendant" | "weapon";
@@ -348,6 +350,11 @@ export function BuildsTab({ state, setState }: Props) {
             <button type="button" className="filter-chip" onClick={() => copyProfileLink()}>
               Copy profile link
             </button>
+            {copyLinkFeedback && (
+              <span className="muted" style={{ fontSize: "0.82rem", color: "var(--good)" }}>
+                {copyLinkFeedback}
+              </span>
+            )}
             <span className="muted" style={{ fontSize: "0.82rem" }}>
               Builds appear on <code className="inline-code">/u/{username}</code> for friends.
             </span>
@@ -475,6 +482,11 @@ export function BuildsTab({ state, setState }: Props) {
 
       <section className="panel">
         <h3>Your builds</h3>
+        {copyLinkFeedback && (
+          <p className="muted" style={{ marginBottom: "0.65rem", color: "var(--good)", fontSize: "0.85rem" }} role="status">
+            {copyLinkFeedback}
+          </p>
+        )}
         <div className="weapon-filters" style={{ marginBottom: "0.75rem" }}>
           <div className="filter-group">
             <input

@@ -4280,7 +4280,7 @@ td .badge { display: inline-flex; align-items: center; gap: 0.35rem; }
 /* Narrow center column: 2×2 component cards (viewport-wide breakpoints miss 3-column layouts) */
 @container builder-center (max-width: 760px) {
   .builder-comp-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: repeat(2, minmax(168px, 1fr));
   }
 }
 @container builder-center (max-width: 380px) {
@@ -4575,7 +4575,7 @@ td .badge { display: inline-flex; align-items: center; gap: 0.35rem; }
 .builder-components-section {
   border: 1px solid var(--line);
   border-radius: 12px;
-  padding: 0.75rem 0.85rem;
+  padding: 0.85rem 1rem;
   background: rgba(168,85,247,0.04);
   min-width: 0;
   /* Allow horizontal scroll if the center column is narrow; grid uses minmax(0,1fr) so columns don't overflow. */
@@ -4584,10 +4584,12 @@ td .badge { display: inline-flex; align-items: center; gap: 0.35rem; }
 }
 .builder-comp-grid {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 0.55rem;
+  grid-template-columns: repeat(4, minmax(168px, 1fr));
+  gap: 0.65rem;
   margin-top: 0.5rem;
   width: 100%;
+  /* 4 × 168px — keeps column headers even (e.g. Auxiliary Power); parent scrolls horizontally when needed */
+  min-width: 672px;
 }
 .builder-comp-card {
   border: 1px solid var(--line);
@@ -4599,13 +4601,18 @@ td .badge { display: inline-flex; align-items: center; gap: 0.35rem; }
   gap: 0.3rem;
 }
 .builder-comp-header {
-  font-size: 0.68rem;
+  font-size: 0.65rem;
   font-weight: 800;
   text-transform: uppercase;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.03em;
   color: #a855f7;
   padding-bottom: 0.2rem;
   border-bottom: 1px solid rgba(255,255,255,0.06);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-height: 1.35rem;
+  line-height: 1.25;
 }
 .builder-comp-stat-row {
   display: flex;
@@ -4641,11 +4648,17 @@ td .badge { display: inline-flex; align-items: center; gap: 0.35rem; }
 }
 .builder-comp-set-bonus {
   display: flex;
-  flex-wrap: wrap;
-  gap: 0.35rem 0.5rem;
-  align-items: baseline;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0.35rem;
   font-size: 0.72rem;
-  margin-bottom: 0.2rem;
+  margin-bottom: 0.45rem;
+}
+.comp-set-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.35rem 0.5rem;
 }
 .comp-set-name {
   font-weight: 800;
@@ -4661,6 +4674,18 @@ td .badge { display: inline-flex; align-items: center; gap: 0.35rem; }
   border-radius: 4px;
   background: rgba(56, 189, 248, 0.12);
 }
+.comp-set-effect-block {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  width: 100%;
+  line-height: 1.35;
+  word-break: break-word;
+}
+.comp-set-4pc-block {
+  padding-top: 0.15rem;
+  border-top: 1px dashed rgba(255,255,255,0.08);
+}
 .comp-set-effect {
   color: #22c55e;
 }
@@ -4669,7 +4694,7 @@ td .badge { display: inline-flex; align-items: center; gap: 0.35rem; }
 }
 @media (max-width: 1200px) {
   .builder-comp-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: repeat(2, minmax(168px, 1fr));
     min-width: 0;
   }
 }

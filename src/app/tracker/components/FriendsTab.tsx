@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
+import { copyTextToClipboard } from "@/lib/copy-to-clipboard";
 
 interface SavedFriend {
   id: string;
@@ -123,11 +124,14 @@ export function FriendsTab({ sharePrivacy, onPrivacyChange, shareToken, onGenera
     return () => clearInterval(interval);
   }, []);
 
-  const copyText = useCallback((text: string, which: "profile" | "share" | "id") => {
-    navigator.clipboard.writeText(text).then(() => {
+  const copyText = useCallback(async (text: string, which: "profile" | "share" | "id") => {
+    const ok = await copyTextToClipboard(text);
+    if (ok) {
       setCopied(which);
       setTimeout(() => setCopied(null), 2000);
-    }).catch(() => {});
+    } else {
+      window.prompt("Copy:", text);
+    }
   }, []);
 
   async function saveUsername(e: React.FormEvent) {

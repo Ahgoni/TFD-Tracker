@@ -42,11 +42,12 @@ import {
   type ModuleRecord,
   capacityAtLevel,
   capacityCostAtLevel,
+  DESCENDANT_BASE_CAPACITY,
   effectiveMaxCapacity,
+  MAX_DESCENDANT_CAPACITY,
   filterModuleLibrary,
   isChargedSubAttackModule,
   matchesModuleFilters,
-  maxCapacityForTarget,
   slotCountForTarget,
   subAttackMaxCapacityBonusAtLevel,
   totalCapacityCost,
@@ -447,6 +448,16 @@ type ExtCompDb = {
   sets: Record<string, { "2pc": string; "4pc": string }>;
 };
 
+/** Split long set descriptions (e.g. "9% Skill Cost 15% Base?") into lines after each `%` + space. */
+function splitSetEffectLines(text: string | undefined): string[] {
+  if (!text?.trim()) return [];
+  return text
+    .trim()
+    .split(/(?<=%)\s+/)
+    .map((p) => p.trim())
+    .filter(Boolean);
+}
+
 // Child: External Components section
 
 function ExternalComponentsSection({
@@ -502,7 +513,9 @@ function ExternalComponentsSection({
           const comp = components[idx] ?? defaults[idx];
           return (
             <div key={slotDef.name} className="builder-comp-card">
-              <div className="builder-comp-header">{slotDef.name}</div>
+              <div className="builder-comp-header" title={slotDef.name}>
+                {slotDef.name}
+              </div>
               <div className="builder-comp-stat-row">
                 <select value={comp.baseStat} onChange={(e) => updateComp(idx, { baseStat: e.target.value })}>
                   <option value="">Base stat{"\u2026"}</option>
@@ -549,10 +562,26 @@ function ExternalComponentsSection({
           <div className="builder-comp-set-bonuses">
             {activeSets.map(([name, count]) => (
               <div key={name} className="builder-comp-set-bonus">
-                <span className="comp-set-name">{name}</span>
-                <span className="comp-set-pieces">{count}/4</span>
-                <span className="comp-set-effect">{db.sets[name]?.["2pc"]}</span>
-                {count >= 4 && <span className="comp-set-effect comp-set-4pc">{db.sets[name]?.["4pc"]}</span>}
+                <div className="comp-set-head">
+                  <span className="comp-set-name">{name}</span>
+                  <span className="comp-set-pieces">{count}/4</span>
+                </div>
+                <div className="comp-set-effect-block">
+                  {splitSetEffectLines(db.sets[name]?.["2pc"]).map((line, i) => (
+                    <div key={`2-${i}`} className="comp-set-effect">
+                      {line}
+                    </div>
+                  ))}
+                </div>
+                {count >= 4 && (
+                  <div className="comp-set-effect-block comp-set-4pc-block">
+                    {splitSetEffectLines(db.sets[name]?.["4pc"]).map((line, i) => (
+                      <div key={`4-${i}`} className="comp-set-effect comp-set-4pc">
+                        {line}
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
             ))}
           </div>
@@ -1458,7 +1487,14 @@ function BuildPlannerPanelInner({
 
           {/* CENTER: Module grid + Reactor + Capacity */}
           <section className="builder-center-col">
-            <div className="builder-capacity-block">
+            <div
+              className="builder-capacity-block"
+              title={
+                form.targetType === "descendant"
+                  ? `Budget: base ${DESCENDANT_BASE_CAPACITY} + up to ${MAX_DESCENDANT_CAPACITY - DESCENDANT_BASE_CAPACITY} from Charged Sub Attack (melee) level ? max ${MAX_DESCENDANT_CAPACITY} at Lv10 melee (e.g. Tonfa). Other Malachite subs (e.g. grappling) do not raise this cap.`
+                  : `Weapon module budget (max ${maxCap}).`
+              }
+            >
               <span className="builder-cap-label">Capacity</span>
               <div className="builder-cap-numbers">
                 <span className={total > maxCap ? "cap-bad" : "cap-ok"}>{total}</span>
@@ -1466,7 +1502,10 @@ function BuildPlannerPanelInner({
                 <span>{maxCap}</span>
               </div>
               <div className="builder-cap-bar">
-                <div className="builder-cap-fill" style={{ width: `${Math.min(100, (total / maxCap) * 100)}%` }} />
+                <div
+                  className="builder-cap-fill"
+                  style={{ width: `${Math.min(100, maxCap > 0 ? (total / maxCap) * 100 : 0)}%` }}
+                />
               </div>
             </div>
 

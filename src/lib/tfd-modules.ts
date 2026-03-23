@@ -24,7 +24,13 @@ export const WEAPON_TYPE_TO_NEXON: Record<string, string> = {
 };
 
 export const MAX_WEAPON_CAPACITY = 80;
+/** Absolute cap when Charged Sub Attack (melee) module is leveled to max (+10 from base). */
 export const MAX_DESCENDANT_CAPACITY = 85;
+/**
+ * Max module budget without melee sub-slot bonus (in-game pool before unlocking +10 via Malachite melee).
+ * With max-level melee sub: 75 + 10 = {@link MAX_DESCENDANT_CAPACITY}.
+ */
+export const DESCENDANT_BASE_CAPACITY = 75;
 export const WEAPON_SLOT_COUNT = 10;
 export const DESCENDANT_SLOT_COUNT = 12;
 
@@ -109,9 +115,10 @@ export function effectiveMaxCapacity(
   slots: Array<{ moduleId: string; level: number } | null | undefined>,
   byId: Map<string, ModuleRecord>
 ): number {
-  const base = maxCapacityForTarget(targetType);
-  if (targetType === "weapon") return base;
-  return base + totalSubAttackCapacityBonus(slots, byId);
+  if (targetType === "weapon") return MAX_WEAPON_CAPACITY;
+  const bonus = totalSubAttackCapacityBonus(slots, byId);
+  /** 75 + 0…10 → up to 85; other Malachite mods (e.g. grappling) do not add this bonus. */
+  return Math.min(MAX_DESCENDANT_CAPACITY, DESCENDANT_BASE_CAPACITY + bonus);
 }
 
 const WEAPON_MODULE_CLASSES = new Set([

@@ -15,6 +15,7 @@ import { FriendsTab } from "./components/FriendsTab";
 import { normalizeWeaponName } from "@/lib/tracker-data";
 import { ThemeToggle } from "../theme-toggle";
 import { BrandLogo } from "../brand-logo";
+import { copyTextToClipboard } from "@/lib/copy-to-clipboard";
 
 // ── Types exported for child components ──────────────────────────────────────
 
@@ -419,16 +420,24 @@ export function TrackerClient() {
       return;
     }
     const token = await createShareToken();
-    if (token) { setShareToken(token); setShowShare(true); }
+    if (token) {
+      setShareToken(token);
+      setShowShare(true);
+    } else {
+      window.alert("Could not create a share link. Check your connection and that you are signed in, then try again.");
+    }
   }
 
-  function copyShareLink() {
+  async function copyShareLink() {
     if (!shareToken) return;
     const url = `${window.location.origin}/share/${shareToken}`;
-    navigator.clipboard.writeText(url).then(() => {
+    const ok = await copyTextToClipboard(url);
+    if (ok) {
       setShareCopied(true);
       setTimeout(() => setShareCopied(false), 2000);
-    }).catch(() => {});
+    } else {
+      window.prompt("Copy this link:", url);
+    }
   }
 
   const statusText =
