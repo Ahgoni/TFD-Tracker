@@ -681,10 +681,10 @@ function BuildPlannerPanelInner({
       .catch(() => {});
   }, []);
 
-  const affectedSkillNames = useMemo(() => {
-    if (!equippedTranscendent) return new Set<string>();
+  const { affectedSkillNames, isSpecificMatch } = useMemo(() => {
+    if (!equippedTranscendent) return { affectedSkillNames: new Set<string>(), isSpecificMatch: false };
     const mapping = skillMap[equippedTranscendent.mod.id];
-    if (mapping?.affectsSkill) return new Set([mapping.affectsSkill]);
+    if (mapping?.affectsSkill) return { affectedSkillNames: new Set([mapping.affectsSkill]), isSpecificMatch: true };
     const modName = (equippedTranscendent.mod.name ?? "").toLowerCase();
     const preview = (equippedTranscendent.mod.preview ?? "").toLowerCase();
     const searchText = modName + " " + preview;
@@ -695,10 +695,9 @@ function BuildPlannerPanelInner({
       const lc = name.toLowerCase();
       if (searchText.includes(lc) || lc.includes(modName)) matched.add(name);
     }
-    if (matched.size === 0) {
-      skillNames.forEach((n) => { if (n) matched.add(n); });
-    }
-    return matched;
+    if (matched.size > 0) return { affectedSkillNames: matched, isSpecificMatch: true };
+    skillNames.forEach((n) => { if (n) matched.add(n); });
+    return { affectedSkillNames: matched, isSpecificMatch: false };
   }, [equippedTranscendent, descSkills, skillMap]);
 
   // Render
@@ -756,7 +755,7 @@ function BuildPlannerPanelInner({
                           onMouseEnter={() => setHoveredSkill(sk.name)}
                           onMouseLeave={() => setHoveredSkill(null)}
                         >
-                          <img src={isAffected && equippedTranscendent ? equippedTranscendent.mod.image : sk.image} alt={sk.name} />
+                          <img src={isAffected && isSpecificMatch && equippedTranscendent ? equippedTranscendent.mod.image : sk.image} alt={sk.name} />
                           <span className="builder-skill-num">{idx + 1}</span>
                           {hoveredSkill === sk.name && full && (
                             <div className="skill-tooltip">
@@ -768,7 +767,7 @@ function BuildPlannerPanelInner({
                                 </span>
                               </div>
                               <h4 className="skill-tooltip-name">
-                                {isAffected && equippedTranscendent ? String(equippedTranscendent.mod.name ?? "") : String(full.name ?? "")}
+                                {isAffected && isSpecificMatch && equippedTranscendent ? String(equippedTranscendent.mod.name ?? "") : String(full.name ?? "")}
                               </h4>
                               <span className="skill-tooltip-type">{String(full.type ?? "")}</span>
                               {isAffected && equippedTranscendent && (

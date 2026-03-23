@@ -3207,6 +3207,8 @@ td .badge { display: inline-flex; align-items: center; gap: 0.35rem; }
 }
 
 .builder-main {
+  position: relative;
+  z-index: 1;
   display: grid;
   grid-template-columns: minmax(220px, 280px) minmax(280px, 1fr) minmax(220px, 320px);
   gap: 0.85rem;
@@ -4005,6 +4007,15 @@ td .badge { display: inline-flex; align-items: center; gap: 0.35rem; }
   color: #000;
   border-radius: 50%;
   font-weight: 900;
+}
+.builder-skill-icon.skill-active::before {
+  content: "";
+  position: absolute;
+  left: -8px;
+  right: -8px;
+  bottom: -14px;
+  height: 18px;
+  background: transparent;
 }
 .builder-skill-icon > img {
   width: 44px;
