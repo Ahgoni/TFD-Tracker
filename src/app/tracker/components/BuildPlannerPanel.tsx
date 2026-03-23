@@ -98,6 +98,38 @@ function truncate(s: string, max: number) {
   return t.length <= max ? t : `${t.slice(0, max - 1)}\u2026`;
 }
 
+type SkillStatEntry = { basicInfo: { label: string; value: string }[]; sections: { name: string; stats: { label: string; value: string }[] }[] };
+
+/** Flatten skill-details.json into readable calculation lines (TFDTools-style reference). */
+function formatSkillDetailLines(detail: SkillStatEntry): string[] {
+  const lines: string[] = [];
+  if (detail.basicInfo?.length) {
+    lines.push(detail.basicInfo.map((b) => `${b.label}: ${b.value}`).join(" ? "));
+  }
+  for (const sec of detail.sections ?? []) {
+    for (const st of sec.stats) {
+      lines.push(`${sec.name} ? ${st.label}: ${st.value}`);
+    }
+  }
+  return lines;
+}
+
+type SkillMapEntry = {
+  affectsSkill?: string | null;
+  affectsSkills?: string[];
+  modName?: string;
+  modifiedElement?: string | null;
+  modifiedArche?: string | null;
+  skillOverrides?: Record<string, { modifiedElement?: string | null; modifiedArche?: string | null }>;
+};
+
+function mappingAffectedSkills(mapping: SkillMapEntry | undefined): string[] {
+  if (!mapping) return [];
+  if (mapping.affectsSkills?.length) return [...mapping.affectsSkills];
+  if (mapping.affectsSkill) return [mapping.affectsSkill];
+  return [];
+}
+
 // Public interfaces
 
 export interface PlannerHeroProps {
@@ -915,7 +947,7 @@ function BuildPlannerPanelInner({
     return null;
   }, [slots, moduleById]);
 
-  const [skillMap, setSkillMap] = useState<Record<string, { affectsSkill: string | null; modifiedElement?: string | null; modifiedArche?: string | null }>>({});
+  const [skillMap, setSkillMap] = useState<Record<string, SkillMapEntry>>({});
   useEffect(() => {
     fetch("/data/transcendent-skill-map.json")
       .then((r) => (r.ok ? r.json() : {}))
@@ -923,7 +955,6 @@ function BuildPlannerPanelInner({
       .catch(() => {});
   }, []);
 
-  type SkillStatEntry = { basicInfo: { label: string; value: string }[]; sections: { name: string; stats: { label: string; value: string }[] }[] };
   const [skillDetailsDb, setSkillDetailsDb] = useState<Record<string, Record<string, SkillStatEntry>>>({});
   useEffect(() => {
     fetch("/data/skill-details.json")
@@ -935,7 +966,8 @@ function BuildPlannerPanelInner({
   const { affectedSkillNames, isSpecificMatch } = useMemo(() => {
     if (!equippedTranscendent) return { affectedSkillNames: new Set<string>(), isSpecificMatch: false };
     const mapping = skillMap[equippedTranscendent.mod.id];
-    if (mapping?.affectsSkill) return { affectedSkillNames: new Set([mapping.affectsSkill]), isSpecificMatch: true };
+    const fromMap = mappingAffectedSkills(mapping);
+    if (fromMap.length > 0) return { affectedSkillNames: new Set(fromMap), isSpecificMatch: true };
     const modName = (equippedTranscendent.mod.name ?? "").toLowerCase();
     const preview = (equippedTranscendent.mod.preview ?? "").toLowerCase();
     const searchText = modName + " " + preview;
@@ -998,12 +1030,14 @@ function BuildPlannerPanelInner({
                       const full = descSkills.find((s) => s.name === sk.name);
                       const isAffected = affectedSkillNames.has(String(sk.name ?? ""));
                       const modMapping = isAffected && equippedTranscendent ? skillMap[equippedTranscendent.mod.id] : null;
-                      const displayElement = (modMapping?.modifiedElement || full?.element) ?? "";
-                      const displayArche = (modMapping?.modifiedArche || full?.arche) ?? "";
+                      const skillOv = modMapping?.skillOverrides?.[String(full?.name ?? "")];
+                      const displayElement = (skillOv?.modifiedElement ?? modMapping?.modifiedElement ?? full?.element) ?? "";
+                      const displayArche = (skillOv?.modifiedArche ?? modMapping?.modifiedArche ?? full?.arche) ?? "";
                       const displayElementIcon = elementDefs.find((d) => d.label === displayElement)?.icon;
                       const baseGameId = descendantGameId ? (skillDetailsDb[descendantGameId] ? descendantGameId : ultimateToBase[descendantGameId]) : null;
                       const skillDetail = baseGameId ? skillDetailsDb[baseGameId]?.[String(full?.name ?? "")] : undefined;
                       const hasStats = skillDetail && ((skillDetail.basicInfo?.length ?? 0) > 0 || (skillDetail.sections?.length ?? 0) > 0);
+                      const calcLines = skillDetail ? formatSkillDetailLines(skillDetail) : [];
                       return (
                         <div
                           key={sk.name}
@@ -1034,6 +1068,21 @@ function BuildPlannerPanelInner({
                               )}
                               <div className="skill-tooltip-content">
                                 <div className="skill-tooltip-left">
+                                  {calcLines.length > 0 && (
+                                    <div className="skill-tooltip-calculations">
+                                      <span className="skill-tooltip-section-label">Skill calculations (reference)</span>
+                                      <ul className="skill-calc-list">
+                                        {calcLines.map((line, li) => (
+                                          <li key={li}>{line}</li>
+                                        ))}
+                                      </ul>
+                                      {isAffected && equippedTranscendent?.mod.preview && (
+                                        <p className="skill-tooltip-calc-note muted">
+                                          In-game values may differ when this Transcendent mod is equipped; compare with the mod text below.
+                                        </p>
+                                      )}
+                                    </div>
+                                  )}
                                   <span className="skill-tooltip-section-label">Skill Description</span>
                                   {isAffected && equippedTranscendent?.mod.preview ? (
                                     <>
@@ -1164,6 +1213,11 @@ function BuildPlannerPanelInner({
                   {skillMods.length > 0 && (
                     <div className="builder-stats-section builder-transcendent-section">
                       <h4 className="builder-stats-h transcendent-h">Skill Modifications</h4>
+                      {affectedSkillNames.size > 0 && (
+                        <p className="builder-affected-skills-hint muted">
+                          Skills highlighted / modified: {[...affectedSkillNames].join(", ")}
+                        </p>
+                      )}
                       <ul className="builder-transcendent-list">
                         {skillMods.map((sm, i) => (
                           <li key={i} className="builder-transcendent-item">

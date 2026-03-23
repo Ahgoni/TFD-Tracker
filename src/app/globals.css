@@ -4135,6 +4135,37 @@ td .badge { display: inline-flex; align-items: center; gap: 0.35rem; }
   letter-spacing: 0.04em;
   margin-bottom: 0.25rem;
 }
+.skill-tooltip-variant {
+  margin: 0.15rem 0 0.35rem;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #fbbf24;
+}
+.skill-tooltip-calculations {
+  margin-bottom: 0.65rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+.skill-calc-list {
+  margin: 0.25rem 0 0.35rem;
+  padding-left: 1rem;
+  font-size: 0.72rem;
+  line-height: 1.45;
+  color: #94a3b8;
+}
+.skill-calc-list li {
+  margin-bottom: 0.15rem;
+}
+.skill-tooltip-calc-note {
+  font-size: 0.68rem;
+  margin: 0.35rem 0 0;
+  line-height: 1.4;
+}
+.builder-affected-skills-hint {
+  font-size: 0.76rem;
+  margin: 0 0 0.5rem;
+  line-height: 1.35;
+}
 .skill-tooltip-desc {
   margin: 0;
   font-size: 0.8rem;

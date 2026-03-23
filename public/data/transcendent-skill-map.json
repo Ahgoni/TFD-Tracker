@@ -3,8 +3,8 @@
   "254001002": { "affectsSkill": "Overclock", "modName": "Power Unit Change", "modifiedElement": null, "modifiedArche": null },
   "254001003": { "affectsSkill": "Close Call", "modName": "Regenerative Braking", "modifiedElement": null, "modifiedArche": null },
   "254001004": { "affectsSkill": "Grenade Throw", "modName": "Nerve Infiltration", "modifiedElement": null, "modifiedArche": null },
-  "254002001": { "affectsSkill": "Expulsion", "modName": "Void Explosion : Focus", "modifiedElement": null, "modifiedArche": null },
-  "254002002": { "affectsSkill": "Void Walk", "modName": "Void Charge", "modifiedElement": null, "modifiedArche": null },
+  "254002001": { "affectsSkill": "Expulsion", "modName": "Void Explosion : Focus", "skillOverrides": { "Expulsion": { "modifiedElement": "Non-Attribute", "modifiedArche": "Tech" } }, "modifiedElement": null, "modifiedArche": null },
+  "254002002": { "affectsSkills": ["Void Walk", "Expulsion"], "modName": "Void Charge", "skillOverrides": { "Void Walk": { "modifiedElement": "Non-Attribute", "modifiedArche": "Tech" }, "Expulsion": { "modifiedElement": "Non-Attribute", "modifiedArche": "Dimension" } }, "modifiedElement": null, "modifiedArche": null },
   "254002003": { "affectsSkill": "Expulsion", "modName": "Matrix Recomputation", "modifiedElement": null, "modifiedArche": null },
   "254002004": { "affectsSkill": "Event Horizon", "modName": "Body Enhancement", "modifiedElement": null, "modifiedArche": null },
   "254003001": { "affectsSkill": "Blizzard", "modName": "Glacial Cloud", "modifiedElement": null, "modifiedArche": null },
@@ -76,7 +76,7 @@
   "254018001": { "affectsSkill": "Blaze Up", "modName": "Incendiary Bomb", "modifiedElement": null, "modifiedArche": null },
   "254018002": { "affectsSkill": "Deadly Cuisine", "modName": "Truly Deadly Cuisine", "modifiedElement": null, "modifiedArche": null },
   "254018003": { "affectsSkill": "Extinguish", "modName": "Backdraft", "modifiedElement": null, "modifiedArche": null },
-  "254018004": { "affectsSkill": "Deadly Cuisine", "modName": "Classic Chef", "modifiedElement": null, "modifiedArche": null },
+  "254018004": { "affectsSkills": ["Deadly Cuisine", "Pitmaster"], "modName": "Classic Chef", "modifiedElement": null, "modifiedArche": null },
   "254018005": { "affectsSkill": "Burn Taste", "modName": "Killer Recipe", "modifiedElement": null, "modifiedArche": null },
   "254018006": { "affectsSkill": "Burn Taste", "modName": "Next-level Recipe", "modifiedElement": null, "modifiedArche": null },
   "254019001": { "affectsSkill": "Rabbit Foot", "modName": "Electric Charge", "modifiedElement": null, "modifiedArche": null },
@@ -97,6 +97,6 @@
   "254029002": { "affectsSkill": "Gaze of the Abyss", "modName": "Shattered Heart", "modifiedElement": null, "modifiedArche": null },
   "254031001": { "affectsSkill": "Crushing Charge", "modName": "Focused Supervision", "modifiedElement": null, "modifiedArche": null },
   "254031002": { "affectsSkill": "Site Intrusion", "modName": "Safety Training", "modifiedElement": null, "modifiedArche": null },
-  "254033001": { "affectsSkill": "Glacial Clash", "modName": "Blooming Ecstasy", "modifiedElement": null, "modifiedArche": null },
-  "254033002": { "affectsSkill": "Frozen Delight", "modName": "Chill Brand", "modifiedElement": null, "modifiedArche": null }
+  "254033001": { "affectsSkills": ["Glacial Clash", "Frozen Delight"], "modName": "Blooming Ecstasy", "modifiedElement": null, "modifiedArche": null },
+  "254033002": { "affectsSkills": ["Glacial Clash", "Frozen Delight"], "modName": "Chill Brand", "modifiedElement": null, "modifiedArche": null }
 }
