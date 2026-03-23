@@ -2,5 +2,6 @@
 
 1. At the start of substantive work, read **HANDOFF.md**, then **docs/PROJECT_MAP.md**, then **docs/AI_HANDOFF.md** (continuity + deploy/git notes).
 2. Before ending a session or after a major feature: **update HANDOFF.md** (and session log); update **PROJECT_MAP**, **DEPLOY_UBUNTU.md**, or **public/data/README.md** when relevant; **commit + push** unless the user opts out. See **docs/AI_HANDOFF.md** for the full checklist.
+   - If the user is deploying to their server or asks to **commit and push**, do **`git add` → `git commit` → `git push`** for the completed work in the same session (don’t leave it for them unless they say not to).
 3. **CURSOR_MEMORY.md** points at the same handoff docs.
 4. Stack and API conventions: **`.cursor/rules/tfd-stack.mdc`**, **`.cursor/rules/tfd-api-state.mdc`**, **`.cursor/rules/memory-handoff.mdc`**.
