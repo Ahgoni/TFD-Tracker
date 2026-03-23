@@ -991,7 +991,7 @@ function BuildPlannerPanelInner({
             <div className="builder-lib-filters">
               <input
                 className="builder-lib-search"
-                placeholder={"Search name or effect\u2026"}
+                placeholder="Search name or effect?"
                 value={libSearch}
                 onChange={(e) => setLibSearch(e.target.value)}
                 aria-label="Search modules"
