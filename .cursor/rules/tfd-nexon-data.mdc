@@ -13,6 +13,8 @@ alwaysApply: true
 - **Machine-readable feed (what this repo uses — same data):**  
   `https://open.api.nexon.com/static/tfd/meta/en/` — e.g. `descendant.json`, `weapon.json`, `module.json`, `stat.json`.
 
-- **Do not invent** descendant names, skill text, module effects, or stats. When updating data: run **`npm run fetch:data`** / **`npm run fetch:stats`** (or **`npm run refresh`**) and read **`public/data/README.md`**.
+- **Runtime catalog:** `GET /api/nexon/catalog/descendants|weapons|modules` serves the same compact JSON as `/public/data/*.json` (transforms live in **`src/lib/nexon-catalog-transform.ts`**). Client code falls back to static files if Nexon is down.
 
-- If the UI and Nexon’s site disagree after a patch, **trust Nexon’s library** and re-fetch; fix transforms in `scripts/fetch-game-data.mjs` / `fetch-game-stats.js` only when the API shape changes.
+- **Do not invent** descendant names, skill text, module effects, or stats. When updating committed JSON: run **`npm run fetch:data`** / **`npm run fetch:stats`** (or **`npm run refresh`**) and read **`public/data/README.md`**.
+
+- If the UI and Nexon’s site disagree after a patch, **trust Nexon’s library** and re-fetch; fix transforms in **`src/lib/nexon-catalog-transform.ts`** / `fetch-game-stats.js` only when the API shape changes.

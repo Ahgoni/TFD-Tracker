@@ -34,7 +34,12 @@ This document captures the **vision** for TFD Tracker as a **premier, Overframe-
 - **Cursor rules:** `design-system.mdc`, `tfd-nexon-data.mdc`, `git-commit-push.mdc`, `memory-handoff.mdc` — keep them updated when conventions change.
 - **Zoom-in method:** Large features → thin vertical slices → merge; avoid huge unreviewable diffs.
 
-## 6. References
+## 6. Live catalog API
+
+- **`/api/nexon/catalog/{descendants|weapons|modules}`** — server-side fetch from Nexon Open API + shared transforms (`src/lib/nexon-catalog-transform.ts`). Same payload shape as `/public/data/*.json`.
+- Client code prefers this route and **falls back** to static files so offline / Nexon outages do not brick the tracker.
+
+## 7. References
 
 - Canonical data: [Nexon library](https://tfd.nexon.com/en/library/descendants) + `open.api.nexon.com/static/tfd/meta/en/`
 - Repo: `README.md`, `HANDOFF.md`, `public/data/README.md`

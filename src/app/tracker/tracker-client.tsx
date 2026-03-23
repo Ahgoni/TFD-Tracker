@@ -13,6 +13,8 @@ import { BuildsTab } from "./components/BuildsTab";
 import { ProfileMenu } from "./components/ProfileMenu";
 import { FriendsTab } from "./components/FriendsTab";
 import { normalizeWeaponName } from "@/lib/tracker-data";
+import { fetchDescendantsCatalogRows } from "@/lib/fetch-game-catalog";
+import type { DescendantCatalogRow } from "@/lib/nexon-catalog-transform";
 import { ThemeToggle } from "../theme-toggle";
 import { BrandLogo } from "../brand-logo";
 import { copyTextToClipboard } from "@/lib/copy-to-clipboard";
@@ -236,25 +238,14 @@ async function fetchAndMergeWeaponsCatalog(currentWeapons: WeaponEntry[]): Promi
 
 // ── Descendants catalog helpers ───────────────────────────────────────────────
 
-interface DescendantCatalogEntry {
-  id: string;
-  name: string;
-  groupId?: string;
-  element: string;
-  skillTypes: string[];
-  image: string;
-}
-
 async function fetchAndMergeDescendantsCatalog(current: DescendantEntry[]): Promise<DescendantEntry[]> {
   try {
-    const res = await fetch("/data/descendants.json");
-    if (!res.ok) return current;
-    const catalog: DescendantCatalogEntry[] = await res.json();
-    if (!Array.isArray(catalog) || catalog.length === 0) return current;
+    const catalog = await fetchDescendantsCatalogRows();
+    if (!catalog || catalog.length === 0) return current;
 
     const byName = new Map(current.map((d) => [d.name, d]));
 
-    return catalog.map((c) => {
+    return catalog.map((c: DescendantCatalogRow) => {
       const existing = byName.get(c.name);
       if (existing) {
         return {

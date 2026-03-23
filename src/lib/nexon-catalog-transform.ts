@@ -1,0 +1,177 @@
+/**
+ * Transforms Nexon Open API `en` meta JSON into the compact shapes stored in
+ * public/data (same as https://tfd.nexon.com/en/library/*).
+ *
+ * Used by: API routes (live pull) and fetch-game-data script (committed JSON).
+ */
+
+export const NEXON_META_EN_BASE = "https://open.api.nexon.com/static/tfd/meta/en";
+
+export const NEXON_DESCENDANT_JSON = `${NEXON_META_EN_BASE}/descendant.json`;
+export const NEXON_WEAPON_JSON = `${NEXON_META_EN_BASE}/weapon.json`;
+export const NEXON_MODULE_JSON = `${NEXON_META_EN_BASE}/module.json`;
+
+const ELEMENT_MAP: Record<string, string> = {
+  Chill: "chill",
+  Electric: "electric",
+  Fire: "fire",
+  "Non-Attribute": "nonattribute",
+  Toxic: "toxic",
+};
+
+const SKILL_TYPE_MAP: Record<string, string> = {
+  Dimension: "dimension",
+  Fusion: "fusion",
+  Singular: "singular",
+  Tech: "tech",
+};
+
+export function localImage(url: string | undefined, category: string): string {
+  if (typeof url !== "string" || !url.startsWith("https://")) return url ?? "";
+  const hash = url.split("/").pop();
+  return `/assets/${category}/${hash}.png`;
+}
+
+function inferElement(skills: Array<{ element_type?: string }> | undefined): string {
+  const elements = (skills ?? [])
+    .map((s) => ELEMENT_MAP[s.element_type ?? ""])
+    .filter(Boolean);
+  return elements[0] ?? "nonattribute";
+}
+
+function inferSkillTypes(skills: Array<{ skill_type?: string; arche_type?: string | null }> | undefined): string[] {
+  const types = new Set<string>();
+  for (const s of skills ?? []) {
+    if (s.skill_type === "Passive Skill") continue;
+    const mapped = SKILL_TYPE_MAP[s.arche_type ?? ""];
+    if (mapped) types.add(mapped);
+  }
+  return [...types];
+}
+
+function tierFromId(tierId: string | undefined): string {
+  if (tierId === "Tier4") return "Transcendent";
+  if (tierId === "Tier3") return "Ultimate";
+  if (tierId === "Tier2") return "Rare";
+  return "Normal";
+}
+
+/** Per-level capacity from module_stat (levels 0–10). */
+function capacitiesFromStats(moduleStat: Array<{ level?: number; module_capacity?: number }> | undefined): number[] {
+  const caps = new Array(11).fill(0);
+  if (!Array.isArray(moduleStat)) return caps;
+  for (const row of moduleStat) {
+    const lv = row.level;
+    if (typeof lv === "number" && lv >= 0 && lv <= 10) {
+      caps[lv] = Number(row.module_capacity) || 0;
+    }
+  }
+  return caps;
+}
+
+function previewFromStats(
+  moduleStat: Array<{ level?: number; value?: string }> | undefined,
+  isTranscendent = false,
+): string {
+  const row = Array.isArray(moduleStat) ? moduleStat.find((r) => r.level === 0) : null;
+  const v = row?.value;
+  if (typeof v !== "string") return "";
+  if (isTranscendent) return v;
+  const line = v.split("\n")[0] ?? v;
+  return line.length > 160 ? `${line.slice(0, 157)}…` : line;
+}
+
+/** Compact row for descendants.json / client catalog merge */
+export type DescendantCatalogRow = {
+  id: string;
+  name: string;
+  groupId: string;
+  element: string;
+  skillTypes: string[];
+  image: string;
+  skills: Array<{
+    name: string;
+    type: string;
+    element: string;
+    image: string;
+    arche: string | null;
+  }>;
+};
+
+export function transformDescendantsFromNexon(descRaw: unknown): DescendantCatalogRow[] {
+  if (!Array.isArray(descRaw)) return [];
+  return descRaw.map((d: Record<string, unknown>) => {
+    const skills = (d.descendant_skill as Array<Record<string, unknown>>) ?? [];
+    return {
+      id: String(d.descendant_id ?? ""),
+      name: String(d.descendant_name ?? ""),
+      groupId: String(d.descendant_group_id ?? ""),
+      element: inferElement(skills as { element_type?: string }[]),
+      skillTypes: inferSkillTypes(skills as { skill_type?: string; arche_type?: string | null }[]),
+      image: localImage(d.descendant_image_url as string | undefined, "descendants"),
+      skills: skills.map((s) => ({
+        name: String(s.skill_name ?? ""),
+        type: String(s.skill_type ?? ""),
+        element: String(s.element_type ?? ""),
+        image: localImage(s.skill_image_url as string | undefined, "skills"),
+        arche: (s.arche_type as string | null | undefined) ?? null,
+      })),
+    };
+  });
+}
+
+export type WeaponCatalogRow = {
+  id: string;
+  name: string;
+  image: string;
+  type: string;
+  rarity: string;
+  roundsType: string;
+};
+
+export function transformWeaponsFromNexon(weapRaw: unknown): WeaponCatalogRow[] {
+  if (!Array.isArray(weapRaw)) return [];
+  return weapRaw.map((w: Record<string, unknown>) => ({
+    id: String(w.weapon_id ?? ""),
+    name: String(w.weapon_name ?? ""),
+    image: localImage(w.image_url as string | undefined, "weapons"),
+    type: String(w.weapon_type ?? ""),
+    rarity: tierFromId(w.weapon_tier_id as string | undefined),
+    roundsType: String(w.weapon_rounds_type ?? ""),
+  }));
+}
+
+export type ModuleCatalogRow = {
+  id: string;
+  name: string;
+  image: string;
+  type: string;
+  tier: string;
+  socket: string;
+  moduleClass: string;
+  weaponTypes: string[];
+  descendantIds: string[];
+  capacities: number[];
+  preview: string;
+};
+
+export function transformModulesFromNexon(modRaw: unknown): ModuleCatalogRow[] {
+  if (!Array.isArray(modRaw)) return [];
+  return modRaw.map((m: Record<string, unknown>) => {
+    const isTranscendent = m.module_tier_id === "Tier4";
+    const moduleStat = m.module_stat as Array<{ level?: number; module_capacity?: number; value?: string }> | undefined;
+    return {
+      id: String(m.module_id ?? ""),
+      name: String(m.module_name ?? ""),
+      image: localImage(m.image_url as string | undefined, "modules"),
+      type: String(m.module_type ?? ""),
+      tier: tierFromId(m.module_tier_id as string | undefined),
+      socket: String(m.module_socket_type ?? ""),
+      moduleClass: String(m.module_class ?? ""),
+      weaponTypes: (m.available_weapon_type as string[]) ?? [],
+      descendantIds: (m.available_descendant_id as string[]) ?? [],
+      capacities: capacitiesFromStats(moduleStat),
+      preview: previewFromStats(moduleStat, isTranscendent),
+    };
+  });
+}

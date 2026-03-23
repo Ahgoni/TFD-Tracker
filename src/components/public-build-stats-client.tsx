@@ -5,6 +5,7 @@ import type { PublicBuild } from "@/lib/public-build-types";
 import type { ModuleRecord } from "@/lib/tfd-modules";
 import { effectiveMaxCapacity } from "@/lib/tfd-modules";
 import { computePlannerMetrics } from "@/lib/build-planner-stats";
+import { fetchModulesCatalog } from "@/lib/fetch-game-catalog";
 
 export function PublicBuildStatRollup({ build }: { build: PublicBuild }) {
   const slots = build.plannerSlots?.filter(Boolean) ?? [];
@@ -12,14 +13,10 @@ export function PublicBuildStatRollup({ build }: { build: PublicBuild }) {
 
   useEffect(() => {
     let cancelled = false;
-    fetch("/data/modules.json")
-      .then((r) => r.json())
-      .then((data: ModuleRecord[]) => {
-        if (!cancelled && Array.isArray(data)) setCatalog(data);
-      })
-      .catch(() => {
-        if (!cancelled) setCatalog([]);
-      });
+    (async () => {
+      const data = await fetchModulesCatalog();
+      if (!cancelled) setCatalog(data?.length ? data : []);
+    })();
     return () => {
       cancelled = true;
     };

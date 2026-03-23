@@ -17,7 +17,7 @@ Product direction (Overframe-tier discovery, TFD tier tokens, patch-aware roadma
 
 ## Game data (canonical: Nexon)
 
-Names, skills, modules, and stats should match **Nexon’s official library**, e.g. [Descendants](https://tfd.nexon.com/en/library/descendants). This app imports the same data via Nexon’s public Open API (`open.api.nexon.com/static/tfd/meta/en/…`) — see `public/data/README.md` and `npm run fetch:data` / `npm run fetch:stats`.
+Names, skills, modules, and stats should match **Nexon’s official library**, e.g. [Descendants](https://tfd.nexon.com/en/library/descendants). The app uses the same Open API (`open.api.nexon.com/static/tfd/meta/en/…`) via **`/api/nexon/catalog/*`** at runtime (with static `/public/data` fallback) and via `npm run fetch:data` for committed JSON — see `public/data/README.md` and `src/lib/nexon-catalog-transform.ts`.
 
 ## Current routes
 - `/` sign-in landing page

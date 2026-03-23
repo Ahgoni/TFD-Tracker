@@ -8,6 +8,7 @@ import { BuildPlannerPanel, type PlannerFormSlice, type PlannerHeroProps } from 
 import { WEAPON_TYPE_TO_NEXON, type ModuleRecord, slotCountForTarget } from "@/lib/tfd-modules";
 import { formatExternalComponentSetsSummary } from "@/lib/external-components-summary";
 import { copyTextToClipboard } from "@/lib/copy-to-clipboard";
+import { fetchModulesCatalog, fetchWeaponsCatalogRows } from "@/lib/fetch-game-catalog";
 
 interface Props {
   state: TrackerState;
@@ -433,7 +434,7 @@ export function BuildsTab({ state, setState }: Props) {
           {moduleCatalog.length === 0 ? (
             <p className="muted" style={{ margin: "0.75rem 0" }}>
               Loading module database… If this never finishes, run{" "}
-              <code className="inline-code">node scripts/fetch-game-data.mjs</code> and redeploy.
+              <code className="inline-code">npm run fetch:data</code> and redeploy.
             </p>
           ) : (
             <BuildPlannerPanel
