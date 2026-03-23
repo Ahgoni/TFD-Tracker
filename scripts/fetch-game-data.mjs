@@ -14,6 +14,7 @@ const OUT = resolve(__dirname, "../public/data");
 
 const DESCENDANT_URL = "https://open.api.nexon.com/static/tfd/meta/en/descendant.json";
 const WEAPON_URL = "https://open.api.nexon.com/static/tfd/meta/en/weapon.json";
+const MODULE_URL = "https://open.api.nexon.com/static/tfd/meta/en/module.json";
 
 const ELEMENT_MAP = {
   "Chill": "chill",
@@ -51,6 +52,27 @@ function tierFromId(tierId) {
   if (tierId === "Tier3") return "Ultimate";
   if (tierId === "Tier2") return "Rare";
   return "Normal";
+}
+
+/** Per-level capacity from module_stat (levels 0–10). */
+function capacitiesFromStats(moduleStat) {
+  const caps = new Array(11).fill(0);
+  if (!Array.isArray(moduleStat)) return caps;
+  for (const row of moduleStat) {
+    const lv = row.level;
+    if (typeof lv === "number" && lv >= 0 && lv <= 10) {
+      caps[lv] = Number(row.module_capacity) || 0;
+    }
+  }
+  return caps;
+}
+
+function previewFromStats(moduleStat) {
+  const row = Array.isArray(moduleStat) ? moduleStat.find((r) => r.level === 0) : null;
+  const v = row?.value;
+  if (typeof v !== "string") return "";
+  const line = v.split("\n")[0] ?? v;
+  return line.length > 160 ? `${line.slice(0, 157)}…` : line;
 }
 
 async function main() {
@@ -92,6 +114,25 @@ async function main() {
 
   writeFileSync(resolve(OUT, "weapons.json"), JSON.stringify(weapons, null, 2));
   console.log(`  Wrote ${weapons.length} weapons`);
+
+  console.log("Fetching modules...");
+  const modRaw = await fetch(MODULE_URL).then((r) => r.json());
+  const modules = modRaw.map((m) => ({
+    id: m.module_id,
+    name: m.module_name,
+    image: m.image_url,
+    type: m.module_type ?? "",
+    tier: tierFromId(m.module_tier_id),
+    socket: m.module_socket_type ?? "",
+    moduleClass: m.module_class ?? "",
+    weaponTypes: m.available_weapon_type ?? [],
+    descendantIds: m.available_descendant_id ?? [],
+    capacities: capacitiesFromStats(m.module_stat),
+    preview: previewFromStats(m.module_stat),
+  }));
+
+  writeFileSync(resolve(OUT, "modules.json"), JSON.stringify(modules, null, 2));
+  console.log(`  Wrote ${modules.length} modules`);
 
   console.log("Done.");
 }

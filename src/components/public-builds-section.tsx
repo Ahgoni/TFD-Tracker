@@ -1,5 +1,15 @@
 /** Read-only build cards for share & profile pages */
 
+export interface PublicPlacedModule {
+  moduleId: string;
+  level: number;
+  name: string;
+  image: string;
+  capacity: number;
+  socket: string;
+  tier: string;
+}
+
 export interface PublicBuild {
   id: string;
   name: string;
@@ -7,6 +17,7 @@ export interface PublicBuild {
   displayName: string;
   imageUrl: string;
   moduleSlots: string[];
+  plannerSlots?: (PublicPlacedModule | null)[] | null;
   reactorNotes: string;
   notes: string;
 }
@@ -35,16 +46,45 @@ export function PublicBuildsSection({ builds }: { builds: PublicBuild[] }) {
                 </p>
               </div>
             </div>
-            <ul className="build-module-list">
-              {(b.moduleSlots ?? []).map((line, i) =>
-                line ? (
-                  <li key={i}>
-                    <span className="build-mod-label">{i + 1}</span>
-                    {line}
-                  </li>
-                ) : null
-              )}
-            </ul>
+            {b.plannerSlots?.some(Boolean) ? (
+              <>
+                <ul className="build-planner-icons public-build-icons">
+                  {b.plannerSlots.map(
+                    (s, i) =>
+                      s && (
+                        <li key={`${s.moduleId}-${i}`} title={`${s.name} (Lv ${s.level})`}>
+                          {s.image ? <img src={s.image} alt="" className="build-planner-ico" /> : <span className="build-planner-dot" />}
+                        </li>
+                      )
+                  )}
+                </ul>
+                <ul className="build-module-list">
+                  {b.plannerSlots.map(
+                    (s, i) =>
+                      s ? (
+                        <li key={`n-${s.moduleId}-${i}`}>
+                          <span className="build-mod-label">{i + 1}</span>
+                          {s.name}
+                          <span className="muted" style={{ fontSize: "0.72rem", marginLeft: 4 }}>
+                            L{s.level} · {s.capacity} cap
+                          </span>
+                        </li>
+                      ) : null
+                  )}
+                </ul>
+              </>
+            ) : (
+              <ul className="build-module-list">
+                {(b.moduleSlots ?? []).map((line, i) =>
+                  line ? (
+                    <li key={i}>
+                      <span className="build-mod-label">{i + 1}</span>
+                      {line}
+                    </li>
+                  ) : null
+                )}
+              </ul>
+            )}
             {b.reactorNotes && (
               <p className="build-extra">
                 <strong>Reactor:</strong> {b.reactorNotes}

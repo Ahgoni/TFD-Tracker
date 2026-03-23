@@ -1,16 +1,16 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useSession } from "next-auth/react";
-import type { TrackerState, BuildEntry } from "../tracker-client";
+import type { TrackerState, BuildEntry, PlacedModule } from "../tracker-client";
 import { uuid } from "@/lib/uuid";
+import { BuildPlannerPanel, type PlannerFormSlice } from "./BuildPlannerPanel";
+import { WEAPON_TYPE_TO_NEXON, type ModuleRecord, slotCountForTarget } from "@/lib/tfd-modules";
 
 interface Props {
   state: TrackerState;
   setState: React.Dispatch<React.SetStateAction<TrackerState>>;
 }
-
-const EMPTY_SLOTS = () => Array.from({ length: 8 }, () => "");
 
 function pushActivity(state: TrackerState, text: string): TrackerState {
   return {
@@ -19,9 +19,49 @@ function pushActivity(state: TrackerState, text: string): TrackerState {
   };
 }
 
+function emptyPlannerSlots(targetType: "descendant" | "weapon"): (PlacedModule | null)[] {
+  return Array.from({ length: slotCountForTarget(targetType) }, () => null);
+}
+
+function plannerToLegacyLines(slots: (PlacedModule | null)[]): string[] {
+  const lines = slots.map((s) => (s ? s.name : ""));
+  while (lines.length < 12) lines.push("");
+  return lines.slice(0, 12);
+}
+
 export function BuildsTab({ state, setState }: Props) {
   const { data: session } = useSession();
   const username = session?.user && "username" in session.user ? (session.user as { username?: string | null }).username : null;
+
+  const [moduleCatalog, setModuleCatalog] = useState<ModuleRecord[]>([]);
+  const moduleById = useMemo(() => new Map(moduleCatalog.map((m) => [m.id, m])), [moduleCatalog]);
+
+  /** Nexon weapon `type` (e.g. Handgun) by weapon name — matches /data/weapons.json */
+  const [weaponTypeByName, setWeaponTypeByName] = useState<Record<string, string>>({});
+
+  useEffect(() => {
+    let cancelled = false;
+    fetch("/data/modules.json")
+      .then((r) => r.json())
+      .then((data: ModuleRecord[]) => {
+        if (!cancelled && Array.isArray(data)) setModuleCatalog(data);
+      })
+      .catch(() => {});
+    fetch("/data/weapons.json")
+      .then((r) => r.json())
+      .then((rows: Array<{ name: string; type: string }>) => {
+        if (cancelled || !Array.isArray(rows)) return;
+        const o: Record<string, string> = {};
+        rows.forEach((r) => {
+          if (r.name && r.type) o[r.name] = r.type;
+        });
+        setWeaponTypeByName(o);
+      })
+      .catch(() => {});
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   const [editingId, setEditingId] = useState<string | null>(null);
   const [form, setForm] = useState<{
@@ -29,13 +69,15 @@ export function BuildsTab({ state, setState }: Props) {
     targetType: "descendant" | "weapon";
     targetKey: string;
     moduleSlots: string[];
+    plannerSlots: (PlacedModule | null)[];
     reactorNotes: string;
     notes: string;
   }>({
     name: "",
     targetType: "descendant",
     targetKey: "",
-    moduleSlots: EMPTY_SLOTS(),
+    moduleSlots: Array(12).fill(""),
+    plannerSlots: emptyPlannerSlots("descendant"),
     reactorNotes: "",
     notes: "",
   });
@@ -52,6 +94,32 @@ export function BuildsTab({ state, setState }: Props) {
     [state.weapons]
   );
 
+  const weaponNexonType = useMemo(() => {
+    const w = weaponOptions.find((x) => x.slug === form.targetKey);
+    if (!w) return null;
+    const t = weaponTypeByName[w.name];
+    if (!t) return null;
+    return WEAPON_TYPE_TO_NEXON[t] ?? null;
+  }, [weaponOptions, form.targetKey, weaponTypeByName]);
+
+  const descendantGameId = useMemo(() => {
+    const d = descendantOptions.find((x) => x.name === form.targetKey);
+    return d?.id ?? null;
+  }, [descendantOptions, form.targetKey]);
+
+  useEffect(() => {
+    if (!form.targetKey) return;
+    const n = slotCountForTarget(form.targetType);
+    setForm((f) => {
+      const cur = [...(f.plannerSlots ?? [])];
+      while (cur.length < n) cur.push(null);
+      if (cur.length !== n) {
+        return { ...f, plannerSlots: cur.slice(0, n) };
+      }
+      return f;
+    });
+  }, [form.targetType, form.targetKey]);
+
   const filtered = (state.builds ?? []).filter((b) => {
     const q = (bf.search ?? "").trim().toLowerCase();
     if (q && !b.name.toLowerCase().includes(q) && !b.displayName.toLowerCase().includes(q)) return false;
@@ -65,7 +133,8 @@ export function BuildsTab({ state, setState }: Props) {
       name: "",
       targetType: "descendant",
       targetKey: "",
-      moduleSlots: EMPTY_SLOTS(),
+      moduleSlots: Array(12).fill(""),
+      plannerSlots: emptyPlannerSlots("descendant"),
       reactorNotes: "",
       notes: "",
     });
@@ -91,7 +160,20 @@ export function BuildsTab({ state, setState }: Props) {
       return;
     }
     const now = new Date().toISOString();
-    const moduleSlots = form.moduleSlots.map((s) => s.trim());
+    const legacyLines = plannerToLegacyLines(form.plannerSlots ?? []);
+
+    const entryBase = {
+      name: form.name.trim(),
+      targetType: form.targetType,
+      targetKey: form.targetKey,
+      displayName: resolved.displayName,
+      imageUrl: resolved.imageUrl,
+      moduleSlots: legacyLines,
+      plannerSlots: (form.plannerSlots ?? []).some(Boolean) ? [...form.plannerSlots] : null,
+      reactorNotes: form.reactorNotes.trim(),
+      notes: form.notes.trim(),
+      updatedAt: now,
+    };
 
     if (editingId) {
       setState((prev) =>
@@ -99,20 +181,7 @@ export function BuildsTab({ state, setState }: Props) {
           {
             ...prev,
             builds: (prev.builds ?? []).map((b) =>
-              b.id === editingId
-                ? {
-                    ...b,
-                    name: form.name.trim(),
-                    targetType: form.targetType,
-                    targetKey: form.targetKey,
-                    displayName: resolved.displayName,
-                    imageUrl: resolved.imageUrl,
-                    moduleSlots,
-                    reactorNotes: form.reactorNotes.trim(),
-                    notes: form.notes.trim(),
-                    updatedAt: now,
-                  }
-                : b
+              b.id === editingId ? { ...b, ...entryBase, id: b.id } : b
             ),
           },
           `Updated build: ${form.name.trim()}`
@@ -121,15 +190,7 @@ export function BuildsTab({ state, setState }: Props) {
     } else {
       const entry: BuildEntry = {
         id: uuid(),
-        name: form.name.trim(),
-        targetType: form.targetType,
-        targetKey: form.targetKey,
-        displayName: resolved.displayName,
-        imageUrl: resolved.imageUrl,
-        moduleSlots,
-        reactorNotes: form.reactorNotes.trim(),
-        notes: form.notes.trim(),
-        updatedAt: now,
+        ...entryBase,
       };
       setState((prev) => pushActivity({ ...prev, builds: [...(prev.builds ?? []), entry] }, `Created build: ${entry.name}`));
     }
@@ -138,11 +199,18 @@ export function BuildsTab({ state, setState }: Props) {
 
   function startEdit(b: BuildEntry) {
     setEditingId(b.id);
+    const n = slotCountForTarget(b.targetType);
+    let planner = (b.plannerSlots ?? []).length
+      ? [...(b.plannerSlots as (PlacedModule | null)[])]
+      : emptyPlannerSlots(b.targetType);
+    while (planner.length < n) planner.push(null);
+    planner = planner.slice(0, n);
     setForm({
       name: b.name,
       targetType: b.targetType,
       targetKey: b.targetKey,
-      moduleSlots: [...(b.moduleSlots ?? []), ...Array(8)].slice(0, 8).map((x) => (typeof x === "string" ? x : "")),
+      moduleSlots: [...(b.moduleSlots ?? []), ...Array(12)].slice(0, 12).map((x) => (typeof x === "string" ? x : "")),
+      plannerSlots: planner,
       reactorNotes: b.reactorNotes ?? "",
       notes: b.notes ?? "",
     });
@@ -172,10 +240,36 @@ export function BuildsTab({ state, setState }: Props) {
     navigator.clipboard.writeText(path).catch(() => {});
   }
 
-  const slotLabels =
-    form.targetType === "weapon"
-      ? ["Aftermarket", "Module 1", "Module 2", "Module 3", "Module 4", "Module 5", "Module 6", "Module 7"]
-      : ["Module 1", "Module 2", "Module 3", "Module 4", "Module 5", "Module 6", "Module 7", "Module 8"];
+  const plannerSlice: PlannerFormSlice = {
+    targetType: form.targetType,
+    targetKey: form.targetKey,
+    plannerSlots: form.plannerSlots,
+  };
+
+  const setPlannerSlice: React.Dispatch<React.SetStateAction<PlannerFormSlice>> = (action) => {
+    if (typeof action === "function") {
+      setForm((f) => {
+        const next = action({
+          targetType: f.targetType,
+          targetKey: f.targetKey,
+          plannerSlots: f.plannerSlots,
+        });
+        return {
+          ...f,
+          targetType: next.targetType,
+          targetKey: next.targetKey,
+          plannerSlots: next.plannerSlots,
+        };
+      });
+    } else {
+      setForm((f) => ({
+        ...f,
+        targetType: action.targetType,
+        targetKey: action.targetKey,
+        plannerSlots: action.plannerSlots,
+      }));
+    }
+  };
 
   return (
     <div className="builds-page">
@@ -185,7 +279,8 @@ export function BuildsTab({ state, setState }: Props) {
           <span className="panel-count">{(state.builds ?? []).length} saved</span>
         </h2>
         <p className="muted">
-          Save loadouts for descendants or weapons. Friends can view them on your public profile when sharing is enabled (same as inventory).
+          Drag official modules from the Nexon database into slots (Overframe-style). Capacity uses in-game module costs by level.
+          Friends see builds on your profile when sharing is enabled.
         </p>
 
         {username && (
@@ -215,13 +310,15 @@ export function BuildsTab({ state, setState }: Props) {
               Type
               <select
                 value={form.targetType}
-                onChange={(e) =>
+                onChange={(e) => {
+                  const targetType = e.target.value as "descendant" | "weapon";
                   setForm((f) => ({
                     ...f,
-                    targetType: e.target.value as "descendant" | "weapon",
+                    targetType,
                     targetKey: "",
-                  }))
-                }
+                    plannerSlots: emptyPlannerSlots(targetType),
+                  }));
+                }}
               >
                 <option value="descendant">Descendant</option>
                 <option value="weapon">Weapon</option>
@@ -231,7 +328,13 @@ export function BuildsTab({ state, setState }: Props) {
               {form.targetType === "descendant" ? "Descendant" : "Weapon"}
               <select
                 value={form.targetKey}
-                onChange={(e) => setForm((f) => ({ ...f, targetKey: e.target.value }))}
+                onChange={(e) =>
+                  setForm((f) => ({
+                    ...f,
+                    targetKey: e.target.value,
+                    plannerSlots: emptyPlannerSlots(f.targetType),
+                  }))
+                }
                 required
               >
                 <option value="">Select…</option>
@@ -250,25 +353,21 @@ export function BuildsTab({ state, setState }: Props) {
             </label>
           </div>
 
-          <p className="builds-slot-heading">Modules &amp; components</p>
-          <div className="builds-slots-grid">
-            {slotLabels.map((label, i) => (
-              <label key={label + i}>
-                {label}
-                <input
-                  value={form.moduleSlots[i] ?? ""}
-                  onChange={(e) =>
-                    setForm((f) => {
-                      const next = [...f.moduleSlots];
-                      next[i] = e.target.value;
-                      return { ...f, moduleSlots: next };
-                    })
-                  }
-                  placeholder="—"
-                />
-              </label>
-            ))}
-          </div>
+          {moduleCatalog.length === 0 ? (
+            <p className="muted" style={{ margin: "0.75rem 0" }}>
+              Loading module database… If this never finishes, run{" "}
+              <code className="inline-code">node scripts/fetch-game-data.mjs</code> and redeploy.
+            </p>
+          ) : (
+            <BuildPlannerPanel
+              form={plannerSlice}
+              setForm={setPlannerSlice}
+              moduleCatalog={moduleCatalog}
+              moduleById={moduleById}
+              weaponNexonType={weaponNexonType}
+              descendantGameId={descendantGameId}
+            />
+          )}
 
           <label>
             Reactor / pairing notes
@@ -357,16 +456,29 @@ export function BuildsTab({ state, setState }: Props) {
                     <p className="build-card-date">Updated {new Date(b.updatedAt).toLocaleString()}</p>
                   </div>
                 </div>
-                <ul className="build-module-list">
-                  {(b.moduleSlots ?? []).map((line, i) =>
-                    line ? (
-                      <li key={i}>
-                        <span className="build-mod-label">{i + 1}</span>
-                        {line}
-                      </li>
-                    ) : null
-                  )}
-                </ul>
+                {b.plannerSlots?.some(Boolean) ? (
+                  <ul className="build-planner-icons">
+                    {b.plannerSlots.map(
+                      (s, i) =>
+                        s && (
+                          <li key={`${s.moduleId}-${i}`} title={s.name}>
+                            {s.image ? <img src={s.image} alt="" className="build-planner-ico" /> : <span className="build-planner-dot" />}
+                          </li>
+                        )
+                    )}
+                  </ul>
+                ) : (
+                  <ul className="build-module-list">
+                    {(b.moduleSlots ?? []).map((line, i) =>
+                      line ? (
+                        <li key={i}>
+                          <span className="build-mod-label">{i + 1}</span>
+                          {line}
+                        </li>
+                      ) : null
+                    )}
+                  </ul>
+                )}
                 {b.reactorNotes && (
                   <p className="build-extra">
                     <strong>Reactor:</strong> {b.reactorNotes}

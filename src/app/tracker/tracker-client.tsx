@@ -81,6 +81,17 @@ export interface ActivityEntry {
   at: string;
 }
 
+/** Module placed in the drag-and-drop planner (denormalized for sharing). */
+export interface PlacedModule {
+  moduleId: string;
+  level: number;
+  name: string;
+  image: string;
+  capacity: number;
+  socket: string;
+  tier: string;
+}
+
 /** Saved loadout for a descendant or weapon (modules + notes). Shared with friends via profile/share. */
 export interface BuildEntry {
   id: string;
@@ -90,8 +101,10 @@ export interface BuildEntry {
   targetKey: string;
   displayName: string;
   imageUrl: string;
-  /** Up to 8 module / component lines */
+  /** Legacy text lines (still used as fallback summary). */
   moduleSlots: string[];
+  /** Nexon-style planner: 10 slots (weapon) or 12 (descendant). */
+  plannerSlots?: (PlacedModule | null)[] | null;
   reactorNotes: string;
   notes: string;
   updatedAt: string;
