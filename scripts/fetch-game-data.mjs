@@ -31,6 +31,12 @@ const SKILL_TYPE_MAP = {
   "Tech": "tech",
 };
 
+function localImage(url, category) {
+  if (typeof url !== "string" || !url.startsWith("https://")) return url;
+  const hash = url.split("/").pop();
+  return `/assets/${category}/${hash}.png`;
+}
+
 function inferElement(skills) {
   const elements = skills
     .map((s) => ELEMENT_MAP[s.element_type])
@@ -89,12 +95,12 @@ async function main() {
     groupId: d.descendant_group_id,
     element: inferElement(d.descendant_skill ?? []),
     skillTypes: inferSkillTypes(d.descendant_skill ?? []),
-    image: d.descendant_image_url,
+    image: localImage(d.descendant_image_url, "descendants"),
     skills: (d.descendant_skill ?? []).map((s) => ({
       name: s.skill_name,
       type: s.skill_type,
       element: s.element_type,
-      image: s.skill_image_url,
+      image: localImage(s.skill_image_url, "skills"),
       arche: s.arche_type ?? null,
     })),
   }));
@@ -108,7 +114,7 @@ async function main() {
   const weapons = weapRaw.map((w) => ({
     id: w.weapon_id,
     name: w.weapon_name,
-    image: w.image_url,
+    image: localImage(w.image_url, "weapons"),
     type: w.weapon_type,
     rarity: tierFromId(w.weapon_tier_id),
     roundsType: w.weapon_rounds_type,
@@ -124,7 +130,7 @@ async function main() {
     return {
       id: m.module_id,
       name: m.module_name,
-      image: m.image_url,
+      image: localImage(m.image_url, "modules"),
       type: m.module_type ?? "",
       tier: tierFromId(m.module_tier_id),
       socket: m.module_socket_type ?? "",

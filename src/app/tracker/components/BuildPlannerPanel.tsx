@@ -673,8 +673,18 @@ function BuildPlannerPanelInner({
     return null;
   }, [slots, moduleById]);
 
+  const [skillMap, setSkillMap] = useState<Record<string, { affectsSkill: string | null }>>({});
+  useEffect(() => {
+    fetch("/data/transcendent-skill-map.json")
+      .then((r) => (r.ok ? r.json() : {}))
+      .then((d) => setSkillMap(d ?? {}))
+      .catch(() => {});
+  }, []);
+
   const affectedSkillNames = useMemo(() => {
     if (!equippedTranscendent) return new Set<string>();
+    const mapping = skillMap[equippedTranscendent.mod.id];
+    if (mapping?.affectsSkill) return new Set([mapping.affectsSkill]);
     const modName = (equippedTranscendent.mod.name ?? "").toLowerCase();
     const preview = (equippedTranscendent.mod.preview ?? "").toLowerCase();
     const searchText = modName + " " + preview;
@@ -689,7 +699,7 @@ function BuildPlannerPanelInner({
       skillNames.forEach((n) => { if (n) matched.add(n); });
     }
     return matched;
-  }, [equippedTranscendent, descSkills]);
+  }, [equippedTranscendent, descSkills, skillMap]);
 
   // Render
 
@@ -746,7 +756,7 @@ function BuildPlannerPanelInner({
                           onMouseEnter={() => setHoveredSkill(sk.name)}
                           onMouseLeave={() => setHoveredSkill(null)}
                         >
-                          <img src={sk.image} alt={sk.name} />
+                          <img src={isAffected && equippedTranscendent ? equippedTranscendent.mod.image : sk.image} alt={sk.name} />
                           <span className="builder-skill-num">{idx + 1}</span>
                           {hoveredSkill === sk.name && full && (
                             <div className="skill-tooltip">
@@ -757,7 +767,9 @@ function BuildPlannerPanelInner({
                                   {full.arche ? ` \u00b7 ${String(full.arche)}` : ""}
                                 </span>
                               </div>
-                              <h4 className="skill-tooltip-name">{String(full.name ?? "")}</h4>
+                              <h4 className="skill-tooltip-name">
+                                {isAffected && equippedTranscendent ? String(equippedTranscendent.mod.name ?? "") : String(full.name ?? "")}
+                              </h4>
                               <span className="skill-tooltip-type">{String(full.type ?? "")}</span>
                               {isAffected && equippedTranscendent && (
                                 <div className="skill-tooltip-mod-banner">

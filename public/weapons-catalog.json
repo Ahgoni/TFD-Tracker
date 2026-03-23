@@ -8,7 +8,7 @@
     "catalysts": 0,
     "enhancement": 0,
     "weaponCore": "No",
-    "icon": "https://open.api.nexon.com/static/tfd/img/5f00ef5b8da91875ab988190e0bd74f6",
+    "icon": "/assets/weapons/5f00ef5b8da91875ab988190e0bd74f6.png",
     "roundsType": "High-Power Rounds"
   },
   {
@@ -20,7 +20,7 @@
     "catalysts": 0,
     "enhancement": 0,
     "weaponCore": "No",
-    "icon": "https://open.api.nexon.com/static/tfd/img/4a421dec7ac3fa78c8c18fc8333a19b8",
+    "icon": "/assets/weapons/4a421dec7ac3fa78c8c18fc8333a19b8.png",
     "roundsType": "General Rounds"
   },
   {
@@ -32,7 +32,7 @@
     "catalysts": 0,
     "enhancement": 0,
     "weaponCore": "No",
-    "icon": "https://open.api.nexon.com/static/tfd/img/a08287f1127679b3657b09c1489c8aa9",
+    "icon": "/assets/weapons/a08287f1127679b3657b09c1489c8aa9.png",
     "roundsType": "General Rounds"
   },
   {
@@ -44,7 +44,7 @@
     "catalysts": 0,
     "enhancement": 0,
     "weaponCore": "No",
-    "icon": "https://open.api.nexon.com/static/tfd/img/0415b366d335b63f5425a76c065edc86",
+    "icon": "/assets/weapons/0415b366d335b63f5425a76c065edc86.png",
     "roundsType": "General Rounds"
   },
   {
@@ -56,7 +56,7 @@
     "catalysts": 0,
     "enhancement": 0,
     "weaponCore": "No",
-    "icon": "https://open.api.nexon.com/static/tfd/img/e288f918ccfda4dd9c67f226d1a0b6b7",
+    "icon": "/assets/weapons/e288f918ccfda4dd9c67f226d1a0b6b7.png",
     "roundsType": "General Rounds"
   },
   {
@@ -68,7 +68,7 @@
     "catalysts": 0,
     "enhancement": 0,
     "weaponCore": "No",
-    "icon": "https://open.api.nexon.com/static/tfd/img/71fd2b29accbb607a561d8f2b58e9f00",
+    "icon": "/assets/weapons/71fd2b29accbb607a561d8f2b58e9f00.png",
     "roundsType": "Impact Rounds"
   },
   {
@@ -80,7 +80,7 @@
     "catalysts": 0,
     "enhancement": 0,
     "weaponCore": "No",
-    "icon": "https://open.api.nexon.com/static/tfd/img/cd38fb5a5d8ff02a52aadc09cfc5ef73",
+    "icon": "/assets/weapons/cd38fb5a5d8ff02a52aadc09cfc5ef73.png",
     "roundsType": "High-Power Rounds"
   },
   {
@@ -92,7 +92,7 @@
     "catalysts": 0,
     "enhancement": 0,
     "weaponCore": "No",
-    "icon": "https://open.api.nexon.com/static/tfd/img/d10d37df0a839dc7af02d243d0e3fd47",
+    "icon": "/assets/weapons/d10d37df0a839dc7af02d243d0e3fd47.png",
     "roundsType": "High-Power Rounds"
   },
   {
@@ -104,7 +104,7 @@
     "catalysts": 0,
     "enhancement": 0,
     "weaponCore": "No",
-    "icon": "https://open.api.nexon.com/static/tfd/img/bc212983d14ce78e73c0de0371768fac",
+    "icon": "/assets/weapons/bc212983d14ce78e73c0de0371768fac.png",
     "roundsType": "Impact Rounds"
   },
   {
@@ -116,7 +116,7 @@
     "catalysts": 0,
     "enhancement": 0,
     "weaponCore": "No",
-    "icon": "https://open.api.nexon.com/static/tfd/img/bd3db3617859fab6dc91f200d74ca5a4",
+    "icon": "/assets/weapons/bd3db3617859fab6dc91f200d74ca5a4.png",
     "roundsType": "General Rounds"
   },
   {
@@ -128,7 +128,7 @@
     "catalysts": 0,
     "enhancement": 0,
     "weaponCore": "No",
-    "icon": "https://open.api.nexon.com/static/tfd/img/6a39c6748a0f0ba9d695407925ffb98d",
+    "icon": "/assets/weapons/6a39c6748a0f0ba9d695407925ffb98d.png",
     "roundsType": "Special Rounds"
   },
   {
@@ -140,7 +140,7 @@
     "catalysts": 0,
     "enhancement": 0,
     "weaponCore": "No",
-    "icon": "https://open.api.nexon.com/static/tfd/img/0b064a49b5e559903919858e2af4a81b",
+    "icon": "/assets/weapons/0b064a49b5e559903919858e2af4a81b.png",
     "roundsType": "Impact Rounds"
   },
   {
@@ -152,7 +152,7 @@
     "catalysts": 0,
     "enhancement": 0,
     "weaponCore": "No",
-    "icon": "https://open.api.nexon.com/static/tfd/img/51a7b036e039b1a86c28f45ba5ad943c",
+    "icon": "/assets/weapons/51a7b036e039b1a86c28f45ba5ad943c.png",
     "roundsType": "General Rounds"
   },
   {
@@ -164,7 +164,7 @@
     "catalysts": 0,
     "enhancement": 0,
     "weaponCore": "No",
-    "icon": "https://open.api.nexon.com/static/tfd/img/a3a8c7bacaa70f994559ddf58bbf2d2d",
+    "icon": "/assets/weapons/a3a8c7bacaa70f994559ddf58bbf2d2d.png",
     "roundsType": "Special Rounds"
   },
   {
@@ -176,7 +176,7 @@
     "catalysts": 0,
     "enhancement": 0,
     "weaponCore": "No",
-    "icon": "https://open.api.nexon.com/static/tfd/img/704c530e3bf1e4de9547b22dd0e9bd72",
+    "icon": "/assets/weapons/704c530e3bf1e4de9547b22dd0e9bd72.png",
     "roundsType": "Impact Rounds"
   },
   {
@@ -188,7 +188,7 @@
     "catalysts": 0,
     "enhancement": 0,
     "weaponCore": "No",
-    "icon": "https://open.api.nexon.com/static/tfd/img/c4bd46e95cf93bf3c7ec7607bad632f7",
+    "icon": "/assets/weapons/c4bd46e95cf93bf3c7ec7607bad632f7.png",
     "roundsType": "General Rounds"
   },
   {
@@ -200,7 +200,7 @@
     "catalysts": 0,
     "enhancement": 0,
     "weaponCore": "No",
-    "icon": "https://open.api.nexon.com/static/tfd/img/72f35ad37054e8f076bed21615e0cf32",
+    "icon": "/assets/weapons/72f35ad37054e8f076bed21615e0cf32.png",
     "roundsType": "High-Power Rounds"
   },
   {
@@ -212,7 +212,7 @@
     "catalysts": 0,
     "enhancement": 0,
     "weaponCore": "No",
-    "icon": "https://open.api.nexon.com/static/tfd/img/e557c0bb7adaaa72ab0a8f0f4fa027f5",
+    "icon": "/assets/weapons/e557c0bb7adaaa72ab0a8f0f4fa027f5.png",
     "roundsType": "Special Rounds"
   },
   {
@@ -224,7 +224,7 @@
     "catalysts": 0,
     "enhancement": 0,
     "weaponCore": "No",
-    "icon": "https://open.api.nexon.com/static/tfd/img/dc6c85d573e39232f9d381ec0b7ea3c0",
+    "icon": "/assets/weapons/dc6c85d573e39232f9d381ec0b7ea3c0.png",
     "roundsType": "High-Power Rounds"
   },
   {
@@ -236,7 +236,7 @@
     "catalysts": 0,
     "enhancement": 0,
     "weaponCore": "No",
-    "icon": "https://open.api.nexon.com/static/tfd/img/9fba15e1cc595992e17f324d4ce87ef7",
+    "icon": "/assets/weapons/9fba15e1cc595992e17f324d4ce87ef7.png",
     "roundsType": "General Rounds"
   },
   {
@@ -248,7 +248,7 @@
     "catalysts": 0,
     "enhancement": 0,
     "weaponCore": "No",
-    "icon": "https://open.api.nexon.com/static/tfd/img/323dd3820b294253e7e1b08c0b49518d",
+    "icon": "/assets/weapons/323dd3820b294253e7e1b08c0b49518d.png",
     "roundsType": "High-Power Rounds"
   },
   {
@@ -260,7 +260,7 @@
     "catalysts": 0,
     "enhancement": 0,
     "weaponCore": "No",
-    "icon": "https://open.api.nexon.com/static/tfd/img/6bd1dab4c7cc6b839a602a486266c3ca",
+    "icon": "/assets/weapons/6bd1dab4c7cc6b839a602a486266c3ca.png",
     "roundsType": "Special Rounds"
   },
   {
@@ -272,7 +272,7 @@
     "catalysts": 0,
     "enhancement": 0,
     "weaponCore": "No",
-    "icon": "https://open.api.nexon.com/static/tfd/img/3df0f8cae97e98ef7a0cccd0bf4613ba",
+    "icon": "/assets/weapons/3df0f8cae97e98ef7a0cccd0bf4613ba.png",
     "roundsType": "General Rounds"
   },
   {
@@ -284,7 +284,7 @@
     "catalysts": 0,
     "enhancement": 0,
     "weaponCore": "No",
-    "icon": "https://open.api.nexon.com/static/tfd/img/e386f1953bc51608e13e50dad6d79a34",
+    "icon": "/assets/weapons/e386f1953bc51608e13e50dad6d79a34.png",
     "roundsType": "Special Rounds"
   },
   {
@@ -296,7 +296,7 @@
     "catalysts": 0,
     "enhancement": 0,
     "weaponCore": "No",
-    "icon": "https://open.api.nexon.com/static/tfd/img/f6901e57369f73220170d4ebcc3b0b63",
+    "icon": "/assets/weapons/f6901e57369f73220170d4ebcc3b0b63.png",
     "roundsType": "General Rounds"
   },
   {
@@ -308,7 +308,7 @@
     "catalysts": 0,
     "enhancement": 0,
     "weaponCore": "No",
-    "icon": "https://open.api.nexon.com/static/tfd/img/13e0b9972056d43d525c1faabefd54b4",
+    "icon": "/assets/weapons/13e0b9972056d43d525c1faabefd54b4.png",
     "roundsType": "General Rounds"
   },
   {
@@ -320,7 +320,7 @@
     "catalysts": 0,
     "enhancement": 0,
     "weaponCore": "No",
-    "icon": "https://open.api.nexon.com/static/tfd/img/268acbe6d23714dc6d3e8c244b592875",
+    "icon": "/assets/weapons/268acbe6d23714dc6d3e8c244b592875.png",
     "roundsType": "Impact Rounds"
   },
   {
@@ -332,7 +332,7 @@
     "catalysts": 0,
     "enhancement": 0,
     "weaponCore": "No",
-    "icon": "https://open.api.nexon.com/static/tfd/img/9e0444f2b466d65115c1c9f8020b1e5f",
+    "icon": "/assets/weapons/9e0444f2b466d65115c1c9f8020b1e5f.png",
     "roundsType": "General Rounds"
   },
   {
@@ -344,7 +344,7 @@
     "catalysts": 0,
     "enhancement": 0,
     "weaponCore": "No",
-    "icon": "https://open.api.nexon.com/static/tfd/img/2e7b02f88abeb7d04a23d0126d00fc78",
+    "icon": "/assets/weapons/2e7b02f88abeb7d04a23d0126d00fc78.png",
     "roundsType": "General Rounds"
   },
   {
@@ -356,7 +356,7 @@
     "catalysts": 0,
     "enhancement": 0,
     "weaponCore": "No",
-    "icon": "https://open.api.nexon.com/static/tfd/img/725adaf584254b433f2b4f00cb53d44a",
+    "icon": "/assets/weapons/725adaf584254b433f2b4f00cb53d44a.png",
     "roundsType": "High-Power Rounds"
   },
   {
@@ -368,7 +368,7 @@
     "catalysts": 0,
     "enhancement": 0,
     "weaponCore": "No",
-    "icon": "https://open.api.nexon.com/static/tfd/img/a29019f04b21cc10a17cf578f881964a",
+    "icon": "/assets/weapons/a29019f04b21cc10a17cf578f881964a.png",
     "roundsType": "Impact Rounds"
   },
   {
@@ -380,7 +380,7 @@
     "catalysts": 0,
     "enhancement": 0,
     "weaponCore": "No",
-    "icon": "https://open.api.nexon.com/static/tfd/img/65ada89e1084adba67a5872382c07c9a",
+    "icon": "/assets/weapons/65ada89e1084adba67a5872382c07c9a.png",
     "roundsType": "High-Power Rounds"
   },
   {
@@ -392,7 +392,7 @@
     "catalysts": 0,
     "enhancement": 0,
     "weaponCore": "No",
-    "icon": "https://open.api.nexon.com/static/tfd/img/17a34341edd0ea4188155e0a60378579",
+    "icon": "/assets/weapons/17a34341edd0ea4188155e0a60378579.png",
     "roundsType": "Special Rounds"
   },
   {
@@ -404,7 +404,7 @@
     "catalysts": 0,
     "enhancement": 0,
     "weaponCore": "No",
-    "icon": "https://open.api.nexon.com/static/tfd/img/03c388bc95f43507ff5f56c7ac85d85d",
+    "icon": "/assets/weapons/03c388bc95f43507ff5f56c7ac85d85d.png",
     "roundsType": "General Rounds"
   },
   {
@@ -416,7 +416,7 @@
     "catalysts": 0,
     "enhancement": 0,
     "weaponCore": "No",
-    "icon": "https://open.api.nexon.com/static/tfd/img/8246e467dcf652b513a0412c6c750e4e",
+    "icon": "/assets/weapons/8246e467dcf652b513a0412c6c750e4e.png",
     "roundsType": "High-Power Rounds"
   },
   {
@@ -428,7 +428,7 @@
     "catalysts": 0,
     "enhancement": 0,
     "weaponCore": "No",
-    "icon": "https://open.api.nexon.com/static/tfd/img/1c6ca7ab2ac58d577513e81930393ab9",
+    "icon": "/assets/weapons/1c6ca7ab2ac58d577513e81930393ab9.png",
     "roundsType": "High-Power Rounds"
   },
   {
@@ -440,7 +440,7 @@
     "catalysts": 0,
     "enhancement": 0,
     "weaponCore": "No",
-    "icon": "https://open.api.nexon.com/static/tfd/img/95dd69d2bb516b9e12b03176d453aea0",
+    "icon": "/assets/weapons/95dd69d2bb516b9e12b03176d453aea0.png",
     "roundsType": "Impact Rounds"
   },
   {
@@ -452,7 +452,7 @@
     "catalysts": 0,
     "enhancement": 0,
     "weaponCore": "No",
-    "icon": "https://open.api.nexon.com/static/tfd/img/b0c9584713f7c367cf707296bd0f055e",
+    "icon": "/assets/weapons/b0c9584713f7c367cf707296bd0f055e.png",
     "roundsType": "High-Power Rounds"
   },
   {
@@ -464,7 +464,7 @@
     "catalysts": 0,
     "enhancement": 0,
     "weaponCore": "No",
-    "icon": "https://open.api.nexon.com/static/tfd/img/628a4b24dc92c15e765a859935a42b4c",
+    "icon": "/assets/weapons/628a4b24dc92c15e765a859935a42b4c.png",
     "roundsType": "Special Rounds"
   },
   {
@@ -476,7 +476,7 @@
     "catalysts": 0,
     "enhancement": 0,
     "weaponCore": "No",
-    "icon": "https://open.api.nexon.com/static/tfd/img/d3a92c27923d2790b52c301ec5937ee0",
+    "icon": "/assets/weapons/d3a92c27923d2790b52c301ec5937ee0.png",
     "roundsType": "High-Power Rounds"
   },
   {
@@ -488,7 +488,7 @@
     "catalysts": 0,
     "enhancement": 0,
     "weaponCore": "No",
-    "icon": "https://open.api.nexon.com/static/tfd/img/26bf13d021eb7f409a855d4366892e13",
+    "icon": "/assets/weapons/26bf13d021eb7f409a855d4366892e13.png",
     "roundsType": "High-Power Rounds"
   },
   {
@@ -500,7 +500,7 @@
     "catalysts": 0,
     "enhancement": 0,
     "weaponCore": "No",
-    "icon": "https://open.api.nexon.com/static/tfd/img/f325b8200ac7115e72bf27b2868bc668",
+    "icon": "/assets/weapons/f325b8200ac7115e72bf27b2868bc668.png",
     "roundsType": "Impact Rounds"
   },
   {
@@ -512,7 +512,7 @@
     "catalysts": 0,
     "enhancement": 0,
     "weaponCore": "No",
-    "icon": "https://open.api.nexon.com/static/tfd/img/6572b9082619d605e64fd0ab3ebf5e77",
+    "icon": "/assets/weapons/6572b9082619d605e64fd0ab3ebf5e77.png",
     "roundsType": "Special Rounds"
   },
   {
@@ -524,7 +524,7 @@
     "catalysts": 0,
     "enhancement": 0,
     "weaponCore": "No",
-    "icon": "https://open.api.nexon.com/static/tfd/img/5121f653612028a206f3131f81495b2f",
+    "icon": "/assets/weapons/5121f653612028a206f3131f81495b2f.png",
     "roundsType": "General Rounds"
   },
   {
@@ -536,7 +536,7 @@
     "catalysts": 0,
     "enhancement": 0,
     "weaponCore": "No",
-    "icon": "https://open.api.nexon.com/static/tfd/img/b6a9ae763035b500354f1ed4dba2701b",
+    "icon": "/assets/weapons/b6a9ae763035b500354f1ed4dba2701b.png",
     "roundsType": "Impact Rounds"
   },
   {
@@ -548,7 +548,7 @@
     "catalysts": 0,
     "enhancement": 0,
     "weaponCore": "No",
-    "icon": "https://open.api.nexon.com/static/tfd/img/18ce03c6d161524683366fd9deb4c80e",
+    "icon": "/assets/weapons/18ce03c6d161524683366fd9deb4c80e.png",
     "roundsType": "Impact Rounds"
   },
   {
@@ -560,7 +560,7 @@
     "catalysts": 0,
     "enhancement": 0,
     "weaponCore": "No",
-    "icon": "https://open.api.nexon.com/static/tfd/img/d19602b85c2fe0ba6fc1b8987fc30912",
+    "icon": "/assets/weapons/d19602b85c2fe0ba6fc1b8987fc30912.png",
     "roundsType": "High-Power Rounds"
   },
   {
@@ -572,7 +572,7 @@
     "catalysts": 0,
     "enhancement": 0,
     "weaponCore": "No",
-    "icon": "https://open.api.nexon.com/static/tfd/img/1b2c6549e87addec20642f852b0afcf4",
+    "icon": "/assets/weapons/1b2c6549e87addec20642f852b0afcf4.png",
     "roundsType": "Special Rounds"
   },
   {
@@ -584,7 +584,7 @@
     "catalysts": 0,
     "enhancement": 0,
     "weaponCore": "No",
-    "icon": "https://open.api.nexon.com/static/tfd/img/1ac4315a74daf23d0711d3f952cfbdb6",
+    "icon": "/assets/weapons/1ac4315a74daf23d0711d3f952cfbdb6.png",
     "roundsType": "High-Power Rounds"
   },
   {
@@ -596,7 +596,7 @@
     "catalysts": 0,
     "enhancement": 0,
     "weaponCore": "No",
-    "icon": "https://open.api.nexon.com/static/tfd/img/62364058a1293c938868e5000a1efe18",
+    "icon": "/assets/weapons/62364058a1293c938868e5000a1efe18.png",
     "roundsType": "General Rounds"
   },
   {
@@ -608,7 +608,7 @@
     "catalysts": 0,
     "enhancement": 0,
     "weaponCore": "No",
-    "icon": "https://open.api.nexon.com/static/tfd/img/99b656aaf694c1745565d282539e0a97",
+    "icon": "/assets/weapons/99b656aaf694c1745565d282539e0a97.png",
     "roundsType": "General Rounds"
   },
   {
@@ -620,7 +620,7 @@
     "catalysts": 0,
     "enhancement": 0,
     "weaponCore": "No",
-    "icon": "https://open.api.nexon.com/static/tfd/img/31991b249c933d07fce52c6d40a2a2c8",
+    "icon": "/assets/weapons/31991b249c933d07fce52c6d40a2a2c8.png",
     "roundsType": "Impact Rounds"
   },
   {
@@ -632,7 +632,7 @@
     "catalysts": 0,
     "enhancement": 0,
     "weaponCore": "No",
-    "icon": "https://open.api.nexon.com/static/tfd/img/5541aa5bc69828750230c0e21de0008f",
+    "icon": "/assets/weapons/5541aa5bc69828750230c0e21de0008f.png",
     "roundsType": "General Rounds"
   },
   {
@@ -644,7 +644,7 @@
     "catalysts": 0,
     "enhancement": 0,
     "weaponCore": "No",
-    "icon": "https://open.api.nexon.com/static/tfd/img/7b8c230d8c415a412b87d4ea3c8aadef",
+    "icon": "/assets/weapons/7b8c230d8c415a412b87d4ea3c8aadef.png",
     "roundsType": "Special Rounds"
   },
   {
@@ -656,7 +656,7 @@
     "catalysts": 0,
     "enhancement": 0,
     "weaponCore": "No",
-    "icon": "https://open.api.nexon.com/static/tfd/img/b315aea02228beee420b80f7bcd7097b",
+    "icon": "/assets/weapons/b315aea02228beee420b80f7bcd7097b.png",
     "roundsType": "Impact Rounds"
   },
   {
@@ -668,7 +668,7 @@
     "catalysts": 0,
     "enhancement": 0,
     "weaponCore": "No",
-    "icon": "https://open.api.nexon.com/static/tfd/img/eafdde9d0fef5a994cb91fda065fe4e1",
+    "icon": "/assets/weapons/eafdde9d0fef5a994cb91fda065fe4e1.png",
     "roundsType": "General Rounds"
   },
   {
@@ -680,7 +680,7 @@
     "catalysts": 0,
     "enhancement": 0,
     "weaponCore": "No",
-    "icon": "https://open.api.nexon.com/static/tfd/img/7a4c3e81ac44c7e936f4f969a591f577",
+    "icon": "/assets/weapons/7a4c3e81ac44c7e936f4f969a591f577.png",
     "roundsType": "Impact Rounds"
   },
   {
@@ -692,7 +692,7 @@
     "catalysts": 0,
     "enhancement": 0,
     "weaponCore": "No",
-    "icon": "https://open.api.nexon.com/static/tfd/img/33d70ee26acd0c326890ce19016af4a7",
+    "icon": "/assets/weapons/33d70ee26acd0c326890ce19016af4a7.png",
     "roundsType": "General Rounds"
   },
   {
@@ -704,7 +704,7 @@
     "catalysts": 0,
     "enhancement": 0,
     "weaponCore": "No",
-    "icon": "https://open.api.nexon.com/static/tfd/img/d78fa4d509434b6a21a95f6cc87638fe",
+    "icon": "/assets/weapons/d78fa4d509434b6a21a95f6cc87638fe.png",
     "roundsType": "Impact Rounds"
   },
   {
@@ -716,7 +716,7 @@
     "catalysts": 0,
     "enhancement": 0,
     "weaponCore": "No",
-    "icon": "https://open.api.nexon.com/static/tfd/img/313eb5005e4c6d70ac41b4a9f4d8c7f0",
+    "icon": "/assets/weapons/313eb5005e4c6d70ac41b4a9f4d8c7f0.png",
     "roundsType": "Impact Rounds"
   },
   {
@@ -728,7 +728,7 @@
     "catalysts": 0,
     "enhancement": 0,
     "weaponCore": "No",
-    "icon": "https://open.api.nexon.com/static/tfd/img/e3c1be91430caed3f152f1b48af10ed6",
+    "icon": "/assets/weapons/e3c1be91430caed3f152f1b48af10ed6.png",
     "roundsType": "General Rounds"
   },
   {
@@ -740,7 +740,7 @@
     "catalysts": 0,
     "enhancement": 0,
     "weaponCore": "No",
-    "icon": "https://open.api.nexon.com/static/tfd/img/bec18398d891552051338ffea609d79c",
+    "icon": "/assets/weapons/bec18398d891552051338ffea609d79c.png",
     "roundsType": "High-Power Rounds"
   },
   {
@@ -752,7 +752,7 @@
     "catalysts": 0,
     "enhancement": 0,
     "weaponCore": "No",
-    "icon": "https://open.api.nexon.com/static/tfd/img/d88f60aa86c8dc57e21e6f88511b33ba",
+    "icon": "/assets/weapons/d88f60aa86c8dc57e21e6f88511b33ba.png",
     "roundsType": "General Rounds"
   },
   {
@@ -764,7 +764,7 @@
     "catalysts": 0,
     "enhancement": 0,
     "weaponCore": "No",
-    "icon": "https://open.api.nexon.com/static/tfd/img/649e6efb22411c0744ec40dcfad412aa",
+    "icon": "/assets/weapons/649e6efb22411c0744ec40dcfad412aa.png",
     "roundsType": "General Rounds"
   },
   {
@@ -776,7 +776,7 @@
     "catalysts": 0,
     "enhancement": 0,
     "weaponCore": "No",
-    "icon": "https://open.api.nexon.com/static/tfd/img/a93622c81e64a228dc05c22ec98dc728",
+    "icon": "/assets/weapons/a93622c81e64a228dc05c22ec98dc728.png",
     "roundsType": "High-Power Rounds"
   },
   {
@@ -788,7 +788,7 @@
     "catalysts": 0,
     "enhancement": 0,
     "weaponCore": "No",
-    "icon": "https://open.api.nexon.com/static/tfd/img/df74e8a2a4aeb0672025f2f887858a1d",
+    "icon": "/assets/weapons/df74e8a2a4aeb0672025f2f887858a1d.png",
     "roundsType": "Special Rounds"
   },
   {
@@ -800,7 +800,7 @@
     "catalysts": 0,
     "enhancement": 0,
     "weaponCore": "No",
-    "icon": "https://open.api.nexon.com/static/tfd/img/64e7cd6ee5a9ce572f89a510ab446be4",
+    "icon": "/assets/weapons/64e7cd6ee5a9ce572f89a510ab446be4.png",
     "roundsType": "General Rounds"
   },
   {
@@ -812,7 +812,7 @@
     "catalysts": 0,
     "enhancement": 0,
     "weaponCore": "No",
-    "icon": "https://open.api.nexon.com/static/tfd/img/6b0ac789fe68f8012f0e577e39a8297c",
+    "icon": "/assets/weapons/6b0ac789fe68f8012f0e577e39a8297c.png",
     "roundsType": "High-Power Rounds"
   },
   {
@@ -824,7 +824,7 @@
     "catalysts": 0,
     "enhancement": 0,
     "weaponCore": "No",
-    "icon": "https://open.api.nexon.com/static/tfd/img/ca57f8fe70ec7d43f7e9e3f784e3df5e",
+    "icon": "/assets/weapons/ca57f8fe70ec7d43f7e9e3f784e3df5e.png",
     "roundsType": "General Rounds"
   },
   {
@@ -836,7 +836,7 @@
     "catalysts": 0,
     "enhancement": 0,
     "weaponCore": "No",
-    "icon": "https://open.api.nexon.com/static/tfd/img/6189e473cbb4181c2a7da06d48cb886d",
+    "icon": "/assets/weapons/6189e473cbb4181c2a7da06d48cb886d.png",
     "roundsType": "Special Rounds"
   },
   {
@@ -848,7 +848,7 @@
     "catalysts": 0,
     "enhancement": 0,
     "weaponCore": "No",
-    "icon": "https://open.api.nexon.com/static/tfd/img/397dcdd2d54de105d1f9b1f13ac30400",
+    "icon": "/assets/weapons/397dcdd2d54de105d1f9b1f13ac30400.png",
     "roundsType": "Impact Rounds"
   },
   {
@@ -860,7 +860,7 @@
     "catalysts": 0,
     "enhancement": 0,
     "weaponCore": "No",
-    "icon": "https://open.api.nexon.com/static/tfd/img/838ad93ddbeb457322e97651f2dfbb81",
+    "icon": "/assets/weapons/838ad93ddbeb457322e97651f2dfbb81.png",
     "roundsType": "High-Power Rounds"
   },
   {
@@ -872,7 +872,7 @@
     "catalysts": 0,
     "enhancement": 0,
     "weaponCore": "No",
-    "icon": "https://open.api.nexon.com/static/tfd/img/0a2e467f5952ae972253e5381164e7b3",
+    "icon": "/assets/weapons/0a2e467f5952ae972253e5381164e7b3.png",
     "roundsType": "Impact Rounds"
   },
   {
@@ -884,7 +884,7 @@
     "catalysts": 0,
     "enhancement": 0,
     "weaponCore": "No",
-    "icon": "https://open.api.nexon.com/static/tfd/img/b77a6cf7276677e7a72b08a3c39ed860",
+    "icon": "/assets/weapons/b77a6cf7276677e7a72b08a3c39ed860.png",
     "roundsType": "High-Power Rounds"
   },
   {
@@ -896,7 +896,7 @@
     "catalysts": 0,
     "enhancement": 0,
     "weaponCore": "No",
-    "icon": "https://open.api.nexon.com/static/tfd/img/aeff480200a1c7c5174d60d05281ffa1",
+    "icon": "/assets/weapons/aeff480200a1c7c5174d60d05281ffa1.png",
     "roundsType": "Impact Rounds"
   },
   {
@@ -908,7 +908,7 @@
     "catalysts": 0,
     "enhancement": 0,
     "weaponCore": "No",
-    "icon": "https://open.api.nexon.com/static/tfd/img/1361013566ffcd9ab0de2a937f39a0dd",
+    "icon": "/assets/weapons/1361013566ffcd9ab0de2a937f39a0dd.png",
     "roundsType": "High-Power Rounds"
   },
   {
@@ -920,7 +920,7 @@
     "catalysts": 0,
     "enhancement": 0,
     "weaponCore": "No",
-    "icon": "https://open.api.nexon.com/static/tfd/img/db0ee5f11b975d0c69d4f5b30af92fa5",
+    "icon": "/assets/weapons/db0ee5f11b975d0c69d4f5b30af92fa5.png",
     "roundsType": "High-Power Rounds"
   },
   {
@@ -932,7 +932,7 @@
     "catalysts": 0,
     "enhancement": 0,
     "weaponCore": "No",
-    "icon": "https://open.api.nexon.com/static/tfd/img/35fec495b03f8eb4f91da19eb802baf7",
+    "icon": "/assets/weapons/35fec495b03f8eb4f91da19eb802baf7.png",
     "roundsType": "High-Power Rounds"
   },
   {
@@ -944,7 +944,7 @@
     "catalysts": 0,
     "enhancement": 0,
     "weaponCore": "No",
-    "icon": "https://open.api.nexon.com/static/tfd/img/cba78809c898b611e44e8bb01b8ca57a",
+    "icon": "/assets/weapons/cba78809c898b611e44e8bb01b8ca57a.png",
     "roundsType": "General Rounds"
   },
   {
@@ -956,7 +956,7 @@
     "catalysts": 0,
     "enhancement": 0,
     "weaponCore": "No",
-    "icon": "https://open.api.nexon.com/static/tfd/img/dfa65e4d651e94a473da2dccb640dc64",
+    "icon": "/assets/weapons/dfa65e4d651e94a473da2dccb640dc64.png",
     "roundsType": "Impact Rounds"
   },
   {
@@ -968,7 +968,7 @@
     "catalysts": 0,
     "enhancement": 0,
     "weaponCore": "No",
-    "icon": "https://open.api.nexon.com/static/tfd/img/d17041713d4b151398a0860d816b6d66",
+    "icon": "/assets/weapons/d17041713d4b151398a0860d816b6d66.png",
     "roundsType": "General Rounds"
   },
   {
@@ -980,7 +980,7 @@
     "catalysts": 0,
     "enhancement": 0,
     "weaponCore": "No",
-    "icon": "https://open.api.nexon.com/static/tfd/img/65d6b887291750d901b10e148f5f1119",
+    "icon": "/assets/weapons/65d6b887291750d901b10e148f5f1119.png",
     "roundsType": "General Rounds"
   },
   {
@@ -992,7 +992,7 @@
     "catalysts": 0,
     "enhancement": 0,
     "weaponCore": "No",
-    "icon": "https://open.api.nexon.com/static/tfd/img/62053e4cb0af9ce530278d42888aa235",
+    "icon": "/assets/weapons/62053e4cb0af9ce530278d42888aa235.png",
     "roundsType": "High-Power Rounds"
   },
   {
@@ -1004,7 +1004,7 @@
     "catalysts": 0,
     "enhancement": 0,
     "weaponCore": "No",
-    "icon": "https://open.api.nexon.com/static/tfd/img/a7d4522f4305acb1183381405cd36624",
+    "icon": "/assets/weapons/a7d4522f4305acb1183381405cd36624.png",
     "roundsType": "Special Rounds"
   },
   {
@@ -1016,7 +1016,7 @@
     "catalysts": 0,
     "enhancement": 0,
     "weaponCore": "No",
-    "icon": "https://open.api.nexon.com/static/tfd/img/ceafb2c5d45299b6e9c767098f454797",
+    "icon": "/assets/weapons/ceafb2c5d45299b6e9c767098f454797.png",
     "roundsType": "General Rounds"
   },
   {
@@ -1028,7 +1028,7 @@
     "catalysts": 0,
     "enhancement": 0,
     "weaponCore": "No",
-    "icon": "https://open.api.nexon.com/static/tfd/img/34f8b2d90578bb54653e3c4c5689fc5e",
+    "icon": "/assets/weapons/34f8b2d90578bb54653e3c4c5689fc5e.png",
     "roundsType": "General Rounds"
   },
   {
@@ -1040,7 +1040,7 @@
     "catalysts": 0,
     "enhancement": 0,
     "weaponCore": "No",
-    "icon": "https://open.api.nexon.com/static/tfd/img/388a7b03a593d715f18d7b2ecf7947f7",
+    "icon": "/assets/weapons/388a7b03a593d715f18d7b2ecf7947f7.png",
     "roundsType": "Special Rounds"
   },
   {
@@ -1052,7 +1052,7 @@
     "catalysts": 0,
     "enhancement": 0,
     "weaponCore": "No",
-    "icon": "https://open.api.nexon.com/static/tfd/img/219624813995aa89d6b377530c66c3db",
+    "icon": "/assets/weapons/219624813995aa89d6b377530c66c3db.png",
     "roundsType": "General Rounds"
   },
   {
@@ -1064,7 +1064,7 @@
     "catalysts": 0,
     "enhancement": 0,
     "weaponCore": "No",
-    "icon": "https://open.api.nexon.com/static/tfd/img/db3d37bdafe5113d9b34880e74a9e7bc",
+    "icon": "/assets/weapons/db3d37bdafe5113d9b34880e74a9e7bc.png",
     "roundsType": "High-Power Rounds"
   },
   {
@@ -1076,7 +1076,7 @@
     "catalysts": 0,
     "enhancement": 0,
     "weaponCore": "No",
-    "icon": "https://open.api.nexon.com/static/tfd/img/13fa1786c49743724139e4cd057a31da",
+    "icon": "/assets/weapons/13fa1786c49743724139e4cd057a31da.png",
     "roundsType": "Special Rounds"
   },
   {
@@ -1088,7 +1088,7 @@
     "catalysts": 0,
     "enhancement": 0,
     "weaponCore": "No",
-    "icon": "https://open.api.nexon.com/static/tfd/img/49b07e700bb12d8176510eaf5576bea4",
+    "icon": "/assets/weapons/49b07e700bb12d8176510eaf5576bea4.png",
     "roundsType": "Special Rounds"
   },
   {
@@ -1100,7 +1100,7 @@
     "catalysts": 0,
     "enhancement": 0,
     "weaponCore": "No",
-    "icon": "https://open.api.nexon.com/static/tfd/img/8cb6e3effc73a7a6a77d80478c0f51ed",
+    "icon": "/assets/weapons/8cb6e3effc73a7a6a77d80478c0f51ed.png",
     "roundsType": "Impact Rounds"
   },
   {
@@ -1112,7 +1112,7 @@
     "catalysts": 0,
     "enhancement": 0,
     "weaponCore": "No",
-    "icon": "https://open.api.nexon.com/static/tfd/img/e8d6df58bebb6ba872ed95fb57b9747b",
+    "icon": "/assets/weapons/e8d6df58bebb6ba872ed95fb57b9747b.png",
     "roundsType": "Special Rounds"
   }
 ]

@@ -189,7 +189,7 @@ async function fetchAndMergeWeaponsCatalog(currentWeapons: WeaponEntry[]): Promi
       } else {
         const w = bySlug.get(c.slug)!;
         w.name = normalizeWeaponName(w.slug, w.name || c.name);
-        if (!w.icon) w.icon = icon;
+        w.icon = icon || w.icon;
         if (!w.rarity || w.rarity === "Unknown") w.rarity = c.rarity || "Rare";
         if (!w.roundsType || w.roundsType === "Unknown") w.roundsType = c.roundsType || "General Rounds";
       }

@@ -20,6 +20,12 @@ async function fetchJSON(url) {
   return res.json();
 }
 
+function localImage(url, category) {
+  if (typeof url !== "string" || !url.startsWith("https://")) return url;
+  const hash = url.split("/").pop();
+  return `/assets/${category}/${hash}.png`;
+}
+
 async function main() {
   if (!fs.existsSync(OUT_DIR)) fs.mkdirSync(OUT_DIR, { recursive: true });
 
@@ -50,7 +56,7 @@ async function main() {
       name: sk.skill_name,
       type: sk.skill_type,
       element: sk.element_type,
-      image: sk.skill_image_url,
+      image: localImage(sk.skill_image_url, "skills"),
       arche: sk.arche_type ?? null,
       description: sk.skill_description ?? null,
     }));
@@ -58,7 +64,7 @@ async function main() {
     descendants[d.descendant_id] = {
       name: d.descendant_name,
       groupId: d.descendant_group_id ?? null,
-      image: d.descendant_image_url,
+      image: localImage(d.descendant_image_url, "descendants"),
       stats,
       skills,
     };
@@ -91,7 +97,7 @@ async function main() {
 
     weapons[w.weapon_id] = {
       name: w.weapon_name,
-      image: w.image_url,
+      image: localImage(w.image_url, "weapons"),
       type: w.weapon_type,
       tier: w.weapon_tier_id,
       roundsType: w.weapon_rounds_type,

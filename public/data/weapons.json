@@ -2,7 +2,7 @@
   {
     "id": "211011001",
     "name": "Hungry Hound",
-    "image": "https://open.api.nexon.com/static/tfd/img/5121f653612028a206f3131f81495b2f",
+    "image": "/assets/weapons/5121f653612028a206f3131f81495b2f.png",
     "type": "Handgun",
     "rarity": "Normal",
     "roundsType": "General Rounds"
@@ -10,7 +10,7 @@
   {
     "id": "211012001",
     "name": "Red Wolf",
-    "image": "https://open.api.nexon.com/static/tfd/img/64e7cd6ee5a9ce572f89a510ab446be4",
+    "image": "/assets/weapons/64e7cd6ee5a9ce572f89a510ab446be4.png",
     "type": "Handgun",
     "rarity": "Rare",
     "roundsType": "General Rounds"
@@ -18,7 +18,7 @@
   {
     "id": "211012002",
     "name": "Millennium Frost",
-    "image": "https://open.api.nexon.com/static/tfd/img/5541aa5bc69828750230c0e21de0008f",
+    "image": "/assets/weapons/5541aa5bc69828750230c0e21de0008f.png",
     "type": "Handgun",
     "rarity": "Rare",
     "roundsType": "General Rounds"
@@ -26,7 +26,7 @@
   {
     "id": "211012003",
     "name": "Rose of Aisha",
-    "image": "https://open.api.nexon.com/static/tfd/img/ca57f8fe70ec7d43f7e9e3f784e3df5e",
+    "image": "/assets/weapons/ca57f8fe70ec7d43f7e9e3f784e3df5e.png",
     "type": "Handgun",
     "rarity": "Rare",
     "roundsType": "General Rounds"
@@ -34,7 +34,7 @@
   {
     "id": "211012004",
     "name": "New Beginning",
-    "image": "https://open.api.nexon.com/static/tfd/img/eafdde9d0fef5a994cb91fda065fe4e1",
+    "image": "/assets/weapons/eafdde9d0fef5a994cb91fda065fe4e1.png",
     "type": "Handgun",
     "rarity": "Rare",
     "roundsType": "General Rounds"
@@ -42,7 +42,7 @@
   {
     "id": "211013001",
     "name": "The Last Dagger",
-    "image": "https://open.api.nexon.com/static/tfd/img/65d6b887291750d901b10e148f5f1119",
+    "image": "/assets/weapons/65d6b887291750d901b10e148f5f1119.png",
     "type": "Handgun",
     "rarity": "Ultimate",
     "roundsType": "General Rounds"
@@ -50,7 +50,7 @@
   {
     "id": "211013002",
     "name": "The Final Masterpiece",
-    "image": "https://open.api.nexon.com/static/tfd/img/d17041713d4b151398a0860d816b6d66",
+    "image": "/assets/weapons/d17041713d4b151398a0860d816b6d66.png",
     "type": "Handgun",
     "rarity": "Ultimate",
     "roundsType": "General Rounds"
@@ -58,7 +58,7 @@
   {
     "id": "211021001",
     "name": "Burning Hound",
-    "image": "https://open.api.nexon.com/static/tfd/img/0b064a49b5e559903919858e2af4a81b",
+    "image": "/assets/weapons/0b064a49b5e559903919858e2af4a81b.png",
     "type": "Hand Cannon",
     "rarity": "Normal",
     "roundsType": "Impact Rounds"
@@ -66,7 +66,7 @@
   {
     "id": "211022001",
     "name": "Assassin's Edge",
-    "image": "https://open.api.nexon.com/static/tfd/img/71fd2b29accbb607a561d8f2b58e9f00",
+    "image": "/assets/weapons/71fd2b29accbb607a561d8f2b58e9f00.png",
     "type": "Hand Cannon",
     "rarity": "Rare",
     "roundsType": "Impact Rounds"
@@ -74,7 +74,7 @@
   {
     "id": "211022002",
     "name": "Explorer's Path",
-    "image": "https://open.api.nexon.com/static/tfd/img/a29019f04b21cc10a17cf578f881964a",
+    "image": "/assets/weapons/a29019f04b21cc10a17cf578f881964a.png",
     "type": "Hand Cannon",
     "rarity": "Rare",
     "roundsType": "Impact Rounds"
@@ -82,7 +82,7 @@
   {
     "id": "211022006",
     "name": "Immediate Execution",
-    "image": "https://open.api.nexon.com/static/tfd/img/18ce03c6d161524683366fd9deb4c80e",
+    "image": "/assets/weapons/18ce03c6d161524683366fd9deb4c80e.png",
     "type": "Hand Cannon",
     "rarity": "Rare",
     "roundsType": "Impact Rounds"
@@ -90,7 +90,7 @@
   {
     "id": "211023001",
     "name": "Nazeistra's Devotion",
-    "image": "https://open.api.nexon.com/static/tfd/img/b315aea02228beee420b80f7bcd7097b",
+    "image": "/assets/weapons/b315aea02228beee420b80f7bcd7097b.png",
     "type": "Hand Cannon",
     "rarity": "Ultimate",
     "roundsType": "Impact Rounds"
@@ -98,7 +98,7 @@
   {
     "id": "211023002",
     "name": "Perforator",
-    "image": "https://open.api.nexon.com/static/tfd/img/313eb5005e4c6d70ac41b4a9f4d8c7f0",
+    "image": "/assets/weapons/313eb5005e4c6d70ac41b4a9f4d8c7f0.png",
     "type": "Hand Cannon",
     "rarity": "Ultimate",
     "roundsType": "Impact Rounds"
@@ -106,7 +106,7 @@
   {
     "id": "211023003",
     "name": "Peace Maker",
-    "image": "https://open.api.nexon.com/static/tfd/img/d78fa4d509434b6a21a95f6cc87638fe",
+    "image": "/assets/weapons/d78fa4d509434b6a21a95f6cc87638fe.png",
     "type": "Hand Cannon",
     "rarity": "Ultimate",
     "roundsType": "Impact Rounds"
@@ -114,7 +114,7 @@
   {
     "id": "211023005",
     "name": "Malevolent",
-    "image": "https://open.api.nexon.com/static/tfd/img/31991b249c933d07fce52c6d40a2a2c8",
+    "image": "/assets/weapons/31991b249c933d07fce52c6d40a2a2c8.png",
     "type": "Hand Cannon",
     "rarity": "Ultimate",
     "roundsType": "Impact Rounds"
@@ -122,7 +122,7 @@
   {
     "id": "211031001",
     "name": "Gangster",
-    "image": "https://open.api.nexon.com/static/tfd/img/b0c9584713f7c367cf707296bd0f055e",
+    "image": "/assets/weapons/b0c9584713f7c367cf707296bd0f055e.png",
     "type": "Shotgun",
     "rarity": "Normal",
     "roundsType": "High-Power Rounds"
@@ -130,7 +130,7 @@
   {
     "id": "211032001",
     "name": "The Last Knight",
-    "image": "https://open.api.nexon.com/static/tfd/img/62053e4cb0af9ce530278d42888aa235",
+    "image": "/assets/weapons/62053e4cb0af9ce530278d42888aa235.png",
     "type": "Shotgun",
     "rarity": "Rare",
     "roundsType": "High-Power Rounds"
@@ -138,7 +138,7 @@
   {
     "id": "211032002",
     "name": "In a Blink",
-    "image": "https://open.api.nexon.com/static/tfd/img/d19602b85c2fe0ba6fc1b8987fc30912",
+    "image": "/assets/weapons/d19602b85c2fe0ba6fc1b8987fc30912.png",
     "type": "Shotgun",
     "rarity": "Rare",
     "roundsType": "High-Power Rounds"
@@ -146,7 +146,7 @@
   {
     "id": "211032003",
     "name": "Fireworks",
-    "image": "https://open.api.nexon.com/static/tfd/img/8246e467dcf652b513a0412c6c750e4e",
+    "image": "/assets/weapons/8246e467dcf652b513a0412c6c750e4e.png",
     "type": "Shotgun",
     "rarity": "Rare",
     "roundsType": "High-Power Rounds"
@@ -154,7 +154,7 @@
   {
     "id": "211032004",
     "name": "Subconsciousness",
-    "image": "https://open.api.nexon.com/static/tfd/img/1361013566ffcd9ab0de2a937f39a0dd",
+    "image": "/assets/weapons/1361013566ffcd9ab0de2a937f39a0dd.png",
     "type": "Shotgun",
     "rarity": "Rare",
     "roundsType": "High-Power Rounds"
@@ -162,7 +162,7 @@
   {
     "id": "211033001",
     "name": "Smithereens",
-    "image": "https://open.api.nexon.com/static/tfd/img/b77a6cf7276677e7a72b08a3c39ed860",
+    "image": "/assets/weapons/b77a6cf7276677e7a72b08a3c39ed860.png",
     "type": "Shotgun",
     "rarity": "Ultimate",
     "roundsType": "High-Power Rounds"
@@ -170,7 +170,7 @@
   {
     "id": "211033002",
     "name": "Executor",
-    "image": "https://open.api.nexon.com/static/tfd/img/725adaf584254b433f2b4f00cb53d44a",
+    "image": "/assets/weapons/725adaf584254b433f2b4f00cb53d44a.png",
     "type": "Shotgun",
     "rarity": "Ultimate",
     "roundsType": "High-Power Rounds"
@@ -178,7 +178,7 @@
   {
     "id": "211033003",
     "name": "Hammer and Anvil",
-    "image": "https://open.api.nexon.com/static/tfd/img/26bf13d021eb7f409a855d4366892e13",
+    "image": "/assets/weapons/26bf13d021eb7f409a855d4366892e13.png",
     "type": "Shotgun",
     "rarity": "Ultimate",
     "roundsType": "High-Power Rounds"
@@ -186,7 +186,7 @@
   {
     "id": "211041001",
     "name": "Albinism",
-    "image": "https://open.api.nexon.com/static/tfd/img/4a421dec7ac3fa78c8c18fc8333a19b8",
+    "image": "/assets/weapons/4a421dec7ac3fa78c8c18fc8333a19b8.png",
     "type": "Submachine Gun",
     "rarity": "Normal",
     "roundsType": "General Rounds"
@@ -194,7 +194,7 @@
   {
     "id": "211042001",
     "name": "Devil's Call",
-    "image": "https://open.api.nexon.com/static/tfd/img/9fba15e1cc595992e17f324d4ce87ef7",
+    "image": "/assets/weapons/9fba15e1cc595992e17f324d4ce87ef7.png",
     "type": "Submachine Gun",
     "rarity": "Rare",
     "roundsType": "General Rounds"
@@ -202,7 +202,7 @@
   {
     "id": "211121003",
     "name": "Moon Fragment",
-    "image": "https://open.api.nexon.com/static/tfd/img/7b8c230d8c415a412b87d4ea3c8aadef",
+    "image": "/assets/weapons/7b8c230d8c415a412b87d4ea3c8aadef.png",
     "type": "Beam Rifle",
     "rarity": "Normal",
     "roundsType": "Enhanced Ammo"
@@ -210,7 +210,7 @@
   {
     "id": "211042002",
     "name": "Blue Blood Bloomer",
-    "image": "https://open.api.nexon.com/static/tfd/img/bd3db3617859fab6dc91f200d74ca5a4",
+    "image": "/assets/weapons/bd3db3617859fab6dc91f200d74ca5a4.png",
     "type": "Submachine Gun",
     "rarity": "Rare",
     "roundsType": "General Rounds"
@@ -218,7 +218,7 @@
   {
     "id": "211122001",
     "name": "Dogma 21",
-    "image": "https://open.api.nexon.com/static/tfd/img/e386f1953bc51608e13e50dad6d79a34",
+    "image": "/assets/weapons/e386f1953bc51608e13e50dad6d79a34.png",
     "type": "Beam Rifle",
     "rarity": "Rare",
     "roundsType": "Enhanced Ammo"
@@ -226,7 +226,7 @@
   {
     "id": "211122003",
     "name": "Burning 44",
-    "image": "https://open.api.nexon.com/static/tfd/img/6a39c6748a0f0ba9d695407925ffb98d",
+    "image": "/assets/weapons/6a39c6748a0f0ba9d695407925ffb98d.png",
     "type": "Beam Rifle",
     "rarity": "Rare",
     "roundsType": "Enhanced Ammo"
@@ -234,7 +234,7 @@
   {
     "id": "211042003",
     "name": "Alter Ego",
-    "image": "https://open.api.nexon.com/static/tfd/img/0415b366d335b63f5425a76c065edc86",
+    "image": "/assets/weapons/0415b366d335b63f5425a76c065edc86.png",
     "type": "Submachine Gun",
     "rarity": "Rare",
     "roundsType": "General Rounds"
@@ -242,7 +242,7 @@
   {
     "id": "211122004",
     "name": "Dimensional Bridge",
-    "image": "https://open.api.nexon.com/static/tfd/img/6bd1dab4c7cc6b839a602a486266c3ca",
+    "image": "/assets/weapons/6bd1dab4c7cc6b839a602a486266c3ca.png",
     "type": "Beam Rifle",
     "rarity": "Rare",
     "roundsType": "Enhanced Ammo"
@@ -250,7 +250,7 @@
   {
     "id": "211123001",
     "name": "King's Guard Lance",
-    "image": "https://open.api.nexon.com/static/tfd/img/1b2c6549e87addec20642f852b0afcf4",
+    "image": "/assets/weapons/1b2c6549e87addec20642f852b0afcf4.png",
     "type": "Beam Rifle",
     "rarity": "Ultimate",
     "roundsType": "Enhanced Ammo"
@@ -258,7 +258,7 @@
   {
     "id": "211042004",
     "name": "Tiger Moth",
-    "image": "https://open.api.nexon.com/static/tfd/img/34f8b2d90578bb54653e3c4c5689fc5e",
+    "image": "/assets/weapons/34f8b2d90578bb54653e3c4c5689fc5e.png",
     "type": "Submachine Gun",
     "rarity": "Rare",
     "roundsType": "General Rounds"
@@ -266,7 +266,7 @@
   {
     "id": "211043001",
     "name": "Thunder Cage",
-    "image": "https://open.api.nexon.com/static/tfd/img/ceafb2c5d45299b6e9c767098f454797",
+    "image": "/assets/weapons/ceafb2c5d45299b6e9c767098f454797.png",
     "type": "Submachine Gun",
     "rarity": "Ultimate",
     "roundsType": "General Rounds"
@@ -274,7 +274,7 @@
   {
     "id": "211123002",
     "name": "Clairvoyance",
-    "image": "https://open.api.nexon.com/static/tfd/img/a3a8c7bacaa70f994559ddf58bbf2d2d",
+    "image": "/assets/weapons/a3a8c7bacaa70f994559ddf58bbf2d2d.png",
     "type": "Beam Rifle",
     "rarity": "Ultimate",
     "roundsType": "Enhanced Ammo"
@@ -282,7 +282,7 @@
   {
     "id": "211123003",
     "name": "Voltia",
-    "image": "https://open.api.nexon.com/static/tfd/img/49b07e700bb12d8176510eaf5576bea4",
+    "image": "/assets/weapons/49b07e700bb12d8176510eaf5576bea4.png",
     "type": "Beam Rifle",
     "rarity": "Ultimate",
     "roundsType": "Enhanced Ammo"
@@ -290,7 +290,7 @@
   {
     "id": "211043002",
     "name": "Python",
-    "image": "https://open.api.nexon.com/static/tfd/img/d88f60aa86c8dc57e21e6f88511b33ba",
+    "image": "/assets/weapons/d88f60aa86c8dc57e21e6f88511b33ba.png",
     "type": "Submachine Gun",
     "rarity": "Ultimate",
     "roundsType": "General Rounds"
@@ -298,7 +298,7 @@
   {
     "id": "211123004",
     "name": "Truly Deadly Arson",
-    "image": "https://open.api.nexon.com/static/tfd/img/388a7b03a593d715f18d7b2ecf7947f7",
+    "image": "/assets/weapons/388a7b03a593d715f18d7b2ecf7947f7.png",
     "type": "Beam Rifle",
     "rarity": "Ultimate",
     "roundsType": "Enhanced Ammo"
@@ -306,7 +306,7 @@
   {
     "id": "211043003",
     "name": "E-Buster",
-    "image": "https://open.api.nexon.com/static/tfd/img/f6901e57369f73220170d4ebcc3b0b63",
+    "image": "/assets/weapons/f6901e57369f73220170d4ebcc3b0b63.png",
     "type": "Submachine Gun",
     "rarity": "Ultimate",
     "roundsType": "General Rounds"
@@ -314,7 +314,7 @@
   {
     "id": "211123005",
     "name": "Eye of the Typhoon",
-    "image": "https://open.api.nexon.com/static/tfd/img/17a34341edd0ea4188155e0a60378579",
+    "image": "/assets/weapons/17a34341edd0ea4188155e0a60378579.png",
     "type": "Beam Rifle",
     "rarity": "Ultimate",
     "roundsType": "Enhanced Ammo"
@@ -322,7 +322,7 @@
   {
     "id": "221133001",
     "name": "Shadow",
-    "image": "https://open.api.nexon.com/static/tfd/img/397dcdd2d54de105d1f9b1f13ac30400",
+    "image": "/assets/weapons/397dcdd2d54de105d1f9b1f13ac30400.png",
     "type": "Balanced Melee Weapon",
     "rarity": "Ultimate",
     "roundsType": "Impact Rounds"
@@ -330,7 +330,7 @@
   {
     "id": "211051001",
     "name": "Cygnus",
-    "image": "https://open.api.nexon.com/static/tfd/img/c4bd46e95cf93bf3c7ec7607bad632f7",
+    "image": "/assets/weapons/c4bd46e95cf93bf3c7ec7607bad632f7.png",
     "type": "Machine Gun",
     "rarity": "Normal",
     "roundsType": "General Rounds"
@@ -338,7 +338,7 @@
   {
     "id": "211052001",
     "name": "Rascal V-51",
-    "image": "https://open.api.nexon.com/static/tfd/img/649e6efb22411c0744ec40dcfad412aa",
+    "image": "/assets/weapons/649e6efb22411c0744ec40dcfad412aa.png",
     "type": "Machine Gun",
     "rarity": "Rare",
     "roundsType": "General Rounds"
@@ -346,7 +346,7 @@
   {
     "id": "221133002",
     "name": "Deus Ex Manus",
-    "image": "https://open.api.nexon.com/static/tfd/img/dc6c85d573e39232f9d381ec0b7ea3c0",
+    "image": "/assets/weapons/dc6c85d573e39232f9d381ec0b7ea3c0.png",
     "type": "Power Melee Weapon",
     "rarity": "Ultimate",
     "roundsType": "High-Power Rounds"
@@ -354,7 +354,7 @@
   {
     "id": "211052002",
     "name": "Unfinished Study",
-    "image": "https://open.api.nexon.com/static/tfd/img/219624813995aa89d6b377530c66c3db",
+    "image": "/assets/weapons/219624813995aa89d6b377530c66c3db.png",
     "type": "Machine Gun",
     "rarity": "Rare",
     "roundsType": "General Rounds"
@@ -362,7 +362,7 @@
   {
     "id": "221133003",
     "name": "Hypernova",
-    "image": "https://open.api.nexon.com/static/tfd/img/b6a9ae763035b500354f1ed4dba2701b",
+    "image": "/assets/weapons/b6a9ae763035b500354f1ed4dba2701b.png",
     "type": "Balanced Melee Weapon",
     "rarity": "Ultimate",
     "roundsType": "Impact Rounds"
@@ -370,7 +370,7 @@
   {
     "id": "211052003",
     "name": "Lion of Blue Mane",
-    "image": "https://open.api.nexon.com/static/tfd/img/62364058a1293c938868e5000a1efe18",
+    "image": "/assets/weapons/62364058a1293c938868e5000a1efe18.png",
     "type": "Machine Gun",
     "rarity": "Rare",
     "roundsType": "General Rounds"
@@ -378,7 +378,7 @@
   {
     "id": "211052004",
     "name": "Tamer",
-    "image": "https://open.api.nexon.com/static/tfd/img/cba78809c898b611e44e8bb01b8ca57a",
+    "image": "/assets/weapons/cba78809c898b611e44e8bb01b8ca57a.png",
     "type": "Machine Gun",
     "rarity": "Rare",
     "roundsType": "General Rounds"
@@ -386,7 +386,7 @@
   {
     "id": "221133004",
     "name": "Crime and Punishment",
-    "image": "https://open.api.nexon.com/static/tfd/img/704c530e3bf1e4de9547b22dd0e9bd72",
+    "image": "/assets/weapons/704c530e3bf1e4de9547b22dd0e9bd72.png",
     "type": "Balanced Melee Weapon",
     "rarity": "Ultimate",
     "roundsType": "Impact Rounds"
@@ -394,7 +394,7 @@
   {
     "id": "211053001",
     "name": "Enduring Legacy",
-    "image": "https://open.api.nexon.com/static/tfd/img/13e0b9972056d43d525c1faabefd54b4",
+    "image": "/assets/weapons/13e0b9972056d43d525c1faabefd54b4.png",
     "type": "Machine Gun",
     "rarity": "Ultimate",
     "roundsType": "General Rounds"
@@ -402,7 +402,7 @@
   {
     "id": "211053002",
     "name": "Albion Cavalry Gun",
-    "image": "https://open.api.nexon.com/static/tfd/img/a08287f1127679b3657b09c1489c8aa9",
+    "image": "/assets/weapons/a08287f1127679b3657b09c1489c8aa9.png",
     "type": "Machine Gun",
     "rarity": "Ultimate",
     "roundsType": "General Rounds"
@@ -410,7 +410,7 @@
   {
     "id": "211061001",
     "name": "Ominous Hound",
-    "image": "https://open.api.nexon.com/static/tfd/img/33d70ee26acd0c326890ce19016af4a7",
+    "image": "/assets/weapons/33d70ee26acd0c326890ce19016af4a7.png",
     "type": "Assault Rifle",
     "rarity": "Normal",
     "roundsType": "General Rounds"
@@ -418,7 +418,7 @@
   {
     "id": "211062001",
     "name": "Magnus AA",
-    "image": "https://open.api.nexon.com/static/tfd/img/99b656aaf694c1745565d282539e0a97",
+    "image": "/assets/weapons/99b656aaf694c1745565d282539e0a97.png",
     "type": "Assault Rifle",
     "rarity": "Rare",
     "roundsType": "General Rounds"
@@ -426,7 +426,7 @@
   {
     "id": "211062002",
     "name": "Caligo's Horn",
-    "image": "https://open.api.nexon.com/static/tfd/img/51a7b036e039b1a86c28f45ba5ad943c",
+    "image": "/assets/weapons/51a7b036e039b1a86c28f45ba5ad943c.png",
     "type": "Assault Rifle",
     "rarity": "Rare",
     "roundsType": "General Rounds"
@@ -434,7 +434,7 @@
   {
     "id": "211062003",
     "name": "Phantom Pain",
-    "image": "https://open.api.nexon.com/static/tfd/img/e3c1be91430caed3f152f1b48af10ed6",
+    "image": "/assets/weapons/e3c1be91430caed3f152f1b48af10ed6.png",
     "type": "Assault Rifle",
     "rarity": "Rare",
     "roundsType": "General Rounds"
@@ -442,7 +442,7 @@
   {
     "id": "211062004",
     "name": "Eternal Willpower",
-    "image": "https://open.api.nexon.com/static/tfd/img/9e0444f2b466d65115c1c9f8020b1e5f",
+    "image": "/assets/weapons/9e0444f2b466d65115c1c9f8020b1e5f.png",
     "type": "Assault Rifle",
     "rarity": "Rare",
     "roundsType": "General Rounds"
@@ -450,7 +450,7 @@
   {
     "id": "211063001",
     "name": "Fallen Hope",
-    "image": "https://open.api.nexon.com/static/tfd/img/03c388bc95f43507ff5f56c7ac85d85d",
+    "image": "/assets/weapons/03c388bc95f43507ff5f56c7ac85d85d.png",
     "type": "Assault Rifle",
     "rarity": "Ultimate",
     "roundsType": "General Rounds"
@@ -458,7 +458,7 @@
   {
     "id": "211063002",
     "name": "Divine Punishment",
-    "image": "https://open.api.nexon.com/static/tfd/img/3df0f8cae97e98ef7a0cccd0bf4613ba",
+    "image": "/assets/weapons/3df0f8cae97e98ef7a0cccd0bf4613ba.png",
     "type": "Assault Rifle",
     "rarity": "Ultimate",
     "roundsType": "General Rounds"
@@ -466,7 +466,7 @@
   {
     "id": "211063003",
     "name": "EXCAVA",
-    "image": "https://open.api.nexon.com/static/tfd/img/2e7b02f88abeb7d04a23d0126d00fc78",
+    "image": "/assets/weapons/2e7b02f88abeb7d04a23d0126d00fc78.png",
     "type": "Assault Rifle",
     "rarity": "Ultimate",
     "roundsType": "General Rounds"
@@ -474,7 +474,7 @@
   {
     "id": "211063004",
     "name": "Ancient Knight",
-    "image": "https://open.api.nexon.com/static/tfd/img/e288f918ccfda4dd9c67f226d1a0b6b7",
+    "image": "/assets/weapons/e288f918ccfda4dd9c67f226d1a0b6b7.png",
     "type": "Assault Rifle",
     "rarity": "Ultimate",
     "roundsType": "General Rounds"
@@ -482,7 +482,7 @@
   {
     "id": "211071001",
     "name": "Red Eye",
-    "image": "https://open.api.nexon.com/static/tfd/img/df74e8a2a4aeb0672025f2f887858a1d",
+    "image": "/assets/weapons/df74e8a2a4aeb0672025f2f887858a1d.png",
     "type": "Tactical Rifle",
     "rarity": "Normal",
     "roundsType": "Enhanced Ammo"
@@ -490,7 +490,7 @@
   {
     "id": "211072001",
     "name": "Young Noble's Ambition",
-    "image": "https://open.api.nexon.com/static/tfd/img/e8d6df58bebb6ba872ed95fb57b9747b",
+    "image": "/assets/weapons/e8d6df58bebb6ba872ed95fb57b9747b.png",
     "type": "Tactical Rifle",
     "rarity": "Rare",
     "roundsType": "Enhanced Ammo"
@@ -498,7 +498,7 @@
   {
     "id": "211072002",
     "name": "The Unwelcomed",
-    "image": "https://open.api.nexon.com/static/tfd/img/a7d4522f4305acb1183381405cd36624",
+    "image": "/assets/weapons/a7d4522f4305acb1183381405cd36624.png",
     "type": "Tactical Rifle",
     "rarity": "Rare",
     "roundsType": "Enhanced Ammo"
@@ -506,7 +506,7 @@
   {
     "id": "211072003",
     "name": "Viper",
-    "image": "https://open.api.nexon.com/static/tfd/img/13fa1786c49743724139e4cd057a31da",
+    "image": "/assets/weapons/13fa1786c49743724139e4cd057a31da.png",
     "type": "Tactical Rifle",
     "rarity": "Rare",
     "roundsType": "Enhanced Ammo"
@@ -514,7 +514,7 @@
   {
     "id": "211072004",
     "name": "Detachment",
-    "image": "https://open.api.nexon.com/static/tfd/img/e557c0bb7adaaa72ab0a8f0f4fa027f5",
+    "image": "/assets/weapons/e557c0bb7adaaa72ab0a8f0f4fa027f5.png",
     "type": "Tactical Rifle",
     "rarity": "Rare",
     "roundsType": "Enhanced Ammo"
@@ -522,7 +522,7 @@
   {
     "id": "211073001",
     "name": "Secret Garden",
-    "image": "https://open.api.nexon.com/static/tfd/img/6189e473cbb4181c2a7da06d48cb886d",
+    "image": "/assets/weapons/6189e473cbb4181c2a7da06d48cb886d.png",
     "type": "Tactical Rifle",
     "rarity": "Ultimate",
     "roundsType": "Enhanced Ammo"
@@ -530,7 +530,7 @@
   {
     "id": "211073002",
     "name": "Greg's Reversed Fate",
-    "image": "https://open.api.nexon.com/static/tfd/img/628a4b24dc92c15e765a859935a42b4c",
+    "image": "/assets/weapons/628a4b24dc92c15e765a859935a42b4c.png",
     "type": "Tactical Rifle",
     "rarity": "Ultimate",
     "roundsType": "Enhanced Ammo"
@@ -538,7 +538,7 @@
   {
     "id": "211073003",
     "name": "Hive Master",
-    "image": "https://open.api.nexon.com/static/tfd/img/6572b9082619d605e64fd0ab3ebf5e77",
+    "image": "/assets/weapons/6572b9082619d605e64fd0ab3ebf5e77.png",
     "type": "Tactical Rifle",
     "rarity": "Ultimate",
     "roundsType": "Enhanced Ammo"
@@ -546,7 +546,7 @@
   {
     "id": "211081001",
     "name": "Nightmare Hound",
-    "image": "https://open.api.nexon.com/static/tfd/img/7a4c3e81ac44c7e936f4f969a591f577",
+    "image": "/assets/weapons/7a4c3e81ac44c7e936f4f969a591f577.png",
     "type": "Scout Rifle",
     "rarity": "Normal",
     "roundsType": "Impact Rounds"
@@ -554,7 +554,7 @@
   {
     "id": "211082001",
     "name": "Hero's Scar",
-    "image": "https://open.api.nexon.com/static/tfd/img/f325b8200ac7115e72bf27b2868bc668",
+    "image": "/assets/weapons/f325b8200ac7115e72bf27b2868bc668.png",
     "type": "Scout Rifle",
     "rarity": "Rare",
     "roundsType": "Impact Rounds"
@@ -562,7 +562,7 @@
   {
     "id": "211082002",
     "name": "Silly Weeper",
-    "image": "https://open.api.nexon.com/static/tfd/img/0a2e467f5952ae972253e5381164e7b3",
+    "image": "/assets/weapons/0a2e467f5952ae972253e5381164e7b3.png",
     "type": "Scout Rifle",
     "rarity": "Rare",
     "roundsType": "Impact Rounds"
@@ -570,7 +570,7 @@
   {
     "id": "211082003",
     "name": "The Age Of Innovation",
-    "image": "https://open.api.nexon.com/static/tfd/img/dfa65e4d651e94a473da2dccb640dc64",
+    "image": "/assets/weapons/dfa65e4d651e94a473da2dccb640dc64.png",
     "type": "Scout Rifle",
     "rarity": "Rare",
     "roundsType": "Impact Rounds"
@@ -578,7 +578,7 @@
   {
     "id": "211082004",
     "name": "Sonic Co-op",
-    "image": "https://open.api.nexon.com/static/tfd/img/aeff480200a1c7c5174d60d05281ffa1",
+    "image": "/assets/weapons/aeff480200a1c7c5174d60d05281ffa1.png",
     "type": "Scout Rifle",
     "rarity": "Rare",
     "roundsType": "Impact Rounds"
@@ -586,7 +586,7 @@
   {
     "id": "211083001",
     "name": "Wave of Light",
-    "image": "https://open.api.nexon.com/static/tfd/img/8cb6e3effc73a7a6a77d80478c0f51ed",
+    "image": "/assets/weapons/8cb6e3effc73a7a6a77d80478c0f51ed.png",
     "type": "Scout Rifle",
     "rarity": "Ultimate",
     "roundsType": "Impact Rounds"
@@ -594,7 +594,7 @@
   {
     "id": "211083002",
     "name": "Blue Beetle",
-    "image": "https://open.api.nexon.com/static/tfd/img/bc212983d14ce78e73c0de0371768fac",
+    "image": "/assets/weapons/bc212983d14ce78e73c0de0371768fac.png",
     "type": "Scout Rifle",
     "rarity": "Ultimate",
     "roundsType": "Impact Rounds"
@@ -602,7 +602,7 @@
   {
     "id": "211083004",
     "name": "FrostWatcher",
-    "image": "https://open.api.nexon.com/static/tfd/img/95dd69d2bb516b9e12b03176d453aea0",
+    "image": "/assets/weapons/95dd69d2bb516b9e12b03176d453aea0.png",
     "type": "Scout Rifle",
     "rarity": "Ultimate",
     "roundsType": "Impact Rounds"
@@ -610,7 +610,7 @@
   {
     "id": "211083005",
     "name": "ERASER",
-    "image": "https://open.api.nexon.com/static/tfd/img/268acbe6d23714dc6d3e8c244b592875",
+    "image": "/assets/weapons/268acbe6d23714dc6d3e8c244b592875.png",
     "type": "Scout Rifle",
     "rarity": "Ultimate",
     "roundsType": "Impact Rounds"
@@ -618,7 +618,7 @@
   {
     "id": "211091001",
     "name": "Recipient Unknown",
-    "image": "https://open.api.nexon.com/static/tfd/img/a93622c81e64a228dc05c22ec98dc728",
+    "image": "/assets/weapons/a93622c81e64a228dc05c22ec98dc728.png",
     "type": "Sniper Rifle",
     "rarity": "Normal",
     "roundsType": "High-Power Rounds"
@@ -626,7 +626,7 @@
   {
     "id": "211092001",
     "name": "Forest Gaze",
-    "image": "https://open.api.nexon.com/static/tfd/img/1c6ca7ab2ac58d577513e81930393ab9",
+    "image": "/assets/weapons/1c6ca7ab2ac58d577513e81930393ab9.png",
     "type": "Sniper Rifle",
     "rarity": "Rare",
     "roundsType": "High-Power Rounds"
@@ -634,7 +634,7 @@
   {
     "id": "211092002",
     "name": "Supermoon Z-15",
-    "image": "https://open.api.nexon.com/static/tfd/img/db0ee5f11b975d0c69d4f5b30af92fa5",
+    "image": "/assets/weapons/db0ee5f11b975d0c69d4f5b30af92fa5.png",
     "type": "Sniper Rifle",
     "rarity": "Rare",
     "roundsType": "High-Power Rounds"
@@ -642,7 +642,7 @@
   {
     "id": "211092003",
     "name": "Belief",
-    "image": "https://open.api.nexon.com/static/tfd/img/d10d37df0a839dc7af02d243d0e3fd47",
+    "image": "/assets/weapons/d10d37df0a839dc7af02d243d0e3fd47.png",
     "type": "Sniper Rifle",
     "rarity": "Rare",
     "roundsType": "High-Power Rounds"
@@ -650,7 +650,7 @@
   {
     "id": "211092004",
     "name": "Different Dream",
-    "image": "https://open.api.nexon.com/static/tfd/img/323dd3820b294253e7e1b08c0b49518d",
+    "image": "/assets/weapons/323dd3820b294253e7e1b08c0b49518d.png",
     "type": "Sniper Rifle",
     "rarity": "Rare",
     "roundsType": "High-Power Rounds"
@@ -658,7 +658,7 @@
   {
     "id": "211093001",
     "name": "Afterglow Sword",
-    "image": "https://open.api.nexon.com/static/tfd/img/5f00ef5b8da91875ab988190e0bd74f6",
+    "image": "/assets/weapons/5f00ef5b8da91875ab988190e0bd74f6.png",
     "type": "Sniper Rifle",
     "rarity": "Ultimate",
     "roundsType": "High-Power Rounds"
@@ -666,7 +666,7 @@
   {
     "id": "211093002",
     "name": "Piercing Light",
-    "image": "https://open.api.nexon.com/static/tfd/img/bec18398d891552051338ffea609d79c",
+    "image": "/assets/weapons/bec18398d891552051338ffea609d79c.png",
     "type": "Sniper Rifle",
     "rarity": "Ultimate",
     "roundsType": "High-Power Rounds"
@@ -674,7 +674,7 @@
   {
     "id": "211093003",
     "name": "A-TAMS",
-    "image": "https://open.api.nexon.com/static/tfd/img/cd38fb5a5d8ff02a52aadc09cfc5ef73",
+    "image": "/assets/weapons/cd38fb5a5d8ff02a52aadc09cfc5ef73.png",
     "type": "Sniper Rifle",
     "rarity": "Ultimate",
     "roundsType": "High-Power Rounds"
@@ -682,7 +682,7 @@
   {
     "id": "211101001",
     "name": "Tamed Beast",
-    "image": "https://open.api.nexon.com/static/tfd/img/35fec495b03f8eb4f91da19eb802baf7",
+    "image": "/assets/weapons/35fec495b03f8eb4f91da19eb802baf7.png",
     "type": "Launcher",
     "rarity": "Normal",
     "roundsType": "High-Power Rounds"
@@ -690,7 +690,7 @@
   {
     "id": "211102001",
     "name": "Death Roar",
-    "image": "https://open.api.nexon.com/static/tfd/img/72f35ad37054e8f076bed21615e0cf32",
+    "image": "/assets/weapons/72f35ad37054e8f076bed21615e0cf32.png",
     "type": "Launcher",
     "rarity": "Rare",
     "roundsType": "High-Power Rounds"
@@ -698,7 +698,7 @@
   {
     "id": "211102002",
     "name": "Guardian R4",
-    "image": "https://open.api.nexon.com/static/tfd/img/d3a92c27923d2790b52c301ec5937ee0",
+    "image": "/assets/weapons/d3a92c27923d2790b52c301ec5937ee0.png",
     "type": "Launcher",
     "rarity": "Rare",
     "roundsType": "High-Power Rounds"
@@ -706,7 +706,7 @@
   {
     "id": "211102003",
     "name": "Lightspeed Barrel",
-    "image": "https://open.api.nexon.com/static/tfd/img/1ac4315a74daf23d0711d3f952cfbdb6",
+    "image": "/assets/weapons/1ac4315a74daf23d0711d3f952cfbdb6.png",
     "type": "Launcher",
     "rarity": "Rare",
     "roundsType": "High-Power Rounds"
@@ -714,7 +714,7 @@
   {
     "id": "211102004",
     "name": "Vestigial Organ",
-    "image": "https://open.api.nexon.com/static/tfd/img/db3d37bdafe5113d9b34880e74a9e7bc",
+    "image": "/assets/weapons/db3d37bdafe5113d9b34880e74a9e7bc.png",
     "type": "Launcher",
     "rarity": "Rare",
     "roundsType": "High-Power Rounds"
@@ -722,7 +722,7 @@
   {
     "id": "211103001",
     "name": "Sigvore's Proof",
-    "image": "https://open.api.nexon.com/static/tfd/img/838ad93ddbeb457322e97651f2dfbb81",
+    "image": "/assets/weapons/838ad93ddbeb457322e97651f2dfbb81.png",
     "type": "Launcher",
     "rarity": "Ultimate",
     "roundsType": "High-Power Rounds"
@@ -730,7 +730,7 @@
   {
     "id": "211103002",
     "name": "Restored Relic",
-    "image": "https://open.api.nexon.com/static/tfd/img/6b0ac789fe68f8012f0e577e39a8297c",
+    "image": "/assets/weapons/6b0ac789fe68f8012f0e577e39a8297c.png",
     "type": "Launcher",
     "rarity": "Ultimate",
     "roundsType": "High-Power Rounds"
@@ -738,7 +738,7 @@
   {
     "id": "211103005",
     "name": "Exterminator",
-    "image": "https://open.api.nexon.com/static/tfd/img/65ada89e1084adba67a5872382c07c9a",
+    "image": "/assets/weapons/65ada89e1084adba67a5872382c07c9a.png",
     "type": "Launcher",
     "rarity": "Ultimate",
     "roundsType": "High-Power Rounds"

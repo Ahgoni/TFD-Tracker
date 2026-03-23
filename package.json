@@ -10,7 +10,10 @@
     "postinstall": "node scripts/postinstall-run.js",
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
-    "fetch:stats": "node scripts/fetch-game-stats.js"
+    "fetch:data": "node scripts/fetch-game-data.mjs",
+    "fetch:stats": "node scripts/fetch-game-stats.js",
+    "download:assets": "node scripts/download-assets.mjs",
+    "refresh": "node scripts/fetch-game-data.mjs && node scripts/fetch-game-stats.js && node scripts/download-assets.mjs"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",
