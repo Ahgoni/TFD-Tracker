@@ -1,0 +1,30 @@
+---
+description: TFD Tracker — Next.js, Prisma, auth, and UI conventions
+alwaysApply: true
+---
+
+# TFD Tracker (tfd-web)
+
+## Stack
+Next.js App Router, TypeScript, React 19, Prisma + PostgreSQL, NextAuth (Discord).
+
+## Next.js
+- Default to **React Server Components**. Use **`'use client'`** only for hooks, browser APIs, or event handlers that require a client boundary.
+- **API routes** live under `src/app/api/**` (App Router: `route.ts`).
+- Before assuming APIs: this repo uses **Next 16** — check `node_modules/next` docs or project patterns when unsure.
+
+## Prisma
+- Use the **generated Prisma client** with strict typing; avoid raw SQL unless necessary.
+- If the schema changes: edit `prisma/schema.prisma`, then remind the user to run **`npm run prisma:generate`** and **`npm run prisma:migrate`** (or appropriate deploy migrate).
+
+## Static assets / icons
+- Prefer committed paths under **`public/game-icons/`** and **`public/game-ammo/`** (lowercase URLs) in `src/lib/tracker-data.ts` and similar. Avoid relying on **`/Images/...`** alone on case-sensitive servers.
+
+## Auth
+- Session/auth uses NextAuth; Discord provider is configured in the project.
+
+## Docs (human)
+Add in **Cursor Settings → Indexing & Docs** if not already: Next.js docs, Prisma docs, Auth.js / NextAuth reference.
+
+## Infra
+- DB may run via Docker (`docker compose`). When debugging DB/API, the user may allow Docker commands to inspect logs or restart the DB container.

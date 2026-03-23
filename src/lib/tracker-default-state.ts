@@ -13,7 +13,6 @@ export const defaultTrackerState = {
   descFilters: { search: "", element: "all", ownership: "all" },
   buildFilters: { search: "", type: "all" },
   filters: { element: "all", skill: "all" },
-  descFilter: "all",
   notesTabs: { Weapons: [] },
   sharePrivacy: "open" as const,
 };

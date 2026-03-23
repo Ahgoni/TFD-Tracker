@@ -1,0 +1,17 @@
+---
+description: Read and maintain HANDOFF.md / session memory across agent swaps
+alwaysApply: true
+---
+
+# Session memory (“Memory Bank”)
+
+## At the start of work
+- Read **`HANDOFF.md`** in the repo root to understand current state, recent decisions, and what must not regress (icons, DnD, deploy).
+- Optionally skim **`CURSOR_MEMORY.md`** — it points at `HANDOFF.md`.
+
+## When finishing a session or completing a major feature
+- If the user asks for a handoff (or you’re wrapping up substantive work), **update `HANDOFF.md`**: brief summary of what shipped, architecture choices, files touched, **what’s still broken or unverified**, and **immediate next steps**.
+- You may add a one-line row to the “Session log” table in `HANDOFF.md`.
+
+## User prompt to resume work
+- *“Read `@HANDOFF.md` and let’s continue.”*

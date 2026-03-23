@@ -6,30 +6,33 @@ export interface IconDef {
   icon: string | null;
 }
 
-/** Served from `public/Images/...` (committed SVGs; symlinked folder can override with PNG/WebP). */
+/**
+ * All-lowercase URL paths under `public/` — reliable on Linux (case-sensitive FS/URLs).
+ * Avoids `/Images/...` which can break when symlinks or nginx paths differ.
+ */
 export const elementDefs: IconDef[] = [
   { id: "all", label: "All", icon: null },
-  { id: "chill", label: "Chill", icon: "/Images/Icons/chill.svg" },
-  { id: "electric", label: "Electric", icon: "/Images/Icons/electric.svg" },
-  { id: "fire", label: "Fire", icon: "/Images/Icons/fire.svg" },
-  { id: "nonattribute", label: "Non-Attribute", icon: "/Images/Icons/nonattribute.svg" },
-  { id: "toxic", label: "Toxic", icon: "/Images/Icons/toxic.svg" },
+  { id: "chill", label: "Chill", icon: "/game-icons/chill.svg" },
+  { id: "electric", label: "Electric", icon: "/game-icons/electric.svg" },
+  { id: "fire", label: "Fire", icon: "/game-icons/fire.svg" },
+  { id: "nonattribute", label: "Non-Attribute", icon: "/game-icons/nonattribute.svg" },
+  { id: "toxic", label: "Toxic", icon: "/game-icons/toxic.svg" },
 ];
 
 export const skillDefs: IconDef[] = [
   { id: "all", label: "All", icon: null },
-  { id: "dimension", label: "Dimension", icon: "/Images/Icons/dimension.svg" },
-  { id: "fusion", label: "Fusion", icon: "/Images/Icons/fusion.svg" },
-  { id: "singular", label: "Singular", icon: "/Images/Icons/singular.svg" },
-  { id: "tech", label: "Tech", icon: "/Images/Icons/tech.svg" },
+  { id: "dimension", label: "Dimension", icon: "/game-icons/dimension.svg" },
+  { id: "fusion", label: "Fusion", icon: "/game-icons/fusion.svg" },
+  { id: "singular", label: "Singular", icon: "/game-icons/singular.svg" },
+  { id: "tech", label: "Tech", icon: "/game-icons/tech.svg" },
 ];
 
 export const ammoDefs: IconDef[] = [
   { id: "all", label: "All Rounds", icon: null },
-  { id: "General Rounds", label: "Primary", icon: "/Images/Ammo/general.svg" },
-  { id: "Impact Rounds", label: "Impact", icon: "/Images/Ammo/impact.svg" },
-  { id: "Special Rounds", label: "Special", icon: "/Images/Ammo/special.svg" },
-  { id: "High-Power Rounds", label: "Heavy", icon: "/Images/Ammo/high-power.svg" },
+  { id: "General Rounds", label: "Primary", icon: "/game-ammo/general.svg" },
+  { id: "Impact Rounds", label: "Impact", icon: "/game-ammo/impact.svg" },
+  { id: "Special Rounds", label: "Special", icon: "/game-ammo/special.svg" },
+  { id: "High-Power Rounds", label: "Heavy", icon: "/game-ammo/high-power.svg" },
 ];
 
 // ── Substat options ──────────────────────────────────────────────────────────
@@ -220,8 +223,4 @@ export const weaponNameOverrides: Record<string, string> = {
 
 export function normalizeWeaponName(slug: string, fallbackName?: string): string {
   return weaponNameOverrides[slug] ?? fallbackName ?? slug;
-}
-
-export function portraitPath(name: string): string {
-  return `/Images/Descendants/${name.toLowerCase().replaceAll(" ", "-")}.png`;
 }

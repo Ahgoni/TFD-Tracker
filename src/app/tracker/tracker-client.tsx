@@ -125,7 +125,6 @@ export interface TrackerState {
   descFilters: { search: string; element: string; ownership: string };
   buildFilters: { search: string; type: string };
   filters: { element: string; skill: string };
-  descFilter: string;
   notesTabs: Record<string, Array<{ id: string; text: string; done?: boolean }>>;
   sharePrivacy: "open" | "link_only";
 }
@@ -145,7 +144,6 @@ const DEFAULT_STATE: TrackerState = {
   descFilters: { search: "", element: "all", ownership: "all" },
   buildFilters: { search: "", type: "all" },
   filters: { element: "all", skill: "all" },
-  descFilter: "all",
   notesTabs: { Weapons: [] },
   sharePrivacy: "open",
 };
@@ -361,6 +359,7 @@ export function TrackerClient() {
       if (!Array.isArray(merged.builds)) merged.builds = [];
       merged.buildFilters = { ...DEFAULT_STATE.buildFilters, ...merged.buildFilters };
       merged.weapons = await fetchAndMergeWeaponsCatalog(merged.weapons ?? []);
+      merged.descendants = await fetchAndMergeDescendantsCatalog(merged.descendants ?? []);
       setState(merged);
       setSaveStatus("saved");
     } catch {

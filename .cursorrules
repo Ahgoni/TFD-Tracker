@@ -1,0 +1,5 @@
+# TFD Tracker — root rules (Cursor also loads `.cursor/rules/*.mdc`)
+
+1. At the start of substantive work, read **HANDOFF.md** for current project state and non-regression notes.
+2. Before ending a session or after a major feature (when the user asks), update **HANDOFF.md** with summary, decisions, and next steps. **CURSOR_MEMORY.md** is an alias pointer to the same workflow.
+3. Stack and API conventions: see **`.cursor/rules/tfd-stack.mdc`** and **`.cursor/rules/tfd-api-state.mdc`**.

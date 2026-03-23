@@ -57,7 +57,7 @@ if (resolved.mode === "skip") {
     }
   }
 } else {
-  console.log("⚠  No Images folder found — element/skill icons use committed files under public/Images if present.");
+  console.log("⚠  No Images folder found — element/skill icons use committed SVGs under public/game-icons/ and public/game-ammo/.");
 }
 
 // --- weapons-catalog.json copy ---

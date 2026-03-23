@@ -12,6 +12,7 @@
   --line: #1e2f50;
   --glow: rgba(0, 200, 240, 0.18);
   --glow2: rgba(168, 85, 247, 0.15);
+  --card-bg: #111e33;
   --font-sans: var(--font-geist-sans), "Segoe UI", system-ui, sans-serif;
 }
 
@@ -29,6 +30,7 @@
   --line: #d0d9f0;
   --glow: rgba(0, 136, 170, 0.12);
   --glow2: rgba(139, 68, 212, 0.1);
+  --card-bg: #f5f8ff;
   --chip-bg: #e8f0fa;
   --chip-border: #c0d0e8;
   --chip-text: #0c1830;
@@ -59,10 +61,10 @@ input, select, button, .filter-chip, .tab-nav button, .card, .panel, tbody tr td
               background 120ms ease, color 110ms ease;
 }
 
-input:focus-visible, select:focus-visible, button:focus-visible {
+button:focus-visible {
   outline: none;
-  border-color: #5e8fff;
-  box-shadow: 0 0 0 2px rgba(94, 143, 255, 0.22);
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px rgba(0, 200, 240, 0.18);
 }
 
 /* ── App shell ─────────────────────────────────────────────────── */
@@ -600,6 +602,7 @@ input:focus-visible, select:focus-visible {
   border-color: var(--accent);
   box-shadow: 0 0 0 2px rgba(0, 200, 240, 0.18);
 }
+/* button:focus-visible defined at top of file */
 
 button {
   border-radius: 9px;
@@ -875,7 +878,7 @@ td .badge { display: inline-flex; align-items: center; gap: 0.35rem; }
   padding: 2px;
 }
 
-.weapon-filters { margin-bottom: 0.45rem; }
+.weapon-filters, .tracker-filters { margin-bottom: 0.45rem; }
 
 .ownership-filter-group { margin-top: 0; margin-bottom: 0.65rem; }
 
@@ -978,7 +981,22 @@ td .badge { display: inline-flex; align-items: center; gap: 0.35rem; }
 .chip-field-row {
   display: flex;
   flex-wrap: wrap;
+  align-items: center;
   gap: 0.35rem;
+}
+
+/* Full-width submit row inside .form-grid (e.g. Reactors) */
+.form-grid .form-actions-row {
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.1rem;
+}
+
+.form-grid .form-grid-notes {
+  grid-column: 1 / -1;
 }
 
 /* Readonly auto-filled input — show as plain text, no box */
@@ -2034,7 +2052,6 @@ td .badge { display: inline-flex; align-items: center; gap: 0.35rem; }
 
 [data-theme="light"] .tab-nav { border-top-color: var(--line); }
 [data-theme="light"] .tab-nav button { color: var(--muted); }
-[data-theme="light"] .tab-nav button.active { color: var(--text); background: rgba(0, 136, 170, 0.07); }
 
 [data-theme="light"] .panel {
   background: #ffffff;
@@ -2054,17 +2071,7 @@ td .badge { display: inline-flex; align-items: center; gap: 0.35rem; }
 
 /* Intentionally removed — specific overrides handle each element */
 
-[data-theme="light"] .filter-chip {
-  background: #ffffff;
-  border-color: var(--line);
-  color: var(--muted);
-}
-
-[data-theme="light"] .filter-chip.active {
-  background: rgba(0, 136, 170, 0.08);
-  border-color: var(--accent);
-  color: var(--accent);
-}
+/* filter-chip light overrides consolidated in comprehensive block below */
 
 [data-theme="light"] .profile-trigger {
   background: #f5f8ff;
@@ -2200,11 +2207,7 @@ td .badge { display: inline-flex; align-items: center; gap: 0.35rem; }
 /* Brand logo in light mode */
 [data-theme="light"] .brand-logo-svg { color: var(--accent); filter: drop-shadow(0 0 4px rgba(0, 120, 170, 0.4)); }
 
-[data-theme="light"] .btn-ghost {
-  background: #ffffff;
-  border-color: var(--line);
-  color: var(--text);
-}
+/* btn-ghost light overrides consolidated in comprehensive block below */
 
 [data-theme="light"] .share-link-row { background: rgba(0, 136, 170, 0.04); border-color: rgba(0, 136, 170, 0.15); }
 
@@ -2263,10 +2266,7 @@ td .badge { display: inline-flex; align-items: center; gap: 0.35rem; }
   50% { transform: translateY(-20px) scale(1.05); }
 }
 
-[data-theme="light"] .hero-bg::before {
-  background-image: radial-gradient(rgba(0, 136, 170, 0.1) 1px, transparent 1px);
-}
-[data-theme="light"] .hero-orb { opacity: 0.2; }
+/* hero-bg light overrides already applied above */
 
 /* ── Landing stats strip ────────────────────────────────────── */
 
@@ -2628,6 +2628,7 @@ td .badge { display: inline-flex; align-items: center; gap: 0.35rem; }
 [data-theme="light"] .tier-ultimate   { color: #a05c00; border-color: rgba(160,92,0,0.35); }
 [data-theme="light"] .tier-rare       { color: #7b28cc; border-color: rgba(123,40,204,0.3); }
 [data-theme="light"] .tier-common     { color: #0077aa; border-color: rgba(0,119,170,0.3); }
+[data-theme="light"] .tier-norm       { color: #5a6f9a; border-color: rgba(90,111,154,0.3); }
 
 /* ── User chip in topbar (was #0a1525) ──────────────────────── */
 [data-theme="light"] .user-chip {
@@ -2676,8 +2677,8 @@ td .badge { display: inline-flex; align-items: center; gap: 0.35rem; }
   color: var(--accent) !important;
 }
 
-/* Primary rounds icon is white — make it black in light mode */
-[data-theme="light"] img[src*="general.webp"] {
+/* Primary rounds icon is white — make it visible in light mode */
+[data-theme="light"] img[src*="general.svg"] {
   filter: brightness(0);
 }
 
@@ -2727,11 +2728,16 @@ td .badge { display: inline-flex; align-items: center; gap: 0.35rem; }
   color: var(--danger) !important;
 }
 
-/* ── Mini buttons (remove) ──────────────────────────────────── */
+/* ── Mini buttons (± quantity) ─────────────────────────────── */
 [data-theme="light"] .mini-btn {
-  background: rgba(204,34,68,0.07);
-  border-color: rgba(204,34,68,0.25);
-  color: var(--danger);
+  background: #eef2fc;
+  border-color: #d0d9f0;
+  color: var(--text);
+}
+[data-theme="light"] .mini-btn:hover {
+  background: rgba(0,136,170,0.1);
+  border-color: var(--accent);
+  color: var(--accent);
 }
 
 /* ── Share link row ─────────────────────────────────────────── */
@@ -2770,8 +2776,7 @@ td .badge { display: inline-flex; align-items: center; gap: 0.35rem; }
 [data-theme="light"] .social-friend-avatar-wrap .social-status-dot { border-color: #ffffff; }
 [data-theme="light"] .social-remove-btn { border-color: rgba(204,34,68,0.3); color: var(--danger); background: rgba(204,34,68,0.06); }
 
-/* ── Remove inner radial glow from panels ───────────────────── */
-[data-theme="light"] .panel::before { display: none; }
+/* panel::before already hidden in earlier light-mode block */
 
 /* ══════════════════════════════════════════════════════════════
    MASTERY TAB
@@ -3165,7 +3170,7 @@ td .badge { display: inline-flex; align-items: center; gap: 0.35rem; }
   gap: 0.35rem;
   margin-top: 0.55rem;
 }
-.hero-badge {
+.builder-hero-badge {
   font-size: 0.68rem;
   font-weight: 700;
   padding: 0.2rem 0.5rem;
@@ -3174,12 +3179,12 @@ td .badge { display: inline-flex; align-items: center; gap: 0.35rem; }
   background: rgba(0,0,0,0.2);
   color: var(--muted);
 }
-.hero-badge-accent {
+.builder-hero-badge-accent {
   border-color: rgba(0,200,240,0.45);
   color: var(--accent);
   background: rgba(0,200,240,0.1);
 }
-.hero-badge-warn {
+.builder-hero-badge-warn {
   border-color: rgba(251,191,36,0.4);
   color: #fbbf24;
 }
@@ -3267,12 +3272,11 @@ td .badge { display: inline-flex; align-items: center; gap: 0.35rem; }
   gap: 0.25rem;
   justify-content: flex-end;
 }
-.tier-pill {
+.builder-tier-mix .tier-pill {
   font-size: 0.65rem;
   padding: 0.12rem 0.35rem;
   border-radius: 6px;
   background: rgba(255,255,255,0.06);
-  border: 1px solid var(--line);
 }
 .builder-socket-line {
   font-size: 0.78rem;
@@ -3462,17 +3466,19 @@ td .badge { display: inline-flex; align-items: center; gap: 0.35rem; }
   border-radius: 50%;
   background: rgba(180, 30, 50, 0.92);
   color: #fff;
-  font-size: 15px;
+  font-size: 16px;
   font-weight: 600;
-  line-height: 0;
+  line-height: 1;
   letter-spacing: 0;
   cursor: pointer;
-  display: flex;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
   padding: 0;
   margin: 0;
   box-shadow: 0 1px 4px rgba(0,0,0,0.35);
+  /* Optical center for × glyph across fonts */
+  transform: translateY(-0.5px);
 }
 .builder-slot-x:hover {
   background: rgba(220, 50, 70, 1);

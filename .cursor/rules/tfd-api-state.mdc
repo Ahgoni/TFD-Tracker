@@ -1,0 +1,16 @@
+---
+description: API routes — validation and errors for state and user data
+globs: src/app/api/**/*.ts
+alwaysApply: false
+---
+
+# API route conventions
+
+## `/api/state` and import/export
+- **Validate** JSON bodies (e.g. with **Zod**); reject malformed or oversized payloads with clear `4xx` responses.
+- Use **try/catch**; return consistent JSON error shapes; log server-side without leaking secrets.
+- Prefer typed Prisma operations; handle `null` / not-found cases explicitly.
+
+## General
+- Use `NextResponse` and appropriate HTTP status codes.
+- Keep route handlers thin; shared logic belongs in `src/lib/`.

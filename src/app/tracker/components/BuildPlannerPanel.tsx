@@ -366,7 +366,7 @@ export function BuildPlannerPanel({
   }
 
   return (
-    <DndContext modifiers={dragModifiers} sensors={sensors} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
+    <DndContext sensors={sensors} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
       <div className="builder-stage">
         {hero && (
           <header className="builder-hero">
@@ -383,7 +383,7 @@ export function BuildPlannerPanel({
               <p className="builder-hero-sub">{hero.subtitle}</p>
               <div className="builder-hero-badges">
                 {hero.badges.map((b) => (
-                  <span key={b.label} className={`hero-badge hero-badge-${b.tone ?? "default"}`}>
+                  <span key={b.label} className={`builder-hero-badge builder-hero-badge-${b.tone ?? "default"}`}>
                     {b.label}
                   </span>
                 ))}

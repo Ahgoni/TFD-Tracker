@@ -186,11 +186,13 @@ export function ReactorsTab({ state, setState }: Props) {
           Value 2
           <input value={subvalue2} onChange={(e) => setSubvalue2(e.target.value)} maxLength={20} placeholder="e.g. +12%" required />
         </label>
-        <label>
+        <label className="form-grid-notes">
           Notes
           <input value={notes} onChange={(e) => setNotes(e.target.value)} maxLength={120} placeholder="Optional note..." />
         </label>
-        <button type="submit" style={{ alignSelf: "end" }}>Add Reactor</button>
+        <div className="form-actions-row">
+          <button type="submit">Add Reactor</button>
+        </div>
       </form>
 
       <div className="filters" style={{ marginBottom: "0.75rem" }}>

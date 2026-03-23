@@ -96,7 +96,7 @@ export function DescendantsTab({ state, setState }: Props) {
       </h2>
       <p className="muted">Toggle owned, track level, arche level, and catalyst investment.</p>
 
-      <div className="weapon-filters">
+      <div className="tracker-filters">
         <span className="filter-row-title">Filters</span>
         <div className="filter-group">
           <input
