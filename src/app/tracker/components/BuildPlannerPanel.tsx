@@ -1,6 +1,33 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState, type Dispatch, type SetStateAction } from "react";
+import React, { useCallback, useEffect, useMemo, useState, type Dispatch, type SetStateAction } from "react";
+
+class BuildPlannerErrorBoundary extends React.Component<
+  { children: React.ReactNode },
+  { error: Error | null }
+> {
+  state = { error: null as Error | null };
+  static getDerivedStateFromError(error: Error) { return { error }; }
+  render() {
+    if (this.state.error) {
+      return (
+        <div style={{ padding: "1rem", background: "#1e1e2e", border: "1px solid #f87171", borderRadius: 8, color: "#f87171" }}>
+          <h4>Build Planner Error</h4>
+          <pre style={{ whiteSpace: "pre-wrap", fontSize: "0.8rem", color: "#fbbf24" }}>
+            {this.state.error.message}
+          </pre>
+          <pre style={{ whiteSpace: "pre-wrap", fontSize: "0.7rem", color: "#94a3b8", marginTop: "0.5rem" }}>
+            {this.state.error.stack}
+          </pre>
+          <button onClick={() => this.setState({ error: null })} style={{ marginTop: "0.5rem", padding: "0.25rem 0.75rem", cursor: "pointer" }}>
+            Retry
+          </button>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
 import {
   DndContext,
   DragOverlay,
@@ -447,7 +474,15 @@ function fmt(v: number): string {
 
 // ── Main panel ───────────────────────────────────────────────────────────────
 
-export function BuildPlannerPanel({
+export function BuildPlannerPanel(props: Props) {
+  return (
+    <BuildPlannerErrorBoundary>
+      <BuildPlannerPanelInner {...props} />
+    </BuildPlannerErrorBoundary>
+  );
+}
+
+function BuildPlannerPanelInner({
   form, setForm, moduleCatalog, moduleById, weaponNexonType, descendantGameId,
   hero = null, reactor = null, onReactorChange, targetLevel, onTargetLevelChange,
   archeLevel, onArcheLevelChange, savedReactors,
