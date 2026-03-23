@@ -11,6 +11,10 @@ This app adds Discord login and private per-user cloud state for The First Desce
    - `npm run prisma:migrate`
 4. Start app: `npm run dev`
 
+## Game data (canonical: Nexon)
+
+Names, skills, modules, and stats should match **Nexon’s official library**, e.g. [Descendants](https://tfd.nexon.com/en/library/descendants). This app imports the same data via Nexon’s public Open API (`open.api.nexon.com/static/tfd/meta/en/…`) — see `public/data/README.md` and `npm run fetch:data` / `npm run fetch:stats`.
+
 ## Current routes
 - `/` sign-in landing page
 - `/tracker` authenticated tracker state editor/importer

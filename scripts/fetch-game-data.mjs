@@ -1,8 +1,16 @@
 /**
- * Fetches game data from Nexon's public TFD API and writes compact JSON
+ * Fetches game data from Nexon's public TFD Open API and writes compact JSON
  * to public/data/ for use by the tracker.
  *
+ * Canonical UX reference (official site — verify names/skills against this):
+ *   Descendants: https://tfd.nexon.com/en/library/descendants
+ *   Weapons:     https://tfd.nexon.com/en/library/weapons
+ *   Modules:     https://tfd.nexon.com/en/library/modules
+ *
+ * The JSON below is the same data Nexon serves to that library UI.
+ *
  * Run:  node scripts/fetch-game-data.mjs
+ * Or:  npm run fetch:data
  */
 
 import { writeFileSync, mkdirSync } from "fs";
@@ -12,6 +20,7 @@ import { fileURLToPath } from "url";
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const OUT = resolve(__dirname, "../public/data");
 
+/** Nexon Open API (en) — pairs with https://tfd.nexon.com/en/library/… */
 const DESCENDANT_URL = "https://open.api.nexon.com/static/tfd/meta/en/descendant.json";
 const WEAPON_URL = "https://open.api.nexon.com/static/tfd/meta/en/weapon.json";
 const MODULE_URL = "https://open.api.nexon.com/static/tfd/meta/en/module.json";

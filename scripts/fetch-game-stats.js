@@ -3,6 +3,10 @@
  * Fetch game stats from Nexon TFD Open API and write compact JSON files
  * for the build planner stat engine.
  *
+ * Official library (verify against Nexon’s site):
+ *   https://tfd.nexon.com/en/library/descendants
+ *   https://tfd.nexon.com/en/library/weapons
+ *
  * Usage:  node scripts/fetch-game-stats.js
  * Or:     npm run fetch:stats
  *
@@ -11,6 +15,7 @@
 const fs = require("fs");
 const path = require("path");
 
+/** Nexon Open API (en) — same underlying data as tfd.nexon.com/library */
 const NEXON_BASE = "https://open.api.nexon.com/static/tfd/meta/en";
 const OUT_DIR = path.resolve(__dirname, "..", "public", "data");
 

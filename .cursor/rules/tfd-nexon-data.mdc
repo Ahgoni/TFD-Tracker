@@ -1,0 +1,18 @@
+---
+description: Canonical The First Descendant game data — Nexon official library + Open API
+alwaysApply: true
+---
+
+# Game data (Nexon is source of truth)
+
+- **Official library (verify names, skills, modules, wording):**  
+  - Descendants: https://tfd.nexon.com/en/library/descendants  
+  - Weapons: https://tfd.nexon.com/en/library/weapons  
+  - Modules: https://tfd.nexon.com/en/library/modules  
+
+- **Machine-readable feed (what this repo uses — same data):**  
+  `https://open.api.nexon.com/static/tfd/meta/en/` — e.g. `descendant.json`, `weapon.json`, `module.json`, `stat.json`.
+
+- **Do not invent** descendant names, skill text, module effects, or stats. When updating data: run **`npm run fetch:data`** / **`npm run fetch:stats`** (or **`npm run refresh`**) and read **`public/data/README.md`**.
+
+- If the UI and Nexon’s site disagree after a patch, **trust Nexon’s library** and re-fetch; fix transforms in `scripts/fetch-game-data.mjs` / `fetch-game-stats.js` only when the API shape changes.

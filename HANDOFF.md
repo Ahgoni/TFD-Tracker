@@ -7,6 +7,10 @@ At the **end** of a session or after a major feature: overwrite this file with w
 
 ---
 
+## Canonical game data (Nexon)
+
+**Source of truth for copy, names, and mechanics:** Nexon’s official library, e.g. **https://tfd.nexon.com/en/library/descendants** (and `/weapons`, `/modules`). Repo scripts pull the matching machine-readable JSON from `https://open.api.nexon.com/static/tfd/meta/en/` — see `public/data/README.md`, `npm run fetch:data`, `npm run fetch:stats`.
+
 ## Product
 
 **TFD Tracker** (`tfdtracker.gg`) — Next.js app for *The First Descendant* inventory/tracker, builds, reactors, etc.
