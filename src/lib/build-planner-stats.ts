@@ -35,9 +35,18 @@ export interface ModifierRollupRow {
 const BUCKET_RULES: { bucket: string; test: (ctx: string) => boolean }[] = [
   { bucket: "Firearm Crit DMG", test: (c) => /Firearm Critical Hit Damage/i.test(c) },
   { bucket: "Firearm Crit Rate", test: (c) => /Firearm Critical Hit Rate/i.test(c) },
+  { bucket: "Skill Crit Rate", test: (c) => /Skill Critical Hit Rate/i.test(c) },
   { bucket: "Crit DMG", test: (c) => /\bCritical Hit Damage\b/i.test(c) && !/Rate/i.test(c) },
-  { bucket: "Crit Rate", test: (c) => /\bCritical Hit Rate\b/i.test(c) && !/Firearm/i.test(c) },
+  { bucket: "Crit Rate", test: (c) => /\bCritical Hit Rate\b/i.test(c) && !/Firearm|Skill/i.test(c) },
+  /** Must come before "Multi-Hit Damage" so "Multi-Hit Chance" does not fall through to Other %. */
+  { bucket: "Multi-Hit Chance", test: (c) => /Multi-Hit Chance/i.test(c) },
   { bucket: "Multi-Hit", test: (c) => /Multi-Hit Damage/i.test(c) },
+  { bucket: "Explosive ATK", test: (c) => /Explosive ATK/i.test(c) },
+  { bucket: "Skill Effect Range", test: (c) => /Skill Effect Range/i.test(c) },
+  { bucket: "Rounds per Magazine", test: (c) => /Rounds per Magazine/i.test(c) },
+  { bucket: "Max Range", test: (c) => /(Max Range|Effective Range)/i.test(c) },
+  { bucket: "Penetration", test: (c) => /Penetration/i.test(c) },
+  { bucket: "Attribute ATK", test: (c) => /\bAttribute ATK\b/i.test(c) },
   { bucket: "Weak Point", test: (c) => /Weak Point Damage/i.test(c) },
   { bucket: "Reload", test: (c) => /Reload Time Modifier/i.test(c) },
   { bucket: "Fire Rate", test: (c) => /Fire Rate/i.test(c) },
@@ -75,6 +84,8 @@ export function extractPercentContributions(preview: string): { bucket: string; 
     const ctx = text.slice(Math.max(0, idx - 120), idx);
     const value = parseFloat(m[1]);
     if (Number.isNaN(value)) continue;
+    /** Drop outlier lines (e.g. mis-parsed "1000%" in module text) that blow up rollups. */
+    if (Math.abs(value) > 400) continue;
     out.push({ bucket: classifyPercentContext(ctx), value });
   }
   return out;

@@ -29,11 +29,9 @@ export function PlayerLookupTab() {
   const [compliance, setCompliance] = useState<Compliance | null>(null);
   const [catalogs, setCatalogs] = useState<PlayerLookupCatalogs | null>(null);
   const [userName, setUserName] = useState("");
-  const [ouidOverride, setOuidOverride] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<unknown>(null);
-  const [showRaw, setShowRaw] = useState(false);
 
   useEffect(() => {
     fetch("/api/nexon/compliance")
@@ -64,16 +62,14 @@ export function PlayerLookupTab() {
     setResult(null);
     setLoading(true);
     try {
-      const params = new URLSearchParams();
       const name = userName.trim();
-      const o = ouidOverride.trim();
-      if (!name && !o) {
-        setError("Enter an in-game user name (e.g. PlayerName#1234).");
+      if (!name) {
+        setError("Enter an in-game name.");
         setLoading(false);
         return;
       }
-      if (name) params.set("user_name", name);
-      if (o) params.set("ouid", o);
+      const params = new URLSearchParams();
+      params.set("user_name", name);
       params.set("include", "all");
       const res = await fetch(`/api/nexon/player?${params.toString()}`);
       const data = await res.json();
@@ -85,7 +81,6 @@ export function PlayerLookupTab() {
               ? data.error
               : `Request failed (${res.status})`,
         );
-        setResult(data);
         return;
       }
       setResult(data);
@@ -94,7 +89,7 @@ export function PlayerLookupTab() {
     } finally {
       setLoading(false);
     }
-  }, [userName, ouidOverride]);
+  }, [userName]);
 
   const onSubmitForm = useCallback(
     (e: FormEvent) => {
@@ -107,14 +102,7 @@ export function PlayerLookupTab() {
   return (
     <section className="panel">
       <h2>Player lookup</h2>
-      <p className="muted">
-        Search by in-game name. We load your Nexon Open API profile (descendant, weapons, reactor, components) and
-        match IDs to the official library catalog (
-        <a href="https://tfd.nexon.com/en/library/descendants" target="_blank" rel="noopener noreferrer">
-          Nexon library
-        </a>
-        ).
-      </p>
+      <p className="muted">Search by in-game name to view loadouts, modules, weapons, and gear.</p>
 
       {compliance && (
         <div
@@ -126,12 +114,9 @@ export function PlayerLookupTab() {
               compliance.metadataOverdue || compliance.statsOverdue ? "var(--danger)" : "var(--line)",
           }}
         >
-          <strong>Nexon 30-day data notice</strong>
+          <strong>Data refresh notice</strong>
           <p className="muted" style={{ fontSize: "0.85rem", marginTop: "0.35rem" }}>
-            {compliance.notice}{" "}
-            <a href="https://openapi.nexon.com" target="_blank" rel="noopener noreferrer">
-              openapi.nexon.com
-            </a>
+            {compliance.notice}
           </p>
           <p style={{ fontSize: "0.82rem", marginTop: "0.35rem" }}>
             Static metadata last pull:{" "}
@@ -158,24 +143,11 @@ export function PlayerLookupTab() {
           <input
             value={userName}
             onChange={(e) => setUserName(e.target.value)}
-            placeholder="e.g. marcioquatro#8225"
+            placeholder="Type In-Game Name Here..."
             style={{ width: "100%", padding: "0.5rem 0.65rem", fontSize: "1rem" }}
             autoComplete="off"
           />
         </label>
-
-        <details style={{ marginBottom: "0.75rem", fontSize: "0.88rem" }}>
-          <summary style={{ cursor: "pointer", color: "var(--muted)" }}>Advanced: paste OUID</summary>
-          <p className="muted" style={{ marginTop: "0.5rem" }}>
-            Skip name lookup and query by Nexon OUID directly.
-          </p>
-          <input
-            value={ouidOverride}
-            onChange={(e) => setOuidOverride(e.target.value)}
-            placeholder="hex OUID"
-            style={{ width: "100%", marginTop: "0.35rem", padding: "0.4rem 0.5rem" }}
-          />
-        </details>
 
         <button type="submit" className="btn-primary" disabled={loading || !catalogs}>
           {loading ? "Loading…" : "Search"}
@@ -195,34 +167,6 @@ export function PlayerLookupTab() {
 
       {isSuccessPayload(result) && catalogs ? (
         <PlayerLookupProfile data={result} catalogs={catalogs} />
-      ) : null}
-
-      {result != null ? (
-        <details style={{ marginTop: "1.25rem" }}>
-          <summary style={{ cursor: "pointer", fontSize: "0.88rem", color: "var(--muted)" }}>
-            Raw API response (debug)
-          </summary>
-          <label style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginTop: "0.5rem", fontSize: "0.82rem" }}>
-            <input type="checkbox" checked={showRaw} onChange={(e) => setShowRaw(e.target.checked)} />
-            Show JSON
-          </label>
-          {showRaw ? (
-            <pre
-              style={{
-                marginTop: "0.5rem",
-                padding: "0.75rem",
-                borderRadius: "8px",
-                border: "1px solid var(--line)",
-                background: "var(--panel-2)",
-                fontSize: "0.7rem",
-                overflow: "auto",
-                maxHeight: "40vh",
-              }}
-            >
-              {JSON.stringify(result, null, 2)}
-            </pre>
-          ) : null}
-        </details>
       ) : null}
     </section>
   );

@@ -23,6 +23,9 @@ export type PlayerLookupCatalogs = {
   weapons: Map<string, WeaponCatalogRow>;
 };
 
+/** Nexon external component slot order (library). */
+const EXTERNAL_SLOT_LABELS = ["Auxiliary Power", "Sensor", "Memory", "Processor"];
+
 type Props = {
   data: Record<string, unknown>;
   catalogs: PlayerLookupCatalogs;
@@ -54,12 +57,226 @@ function sortSlotId(a: string, b: string): number {
   return ka[2].localeCompare(kb[2]);
 }
 
+/** Format rollup for UI: hide absurd totals from mis-parsed previews. */
 function formatModifierBlock(modifiers: Record<string, number>): { label: string; value: string }[] {
   const rows = Object.entries(modifiers)
     .filter(([, v]) => typeof v === "number" && Math.abs(v) > 0.01)
-    .map(([k, v]) => ({ label: k, value: `${Math.round(v * 100) / 100}%` }))
-    .sort((a, b) => Math.abs(parseFloat(b.value)) - Math.abs(parseFloat(a.value)));
+    .map(([k, v]) => {
+      let v2 = v;
+      if (Math.abs(v2) > 250) v2 = Math.sign(v2) * Math.min(250, Math.abs(v2));
+      return { label: k, raw: v2 };
+    })
+    .sort((a, b) => Math.abs(b.raw) - Math.abs(a.raw))
+    .map(({ label, raw }) => ({ label, value: `${Math.round(raw * 100) / 100}%` }));
   return rows.slice(0, 24);
+}
+
+function parseJsonRecordArray(v: unknown): Record<string, unknown>[] {
+  if (Array.isArray(v)) {
+    return v.filter((x) => x && typeof x === "object" && !Array.isArray(x)) as Record<string, unknown>[];
+  }
+  if (typeof v === "string") {
+    try {
+      const p = JSON.parse(v) as unknown;
+      if (Array.isArray(p)) {
+        return p.filter((x) => x && typeof x === "object" && !Array.isArray(x)) as Record<string, unknown>[];
+      }
+    } catch {
+      return [];
+    }
+  }
+  return [];
+}
+
+/** Display numeric API values: small decimals often mean ratios → %. */
+function formatGearStatValue(name: string, val: unknown): string {
+  if (val == null) return "—";
+  const s = String(val).trim();
+  const n = parseFloat(s);
+  if (Number.isNaN(n)) return s;
+  if (n > 0 && n < 1 && /0\.\d+/.test(s)) {
+    return `${Math.round(n * 1000) / 10}%`;
+  }
+  return s;
+}
+
+function externalSlotLabel(slotId: unknown): string {
+  const n = typeof slotId === "number" ? slotId : parseInt(String(slotId ?? ""), 10);
+  if (Number.isNaN(n) || n < 1) return "Component";
+  const ix = Math.min(Math.max(0, n - 1), EXTERNAL_SLOT_LABELS.length - 1);
+  return EXTERNAL_SLOT_LABELS[ix] ?? `Slot ${n}`;
+}
+
+function ExternalComponentCard({ row }: { row: Record<string, unknown> }) {
+  const slotId = row.external_component_slot_id ?? row.externalComponentSlotId;
+  const level = row.external_component_level ?? row.externalComponentLevel ?? row.level;
+  const addRaw = row.external_component_additional_stat ?? row.externalComponentAdditionalStat;
+  const coresRaw = row.core ?? row.cores ?? row.core_option;
+
+  const addStats = parseJsonRecordArray(addRaw);
+  const cores = parseJsonRecordArray(coresRaw);
+
+  const title = externalSlotLabel(slotId);
+
+  return (
+    <div className={styles.flexCard}>
+      <h4 className={styles.cardTitle}>
+        {title}
+        {level != null ? (
+          <span className="muted" style={{ fontWeight: 400, fontSize: "0.85rem" }}>
+            {" "}
+            · Lv. {String(level)}
+          </span>
+        ) : null}
+      </h4>
+
+      {addStats.length > 0 ? (
+        <>
+          <div className={styles.subHeading}>Substats</div>
+          <ul className={styles.subList}>
+            {addStats.map((o, i) => {
+              const name = String(
+                o.additional_stat_name ?? o.stat_name ?? o.name ?? `Stat ${i + 1}`,
+              );
+              const val = o.additional_stat_value ?? o.stat_value ?? o.value;
+              return (
+                <li key={`${name}-${i}`}>
+                  <span>{name}</span>
+                  <span>{formatGearStatValue(name, val)}</span>
+                </li>
+              );
+            })}
+          </ul>
+        </>
+      ) : null}
+
+      {cores.length > 0 ? (
+        <>
+          <div className={styles.subHeading}>Core</div>
+          <ul className={styles.subList}>
+            {cores.map((o, i) => {
+              const name = String(o.core_option_name ?? o.option_name ?? o.name ?? `Core ${i + 1}`);
+              const val = o.core_option_value ?? o.option_value ?? o.value;
+              return (
+                <li key={`${name}-${i}`}>
+                  <span>{name}</span>
+                  <span>{formatGearStatValue(name, val)}</span>
+                </li>
+              );
+            })}
+          </ul>
+        </>
+      ) : null}
+
+      {addStats.length === 0 && cores.length === 0 ? (
+        <p className="muted" style={{ fontSize: "0.82rem", margin: 0 }}>
+          No substats parsed for this component.
+        </p>
+      ) : null}
+    </div>
+  );
+}
+
+function ReactorProfileCard({ row, index }: { row: Record<string, unknown>; index: number }) {
+  const name = String(
+    row.reactor_name ?? row.reactorName ?? row.reactor_display_name ?? `Reactor ${index + 1}`,
+  );
+  const level = row.reactor_level ?? row.reactorLevel ?? row.level;
+
+  const candidates = [
+    row.reactor_substat,
+    row.reactor_substats,
+    row.substat,
+    row.substats,
+    row.reactor_option,
+    row.reactor_stat,
+  ];
+
+  let substats: Record<string, unknown>[] = [];
+  for (const c of candidates) {
+    const parsed = parseJsonRecordArray(c);
+    if (parsed.length > 0) {
+      substats = parsed;
+      break;
+    }
+  }
+
+  return (
+    <div className={styles.flexCard}>
+      <h4 className={styles.cardTitle}>
+        {name}
+        {level != null ? (
+          <span className="muted" style={{ fontWeight: 400, fontSize: "0.85rem" }}>
+            {" "}
+            · Lv. {String(level)}
+          </span>
+        ) : null}
+      </h4>
+
+      {substats.length > 0 ? (
+        <ul className={styles.subList}>
+          {substats.map((o, i) => {
+            const sn = String(o.substat_name ?? o.stat_name ?? o.name ?? `Stat ${i + 1}`);
+            const sv = o.substat_value ?? o.stat_value ?? o.value;
+            return (
+              <li key={`${sn}-${i}`}>
+                <span>{sn}</span>
+                <span>{formatGearStatValue(sn, sv)}</span>
+              </li>
+            );
+          })}
+        </ul>
+      ) : (
+        <ReactorFallbackKv row={row} />
+      )}
+    </div>
+  );
+}
+
+/** Last resort: show non-id fields without dumping raw JSON strings. */
+function ReactorFallbackKv({ row }: { row: Record<string, unknown> }) {
+  const skip = new Set([
+    "reactor_id",
+    "reactorId",
+    "ouid",
+    "id",
+    "reactor_name",
+    "reactorName",
+    "reactor_display_name",
+  ]);
+  const rows: { k: string; v: string }[] = [];
+  for (const [k, v] of Object.entries(row)) {
+    if (skip.has(k)) continue;
+    if (/_id$/i.test(k)) continue;
+    if (v == null) continue;
+    if (typeof v === "string" && (v.startsWith("[") || v.startsWith("{"))) {
+      const parsed = parseJsonRecordArray(v);
+      if (parsed.length > 0) {
+        for (const p of parsed) {
+          const label = String(p.substat_name ?? p.stat_name ?? p.name ?? "Stat");
+          const val = p.substat_value ?? p.stat_value ?? p.value;
+          rows.push({ k: label, v: formatGearStatValue(label, val) });
+        }
+        continue;
+      }
+    }
+    if (typeof v === "object" && v !== null && !Array.isArray(v)) {
+      rows.push({ k: k, v: JSON.stringify(v) });
+    } else {
+      rows.push({ k: k, v: String(v) });
+    }
+  }
+  if (rows.length === 0) return <p className="muted">No reactor details.</p>;
+  return (
+    <dl className={styles.kv}>
+      {rows.slice(0, 20).map(({ k, v }, i) => (
+        <div key={`${k}-${i}`}>
+          <dt>{k}</dt>
+          <dd>{v}</dd>
+        </div>
+      ))}
+    </dl>
+  );
 }
 
 function CapacityBar({ used, max }: { used: number; max: number }) {
@@ -122,33 +339,6 @@ function ModuleGrid({
   );
 }
 
-function ReactorOrExternalCard({ title, obj }: { title: string; obj: Record<string, unknown> }) {
-  const flat: { k: string; v: string }[] = [];
-  for (const [k, v] of Object.entries(obj)) {
-    if (k === "id" && typeof v === "object") continue;
-    if (typeof v === "object" && v !== null) {
-      flat.push({ k, v: JSON.stringify(v) });
-    } else {
-      flat.push({ k, v: String(v) });
-    }
-  }
-  return (
-    <div className={styles.flexCard}>
-      <h4 className={styles.sectionTitle} style={{ marginTop: 0 }}>
-        {title}
-      </h4>
-      <dl className={styles.kv}>
-        {flat.slice(0, 32).map(({ k, v }) => (
-          <div key={k}>
-            <dt>{k}</dt>
-            <dd>{v}</dd>
-          </div>
-        ))}
-      </dl>
-    </div>
-  );
-}
-
 export function PlayerLookupProfile({ data, catalogs }: Props) {
   const { modules: moduleById, descendants: descById, weapons: weaponById } = catalogs;
 
@@ -167,8 +357,6 @@ export function PlayerLookupProfile({ data, catalogs }: Props) {
       : "") ||
     descendantBuilds[0]?.userName ||
     "Player";
-
-  const ouid = typeof data.ouid === "string" ? data.ouid : basic.ouid;
 
   const primaryDesc = descendantBuilds[0];
   const primaryRow = primaryDesc ? descById.get(primaryDesc.descendantId) : undefined;
@@ -231,11 +419,6 @@ export function PlayerLookupProfile({ data, catalogs }: Props) {
               <strong>Mastery rank:</strong> {basic.masteryRank}
             </p>
           ) : null}
-          {ouid ? (
-            <p className={styles.ouid}>
-              <strong>OUID</strong> {ouid}
-            </p>
-          ) : null}
         </div>
       </header>
 
@@ -272,20 +455,10 @@ export function PlayerLookupProfile({ data, catalogs }: Props) {
 
       {reactors.length > 0 ? (
         <section>
-          <h4 className={styles.sectionTitle}>Reactor &amp; reactor details</h4>
+          <h4 className={styles.sectionTitle}>Reactor</h4>
           <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
             {reactors.map((r, i) => (
-              <ReactorOrExternalCard
-                key={`reactor-${i}`}
-                title={String(
-                  r.reactor_name ??
-                    r.reactorName ??
-                    r.reactor_id ??
-                    r.reactorId ??
-                    `Reactor ${i + 1}`,
-                )}
-                obj={r}
-              />
+              <ReactorProfileCard key={`reactor-${i}`} row={r} index={i} />
             ))}
           </div>
         </section>
@@ -296,17 +469,7 @@ export function PlayerLookupProfile({ data, catalogs }: Props) {
           <h4 className={styles.sectionTitle}>External components</h4>
           <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
             {externals.map((r, i) => (
-              <ReactorOrExternalCard
-                key={`ext-${i}`}
-                title={String(
-                  r.external_component_name ??
-                    r.externalComponentName ??
-                    r.external_component_id ??
-                    r.externalComponentId ??
-                    `Component ${i + 1}`,
-                )}
-                obj={r}
-              />
+              <ExternalComponentCard key={`ext-${i}`} row={r} />
             ))}
           </div>
         </section>
@@ -351,14 +514,6 @@ export function PlayerLookupProfile({ data, catalogs }: Props) {
           </section>
         );
       })}
-
-      <p className={styles.disclaimer}>
-        Live data from Nexon Open API; names/icons from your synced catalog (
-        <a href="https://tfd.nexon.com/en/library/descendants" target="_blank" rel="noreferrer">
-          Nexon library
-        </a>
-        ). Stat percentages are estimates from module text — in-game values may differ slightly.
-      </p>
     </div>
   );
 }
