@@ -82,6 +82,11 @@ export interface ActivityEntry {
 }
 
 /** Module placed in the drag-and-drop planner (denormalized for sharing). */
+export interface AncestorStat {
+  stat: string;
+  value: number;
+}
+
 export interface PlacedModule {
   moduleId: string;
   level: number;
@@ -92,6 +97,19 @@ export interface PlacedModule {
   tier: string;
   /** For ancestor/resolution modules where the user edits effect values. */
   customPreview?: string;
+  /** Structured ancestor module substats. */
+  ancestorStats?: {
+    positives: AncestorStat[];
+    negative?: AncestorStat;
+  };
+}
+
+export interface ExternalComponent {
+  slot: string;
+  baseStat: string;
+  baseValue: number;
+  substats: { stat: string; value: number }[];
+  set?: string;
 }
 
 /** Reactor attached to a specific build (may or may not be saved in inventory). */
@@ -123,6 +141,10 @@ export interface BuildEntry {
   reactor?: BuildReactor | null;
   /** Target level for stat calculations (descendant 1-40, weapon 1-100). */
   targetLevel?: number;
+  /** Arche level for descendant builds. */
+  archeLevel?: number;
+  /** 4 external component slots for descendant builds. */
+  externalComponents?: ExternalComponent[];
   reactorNotes: string;
   notes: string;
   updatedAt: string;

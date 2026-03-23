@@ -36,7 +36,7 @@ import {
   type DragEndEvent,
   type DragStartEvent,
 } from "@dnd-kit/core";
-import type { PlacedModule, BuildReactor, ReactorSubstat } from "../tracker-client";
+import type { PlacedModule, BuildReactor, ReactorSubstat, ExternalComponent, AncestorStat } from "../tracker-client";
 import {
   type ModuleRecord,
   capacityAtLevel,
@@ -131,6 +131,8 @@ interface Props {
   archeLevel?: number;
   onArcheLevelChange?: (lv: number) => void;
   savedReactors?: { id: string; name: string; element: string; skillType: string; level: number; enhancement: string; substats: ReactorSubstat[] }[];
+  externalComponents?: ExternalComponent[];
+  onExternalComponentsChange?: (comps: ExternalComponent[]) => void;
 }
 
 // Child: Module library card
@@ -188,8 +190,8 @@ function SlotDrop({
       ) : (
         <div className="builder-slot-filled">
           <button type="button" className="builder-slot-x" onClick={onClear} aria-label="Remove module">{"\u00d7"}</button>
-          {isAncestor && onEditAncestor && (
-            <button type="button" className="builder-slot-edit" onClick={onEditAncestor} aria-label="Edit values" title="Edit ancestor values">{"\u270e"}</button>
+          {isAncestor && onEditAncestor && !placed.ancestorStats && (
+            <button type="button" className="builder-slot-edit" onClick={onEditAncestor} aria-label="Configure substats" title="Configure substats">{"\u270e"}</button>
           )}
           <div className="builder-slot-body">
             {mod?.image || placed.image
@@ -200,7 +202,16 @@ function SlotDrop({
               <span className={`builder-slot-socket ${mod?.tier === "Transcendent" ? "tier-transcendent" : ""}`}>{placed.socket}</span>
               <span className="builder-slot-cap">{placed.capacity} cap</span>
             </div>
-            {mod?.preview && (() => {
+            {isAncestor && placed.ancestorStats ? (
+              <div className="builder-slot-ancestor-stats">
+                {placed.ancestorStats.positives.map((p, i) => (
+                  <span key={i} className="ancestor-badge ancestor-badge-pos">+{p.value} {p.stat}</span>
+                ))}
+                {placed.ancestorStats.negative && (
+                  <span className="ancestor-badge ancestor-badge-neg">{placed.ancestorStats.negative.value} {placed.ancestorStats.negative.stat}</span>
+                )}
+              </div>
+            ) : mod?.preview ? (() => {
               const text = placed.customPreview ?? scalePreviewPercentagesForLevel(mod, placed.level);
               const hasNeg = /-\d+(?:\.\d+)?%/.test(text);
               return (
@@ -208,7 +219,7 @@ function SlotDrop({
                   {truncate(text, 96)}
                 </p>
               );
-            })()}
+            })() : null}
           </div>
           <div className="builder-slot-lvl" role="group" aria-label="Module level">
             <button type="button" className="builder-lvl-btn" onClick={() => onLevel(-1)} disabled={placed.level <= 0}>{"\u2212"}</button>
@@ -221,74 +232,285 @@ function SlotDrop({
   );
 }
 
-// Child: Ancestor module editor
+// Ancestor module data types
+type AncestorStatDef = { stat: string; buffRange: [number, number]; penaltyRange: [number, number]; unit: string; invert?: boolean };
+type AncestorModuleDef = { name: string; descendantIds: string[]; element: string; arches: string[]; extraStats: AncestorStatDef[] };
+type AncestorDb = {
+  tierThresholds: Record<string, number>;
+  sharedStats: AncestorStatDef[];
+  elementStats: Record<string, AncestorStatDef[]>;
+  archeStats: Record<string, AncestorStatDef[]>;
+  modules: AncestorModuleDef[];
+};
+
+function getAncestorStatPool(db: AncestorDb, mod: AncestorModuleDef): AncestorStatDef[] {
+  const pool = [...db.sharedStats];
+  if (db.elementStats[mod.element]) pool.push(...db.elementStats[mod.element]);
+  for (const a of mod.arches) {
+    if (db.archeStats[a]) pool.push(...db.archeStats[a]);
+  }
+  pool.push(...mod.extraStats);
+  return pool;
+}
+
+function qualityTier(value: number, range: [number, number], thresholds: Record<string, number>): string {
+  const span = range[1] - range[0];
+  if (span === 0) return "Transcendent";
+  const pos = Math.abs(value - range[0]) / Math.abs(span);
+  if (pos >= thresholds.Transcendent) return "Transcendent";
+  if (pos >= thresholds.Ultimate) return "Ultimate";
+  if (pos >= thresholds.Rare) return "Rare";
+  return "Common";
+}
+
+// Child: Ancestor module editor (structured substats)
 
 function AncestorEditor({
-  placed, mod, onSave, onClose,
+  placed, mod, descendantGameId, onSave, onClose,
 }: {
   placed: PlacedModule;
   mod: ModuleRecord;
-  onSave: (customPreview: string) => void;
+  descendantGameId: string | null;
+  onSave: (stats: { positives: AncestorStat[]; negative?: AncestorStat }) => void;
   onClose: () => void;
 }) {
-  const base = placed.customPreview ?? mod.preview ?? "";
-  const pctRe = /([+-]?\d+(?:\.\d+)?)%/g;
-  const parts: { before: string; value: string; after: string }[] = [];
-  let last = 0;
-  for (const m of base.matchAll(pctRe)) {
-    const idx = m.index ?? 0;
-    parts.push({ before: base.slice(last, idx), value: m[1], after: "" });
-    last = idx + m[0].length;
-  }
-  const trailing = base.slice(last);
+  const [db, setDb] = useState<AncestorDb | null>(null);
+  useEffect(() => {
+    fetch("/data/ancestor-modules.json")
+      .then((r) => r.ok ? r.json() : null)
+      .then((d) => setDb(d))
+      .catch(() => {});
+  }, []);
 
-  const [values, setValues] = useState(parts.map((p) => p.value));
+  const ancestorMod = useMemo(() => {
+    if (!db || !descendantGameId) return null;
+    return db.modules.find((m) => m.descendantIds.includes(descendantGameId)) ?? null;
+  }, [db, descendantGameId]);
+
+  const statPool = useMemo(() => {
+    if (!db || !ancestorMod) return [];
+    return getAncestorStatPool(db, ancestorMod);
+  }, [db, ancestorMod]);
+
+  const existing = placed.ancestorStats;
+  const [config, setConfig] = useState<"2+1" | "2+0" | "3+1" | "3+0">(
+    existing ? `${existing.positives.length}+${existing.negative ? "1" : "0"}` as "2+1" | "2+0" | "3+1" | "3+0" : "2+1"
+  );
+  const posCount = parseInt(config[0]);
+  const hasNeg = config.endsWith("+1");
+
+  const [pos, setPos] = useState<{ stat: string; value: string }[]>(
+    existing?.positives.map((p) => ({ stat: p.stat, value: String(p.value) })) ??
+    Array.from({ length: posCount }, () => ({ stat: "", value: "" }))
+  );
+  const [neg, setNeg] = useState<{ stat: string; value: string }>(
+    existing?.negative ? { stat: existing.negative.stat, value: String(existing.negative.value) } : { stat: "", value: "" }
+  );
+
+  useEffect(() => {
+    setPos((prev) => {
+      const next = [...prev];
+      while (next.length < posCount) next.push({ stat: "", value: "" });
+      return next.slice(0, posCount);
+    });
+  }, [posCount]);
 
   function save() {
-    let result = "";
-    parts.forEach((p, i) => {
-      result += p.before + (values[i] ?? p.value) + "%";
-    });
-    result += trailing;
-    onSave(result);
+    const positives: AncestorStat[] = pos.filter((p) => p.stat && p.value).map((p) => ({ stat: p.stat, value: parseFloat(p.value) }));
+    const negative = hasNeg && neg.stat && neg.value ? { stat: neg.stat, value: parseFloat(neg.value) } : undefined;
+    onSave({ positives, negative });
     onClose();
   }
 
-  if (parts.length === 0) {
+  if (!db || !ancestorMod) {
     return (
       <div className="builder-ancestor-editor">
-        <p className="muted">No % values to edit in this module.</p>
+        <p className="muted">Loading ancestor data{"\u2026"}</p>
         <button type="button" onClick={onClose}>Close</button>
       </div>
     );
   }
 
+  const usedStats = new Set([...pos.map((p) => p.stat), neg.stat].filter(Boolean));
+
   return (
     <div className="builder-ancestor-editor">
-      <h4>Edit Ancestor Values {"\u2014"} {mod.name}</h4>
-      <p className="muted" style={{ fontSize: "0.75rem", margin: "0.3rem 0" }}>
-        Adjust the % values to match your in-game rolls.
-      </p>
-      {parts.map((p, i) => {
-        const ctx = p.before.slice(-60).trim();
-        return (
-          <div key={i} className="builder-ancestor-row">
-            <span className="builder-ancestor-label">{ctx || `Value ${i + 1}`}</span>
+      <h4>{ancestorMod.name}</h4>
+      <div className="ancestor-config-row">
+        {(["2+1", "2+0", "3+1", "3+0"] as const).map((c) => (
+          <button key={c} type="button" className={`filter-chip${config === c ? " active" : ""}`} onClick={() => setConfig(c)}>
+            {c.replace("+", " pos / ") + " neg"}
+          </button>
+        ))}
+      </div>
+      <div className="ancestor-stats-form">
+        {pos.slice(0, posCount).map((p, i) => {
+          const def = statPool.find((d) => d.stat === p.stat);
+          const range = def?.buffRange;
+          const tier = range && p.value ? qualityTier(parseFloat(p.value), range, db.tierThresholds) : null;
+          return (
+            <div key={i} className="ancestor-stat-row">
+              <span className="ancestor-stat-label">Positive {i + 1}</span>
+              <select value={p.stat} onChange={(e) => { const n = [...pos]; n[i] = { ...n[i], stat: e.target.value }; setPos(n); }}>
+                <option value="">Select stat{"\u2026"}</option>
+                {statPool.map((d) => (
+                  <option key={d.stat} value={d.stat} disabled={usedStats.has(d.stat) && d.stat !== p.stat}>{d.stat}</option>
+                ))}
+              </select>
+              <input
+                type="number" step="0.01" value={p.value} placeholder={range ? `${range[0]} ~ ${range[1]}` : ""}
+                onChange={(e) => { const n = [...pos]; n[i] = { ...n[i], value: e.target.value }; setPos(n); }}
+                className="ancestor-value-input"
+              />
+              {tier && <span className={`ancestor-tier-badge ancestor-tier-${tier.toLowerCase()}`}>{tier}</span>}
+            </div>
+          );
+        })}
+        {hasNeg && (
+          <div className="ancestor-stat-row ancestor-stat-neg">
+            <span className="ancestor-stat-label">Negative</span>
+            <select value={neg.stat} onChange={(e) => setNeg({ ...neg, stat: e.target.value })}>
+              <option value="">Select stat{"\u2026"}</option>
+              {statPool.map((d) => (
+                <option key={d.stat} value={d.stat} disabled={usedStats.has(d.stat) && d.stat !== neg.stat}>{d.stat}</option>
+              ))}
+            </select>
             <input
-              type="number"
-              step="0.1"
-              value={values[i]}
-              onChange={(e) => { const v = [...values]; v[i] = e.target.value; setValues(v); }}
-              className="builder-ancestor-input"
+              type="number" step="0.01" value={neg.value}
+              placeholder={(() => { const def = statPool.find((d) => d.stat === neg.stat); return def ? `${def.penaltyRange[0]} ~ ${def.penaltyRange[1]}` : ""; })()}
+              onChange={(e) => setNeg({ ...neg, value: e.target.value })}
+              className="ancestor-value-input"
             />
-            <span>%</span>
           </div>
-        );
-      })}
+        )}
+      </div>
       <div className="builder-ancestor-actions">
         <button type="button" onClick={save}>Apply</button>
         <button type="button" className="btn-ghost" onClick={onClose}>Cancel</button>
       </div>
+    </div>
+  );
+}
+
+// External Components data types
+type ExtCompSlotDef = { name: string; substats: string[] };
+type ExtCompDb = {
+  slots: ExtCompSlotDef[];
+  baseStats: string[];
+  baseStatRanges: Record<string, { min: number; max: number }>;
+  substatRanges: Record<string, { min: number; max: number; unit: string }>;
+  sets: Record<string, { "2pc": string; "4pc": string }>;
+};
+
+// Child: External Components section
+
+function ExternalComponentsSection({
+  components, onChange,
+}: {
+  components: ExternalComponent[];
+  onChange: (comps: ExternalComponent[]) => void;
+}) {
+  const [db, setDb] = useState<ExtCompDb | null>(null);
+  useEffect(() => {
+    fetch("/data/external-components.json")
+      .then((r) => r.ok ? r.json() : null)
+      .then((d) => setDb(d))
+      .catch(() => {});
+  }, []);
+
+  const setNames = useMemo(() => db ? Object.keys(db.sets) : [], [db]);
+
+  function updateComp(idx: number, patch: Partial<ExternalComponent>) {
+    const next = [...components];
+    next[idx] = { ...next[idx], ...patch };
+    onChange(next);
+  }
+
+  function updateSubstat(compIdx: number, subIdx: number, field: "stat" | "value", val: string | number) {
+    const next = [...components];
+    const subs = [...next[compIdx].substats];
+    subs[subIdx] = { ...subs[subIdx], [field]: field === "value" ? Number(val) : val };
+    next[compIdx] = { ...next[compIdx], substats: subs };
+    onChange(next);
+  }
+
+  if (!db) return null;
+
+  const defaults = db.slots.map((s) => ({
+    slot: s.name,
+    baseStat: "",
+    baseValue: 0,
+    substats: [{ stat: "", value: 0 }, { stat: "", value: 0 }],
+    set: undefined,
+  }));
+
+  while (components.length < 4) {
+    components.push(defaults[components.length] ?? defaults[0]);
+  }
+
+  return (
+    <div className="builder-components-section">
+      <h4 className="builder-stats-h">External Components</h4>
+      <div className="builder-comp-grid">
+        {db.slots.map((slotDef, idx) => {
+          const comp = components[idx] ?? defaults[idx];
+          return (
+            <div key={slotDef.name} className="builder-comp-card">
+              <div className="builder-comp-header">{slotDef.name}</div>
+              <div className="builder-comp-stat-row">
+                <select value={comp.baseStat} onChange={(e) => updateComp(idx, { baseStat: e.target.value })}>
+                  <option value="">Base stat{"\u2026"}</option>
+                  {db.baseStats.map((s) => <option key={s} value={s}>{s}</option>)}
+                </select>
+                <input
+                  type="number" className="comp-val-input" value={comp.baseValue || ""}
+                  placeholder={comp.baseStat ? `${db.baseStatRanges[comp.baseStat]?.min ?? 0}` : "0"}
+                  onChange={(e) => updateComp(idx, { baseValue: Number(e.target.value) })}
+                />
+              </div>
+              {[0, 1].map((si) => (
+                <div key={si} className="builder-comp-stat-row builder-comp-sub">
+                  <select
+                    value={comp.substats[si]?.stat ?? ""}
+                    onChange={(e) => updateSubstat(idx, si, "stat", e.target.value)}
+                  >
+                    <option value="">Substat{"\u2026"}</option>
+                    {slotDef.substats.map((s) => <option key={s} value={s}>{s}</option>)}
+                  </select>
+                  <input
+                    type="number" className="comp-val-input" value={comp.substats[si]?.value || ""}
+                    placeholder={(() => { const r = db.substatRanges[comp.substats[si]?.stat]; return r ? String(r.min) : "0"; })()}
+                    onChange={(e) => updateSubstat(idx, si, "value", e.target.value)}
+                  />
+                </div>
+              ))}
+              <div className="builder-comp-stat-row">
+                <select value={comp.set ?? ""} onChange={(e) => updateComp(idx, { set: e.target.value || undefined })}>
+                  <option value="">No set</option>
+                  {setNames.map((s) => <option key={s} value={s}>{s}</option>)}
+                </select>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+      {(() => {
+        const setCounts: Record<string, number> = {};
+        components.forEach((c) => { if (c.set) setCounts[c.set] = (setCounts[c.set] ?? 0) + 1; });
+        const activeSets = Object.entries(setCounts).filter(([, count]) => count >= 2);
+        if (activeSets.length === 0) return null;
+        return (
+          <div className="builder-comp-set-bonuses">
+            {activeSets.map(([name, count]) => (
+              <div key={name} className="builder-comp-set-bonus">
+                <span className="comp-set-name">{name}</span>
+                <span className="comp-set-effect">{db.sets[name]?.["2pc"]}</span>
+                {count >= 4 && <span className="comp-set-effect comp-set-4pc">{db.sets[name]?.["4pc"]}</span>}
+              </div>
+            ))}
+          </div>
+        );
+      })()}
     </div>
   );
 }
@@ -489,6 +711,7 @@ function BuildPlannerPanelInner({
   form, setForm, moduleCatalog, moduleById, weaponNexonType, descendantGameId,
   hero = null, reactor = null, onReactorChange, targetLevel, onTargetLevelChange,
   archeLevel, onArcheLevelChange, savedReactors,
+  externalComponents, onExternalComponentsChange,
 }: Props) {
   const [activeDrag, setActiveDrag] = useState<ModuleRecord | null>(null);
   const [libSearch, setLibSearch] = useState("");
@@ -541,7 +764,7 @@ function BuildPlannerPanelInner({
     if (!form.targetKey) { setComputedStats(null); return; }
     try {
       if (form.targetType === "descendant" && descendantGameId) {
-        const s = await computeDescendantStats(descendantGameId, level, slots, moduleById, reactor);
+        const s = await computeDescendantStats(descendantGameId, level, slots, moduleById, reactor, externalComponents);
         setComputedStats(s);
       } else if (form.targetType === "weapon") {
         const weapDb = await import("@/lib/tfd-stat-engine").then((m) => m.loadWeapStats());
@@ -555,7 +778,7 @@ function BuildPlannerPanelInner({
         }
       }
     } catch { /* stat computation is best-effort */ }
-  }, [form.targetKey, form.targetType, descendantGameId, level, slots, moduleById, reactor]);
+  }, [form.targetKey, form.targetType, descendantGameId, level, slots, moduleById, reactor, externalComponents]);
 
   useEffect(() => { recomputeStats(); }, [recomputeStats]);
 
@@ -663,6 +886,18 @@ function BuildPlannerPanelInner({
       const cur = row[slotIndex];
       if (!cur) return f;
       row[slotIndex] = { ...cur, customPreview };
+      return { ...f, plannerSlots: row };
+    });
+  }
+
+  function saveAncestorStats(slotIndex: number, stats: { positives: AncestorStat[]; negative?: AncestorStat }) {
+    setForm((f) => {
+      const row = [...(f.plannerSlots ?? [])];
+      const cur = row[slotIndex];
+      if (!cur) return f;
+      const summary = stats.positives.map((p) => `${p.stat}: +${p.value}`).join(", ") +
+        (stats.negative ? `, ${stats.negative.stat}: ${stats.negative.value}` : "");
+      row[slotIndex] = { ...cur, ancestorStats: stats, customPreview: summary };
       return { ...f, plannerSlots: row };
     });
   }
@@ -1025,12 +1260,20 @@ function BuildPlannerPanelInner({
               <AncestorEditor
                 placed={slots[editingSlot]!}
                 mod={moduleById.get(slots[editingSlot]!.moduleId)!}
-                onSave={(cp) => saveAncestorPreview(editingSlot, cp)}
+                descendantGameId={descendantGameId}
+                onSave={(stats) => saveAncestorStats(editingSlot, stats)}
                 onClose={() => setEditingSlot(null)}
               />
             )}
 
             <ReactorSection reactor={reactor} onChange={onReactorChange ?? (() => {})} savedReactors={savedReactors} />
+
+            {form.targetType === "descendant" && onExternalComponentsChange && (
+              <ExternalComponentsSection
+                components={externalComponents ?? []}
+                onChange={onExternalComponentsChange}
+              />
+            )}
           </section>
 
           {/* RIGHT: Module library */}

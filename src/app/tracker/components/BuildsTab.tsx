@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { useSession } from "next-auth/react";
-import type { TrackerState, BuildEntry, PlacedModule, BuildReactor } from "../tracker-client";
+import type { TrackerState, BuildEntry, PlacedModule, BuildReactor, ExternalComponent } from "../tracker-client";
 import { uuid } from "@/lib/uuid";
 import { BuildPlannerPanel, type PlannerFormSlice, type PlannerHeroProps } from "./BuildPlannerPanel";
 import { WEAPON_TYPE_TO_NEXON, type ModuleRecord, slotCountForTarget } from "@/lib/tfd-modules";
@@ -73,6 +73,7 @@ export function BuildsTab({ state, setState }: Props) {
     reactor: BuildReactor | null;
     targetLevel: number;
     archeLevel: number;
+    externalComponents: ExternalComponent[];
     reactorNotes: string;
     notes: string;
   }>({
@@ -84,6 +85,7 @@ export function BuildsTab({ state, setState }: Props) {
     reactor: null,
     targetLevel: 40,
     archeLevel: 0,
+    externalComponents: [],
     reactorNotes: "",
     notes: "",
   });
@@ -144,6 +146,7 @@ export function BuildsTab({ state, setState }: Props) {
       reactor: null,
       targetLevel: 40,
       archeLevel: 0,
+      externalComponents: [],
       reactorNotes: "",
       notes: "",
     });
@@ -182,6 +185,7 @@ export function BuildsTab({ state, setState }: Props) {
       reactor: form.reactor ?? null,
       targetLevel: form.targetLevel,
       archeLevel: form.archeLevel,
+      externalComponents: form.externalComponents.length > 0 ? form.externalComponents : undefined,
       reactorNotes: form.reactorNotes.trim(),
       notes: form.notes.trim(),
       updatedAt: now,
@@ -226,6 +230,7 @@ export function BuildsTab({ state, setState }: Props) {
       reactor: b.reactor ?? null,
       targetLevel: b.targetLevel ?? (b.targetType === "weapon" ? 100 : 40),
       archeLevel: ((b as unknown as Record<string, unknown>).archeLevel as number) ?? 0,
+      externalComponents: b.externalComponents ?? [],
       reactorNotes: b.reactorNotes ?? "",
       notes: b.notes ?? "",
     });
@@ -443,6 +448,8 @@ export function BuildsTab({ state, setState }: Props) {
                 enhancement: r.enhancement,
                 substats: r.substats ?? [],
               }))}
+              externalComponents={form.externalComponents}
+              onExternalComponentsChange={(comps) => setForm((f) => ({ ...f, externalComponents: comps }))}
             />
           )}
 

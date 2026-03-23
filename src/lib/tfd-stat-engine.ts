@@ -150,12 +150,35 @@ function computeReactorContribution(reactor: BuildReactor | null): Record<string
 
 // ── Public API ───────────────────────────────────────────────────────────────
 
+interface ExternalComponentInput {
+  baseStat: string;
+  baseValue: number;
+  substats: { stat: string; value: number }[];
+}
+
+function computeExternalComponents(components?: ExternalComponentInput[]): Record<string, number> {
+  const out: Record<string, number> = {};
+  if (!components) return out;
+  for (const c of components) {
+    if (c.baseStat && c.baseValue) {
+      out[c.baseStat] = (out[c.baseStat] ?? 0) + c.baseValue;
+    }
+    for (const s of c.substats) {
+      if (s.stat && s.value) {
+        out[s.stat] = (out[s.stat] ?? 0) + s.value;
+      }
+    }
+  }
+  return out;
+}
+
 export async function computeDescendantStats(
   descendantId: string,
   level: number,
   slots: (PlacedSlot | null)[],
   moduleById: Map<string, ModuleRecord>,
   reactor: BuildReactor | null,
+  extComponents?: ExternalComponentInput[],
 ): Promise<ComputedStats> {
   const db = await loadDescStats();
   const entry = db[descendantId];
@@ -170,6 +193,7 @@ export async function computeDescendantStats(
 
   const modifiers = collectModifiers(slots, moduleById);
   const reactorMods = computeReactorContribution(reactor);
+  const extMods = computeExternalComponents(extComponents);
 
   const final: Record<string, number> = { ...base };
   const allModKeys = new Set([...Object.keys(modifiers), ...Object.keys(reactorMods)]);
@@ -183,6 +207,10 @@ export async function computeDescendantStats(
     if (matchedBase !== null) {
       final[matchedBase.name] = matchedBase.value * (1 + totalPct / 100);
     }
+  }
+
+  for (const [stat, flat] of Object.entries(extMods)) {
+    final[stat] = (final[stat] ?? 0) + flat;
   }
 
   for (const k of Object.keys(final)) {

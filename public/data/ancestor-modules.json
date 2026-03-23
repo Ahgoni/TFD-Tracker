@@ -1,0 +1,209 @@
+{
+  "tierThresholds": { "Common": 0.25, "Rare": 0.50, "Ultimate": 0.75, "Transcendent": 0.90 },
+  "sharedStats": [
+    { "stat": "Skill Cooldown", "buffRange": [-0.20, -0.05], "penaltyRange": [0.03, 0.10], "unit": "x", "invert": true },
+    { "stat": "Skill Cost", "buffRange": [-0.22, -0.06], "penaltyRange": [0.03, 0.11], "unit": "x", "invert": true },
+    { "stat": "Skill Duration", "buffRange": [0.12, 0.45], "penaltyRange": [-0.22, -0.06], "unit": "x" },
+    { "stat": "Skill Effect Range", "buffRange": [0.21, 0.77], "penaltyRange": [-0.39, -0.10], "unit": "x" },
+    { "stat": "Skill Critical Hit Rate", "buffRange": [0.66, 2.50], "penaltyRange": [-1.25, -0.33], "unit": "%" },
+    { "stat": "Skill Critical Hit Damage", "buffRange": [0.44, 1.65], "penaltyRange": [-0.82, -0.22], "unit": "%" },
+    { "stat": "Max HP", "buffRange": [0.27, 1.01], "penaltyRange": [-0.50, -0.13], "unit": "x" },
+    { "stat": "Max Shield", "buffRange": [0.53, 2.01], "penaltyRange": [-1.01, -0.27], "unit": "x" },
+    { "stat": "DEF", "buffRange": [0.56, 2.10], "penaltyRange": [-1.05, -0.28], "unit": "x" }
+  ],
+  "elementStats": {
+    "Fire": [
+      { "stat": "Fire Skill Power Boost Ratio", "buffRange": [0.10, 0.38], "penaltyRange": [-0.19, -0.05], "unit": "x" },
+      { "stat": "Fire Skill Modifier", "buffRange": [0.21, 0.78], "penaltyRange": [-0.39, -0.10], "unit": "x" }
+    ],
+    "Chill": [
+      { "stat": "Chill Skill Power Boost Ratio", "buffRange": [0.10, 0.38], "penaltyRange": [-0.19, -0.05], "unit": "x" },
+      { "stat": "Chill Skill Modifier", "buffRange": [0.21, 0.78], "penaltyRange": [-0.39, -0.10], "unit": "x" }
+    ],
+    "Electric": [
+      { "stat": "Electric Skill Power Boost Ratio", "buffRange": [0.10, 0.38], "penaltyRange": [-0.19, -0.05], "unit": "x" },
+      { "stat": "Electric Skill Modifier", "buffRange": [0.21, 0.78], "penaltyRange": [-0.39, -0.10], "unit": "x" }
+    ],
+    "Toxic": [
+      { "stat": "Toxic Skill Power Boost Ratio", "buffRange": [0.10, 0.38], "penaltyRange": [-0.19, -0.05], "unit": "x" },
+      { "stat": "Toxic Skill Modifier", "buffRange": [0.21, 0.78], "penaltyRange": [-0.39, -0.10], "unit": "x" }
+    ],
+    "Non-Attribute": [
+      { "stat": "Non-Attribute Skill Power Boost Ratio", "buffRange": [0.14, 0.54], "penaltyRange": [-0.27, -0.07], "unit": "x" }
+    ]
+  },
+  "archeStats": {
+    "Tech": [
+      { "stat": "Tech Skill Power Boost Ratio", "buffRange": [0.10, 0.38], "penaltyRange": [-0.19, -0.05], "unit": "x" },
+      { "stat": "Tech Skill Modifier", "buffRange": [0.21, 0.78], "penaltyRange": [-0.39, -0.10], "unit": "x" }
+    ],
+    "Fusion": [
+      { "stat": "Fusion Skill Power Boost Ratio", "buffRange": [0.10, 0.38], "penaltyRange": [-0.19, -0.05], "unit": "x" },
+      { "stat": "Fusion Skill Modifier", "buffRange": [0.21, 0.78], "penaltyRange": [-0.39, -0.10], "unit": "x" }
+    ],
+    "Singular": [
+      { "stat": "Singular Skill Power Boost Ratio", "buffRange": [0.10, 0.38], "penaltyRange": [-0.19, -0.05], "unit": "x" },
+      { "stat": "Singular Skill Modifier", "buffRange": [0.21, 0.78], "penaltyRange": [-0.39, -0.10], "unit": "x" }
+    ],
+    "Dimension": [
+      { "stat": "Dimension Skill Power Boost Ratio", "buffRange": [0.10, 0.38], "penaltyRange": [-0.19, -0.05], "unit": "x" },
+      { "stat": "Dimension Skill Modifier", "buffRange": [0.21, 0.78], "penaltyRange": [-0.39, -0.10], "unit": "x" }
+    ]
+  },
+  "modules": [
+    {
+      "name": "Grenadier's Resolution",
+      "descendantIds": ["101000001", "101000004"],
+      "element": "Fire",
+      "arches": ["Tech", "Singular"],
+      "extraStats": [{ "stat": "Max MP", "buffRange": [0.05, 0.20], "penaltyRange": [-0.10, -0.03], "unit": "x" }]
+    },
+    {
+      "name": "Guardian's Resolution",
+      "descendantIds": ["101000002", "101000007"],
+      "element": "Non-Attribute",
+      "arches": ["Tech", "Dimension"],
+      "extraStats": []
+    },
+    {
+      "name": "Hunter's Resolution",
+      "descendantIds": ["101000003", "101000010"],
+      "element": "Chill",
+      "arches": ["Fusion", "Tech"],
+      "extraStats": []
+    },
+    {
+      "name": "Tech Expert's Resolution",
+      "descendantIds": ["101000005"],
+      "element": "Non-Attribute",
+      "arches": ["Dimension", "Singular"],
+      "extraStats": []
+    },
+    {
+      "name": "Runner's Resolution",
+      "descendantIds": ["101000006", "101000019"],
+      "element": "Electric",
+      "arches": ["Fusion", "Singular"],
+      "extraStats": [{ "stat": "Max MP", "buffRange": [0.05, 0.20], "penaltyRange": [-0.10, -0.03], "unit": "x" }]
+    },
+    {
+      "name": "Dominator's Resolution",
+      "descendantIds": ["101000008", "101000023"],
+      "element": "Toxic",
+      "arches": ["Tech", "Dimension"],
+      "extraStats": []
+    },
+    {
+      "name": "Thirster's Resolution",
+      "descendantIds": ["101000009", "101000020"],
+      "element": "Non-Attribute",
+      "arches": ["Singular", "Dimension"],
+      "extraStats": []
+    },
+    {
+      "name": "Assassin's Resolution",
+      "descendantIds": ["101000011", "101000025"],
+      "element": "Electric",
+      "arches": ["Fusion", "Dimension"],
+      "extraStats": []
+    },
+    {
+      "name": "Chef's Resolution",
+      "descendantIds": ["101000012", "101000028"],
+      "element": "Fire",
+      "arches": ["Dimension", "Singular"],
+      "extraStats": []
+    },
+    {
+      "name": "Shape of Water's Resolution",
+      "descendantIds": ["101000013", "101000022"],
+      "element": "Non-Attribute",
+      "arches": ["Fusion", "Dimension"],
+      "extraStats": [{ "stat": "Max MP", "buffRange": [0.05, 0.20], "penaltyRange": [-0.10, -0.03], "unit": "x" }]
+    },
+    {
+      "name": "Controller's Resolution",
+      "descendantIds": ["101000014"],
+      "element": "Non-Attribute",
+      "arches": ["Tech", "Dimension"],
+      "extraStats": []
+    },
+    {
+      "name": "Explosives Master's Resolution",
+      "descendantIds": ["101000015"],
+      "element": "Fire",
+      "arches": ["Tech", "Fusion"],
+      "extraStats": []
+    },
+    {
+      "name": "Quartermaster's Resolution",
+      "descendantIds": ["101000016"],
+      "element": "Non-Attribute",
+      "arches": ["Singular", "Dimension"],
+      "extraStats": []
+    },
+    {
+      "name": "Medic's Resolution",
+      "descendantIds": ["101000017", "101000032"],
+      "element": "Non-Attribute",
+      "arches": ["Singular", "Fusion"],
+      "extraStats": [{ "stat": "Max MP", "buffRange": [0.05, 0.20], "penaltyRange": [-0.10, -0.03], "unit": "x" }]
+    },
+    {
+      "name": "Artist's Resolution",
+      "descendantIds": ["101000018", "101000030"],
+      "element": "Non-Attribute",
+      "arches": ["Tech", "Singular"],
+      "extraStats": []
+    },
+    {
+      "name": "Marksman's Resolution",
+      "descendantIds": ["101000021"],
+      "element": "Chill",
+      "arches": ["Dimension", "Singular"],
+      "extraStats": []
+    },
+    {
+      "name": "Adventurer's Resolution",
+      "descendantIds": ["101000024"],
+      "element": "Toxic",
+      "arches": ["Fusion", "Singular"],
+      "extraStats": []
+    },
+    {
+      "name": "Snare's Resolution",
+      "descendantIds": ["101000026"],
+      "element": "Electric",
+      "arches": ["Singular", "Tech"],
+      "extraStats": [{ "stat": "Max MP", "buffRange": [0.05, 0.20], "penaltyRange": [-0.10, -0.03], "unit": "x" }]
+    },
+    {
+      "name": "Hope's Resolution",
+      "descendantIds": ["101000027"],
+      "element": "Fire",
+      "arches": ["Singular", "Dimension"],
+      "extraStats": []
+    },
+    {
+      "name": "Tactician's Resolution",
+      "descendantIds": ["101000029"],
+      "element": "Non-Attribute",
+      "arches": ["Tech", "Fusion"],
+      "extraStats": []
+    },
+    {
+      "name": "Pioneer's Resolution",
+      "descendantIds": ["101000031"],
+      "element": "Toxic",
+      "arches": ["Tech", "Fusion"],
+      "extraStats": []
+    },
+    {
+      "name": "Delightful Resolution",
+      "descendantIds": ["101000033"],
+      "element": "Chill",
+      "arches": ["Fusion", "Singular"],
+      "extraStats": []
+    }
+  ]
+}

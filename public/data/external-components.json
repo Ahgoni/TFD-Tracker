@@ -1,0 +1,96 @@
+{
+  "slots": [
+    {
+      "name": "Auxiliary Power",
+      "substats": ["Fire Resistance", "MP Recovery Out of Combat", "Module Drop Rate", "Kuiper Drop Rate", "DBNO Duration"]
+    },
+    {
+      "name": "Sensor",
+      "substats": ["Max MP", "Chill Resistance", "Shield Recovery Out of Combat", "Consumable Drop Rate", "Character EXP Gain", "MP Recovery in Combat", "HP Recovery Modifier"]
+    },
+    {
+      "name": "Memory",
+      "substats": ["DEF", "Electric Resistance", "Shield Recovery in Combat", "MP Recovery Modifier", "Gold Drop Rate", "Firearm Proficiency Gain", "Ecive Radius"]
+    },
+    {
+      "name": "Processor",
+      "substats": ["Max Shield", "Toxin Resistance", "Equipment Drop Rate", "Shield Recovery Modifier", "Item Acquisition Distance", "Ecive Display Time"]
+    }
+  ],
+  "baseStats": ["Max HP", "Max Shield", "DEF"],
+  "baseStatRanges": {
+    "Max HP": { "min": 411, "max": 914 },
+    "Max Shield": { "min": 124, "max": 283 },
+    "DEF": { "min": 1724, "max": 4249 }
+  },
+  "substatRanges": {
+    "Max HP": { "min": 411, "max": 914, "unit": "" },
+    "Max Shield": { "min": 124, "max": 283, "unit": "" },
+    "Max MP": { "min": 110, "max": 159, "unit": "" },
+    "DEF": { "min": 1724, "max": 4249, "unit": "" },
+    "Fire Resistance": { "min": 1608, "max": 3860, "unit": "" },
+    "Chill Resistance": { "min": 1608, "max": 3860, "unit": "" },
+    "Electric Resistance": { "min": 1608, "max": 3860, "unit": "" },
+    "Toxin Resistance": { "min": 1608, "max": 3860, "unit": "" },
+    "MP Recovery Out of Combat": { "min": 1.791, "max": 2.454, "unit": "" },
+    "MP Recovery in Combat": { "min": 0.208, "max": 0.287, "unit": "" },
+    "MP Recovery Modifier": { "min": 0.108, "max": 0.16, "unit": "x" },
+    "Shield Recovery Out of Combat": { "min": 11.311, "max": 16.632, "unit": "" },
+    "Shield Recovery in Combat": { "min": 3.271, "max": 5.033, "unit": "" },
+    "Shield Recovery Modifier": { "min": 0.057, "max": 0.085, "unit": "x" },
+    "HP Recovery Modifier": { "min": 0.057, "max": 0.085, "unit": "x" },
+    "Module Drop Rate": { "min": 0.125, "max": 0.191, "unit": "x" },
+    "Kuiper Drop Rate": { "min": 0.111, "max": 0.168, "unit": "x" },
+    "Character EXP Gain": { "min": 0.125, "max": 0.191, "unit": "x" },
+    "Firearm Proficiency Gain": { "min": 0.125, "max": 0.191, "unit": "x" },
+    "Consumable Drop Rate": { "min": 0.125, "max": 0.191, "unit": "x" },
+    "Equipment Drop Rate": { "min": 0.125, "max": 0.191, "unit": "x" },
+    "Gold Drop Rate": { "min": 0.125, "max": 0.191, "unit": "x" },
+    "DBNO Duration": { "min": 0.208, "max": 0.318, "unit": "x" },
+    "Item Acquisition Distance": { "min": 0.208, "max": 0.318, "unit": "x" },
+    "Ecive Radius": { "min": 0.208, "max": 0.318, "unit": "x" },
+    "Ecive Display Time": { "min": 0.208, "max": 0.318, "unit": "x" }
+  },
+  "sets": {
+    "Annihilation": {
+      "2pc": "Firearm ATK +7%",
+      "4pc": "Firearm ATK +15%, Firearm Critical Hit Rate +15%"
+    },
+    "Slayer": {
+      "2pc": "Skill Power +7%",
+      "4pc": "Skill Power +15%, Skill Critical Hit Rate +15%"
+    },
+    "Polar Night": {
+      "2pc": "Chill Skill Power +7%",
+      "4pc": "Chill Skill Power +22%"
+    },
+    "Inferno": {
+      "2pc": "Fire Skill Power +7%",
+      "4pc": "Fire Skill Power +22%"
+    },
+    "Thunderstrike": {
+      "2pc": "Electric Skill Power +7%",
+      "4pc": "Electric Skill Power +22%"
+    },
+    "Venom": {
+      "2pc": "Toxin Skill Power +7%",
+      "4pc": "Toxin Skill Power +22%"
+    },
+    "Tingling": {
+      "2pc": "Max Shield +14%",
+      "4pc": "Max Shield +30%, Shield Recovery in Combat +15%"
+    },
+    "Fortress": {
+      "2pc": "DEF +14%",
+      "4pc": "DEF +30%, Damage Reduction +3%"
+    },
+    "HP Collector": {
+      "2pc": "Max HP +14%",
+      "4pc": "Max HP +30%, HP Recovery Modifier +15%"
+    },
+    "MP Collector": {
+      "2pc": "Max MP +14%",
+      "4pc": "Max MP +30%, MP Recovery Modifier +15%"
+    }
+  }
+}
