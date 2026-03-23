@@ -35,6 +35,7 @@ export function ProfileMenu({ onShare, shareActive, sharePrivacy, onPrivacyChang
   }, []);
 
   const initial = session?.user?.name?.[0]?.toUpperCase() ?? "U";
+  const claimedUsername = (session?.user as Record<string, unknown> | undefined)?.username as string | null;
 
   return (
     <div className="profile-menu" ref={ref}>
@@ -67,6 +68,9 @@ export function ProfileMenu({ onShare, shareActive, sharePrivacy, onPrivacyChang
             <div>
               <div className="profile-name">{session?.user?.name ?? "User"}</div>
               <div className="profile-sub">Discord account</div>
+              {claimedUsername && (
+                <div className="profile-username">@{claimedUsername}</div>
+              )}
             </div>
           </div>
 
