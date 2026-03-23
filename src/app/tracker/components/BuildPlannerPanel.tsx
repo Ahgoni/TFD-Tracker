@@ -668,11 +668,18 @@ function BuildPlannerPanelInner({
 
   const affectedSkillNames = useMemo(() => {
     if (!equippedTranscendent) return new Set<string>();
+    const modName = (equippedTranscendent.mod.name ?? "").toLowerCase();
     const preview = (equippedTranscendent.mod.preview ?? "").toLowerCase();
+    const searchText = modName + " " + preview;
     const skillNames = descSkills.map((sk) => String(sk.name ?? ""));
     const matched = new Set<string>();
     for (const name of skillNames) {
-      if (name && preview.includes(name.toLowerCase())) matched.add(name);
+      if (!name) continue;
+      const lc = name.toLowerCase();
+      if (searchText.includes(lc) || lc.includes(modName)) matched.add(name);
+    }
+    if (matched.size === 0) {
+      skillNames.forEach((n) => { if (n) matched.add(n); });
     }
     return matched;
   }, [equippedTranscendent, descSkills]);
@@ -950,7 +957,7 @@ function BuildPlannerPanelInner({
             <div className="builder-lib-filters">
               <input
                 className="builder-lib-search"
-                placeholder="Search name or effect\u2026"
+                placeholder={"Search name or effect\u2026"}
                 value={libSearch}
                 onChange={(e) => setLibSearch(e.target.value)}
                 aria-label="Search modules"

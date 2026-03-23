@@ -232,6 +232,7 @@ async function fetchAndMergeDescendantsCatalog(current: DescendantEntry[]): Prom
       if (existing) {
         return {
           ...existing,
+          id: c.id,
           element: c.element,
           skills: c.skillTypes,
           portrait: c.image,
