@@ -516,10 +516,12 @@ function BuildPlannerPanelInner({
     () => filterModuleLibrary(moduleCatalog, form.targetType, { weaponNexonType, descendantId: descendantGameId }),
     [moduleCatalog, form.targetType, weaponNexonType, descendantGameId],
   );
-  const libraryFiltered = useMemo(
-    () => libraryBase.filter((m) => matchesModuleFilters(m, libSearch, libTier, libSocket)),
-    [libraryBase, libSearch, libTier, libSocket],
-  );
+  const libraryFiltered = useMemo(() => {
+    const TIER_ORDER: Record<string, number> = { Transcendent: 0, Ultimate: 1, Rare: 2, Normal: 3 };
+    return libraryBase
+      .filter((m) => matchesModuleFilters(m, libSearch, libTier, libSocket))
+      .sort((a, b) => (TIER_ORDER[a.tier] ?? 9) - (TIER_ORDER[b.tier] ?? 9));
+  }, [libraryBase, libSearch, libTier, libSocket]);
   const socketOptions = useMemo(() => {
     const s = new Set<string>();
     libraryBase.forEach((m) => { if (m.socket) s.add(m.socket); });
