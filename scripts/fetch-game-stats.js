@@ -137,6 +137,23 @@ async function main() {
     console.log(`  ${patched}/${catalog.length} weapon icons patched`);
   }
 
+  const compPath = path.join(OUT_DIR, "nexon-compliance.json");
+  let comp = {
+    notice:
+      "NEXON Open API requires updating data pulled from the API at least every 30 days. Static meta: npm run fetch:data / fetch:stats.",
+    canonicalLibraryBase: "https://tfd.nexon.com/en/library",
+  };
+  if (fs.existsSync(compPath)) {
+    try {
+      comp = { ...comp, ...JSON.parse(fs.readFileSync(compPath, "utf8")) };
+    } catch {
+      /* ignore */
+    }
+  }
+  comp.lastStatsPullAt = new Date().toISOString();
+  fs.writeFileSync(compPath, JSON.stringify(comp, null, 2));
+  console.log("  Updated nexon-compliance.json (lastStatsPullAt)");
+
   console.log("Done.");
 }
 

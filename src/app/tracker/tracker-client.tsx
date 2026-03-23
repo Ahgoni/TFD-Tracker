@@ -12,6 +12,7 @@ import { MasteryTab } from "./components/MasteryTab";
 import { BuildsTab } from "./components/BuildsTab";
 import { ProfileMenu } from "./components/ProfileMenu";
 import { FriendsTab } from "./components/FriendsTab";
+import { PlayerLookupTab } from "./components/PlayerLookupTab";
 import { normalizeWeaponName } from "@/lib/tracker-data";
 import { fetchDescendantsCatalogRows } from "@/lib/fetch-game-catalog";
 import type { DescendantCatalogRow } from "@/lib/nexon-catalog-transform";
@@ -176,7 +177,18 @@ export interface TrackerState {
 }
 
 const DEFAULT_STATE: TrackerState = {
-  tabs: ["Welcome", "Descendants", "Weapons", "Reactors", "Materials", "Farming", "Mastery", "Builds", "Friends"],
+  tabs: [
+    "Welcome",
+    "Descendants",
+    "Weapons",
+    "Reactors",
+    "Materials",
+    "Farming",
+    "Mastery",
+    "Player Lookup",
+    "Builds",
+    "Friends",
+  ],
   activeTab: "Welcome",
   activities: [],
   weapons: [],
@@ -330,6 +342,15 @@ export function TrackerClient() {
           const fi = loaded.tabs.indexOf("Friends");
           if (fi >= 0) loaded.tabs.splice(fi, 0, "Builds");
           else loaded.tabs = [...loaded.tabs, "Builds"];
+        }
+        if (!loaded.tabs.includes("Player Lookup")) {
+          const bi = loaded.tabs.indexOf("Builds");
+          if (bi >= 0) loaded.tabs.splice(bi, 0, "Player Lookup");
+          else {
+            const fi = loaded.tabs.indexOf("Friends");
+            if (fi >= 0) loaded.tabs.splice(fi, 0, "Player Lookup");
+            else loaded.tabs.push("Player Lookup");
+          }
         }
         loaded.tabs = loaded.tabs.filter((t) => t !== "Progression");
         if (!Array.isArray(loaded.builds)) loaded.builds = [];
@@ -534,6 +555,7 @@ export function TrackerClient() {
         {activeTab === "Mastery" && (
           <MasteryTab state={state} />
         )}
+        {activeTab === "Player Lookup" && <PlayerLookupTab />}
         {activeTab === "Builds" && (
           <BuildsTab state={state} setState={setState} />
         )}

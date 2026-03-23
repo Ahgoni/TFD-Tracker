@@ -1,5 +1,16 @@
 export const defaultTrackerState = {
-  tabs: ["Welcome", "Descendants", "Weapons", "Reactors", "Materials", "Farming", "Mastery", "Builds", "Friends"],
+  tabs: [
+    "Welcome",
+    "Descendants",
+    "Weapons",
+    "Reactors",
+    "Materials",
+    "Farming",
+    "Mastery",
+    "Player Lookup",
+    "Builds",
+    "Friends",
+  ],
   activeTab: "Welcome",
   activities: [],
   weapons: [],

@@ -4,7 +4,7 @@
  *
  *   npm run fetch:data
  */
-import { mkdirSync, writeFileSync } from "fs";
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from "fs";
 import { dirname, resolve } from "path";
 import { fileURLToPath } from "url";
 import {
@@ -18,6 +18,24 @@ import {
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const OUT = resolve(__dirname, "../public/data");
+
+function touchNexonComplianceMetadata() {
+  const p = resolve(OUT, "nexon-compliance.json");
+  let data: Record<string, unknown> = {
+    notice:
+      "NEXON Open API requires updating data pulled from the API at least every 30 days. Static meta: npm run fetch:data / fetch:stats.",
+    canonicalLibraryBase: "https://tfd.nexon.com/en/library",
+  };
+  if (existsSync(p)) {
+    try {
+      data = { ...data, ...JSON.parse(readFileSync(p, "utf-8")) };
+    } catch {
+      /* keep defaults */
+    }
+  }
+  data.lastStaticMetadataPullAt = new Date().toISOString();
+  writeFileSync(p, JSON.stringify(data, null, 2));
+}
 
 async function main() {
   mkdirSync(OUT, { recursive: true });
@@ -46,6 +64,9 @@ async function main() {
 
   writeFileSync(resolve(OUT, "modules.json"), JSON.stringify(modules, null, 2));
   console.log(`  Wrote ${modules.length} modules`);
+
+  touchNexonComplianceMetadata();
+  console.log("  Updated public/data/nexon-compliance.json (lastStaticMetadataPullAt)");
 
   console.log("Done.");
 }
