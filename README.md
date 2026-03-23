@@ -11,6 +11,10 @@ This app adds Discord login and private per-user cloud state for The First Desce
    - `npm run prisma:migrate`
 4. Start app: `npm run dev`
 
+## Architecture & UX vision
+
+Product direction (Overframe-tier discovery, TFD tier tokens, patch-aware roadmap) lives in **`docs/ARCHITECTURE_ROADMAP.md`**. Cursor agents follow **`.cursor/rules/design-system.mdc`** for UI consistency.
+
 ## Game data (canonical: Nexon)
 
 Names, skills, modules, and stats should match **Nexon’s official library**, e.g. [Descendants](https://tfd.nexon.com/en/library/descendants). This app imports the same data via Nexon’s public Open API (`open.api.nexon.com/static/tfd/meta/en/…`) — see `public/data/README.md` and `npm run fetch:data` / `npm run fetch:stats`.
