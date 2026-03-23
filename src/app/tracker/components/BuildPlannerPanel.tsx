@@ -662,6 +662,43 @@ function BuildPlannerPanelInner({
 
   // ── Render ───────────────────────────────────────────────────────────────
 
+  // DEBUG: Check all values for objects that would crash React
+  const _debugChecks: string[] = [];
+  const _check = (label: string, val: unknown) => {
+    if (val !== null && val !== undefined && typeof val === "object" && !Array.isArray(val) && !(val instanceof Map) && !(val instanceof Set)) {
+      _debugChecks.push(`${label} = object with keys: ${Object.keys(val as Record<string, unknown>).join(",")}`);
+    }
+  };
+  if (hero) {
+    _check("hero.subtitle", hero.subtitle);
+    _check("hero.title", hero.title);
+    _check("hero.imageUrl", hero.imageUrl);
+    hero.badges?.forEach((b, i) => _check(`badge[${i}].label`, b.label));
+  }
+  _check("form.targetKey", form.targetKey);
+  _check("form.targetType", form.targetType);
+  _check("level", level);
+  _check("maxCap", maxCap);
+  _check("total", total);
+  libraryFiltered.slice(0, 5).forEach((m, i) => {
+    _check(`mod[${i}].name`, m.name);
+    _check(`mod[${i}].tier`, m.tier);
+    _check(`mod[${i}].socket`, m.socket);
+    _check(`mod[${i}].preview`, m.preview);
+    _check(`mod[${i}].cap`, capacityAtLevel(m, 0));
+  });
+  descSkills.forEach((sk, i) => {
+    _check(`skill[${i}].name`, sk.name);
+    _check(`skill[${i}].type`, sk.type);
+    _check(`skill[${i}].element`, sk.element);
+    _check(`skill[${i}].arche`, sk.arche);
+    _check(`skill[${i}].description`, sk.description);
+  });
+  if (computedStats) {
+    for (const [k, v] of Object.entries(computedStats.base)) _check(`stats.base.${k}`, v);
+    for (const [k, v] of Object.entries(computedStats.final)) _check(`stats.final.${k}`, v);
+  }
+
   if (!form.targetKey) {
     return <p className="muted builder-pick-first">Select a {form.targetType} above to open the build planner.</p>;
   }
@@ -690,6 +727,15 @@ function BuildPlannerPanelInner({
     }
     return names;
   }, [equippedTranscendent, descSkills]);
+
+  if (_debugChecks.length > 0) {
+    return (
+      <div style={{ padding: "1rem", background: "#1e1e2e", border: "2px solid #fbbf24", borderRadius: 8, color: "#fbbf24", fontSize: "0.85rem" }}>
+        <h4 style={{ color: "#f87171" }}>DEBUG: Object values detected that would crash React</h4>
+        <ul>{_debugChecks.map((msg, i) => <li key={i}>{msg}</li>)}</ul>
+      </div>
+    );
+  }
 
   return (
     <DndContext sensors={sensors} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
