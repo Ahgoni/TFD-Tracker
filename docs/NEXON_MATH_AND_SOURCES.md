@@ -8,7 +8,8 @@
 |------|--------|--------|
 | Descendant / weapon / weapon **catalog** rows | `open.api.nexon.com/static/tfd/meta/en/{descendant,weapon,module}.json` | Transformed in `src/lib/nexon-catalog-transform.ts` |
 | Per-level stats | `fetch-game-stats.js` → `descendant-stats.json`, `weapon-stats.json` | Build planner base stats |
-| **Live** catalog | `GET /api/nexon/catalog/*` | Same transforms; falls back to `public/data/*.json` |
+| **Live** catalog | `GET /api/nexon/catalog/*` | Same transforms; falls back to `public/data/*.json` for descendants/weapons/modules |
+| External **components** (icons + sets) | `GET /api/nexon/catalog/external-components` → Nexon `external-component.json` | `transformExternalComponentsFromNexon` — `set_option_detail` drives set name + 2pc/4pc text in Player Lookup |
 | External components (builder) | `public/data/external-components.json` | Hand-curated; align sets/substats with [components](https://tfd.nexon.com/en/library/components) when updating |
 | **Player** (in-game profile) | Authenticated **game** API: `/tfd/v1/id`, `/tfd/v1/user/*` | `NEXON_OPEN_API_KEY` — see `src/lib/nexon-game-api.ts` |
 | **Player Lookup** (visual profile) | Same game API via `GET /api/nexon/player?include=all` | `PlayerLookupTab.tsx` + `player-lookup/*`: resolves IDs with `fetch-game-catalog`; **Applied module stats** use `computeDescendantStats` / `computeWeaponStats` (preview-based % estimates) |

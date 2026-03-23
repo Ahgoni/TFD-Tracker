@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useState, type FormEvent } from "react";
 import {
   fetchDescendantsCatalogRows,
+  fetchExternalComponentCatalogRows,
   fetchModulesCatalog,
   fetchWeaponsCatalogRows,
 } from "@/lib/fetch-game-catalog";
@@ -42,16 +43,20 @@ export function PlayerLookupTab() {
 
   useEffect(() => {
     let cancelled = false;
-    Promise.all([fetchModulesCatalog(), fetchDescendantsCatalogRows(), fetchWeaponsCatalogRows()]).then(
-      ([m, d, w]) => {
-        if (cancelled) return;
-        setCatalogs({
-          modules: new Map((m ?? []).map((x) => [x.id, x])),
-          descendants: new Map((d ?? []).map((x) => [x.id, x])),
-          weapons: new Map((w ?? []).map((x) => [x.id, x])),
-        });
-      },
-    );
+    Promise.all([
+      fetchModulesCatalog(),
+      fetchDescendantsCatalogRows(),
+      fetchWeaponsCatalogRows(),
+      fetchExternalComponentCatalogRows(),
+    ]).then(([m, d, w, ext]) => {
+      if (cancelled) return;
+      setCatalogs({
+        modules: new Map((m ?? []).map((x) => [x.id, x])),
+        descendants: new Map((d ?? []).map((x) => [x.id, x])),
+        weapons: new Map((w ?? []).map((x) => [x.id, x])),
+        externalComponents: new Map((ext ?? []).map((x) => [x.id, x])),
+      });
+    });
     return () => {
       cancelled = true;
     };

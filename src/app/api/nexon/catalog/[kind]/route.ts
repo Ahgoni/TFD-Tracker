@@ -1,9 +1,11 @@
 import { NextResponse } from "next/server";
 import {
   NEXON_DESCENDANT_JSON,
+  NEXON_EXTERNAL_COMPONENT_JSON,
   NEXON_MODULE_JSON,
   NEXON_WEAPON_JSON,
   transformDescendantsFromNexon,
+  transformExternalComponentsFromNexon,
   transformModulesFromNexon,
   transformWeaponsFromNexon,
 } from "@/lib/nexon-catalog-transform";
@@ -28,11 +30,18 @@ export async function GET(_req: Request, { params }: { params: Promise<{ kind: s
       url: NEXON_MODULE_JSON,
       transform: transformModulesFromNexon,
     },
+    "external-components": {
+      url: NEXON_EXTERNAL_COMPONENT_JSON,
+      transform: transformExternalComponentsFromNexon,
+    },
   } as const;
 
   const entry = config[kind as keyof typeof config];
   if (!entry) {
-    return NextResponse.json({ error: "unknown_kind", allowed: ["descendants", "weapons", "modules"] }, { status: 400 });
+    return NextResponse.json(
+      { error: "unknown_kind", allowed: ["descendants", "weapons", "modules", "external-components"] },
+      { status: 400 },
+    );
   }
 
   try {

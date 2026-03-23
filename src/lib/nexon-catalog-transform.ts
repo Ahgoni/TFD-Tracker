@@ -10,6 +10,7 @@ export const NEXON_META_EN_BASE = "https://open.api.nexon.com/static/tfd/meta/en
 export const NEXON_DESCENDANT_JSON = `${NEXON_META_EN_BASE}/descendant.json`;
 export const NEXON_WEAPON_JSON = `${NEXON_META_EN_BASE}/weapon.json`;
 export const NEXON_MODULE_JSON = `${NEXON_META_EN_BASE}/module.json`;
+export const NEXON_EXTERNAL_COMPONENT_JSON = `${NEXON_META_EN_BASE}/external-component.json`;
 
 const ELEMENT_MAP: Record<string, string> = {
   Chill: "chill",
@@ -172,6 +173,50 @@ export function transformModulesFromNexon(modRaw: unknown): ModuleCatalogRow[] {
       descendantIds: (m.available_descendant_id as string[]) ?? [],
       capacities: capacitiesFromStats(moduleStat),
       preview: previewFromStats(moduleStat, isTranscendent),
+    };
+  });
+}
+
+function tierFromExternalComponentTierId(tierId: string | undefined): string {
+  if (tierId === "Tier4") return "Transcendent";
+  if (tierId === "Tier3") return "Ultimate";
+  if (tierId === "Tier2") return "Rare";
+  return "Normal";
+}
+
+export type ExternalComponentSetOption = {
+  setName: string;
+  setCount: number;
+  effect: string;
+};
+
+/** Nexon external-component.json row (for Player Lookup icons + set names). */
+export type ExternalComponentCatalogRow = {
+  id: string;
+  name: string;
+  /** Nexon CDN image URL. */
+  image: string;
+  equipmentType: string;
+  tier: string;
+  setOptionDetail: ExternalComponentSetOption[];
+};
+
+export function transformExternalComponentsFromNexon(raw: unknown): ExternalComponentCatalogRow[] {
+  if (!Array.isArray(raw)) return [];
+  return raw.map((r: Record<string, unknown>) => {
+    const detail = (r.set_option_detail as Array<Record<string, unknown>>) ?? [];
+    const setOptionDetail: ExternalComponentSetOption[] = detail.map((d) => ({
+      setName: String(d.set_option ?? ""),
+      setCount: Number(d.set_count ?? 0),
+      effect: String(d.set_option_effect ?? "").replace(/\\n/g, "\n"),
+    }));
+    return {
+      id: String(r.external_component_id ?? ""),
+      name: String(r.external_component_name ?? ""),
+      image: typeof r.image_url === "string" ? r.image_url : "",
+      equipmentType: String(r.external_component_equipment_type ?? ""),
+      tier: tierFromExternalComponentTierId(r.external_component_tier_id as string | undefined),
+      setOptionDetail,
     };
   });
 }

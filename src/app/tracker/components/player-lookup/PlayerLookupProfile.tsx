@@ -1,7 +1,11 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import type { DescendantCatalogRow, WeaponCatalogRow } from "@/lib/nexon-catalog-transform";
+import type {
+  DescendantCatalogRow,
+  ExternalComponentCatalogRow,
+  WeaponCatalogRow,
+} from "@/lib/nexon-catalog-transform";
 import type { ModuleRecord } from "@/lib/tfd-modules";
 import { capacityCostAtLevel } from "@/lib/tfd-modules";
 import type { ComputedStats } from "@/lib/tfd-stat-engine";
@@ -21,9 +25,9 @@ export type PlayerLookupCatalogs = {
   modules: Map<string, ModuleRecord>;
   descendants: Map<string, DescendantCatalogRow>;
   weapons: Map<string, WeaponCatalogRow>;
+  externalComponents: Map<string, ExternalComponentCatalogRow>;
 };
 
-/** Nexon external component slot order (library). */
 const EXTERNAL_SLOT_LABELS = ["Auxiliary Power", "Sensor", "Memory", "Processor"];
 
 type Props = {
@@ -57,7 +61,6 @@ function sortSlotId(a: string, b: string): number {
   return ka[2].localeCompare(kb[2]);
 }
 
-/** Format rollup for UI: hide absurd totals from mis-parsed previews. */
 function formatModifierBlock(modifiers: Record<string, number>): { label: string; value: string }[] {
   const rows = Object.entries(modifiers)
     .filter(([, v]) => typeof v === "number" && Math.abs(v) > 0.01)
@@ -88,7 +91,6 @@ function parseJsonRecordArray(v: unknown): Record<string, unknown>[] {
   return [];
 }
 
-/** Display numeric API values: small decimals often mean ratios → %. */
 function formatGearStatValue(name: string, val: unknown): string {
   if (val == null) return "—";
   const s = String(val).trim();
@@ -107,7 +109,75 @@ function externalSlotLabel(slotId: unknown): string {
   return EXTERNAL_SLOT_LABELS[ix] ?? `Slot ${n}`;
 }
 
-function ExternalComponentCard({ row }: { row: Record<string, unknown> }) {
+type EquippedSetInfo = {
+  setName: string;
+  count: number;
+  twoEffect: string;
+  fourEffect: string;
+};
+
+function aggregateEquippedSets(
+  equipped: Record<string, unknown>[],
+  byId: Map<string, ExternalComponentCatalogRow>,
+): EquippedSetInfo[] {
+  const counts = new Map<string, number>();
+  const sample = new Map<string, ExternalComponentCatalogRow>();
+  for (const eq of equipped) {
+    const id = String(eq.external_component_id ?? eq.externalComponentId ?? "");
+    const cat = byId.get(id);
+    const setName = cat?.setOptionDetail?.[0]?.setName;
+    if (!setName || !cat) continue;
+    counts.set(setName, (counts.get(setName) ?? 0) + 1);
+    if (!sample.has(setName)) sample.set(setName, cat);
+  }
+  const out: EquippedSetInfo[] = [];
+  for (const [setName, count] of counts) {
+    const c = sample.get(setName)!;
+    const two = c.setOptionDetail.find((d) => d.setCount === 2);
+    const four = c.setOptionDetail.find((d) => d.setCount === 4);
+    out.push({
+      setName,
+      count,
+      twoEffect: two?.effect ?? "",
+      fourEffect: four?.effect ?? "",
+    });
+  }
+  return out.sort((a, b) => b.count - a.count);
+}
+
+function SetBonusesBanner({ sets }: { sets: EquippedSetInfo[] }) {
+  const active = sets.filter((s) => s.count >= 2);
+  if (active.length === 0) return null;
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: "0.45rem" }}>
+      {active.map((s) => (
+        <div key={s.setName} className={styles.setBanner}>
+          <strong>
+            {s.setName} — {s.count}/4 equipped
+          </strong>
+          {s.count >= 2 && s.twoEffect ? (
+            <span className={styles.setTier}>
+              <strong>2-piece:</strong> {s.twoEffect}
+            </span>
+          ) : null}
+          {s.count >= 4 && s.fourEffect ? (
+            <span className={styles.setTier}>
+              <strong>4-piece:</strong> {s.fourEffect}
+            </span>
+          ) : null}
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function ExternalComponentCard({
+  row,
+  catalog,
+}: {
+  row: Record<string, unknown>;
+  catalog: ExternalComponentCatalogRow | undefined;
+}) {
   const slotId = row.external_component_slot_id ?? row.externalComponentSlotId;
   const level = row.external_component_level ?? row.externalComponentLevel ?? row.level;
   const addRaw = row.external_component_additional_stat ?? row.externalComponentAdditionalStat;
@@ -116,19 +186,31 @@ function ExternalComponentCard({ row }: { row: Record<string, unknown> }) {
   const addStats = parseJsonRecordArray(addRaw);
   const cores = parseJsonRecordArray(coresRaw);
 
-  const title = externalSlotLabel(slotId);
+  const slotTitle = externalSlotLabel(slotId);
+  const setChip = catalog?.setOptionDetail?.[0]?.setName;
 
   return (
-    <div className={styles.flexCard}>
-      <h4 className={styles.cardTitle}>
-        {title}
-        {level != null ? (
-          <span className="muted" style={{ fontWeight: 400, fontSize: "0.85rem" }}>
-            {" "}
-            · Lv. {String(level)}
-          </span>
-        ) : null}
-      </h4>
+    <div className={`${styles.flexCard} ${catalog ? tierClass(catalog.tier) : ""}`}>
+      <div className={styles.extCardRow}>
+        {catalog?.image ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img className={styles.extIcon} src={catalog.image} alt="" />
+        ) : (
+          <div className={styles.extIconPh}>?</div>
+        )}
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <h4 className={styles.cardTitle} style={{ marginTop: 0 }}>
+            {catalog?.name ?? "External component"}
+            {setChip ? <span className={styles.setChip}>{setChip}</span> : null}
+          </h4>
+          <p className="muted" style={{ fontSize: "0.78rem", margin: "0.15rem 0 0" }}>
+            {slotTitle}
+            {catalog?.equipmentType ? ` · ${catalog.equipmentType}` : null}
+            {catalog?.tier ? ` · ${catalog.tier}` : null}
+            {level != null ? ` · Lv. ${String(level)}` : null}
+          </p>
+        </div>
+      </div>
 
       {addStats.length > 0 ? (
         <>
@@ -169,8 +251,8 @@ function ExternalComponentCard({ row }: { row: Record<string, unknown> }) {
       ) : null}
 
       {addStats.length === 0 && cores.length === 0 ? (
-        <p className="muted" style={{ fontSize: "0.82rem", margin: 0 }}>
-          No substats parsed for this component.
+        <p className="muted" style={{ fontSize: "0.82rem", margin: "0.35rem 0 0" }}>
+          No roll details parsed.
         </p>
       ) : null}
     </div>
@@ -203,7 +285,7 @@ function ReactorProfileCard({ row, index }: { row: Record<string, unknown>; inde
 
   return (
     <div className={styles.flexCard}>
-      <h4 className={styles.cardTitle}>
+      <h4 className={styles.cardTitle} style={{ marginTop: 0 }}>
         {name}
         {level != null ? (
           <span className="muted" style={{ fontWeight: 400, fontSize: "0.85rem" }}>
@@ -233,7 +315,6 @@ function ReactorProfileCard({ row, index }: { row: Record<string, unknown>; inde
   );
 }
 
-/** Last resort: show non-id fields without dumping raw JSON strings. */
 function ReactorFallbackKv({ row }: { row: Record<string, unknown> }) {
   const skip = new Set([
     "reactor_id",
@@ -261,9 +342,9 @@ function ReactorFallbackKv({ row }: { row: Record<string, unknown> }) {
       }
     }
     if (typeof v === "object" && v !== null && !Array.isArray(v)) {
-      rows.push({ k: k, v: JSON.stringify(v) });
+      rows.push({ k, v: JSON.stringify(v) });
     } else {
-      rows.push({ k: k, v: String(v) });
+      rows.push({ k, v: String(v) });
     }
   }
   if (rows.length === 0) return <p className="muted">No reactor details.</p>;
@@ -297,17 +378,19 @@ function ModuleGrid({
   mods,
   moduleById,
   emptyHint,
+  compact,
 }: {
   mods: DescendantBuildParsed["modules"];
   moduleById: Map<string, ModuleRecord>;
   emptyHint: string;
+  compact?: boolean;
 }) {
   const sorted = [...mods].sort((a, b) => sortSlotId(a.slotId, b.slotId));
   if (sorted.length === 0) {
     return <p className="muted">{emptyHint}</p>;
   }
   return (
-    <div className={styles.grid}>
+    <div className={`${styles.grid} ${compact ? styles.gridCompact : ""}`}>
       {sorted.map((m, idx) => {
         const rec = moduleById.get(m.moduleId);
         const cost = rec ? capacityCostAtLevel(rec, m.enchantLevel) : 0;
@@ -339,8 +422,11 @@ function ModuleGrid({
   );
 }
 
+type TabDef = { id: string; label: string };
+
 export function PlayerLookupProfile({ data, catalogs }: Props) {
-  const { modules: moduleById, descendants: descById, weapons: weaponById } = catalogs;
+  const { modules: moduleById, descendants: descById, weapons: weaponById, externalComponents: extById } =
+    catalogs;
 
   const basicRaw = data.basic;
   const basic = useMemo(() => extractBasicInfo(basicRaw), [basicRaw]);
@@ -360,6 +446,33 @@ export function PlayerLookupProfile({ data, catalogs }: Props) {
 
   const primaryDesc = descendantBuilds[0];
   const primaryRow = primaryDesc ? descById.get(primaryDesc.descendantId) : undefined;
+
+  const setProgress = useMemo(() => aggregateEquippedSets(externals, extById), [externals, extById]);
+
+  const tabs = useMemo((): TabDef[] => {
+    const t: TabDef[] = [];
+    descendantBuilds.forEach((b, bi) => {
+      const row = descById.get(b.descendantId);
+      t.push({ id: `desc-${bi}`, label: row?.name ?? `Descendant ${bi + 1}` });
+    });
+    weaponBuilds.forEach((w, wi) => {
+      const wrow = weaponById.get(w.weaponId);
+      t.push({ id: `weapon-${wi}`, label: wrow?.name ?? `Weapon ${wi + 1}` });
+    });
+    if (externals.length > 0) t.push({ id: "components", label: "Components" });
+    if (reactors.length > 0) t.push({ id: "reactor", label: "Reactor" });
+    if (t.length === 0) t.push({ id: "empty", label: "Overview" });
+    return t;
+  }, [descendantBuilds, descById, weaponBuilds, weaponById, externals.length, reactors.length]);
+
+  const [activeTab, setActiveTab] = useState<string>("");
+
+  useEffect(() => {
+    if (tabs.length === 0) return;
+    if (!activeTab || !tabs.some((x) => x.id === activeTab)) {
+      setActiveTab(tabs[0]!.id);
+    }
+  }, [tabs, activeTab]);
 
   const [descStats, setDescStats] = useState<ComputedStats[]>([]);
   const [weaponStats, setWeaponStats] = useState<ComputedStats[]>([]);
@@ -396,14 +509,129 @@ export function PlayerLookupProfile({ data, catalogs }: Props) {
     };
   }, [weaponBuilds, moduleById]);
 
+  const renderDescendantPanel = (bi: number) => {
+    const build = descendantBuilds[bi];
+    if (!build) return <p className="muted">No descendant data.</p>;
+    const row = descById.get(build.descendantId);
+    const mods = formatModifierBlock(descStats[bi]?.modifiers ?? {});
+    return (
+      <div className={styles.inventoryPane}>
+        <p className="muted" style={{ fontSize: "0.78rem", margin: 0 }}>
+          Energy activator uses: {build.energyActivatorCount}
+        </p>
+        <CapacityBar used={build.moduleUsedCapacity} max={Math.max(build.moduleMaxCapacity, 1)} />
+        <ModuleGrid
+          mods={build.modules}
+          moduleById={moduleById}
+          emptyHint="No modules reported."
+          compact
+        />
+        {mods.length > 0 ? (
+          <details className={styles.statsPanel}>
+            <summary>Applied module stats (estimated)</summary>
+            <ul className={styles.statList}>
+              {mods.map((r) => (
+                <li key={r.label} className={styles.statRow}>
+                  <span>{r.label}</span>
+                  <span>{r.value}</span>
+                </li>
+              ))}
+            </ul>
+          </details>
+        ) : null}
+      </div>
+    );
+  };
+
+  const renderWeaponPanel = (wi: number) => {
+    const w = weaponBuilds[wi];
+    if (!w) return <p className="muted">No weapon data.</p>;
+    const wrow = weaponById.get(w.weaponId);
+    const mods = formatModifierBlock(weaponStats[wi]?.modifiers ?? {});
+    return (
+      <div className={styles.inventoryPane}>
+        <div className={styles.weaponHeader}>
+          {wrow?.image ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img className={styles.weaponImg} src={wrow.image} alt={wrow?.name ?? ""} />
+          ) : (
+            <div className={styles.weaponImg} />
+          )}
+          <div>
+            <h4 className={styles.sectionTitle} style={{ margin: 0 }}>
+              {wrow?.name ?? `Weapon ${w.weaponId}`}
+            </h4>
+            <p className="muted" style={{ margin: "0.2rem 0 0", fontSize: "0.82rem" }}>
+              {wrow?.type ?? "—"} · Lv. {w.level} · {wrow?.roundsType ?? ""}
+            </p>
+          </div>
+        </div>
+        <CapacityBar used={w.moduleUsedCapacity} max={Math.max(w.moduleMaxCapacity, 1)} />
+        <ModuleGrid mods={w.modules} moduleById={moduleById} emptyHint="No weapon modules." compact />
+        {mods.length > 0 ? (
+          <details className={styles.statsPanel}>
+            <summary>Applied module stats (estimated)</summary>
+            <ul className={styles.statList}>
+              {mods.map((r) => (
+                <li key={r.label} className={styles.statRow}>
+                  <span>{r.label}</span>
+                  <span>{r.value}</span>
+                </li>
+              ))}
+            </ul>
+          </details>
+        ) : null}
+      </div>
+    );
+  };
+
+  const renderComponentsPanel = () => (
+    <div className={styles.inventoryPane}>
+      <SetBonusesBanner sets={setProgress} />
+      <div style={{ display: "grid", gap: "0.5rem" }}>
+        {externals.map((r, i) => {
+          const id = String(r.external_component_id ?? r.externalComponentId ?? "");
+          const cat = extById.get(id);
+          return <ExternalComponentCard key={`ext-${id}-${i}`} row={r} catalog={cat} />;
+        })}
+      </div>
+    </div>
+  );
+
+  const renderReactorPanel = () => (
+    <div className={styles.inventoryPane}>
+      {reactors.map((r, i) => (
+        <ReactorProfileCard key={`reactor-${i}`} row={r} index={i} />
+      ))}
+    </div>
+  );
+
+  const renderActivePanel = () => {
+    if (!activeTab) return null;
+    if (activeTab === "empty") {
+      return <p className="muted">No loadout blocks in this response.</p>;
+    }
+    if (activeTab === "components") return renderComponentsPanel();
+    if (activeTab === "reactor") return renderReactorPanel();
+    if (activeTab.startsWith("desc-")) {
+      const bi = parseInt(activeTab.replace("desc-", ""), 10);
+      return renderDescendantPanel(Number.isNaN(bi) ? 0 : bi);
+    }
+    if (activeTab.startsWith("weapon-")) {
+      const wi = parseInt(activeTab.replace("weapon-", ""), 10);
+      return renderWeaponPanel(Number.isNaN(wi) ? 0 : wi);
+    }
+    return null;
+  };
+
   return (
     <div className={styles.profile}>
-      <header className={styles.hero}>
+      <header className={`${styles.hero} ${styles.heroCompact}`}>
         {primaryRow?.image ? (
           // eslint-disable-next-line @next/next/no-img-element
-          <img className={styles.portrait} src={primaryRow.image} alt={primaryRow.name} />
+          <img className={styles.portraitSm} src={primaryRow.image} alt={primaryRow.name} />
         ) : (
-          <div className={styles.portrait} />
+          <div className={styles.portraitSm} />
         )}
         <div className={styles.heroText}>
           <h3>{displayName}</h3>
@@ -422,98 +650,25 @@ export function PlayerLookupProfile({ data, catalogs }: Props) {
         </div>
       </header>
 
-      {descendantBuilds.map((build, bi) => {
-        const row = descById.get(build.descendantId);
-        const mods = formatModifierBlock(descStats[bi]?.modifiers ?? {});
-        return (
-          <section key={`desc-${build.descendantId}-${build.slotId}-${bi}`} className={styles.subsection}>
-            <h4 className={styles.sectionTitle}>
-              {row?.name ?? "Descendant"} modules
-              {build.slotId ? <span className="muted"> · slot {build.slotId}</span> : null}
-            </h4>
-            <p className="muted" style={{ fontSize: "0.82rem", margin: "0 0 0.5rem" }}>
-              Energy activator uses: {build.energyActivatorCount}
-            </p>
-            <CapacityBar used={build.moduleUsedCapacity} max={Math.max(build.moduleMaxCapacity, 1)} />
-            <ModuleGrid mods={build.modules} moduleById={moduleById} emptyHint="No modules reported for this build." />
-            {mods.length > 0 ? (
-              <details className={styles.statsPanel} open>
-                <summary>Applied module stats (estimated)</summary>
-                <ul className={styles.statList}>
-                  {mods.map((r) => (
-                    <li key={r.label} className={styles.statRow}>
-                      <span>{r.label}</span>
-                      <span>{r.value}</span>
-                    </li>
-                  ))}
-                </ul>
-              </details>
-            ) : null}
-          </section>
-        );
-      })}
-
-      {reactors.length > 0 ? (
-        <section>
-          <h4 className={styles.sectionTitle}>Reactor</h4>
-          <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
-            {reactors.map((r, i) => (
-              <ReactorProfileCard key={`reactor-${i}`} row={r} index={i} />
-            ))}
-          </div>
-        </section>
-      ) : null}
-
-      {externals.length > 0 ? (
-        <section>
-          <h4 className={styles.sectionTitle}>External components</h4>
-          <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
-            {externals.map((r, i) => (
-              <ExternalComponentCard key={`ext-${i}`} row={r} />
-            ))}
-          </div>
-        </section>
-      ) : null}
-
-      {weaponBuilds.map((w, wi) => {
-        const wrow = weaponById.get(w.weaponId);
-        const mods = formatModifierBlock(weaponStats[wi]?.modifiers ?? {});
-        return (
-          <section key={`w-${w.weaponId}-${w.slotId}-${wi}`}>
-            <div className={styles.weaponHeader}>
-              {wrow?.image ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img className={styles.weaponImg} src={wrow.image} alt={wrow.name} />
-              ) : (
-                <div className={styles.weaponImg} />
-              )}
-              <div>
-                <h4 className={styles.sectionTitle} style={{ margin: 0 }}>
-                  {wrow?.name ?? `Weapon ${w.weaponId}`}
-                </h4>
-                <p className="muted" style={{ margin: "0.25rem 0 0", fontSize: "0.85rem" }}>
-                  {wrow?.type ?? "—"} · Lv. {w.level} · {wrow?.roundsType ?? ""}
-                </p>
-              </div>
-            </div>
-            <CapacityBar used={w.moduleUsedCapacity} max={Math.max(w.moduleMaxCapacity, 1)} />
-            <ModuleGrid mods={w.modules} moduleById={moduleById} emptyHint="No weapon modules." />
-            {mods.length > 0 ? (
-              <details className={styles.statsPanel} open>
-                <summary>Applied module stats (estimated)</summary>
-                <ul className={styles.statList}>
-                  {mods.map((r) => (
-                    <li key={r.label} className={styles.statRow}>
-                      <span>{r.label}</span>
-                      <span>{r.value}</span>
-                    </li>
-                  ))}
-                </ul>
-              </details>
-            ) : null}
-          </section>
-        );
-      })}
+      <div className={styles.shell}>
+        <div className={styles.tabBar} role="tablist" aria-label="Loadout sections">
+          {tabs.map((t) => (
+            <button
+              key={t.id}
+              type="button"
+              role="tab"
+              aria-selected={activeTab === t.id}
+              className={`${styles.tabBtn} ${activeTab === t.id ? styles.tabActive : ""}`}
+              onClick={() => setActiveTab(t.id)}
+            >
+              {t.label}
+            </button>
+          ))}
+        </div>
+        <div className={styles.tabBody} role="tabpanel">
+          {renderActivePanel()}
+        </div>
+      </div>
     </div>
   );
 }

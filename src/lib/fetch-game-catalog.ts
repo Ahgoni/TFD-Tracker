@@ -3,7 +3,11 @@
  * Same underlying data as https://tfd.nexon.com/en/library/descendants (via open.api.nexon.com).
  */
 
-import type { DescendantCatalogRow, WeaponCatalogRow } from "@/lib/nexon-catalog-transform";
+import type {
+  DescendantCatalogRow,
+  ExternalComponentCatalogRow,
+  WeaponCatalogRow,
+} from "@/lib/nexon-catalog-transform";
 import type { ModuleRecord } from "@/lib/tfd-modules";
 
 async function tryJson<T>(url: string): Promise<T | null> {
@@ -39,5 +43,12 @@ export async function fetchWeaponsCatalogRows(): Promise<WeaponCatalogRow[] | nu
   if (Array.isArray(live) && live.length > 0) return live;
   const stat = await tryJson<WeaponCatalogRow[]>("/data/weapons.json");
   if (Array.isArray(stat) && stat.length > 0) return stat;
+  return null;
+}
+
+/** External components (icons + set metadata) — Nexon static JSON only. */
+export async function fetchExternalComponentCatalogRows(): Promise<ExternalComponentCatalogRow[] | null> {
+  const live = await tryJson<ExternalComponentCatalogRow[]>("/api/nexon/catalog/external-components");
+  if (Array.isArray(live) && live.length > 0) return live;
   return null;
 }
