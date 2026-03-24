@@ -4,7 +4,7 @@ import type { PublicBuild } from "@/lib/public-build-types";
 
 interface SharedState {
   tabs?: string[];
-  reactors?: Array<{ id: string; name: string; element: string; skillType: string; descendant: string; level: number; enhancement: string }>;
+  reactors?: Array<{ id: string; name: string; element: string; skillType: string; level: number; enhancement: string; descendant?: string }>;
   weapons?: Array<{ slug: string; name: string; rarity: string; roundsType: string; acquired: boolean; level: number; enhancement: number }>;
   descendants?: Array<{ id: string; name: string; element: string; level: number; archeLevel: number; catalysts: number }>;
   materials?: Array<{ id: string; name: string; qty: number }>;
@@ -129,7 +129,7 @@ export default async function SharePage({ params }: { params: Promise<{ token: s
           <div className="table-wrap">
             <table>
               <thead>
-                <tr><th>Name</th><th>Element</th><th>Skill Type</th><th>Descendant</th><th>Level</th><th>Enhancement</th></tr>
+                <tr><th>Name</th><th>Element</th><th>Skill Type</th><th>Level</th><th>Enhancement</th></tr>
               </thead>
               <tbody>
                 {state.reactors!.map((r) => (
@@ -137,9 +137,8 @@ export default async function SharePage({ params }: { params: Promise<{ token: s
                     <td>{r.name}</td>
                     <td>{r.element}</td>
                     <td>{r.skillType}</td>
-                    <td>{r.descendant}</td>
                     <td>{r.level}</td>
-                    <td>{r.enhancement}</td>
+                    <td>{String(r.enhancement).trim().toLowerCase() === "max" ? "5" : r.enhancement}</td>
                   </tr>
                 ))}
               </tbody>

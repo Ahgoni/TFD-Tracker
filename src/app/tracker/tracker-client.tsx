@@ -47,11 +47,28 @@ export interface ReactorEntry {
   name: string;
   element: string;
   skillType: string;
-  descendant: string;
   level: number;
   enhancement: string;
   substats: ReactorSubstat[];
   notes: string;
+}
+
+/** Strip legacy fields and map enhancement `Max` → `5` (max is 5). */
+export function normalizeReactorEntry(
+  r: Partial<ReactorEntry> & { id: string; descendant?: string },
+): ReactorEntry {
+  let enh = String(r.enhancement ?? "0").trim();
+  if (enh.toLowerCase() === "max") enh = "5";
+  return {
+    id: r.id,
+    name: r.name ?? "",
+    element: r.element ?? "",
+    skillType: r.skillType ?? "",
+    level: typeof r.level === "number" ? r.level : 100,
+    enhancement: enh,
+    substats: Array.isArray(r.substats) ? r.substats : [],
+    notes: r.notes ?? "",
+  };
 }
 
 export interface DescendantEntry {
@@ -355,6 +372,12 @@ export function TrackerClient() {
         loaded.tabs = loaded.tabs.filter((t) => t !== "Progression");
         if (!Array.isArray(loaded.builds)) loaded.builds = [];
 
+        if (Array.isArray(loaded.reactors)) {
+          loaded.reactors = loaded.reactors.map((x) =>
+            normalizeReactorEntry(x as Parameters<typeof normalizeReactorEntry>[0]),
+          );
+        }
+
         if (Array.isArray(loaded.weapons)) {
           loaded.weapons = loaded.weapons.map((w) => ({
             ...w,
@@ -418,6 +441,11 @@ export function TrackerClient() {
       const merged: TrackerState = { ...DEFAULT_STATE, ...parsed };
       if (!Array.isArray(merged.builds)) merged.builds = [];
       merged.buildFilters = { ...DEFAULT_STATE.buildFilters, ...merged.buildFilters };
+      if (Array.isArray(merged.reactors)) {
+        merged.reactors = merged.reactors.map((x) =>
+          normalizeReactorEntry(x as Parameters<typeof normalizeReactorEntry>[0]),
+        );
+      }
       merged.weapons = await fetchAndMergeWeaponsCatalog(merged.weapons ?? []);
       merged.descendants = await fetchAndMergeDescendantsCatalog(merged.descendants ?? []);
       setState(merged);

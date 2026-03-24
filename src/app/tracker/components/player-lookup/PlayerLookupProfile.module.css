@@ -746,6 +746,37 @@
   margin: 0.2rem 0 0;
   font-size: 0.78rem;
   color: var(--muted);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.15rem 0;
+}
+
+.dgDescLevelLine {
+  color: var(--muted);
+}
+
+.dgDescElementWrap {
+  display: inline-flex;
+  align-items: center;
+}
+
+.dgDescElement {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.28rem;
+  font-weight: 600;
+  color: #a5b4fc;
+}
+
+.dgDescElementIcon {
+  flex-shrink: 0;
+  object-fit: contain;
+}
+
+.dgDescElementChill {
+  color: #7dd3fc !important;
+  text-shadow: 0 0 14px rgba(56, 189, 248, 0.4);
 }
 
 .dgEnergyRow {
@@ -948,18 +979,15 @@
   font-variant-numeric: tabular-nums;
 }
 
-.dgTriggerBlurbClamp {
-  margin: 0.4rem 0 0;
+.dgTriggerInlinePreview {
+  margin: 0.35rem 0 0;
   font-size: 0.58rem;
   line-height: 1.35;
   color: #94a3b8;
-  display: -webkit-box;
-  -webkit-line-clamp: 4;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-  white-space: pre-wrap;
   max-width: 168px;
   text-align: left;
+  white-space: normal;
+  word-break: break-word;
 }
 
 .dgTriggerCard {

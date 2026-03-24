@@ -7,7 +7,8 @@ const reactorSchema = z.object({
   name: z.string(),
   element: z.string(),
   skillType: z.string(),
-  descendant: z.string(),
+  /** Legacy field — UI no longer collects it; stored empty. */
+  descendant: z.string().optional().default(""),
   level: z.number().int().min(1).max(200),
   enhancement: z.string(),
   substat1: z.string(),

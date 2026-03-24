@@ -15,6 +15,8 @@ export type DescendantBuildParsed = {
   descendantId: string;
   slotId: string;
   level: number;
+  /** Nexon arche level when present on user/descendant payload. */
+  archeLevel: number | null;
   userName: string;
   moduleMaxCapacity: number;
   moduleUsedCapacity: number;
@@ -208,10 +210,22 @@ function parseDescendantOne(o: unknown): DescendantBuildParsed | null {
   const descendantId = String(r.descendant_id ?? r.descendantId ?? "");
   if (!descendantId) return null;
   const modulesRaw = r.module ?? r.modules ?? r.equipped_module ?? r.descendant_module;
+  const archeRaw =
+    r.descendant_arche_level ??
+    r.descendantArcheLevel ??
+    r.arche_level ??
+    r.archeLevel ??
+    r.user_descendant_arche_level;
+  let archeLevel: number | null = null;
+  if (archeRaw !== undefined && archeRaw !== null && String(archeRaw).trim() !== "") {
+    const n = Math.round(num(archeRaw, NaN));
+    if (!Number.isNaN(n)) archeLevel = n;
+  }
   return {
     descendantId,
     slotId: String(r.descendant_slot_id ?? r.descendantSlotId ?? ""),
     level: Math.round(num(r.descendant_level ?? r.descendantLevel, 1)),
+    archeLevel,
     userName: String(r.user_name ?? r.userName ?? ""),
     moduleMaxCapacity: Math.round(num(r.module_max_capacity ?? r.moduleMaxCapacity, 0)),
     moduleUsedCapacity: Math.round(num(r.module_capacity ?? r.moduleCapacity, 0)),

@@ -10,6 +10,7 @@ import type {
 import type { ModuleRecord } from "@/lib/tfd-modules";
 import { capacityCostAtLevel } from "@/lib/tfd-modules";
 import {
+  elementDefs,
   inferTierFromCoreAugment,
   inferTierFromExternalSubstat,
   inferTierFromReactorSubstat,
@@ -36,6 +37,57 @@ import {
 } from "./nexonPlayerPayload";
 import { ExternalSetBonusesBanner, type ExternalSetBonusSet } from "../ExternalSetBonusesBanner";
 import styles from "./PlayerLookupProfile.module.css";
+
+function catalogElementToDefId(element: string): string {
+  const id = element.trim().toLowerCase();
+  if (id === "non-attribute" || id === "nonattribute") return "nonattribute";
+  return id;
+}
+
+/** One short line for under-trigger preview (full text stays in hover panel). */
+function firstMeaningfulLine(text: string, max = 80): string {
+  const line = text.split("\n").map((l) => l.trim()).find((l) => l.length > 0) ?? "";
+  if (line.length <= max) return line;
+  return `${line.slice(0, max - 1)}…`;
+}
+
+function DescendantSubtitle({
+  level,
+  archeLevel,
+  element,
+}: {
+  level: number;
+  archeLevel: number | null;
+  element: string | undefined;
+}) {
+  const def = element ? elementDefs.find((d) => d.id === catalogElementToDefId(element)) : undefined;
+  const isChill = catalogElementToDefId(element ?? "") === "chill";
+  return (
+    <p className={styles.dgDescSub}>
+      <span className={styles.dgDescLevelLine}>
+        Level: {level}
+        {archeLevel != null ? `, Arche Level: ${archeLevel}` : ""}
+      </span>
+      {def ? (
+        <span className={styles.dgDescElementWrap}>
+          {" · "}
+          <span className={`${styles.dgDescElement} ${isChill ? styles.dgDescElementChill : ""}`}>
+            {def.icon ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img src={def.icon} alt="" className={styles.dgDescElementIcon} width={14} height={14} />
+            ) : null}
+            {def.label}
+          </span>
+        </span>
+      ) : element ? (
+        <span className={styles.dgDescElementWrap}>
+          {" · "}
+          <span className={isChill ? styles.dgDescElementChill : undefined}>{element}</span>
+        </span>
+      ) : null}
+    </p>
+  );
+}
 
 export type PlayerLookupCatalogs = {
   modules: Map<string, ModuleRecord>;
@@ -576,11 +628,13 @@ function DescendantDgModules({
     const rolls = extractModuleRollRows(m.raw);
     const blurb = moduleDisplayDescription(rec?.preview, m.raw);
     const hasDetail = rolls.length > 0 || Boolean(blurb);
+    const hoverTitle = blurb ? firstMeaningfulLine(blurb, 140) : undefined;
     triggerBlock = (
       <div className={styles.dgTriggerWrap}>
         <div
           className={styles.dgTriggerHoverHost}
           tabIndex={0}
+          title={hoverTitle}
           aria-describedby={hasDetail ? `trigger-module-${m.moduleId}` : undefined}
         >
           <div className={`${styles.moduleCard} ${styles.dgTriggerCard} ${rec ? tierClass(rec.tier) : ""}`}>
@@ -604,7 +658,7 @@ function DescendantDgModules({
               ))}
             </ul>
           ) : blurb ? (
-            <p className={styles.dgTriggerBlurbClamp}>{blurb}</p>
+            <p className={styles.dgTriggerInlinePreview}>{firstMeaningfulLine(blurb)}</p>
           ) : null}
           {hasDetail ? (
             <div
@@ -879,10 +933,7 @@ export function PlayerLookupProfile({ data, catalogs }: Props) {
           )}
           <div>
             <h2 className={styles.dgDescTitle}>{row?.name ?? "Descendant"}</h2>
-            <p className={styles.dgDescSub}>
-              Lv. {build.level}
-              {row?.element ? ` · ${row.element}` : ""}
-            </p>
+            <DescendantSubtitle level={build.level} archeLevel={build.archeLevel} element={row?.element} />
           </div>
         </div>
 
