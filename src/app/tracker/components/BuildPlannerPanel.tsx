@@ -76,7 +76,7 @@ import {
   skillDefs,
   substatOptions,
   getReactorName,
-  inferTierFromValue,
+  inferTierFromReactorSubstat,
 } from "@/lib/tracker-data";
 import { ExternalSetBonusesBanner, type ExternalSetBonusSet } from "./ExternalSetBonusesBanner";
 
@@ -596,8 +596,8 @@ function ReactorSection({
   function pushReactor() {
     const name = getReactorName(element, skillType);
     const substats: ReactorSubstat[] = [
-      { stat: sub1, value: val1, tier: inferTierFromValue(sub1, val1) },
-      { stat: sub2, value: val2, tier: inferTierFromValue(sub2, val2) },
+      { stat: sub1, value: val1, tier: inferTierFromReactorSubstat(sub1, val1) },
+      { stat: sub2, value: val2, tier: inferTierFromReactorSubstat(sub2, val2) },
     ].filter((s) => s.stat);
     onChange({ name, element, skillType, level: Math.min(200, Math.max(1, level)), enhancement, substats });
   }

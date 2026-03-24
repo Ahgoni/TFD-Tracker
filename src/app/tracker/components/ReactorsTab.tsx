@@ -8,7 +8,7 @@ import {
   substatOptions,
   descendantOptions,
   getReactorName,
-  inferTierFromValue,
+  inferTierFromReactorSubstat,
   tierColors,
 } from "@/lib/tracker-data";
 import { uuid } from "@/lib/uuid";
@@ -64,8 +64,8 @@ export function ReactorsTab({ state, setState }: Props) {
       level: Math.min(200, Math.max(1, level)),
       enhancement,
       substats: [
-        { stat: substat1, value: subvalue1, tier: inferTierFromValue(substat1, subvalue1) },
-        { stat: substat2, value: subvalue2, tier: inferTierFromValue(substat2, subvalue2) },
+        { stat: substat1, value: subvalue1, tier: inferTierFromReactorSubstat(substat1, subvalue1) },
+        { stat: substat2, value: subvalue2, tier: inferTierFromReactorSubstat(substat2, subvalue2) },
       ].filter((s) => s.stat),
       notes,
     };

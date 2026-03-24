@@ -1188,9 +1188,17 @@
   word-break: break-word;
 }
 
+.dgExtTagRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35rem 0.45rem;
+  margin-top: 0.38rem;
+}
+
 .dgExtSetChipInline {
   display: inline-block;
-  margin-top: 0.38rem;
+  margin-top: 0;
   max-width: 100%;
   font-size: 0.6rem;
   padding: 0.08rem 0.38rem;
@@ -1206,10 +1214,10 @@
 }
 
 .dgExtStatsWrap {
-  margin-top: 0.5rem;
+  margin-top: 0.55rem;
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 0.65rem;
 }
 
 .dgExtStatSection {
@@ -1221,7 +1229,7 @@
   flex-wrap: wrap;
   align-items: center;
   gap: 0.35rem 0.5rem;
-  margin-bottom: 0.32rem;
+  margin-bottom: 0.45rem;
 }
 
 .dgExtStatBlockHeading {
@@ -1261,7 +1269,7 @@
 .dgExtStatBlock {
   display: flex;
   flex-direction: column;
-  gap: 0.3rem;
+  gap: 0.42rem;
 }
 
 .dgExtStatRow {
@@ -1286,9 +1294,12 @@
 }
 
 .dgExtStatRow .dgExtFooterValCoreUltimate,
-.dgExtStatRow .dgExtFooterValSubstatPool {
+.dgExtStatRow .dgExtFooterValSubstatPool,
+.dgExtStatRow .subValue {
   flex-shrink: 0;
   text-align: right;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
 }
 
 /* Core augmentation slots — Ultimate-tier pool (in-game: Recovery / Defense cores, gold rolls) */

@@ -64,8 +64,10 @@ export const substatOptions = [
 ];
 
 export const reactorSubstatRanges: Record<string, { min: number; max: number; invert?: boolean }> = {
-  "Skill Cost": { min: 0.027, max: 0.041, invert: true },
-  "Skill Cooldown": { min: 0.053, max: 0.074, invert: true },
+  /** Magnitudes 0.027–0.041; higher reduction = better (use abs on API negatives). */
+  "Skill Cost": { min: 0.027, max: 0.041 },
+  /** tfdtools 81–100: −0.074x → −0.053x — higher magnitude = better (use abs). */
+  "Skill Cooldown": { min: 0.053, max: 0.074 },
   "Skill Duration UP": { min: 0.076, max: 0.106 },
   "Skill Effect Range": { min: 0.174, max: 0.258 },
   "Skill Critical Hit Rate": { min: 22.8, max: 33.0 },
@@ -87,7 +89,7 @@ export const reactorSubstatRanges: Record<string, { min: number; max: number; in
   "Additional Skill ATK When Attacking Legion of Immortality": { min: 1778.309, max: 2633.561 },
 };
 
-/** External component + core rolls — merged under reactor ranges where keys overlap. */
+/** External component substats + base stat rolls (levels 81–100 bands in `external-components.json`). */
 const externalRollRanges: Record<string, { min: number; max: number; invert?: boolean }> = {};
 const sr = extCompRollData.substatRanges as Record<string, { min: number; max: number }>;
 for (const [k, v] of Object.entries(sr)) {
@@ -98,7 +100,20 @@ for (const [k, v] of Object.entries(br)) {
   externalRollRanges[k] = { min: v.min, max: v.max };
 }
 
-/** Reactor + external component substats/core — used for rarity color tiers (same thresholds as reactor UI). */
+/** Exported for tiering external **substats** only (see tfdtools external-components table). */
+export const externalComponentSubstatRanges: Record<string, { min: number; max: number; invert?: boolean }> =
+  externalRollRanges;
+
+/**
+ * Augment **core** slots (Recovery / Defense X) — separate bands from substat pool (in-game grantable ranges).
+ * Flat Max HP / DEF on cores use `externalRollRanges` in `inferTierFromCoreAugment`.
+ */
+export const externalCoreAugmentRanges: Record<string, { min: number; max: number; invert?: boolean }> = {
+  "Max HP": { min: 28.2, max: 37.5 },
+  "DEF": { min: 5625, max: 7500 },
+};
+
+/** Reactor + external component substats/core — merged where keys overlap (reactor wins). */
 export const allSubstatTierRanges: Record<string, { min: number; max: number; invert?: boolean }> = {
   ...externalRollRanges,
   ...reactorSubstatRanges,
@@ -200,17 +215,85 @@ export function getReactorName(elementId: string, skillTypeId: string): string {
   return `${reactorPrefixes[elementId] ?? "Unknown"} ${reactorSuffixes[skillTypeId] ?? "Reactor"}`;
 }
 
-export function inferTierFromValue(statName: string, rawValue: string): "common" | "rare" | "ultimate" {
+const REACTOR_ABS_MAGNITUDE_STATS = new Set(["Skill Cooldown", "Skill Cost"]);
+
+/**
+ * Map API / UI numbers into the same scale as `min`/`max` in range tables (Nexon often sends 0.33 vs 33%, etc.).
+ */
+function inferTierFromNumericRange(
+  range: { min: number; max: number; invert?: boolean },
+  statName: string,
+  rawValue: string,
+): "common" | "rare" | "ultimate" {
   const match = String(rawValue).match(/-?\d+(\.\d+)?/);
   if (!match) return "common";
-  const numeric = Number(match[0]);
-  const range = allSubstatTierRanges[statName];
-  if (!range || range.max <= range.min) return "common";
+  let numeric = Number(match[0]);
+  if (Number.isNaN(numeric)) return "common";
+
+  if (REACTOR_ABS_MAGNITUDE_STATS.has(statName)) {
+    numeric = Math.abs(numeric);
+  }
+
+  // Nexon sometimes sends percent rolls as decimals (0.33 vs 33). Only rescale when ×100 lands in the table band.
+  if (numeric !== 0 && Math.abs(numeric) < 1 && range.max > 10) {
+    const scaled = numeric * 100;
+    if (scaled + 1e-6 >= range.min && scaled - 1e-6 <= range.max) {
+      numeric = scaled;
+    }
+  }
+
+  if (range.max <= range.min) return "common";
   const rawNorm = (numeric - range.min) / (range.max - range.min);
   const normalized = Math.max(0, Math.min(1, range.invert ? 1 - rawNorm : rawNorm));
   if (normalized >= 0.75) return "ultimate";
   if (normalized >= 0.4) return "rare";
   return "common";
+}
+
+/** Reactor substats only — [tfdtools reactors](https://tfdtools.com/sub-stats/reactors). */
+export function inferTierFromReactorSubstat(statName: string, rawValue: string): "common" | "rare" | "ultimate" {
+  const range = reactorSubstatRanges[statName];
+  if (!range) return "common";
+  return inferTierFromNumericRange(range, statName, rawValue);
+}
+
+/** External component substats only — [tfdtools external components](https://tfdtools.com/sub-stats/external-components). */
+export function inferTierFromExternalSubstat(statName: string, rawValue: string): "common" | "rare" | "ultimate" {
+  const range = externalRollRanges[statName];
+  if (!range) return "common";
+  return inferTierFromNumericRange(range, statName, rawValue);
+}
+
+/**
+ * Core augmentation rows (Recovery / Defense X). Flat Max HP cores use the external flat band; % cores use augment band.
+ */
+export function inferTierFromCoreAugment(statName: string, rawValue: string): "common" | "rare" | "ultimate" {
+  if (statName === "Max HP") {
+    const match = String(rawValue).match(/-?\d+(\.\d+)?/);
+    if (!match) return "common";
+    const n = Number(match[0]);
+    if (Number.isNaN(n)) return "common";
+    if (Math.abs(n) > 200) {
+      const flat = externalRollRanges["Max HP"];
+      if (flat) return inferTierFromNumericRange(flat, statName, rawValue);
+    }
+    const aug = externalCoreAugmentRanges["Max HP"];
+    if (aug) return inferTierFromNumericRange(aug, statName, rawValue);
+    return "common";
+  }
+
+  const core = externalCoreAugmentRanges[statName];
+  if (core) return inferTierFromNumericRange(core, statName, rawValue);
+  const fallback = externalRollRanges[statName] ?? allSubstatTierRanges[statName];
+  if (!fallback) return "common";
+  return inferTierFromNumericRange(fallback, statName, rawValue);
+}
+
+/** Merged reactor + external ranges (reactor wins on key collision). Prefer reactor/external helpers when context is known. */
+export function inferTierFromValue(statName: string, rawValue: string): "common" | "rare" | "ultimate" {
+  const range = allSubstatTierRanges[statName];
+  if (!range || range.max <= range.min) return "common";
+  return inferTierFromNumericRange(range, statName, rawValue);
 }
 
 export const tierColors = { common: "#52a7ff", rare: "#b27bff", ultimate: "#ffc857" };

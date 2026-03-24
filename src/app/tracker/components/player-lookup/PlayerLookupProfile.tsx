@@ -9,7 +9,13 @@ import type {
 } from "@/lib/nexon-catalog-transform";
 import type { ModuleRecord } from "@/lib/tfd-modules";
 import { capacityCostAtLevel } from "@/lib/tfd-modules";
-import { inferTierFromValue, tierColors } from "@/lib/tracker-data";
+import {
+  inferTierFromCoreAugment,
+  inferTierFromExternalSubstat,
+  inferTierFromReactorSubstat,
+  inferTierFromValue,
+  tierColors,
+} from "@/lib/tracker-data";
 import {
   buildDescendantModuleGrid,
   filterDescendantBodyMods,
@@ -168,9 +174,25 @@ function formatGearStatValue(name: string, val: unknown): string {
   return s;
 }
 
-function TieredStatValue({ statName, raw }: { statName: string; raw: unknown }) {
+function TieredStatValue({
+  statName,
+  raw,
+  tierSource = "merged",
+}: {
+  statName: string;
+  raw: unknown;
+  tierSource?: "merged" | "reactor" | "external" | "core";
+}) {
   const display = formatGearStatValue(statName, raw);
-  const tier = inferTierFromValue(statName, String(raw ?? ""));
+  const s = String(raw ?? "");
+  const tier =
+    tierSource === "reactor"
+      ? inferTierFromReactorSubstat(statName, s)
+      : tierSource === "external"
+        ? inferTierFromExternalSubstat(statName, s)
+        : tierSource === "core"
+          ? inferTierFromCoreAugment(statName, s)
+          : inferTierFromValue(statName, s);
   return (
     <span className={styles.subValue} style={{ color: tierColors[tier] }}>
       {display}
@@ -264,21 +286,22 @@ function ExternalComponentDgCard({
           ) : null}
           <span className={styles.dgExtItemName}>{displayName}</span>
         </div>
-        {catalog?.setOptionDetail?.[0]?.setName ? (
-          <span className={`${styles.setChip} ${styles.dgExtSetChipInline}`}>{catalog.setOptionDetail[0].setName}</span>
-        ) : null}
+        <div className={styles.dgExtTagRow}>
+          {catalog?.setOptionDetail?.[0]?.setName ? (
+            <span className={`${styles.setChip} ${styles.dgExtSetChipInline}`}>{catalog.setOptionDetail[0].setName}</span>
+          ) : null}
+          {catalog?.tier ? (
+            <span className={`${styles.dgReactorChip} ${reactorTierChipClass(catalog.tier)}`} title="Item rarity">
+              {catalog.tier}
+            </span>
+          ) : null}
+        </div>
         {hasAnyStats ? (
           <div className={styles.dgExtStatsWrap}>
             {cores.length > 0 ? (
               <div className={`${styles.dgExtStatSection} ${styles.dgExtStatSectionCore}`}>
                 <div className={styles.dgExtStatHeadingRow}>
                   <span className={styles.dgExtStatBlockHeading}>Core</span>
-                  <span
-                    className={styles.dgExtCoreUltimatePill}
-                    title="Augmentation core slots — Ultimate-tier roll pool (Recovery / Defense, etc.). Separate from substats."
-                  >
-                    Ultimate
-                  </span>
                 </div>
                 <div className={styles.dgExtStatBlock}>
                   {cores.map((o, i) => {
@@ -287,9 +310,7 @@ function ExternalComponentDgCard({
                     return (
                       <p key={`core-${name}-${i}`} className={styles.dgExtStatRow}>
                         <span className={styles.dgExtFooterLab}>{name}: </span>
-                        <span className={styles.dgExtFooterValCoreUltimate}>
-                          {formatGearStatValue(name, raw)}
-                        </span>
+                        <TieredStatValue statName={name} raw={raw} tierSource="core" />
                       </p>
                     );
                   })}
@@ -310,9 +331,7 @@ function ExternalComponentDgCard({
                     return (
                       <p key={`sub-${name}-${i}`} className={styles.dgExtStatRow}>
                         <span className={styles.dgExtFooterLab}>{name}: </span>
-                        <span className={styles.dgExtFooterValSubstatPool}>
-                          {formatGearStatValue(name, raw)}
-                        </span>
+                        <TieredStatValue statName={name} raw={raw} tierSource="external" />
                       </p>
                     );
                   })}
@@ -453,7 +472,7 @@ function ReactorProfileCard({
               return (
                 <div key={`${sn}-${i}`} className={styles.dgReactorRollLine}>
                   <span className={styles.dgReactorRollLabel}>{sn}: </span>
-                  <TieredStatValue statName={sn} raw={sv} />
+                  <TieredStatValue statName={sn} raw={sv} tierSource="reactor" />
                 </div>
               );
             })
@@ -511,7 +530,7 @@ function ReactorFallbackKv({ row }: { row: Record<string, unknown> }) {
           <dt>{rowItem.k}</dt>
           <dd>
             {rowItem.tiered ? (
-              <TieredStatValue statName={rowItem.k} raw={rowItem.raw} />
+              <TieredStatValue statName={rowItem.k} raw={rowItem.raw} tierSource="reactor" />
             ) : (
               rowItem.text
             )}
