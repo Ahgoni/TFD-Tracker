@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
+import { useI18n } from "@/contexts/i18n-context";
 import styles from "./community-tier-list.module.css";
 
 type TierItem = {
@@ -45,6 +46,7 @@ function goToSignInPage() {
 }
 
 export function CommunityTierList() {
+  const { t } = useI18n();
   const { data: session, status } = useSession();
   const [tab, setTab] = useState<"descendants" | "weapons">("descendants");
   const [data, setData] = useState<ApiPayload | null>(null);
@@ -62,9 +64,9 @@ export function CommunityTierList() {
       const json = (await res.json()) as ApiPayload;
       setData(json);
     } catch {
-      setLoadError("Could not load tier list.");
+      setLoadError(t("tierList.loadError"));
     }
-  }, [tab]);
+  }, [tab, t]);
 
   useEffect(() => {
     void loadTierList();
@@ -102,7 +104,7 @@ export function CommunityTierList() {
       });
       if (!res.ok) {
         const j = await res.json().catch(() => ({}));
-        window.alert(typeof j.error === "string" ? j.error : "Vote failed.");
+        window.alert(typeof j.error === "string" ? j.error : t("tierList.voteFailed"));
         return;
       }
       await loadTierList();
@@ -117,15 +119,12 @@ export function CommunityTierList() {
     <section className={styles.section} aria-labelledby="community-tier-heading">
       <div className={styles.head}>
         <h2 id="community-tier-heading" className={styles.title}>
-          The First Descendant <span className={styles.titleAccent}>Community Tier List</span>
+          {t("tierList.title")} <span className={styles.titleAccent}>{t("tierList.titleAccent")}</span>
         </h2>
-        <p className={styles.sub}>
-          Votes from signed-in players set each row. Ultimate and base descendants count as one entry. Click a portrait to
-          vote or browse public builds.
-        </p>
+        <p className={styles.sub}>{t("tierList.subtitle")}</p>
       </div>
 
-      <div className={styles.tabs} role="tablist" aria-label="Tier list category">
+      <div className={styles.tabs} role="tablist" aria-label={t("tierList.tabsAria")}>
         <button
           type="button"
           role="tab"
@@ -133,7 +132,7 @@ export function CommunityTierList() {
           className={`${styles.tab} ${tab === "descendants" ? styles.tabActive : ""}`}
           onClick={() => setTab("descendants")}
         >
-          Descendants
+          {t("tierList.tabDescendants")}
         </button>
         <button
           type="button"
@@ -142,12 +141,12 @@ export function CommunityTierList() {
           className={`${styles.tab} ${tab === "weapons" ? styles.tabActive : ""}`}
           onClick={() => setTab("weapons")}
         >
-          Weapons
+          {t("tierList.tabWeapons")}
         </button>
       </div>
 
       {loadError && <p className={styles.loading}>{loadError}</p>}
-      {!data && !loadError && <p className={styles.loading}>Loading tier list…</p>}
+      {!data && !loadError && <p className={styles.loading}>{t("tierList.loading")}</p>}
 
       {data && (
         <div className={styles.tierRows}>
@@ -155,7 +154,11 @@ export function CommunityTierList() {
             <div className={styles.tierRow} key={row.tier}>
               <div
                 className={`${styles.tierBadge} ${TIER_CLASS[row.tier] ?? styles.tU}`}
-                title={row.tier === "UNRANKED" ? "Unranked (no votes yet)" : `Tier ${row.tier}`}
+                title={
+                  row.tier === "UNRANKED"
+                    ? t("tierList.tierUnrankedTitle")
+                    : t("tierList.tierRankTitle", { tier: row.tier })
+                }
               >
                 {row.tier === "UNRANKED" ? "?" : row.tier}
               </div>
@@ -171,7 +174,10 @@ export function CommunityTierList() {
                       type="button"
                       className={styles.portraitBtn}
                       onClick={() => setModal(item)}
-                      title={`${item.displayName} · ${item.voteCount} vote(s)`}
+                      title={t("tierList.voteCount", {
+                        name: item.displayName,
+                        count: String(item.voteCount),
+                      })}
                     >
                       {item.image ? (
                         // eslint-disable-next-line @next/next/no-img-element
@@ -210,15 +216,15 @@ export function CommunityTierList() {
               <h3 id="tier-modal-title" className={styles.modalTitle}>
                 {modal.displayName}
               </h3>
-              <button type="button" className={styles.modalClose} onClick={() => setModal(null)} aria-label="Close">
+              <button type="button" className={styles.modalClose} onClick={() => setModal(null)} aria-label={t("tierList.modalClose")}>
                 ×
               </button>
             </div>
 
             <div className={styles.voteBlock}>
-              <p className={styles.voteLabel}>Your tier vote</p>
+              <p className={styles.voteLabel}>{t("tierList.modalYourVote")}</p>
               {status === "loading" ? (
-                <p className={styles.signInHint}>Checking session…</p>
+                <p className={styles.signInHint}>{t("tierList.modalCheckingSession")}</p>
               ) : session?.user ? (
                 <div className={styles.voteRow}>
                   {(["S", "A", "B", "C", "D"] as const).map((t) => (
@@ -235,18 +241,18 @@ export function CommunityTierList() {
                 </div>
               ) : (
                 <>
-                  <p className={styles.signInHint}>You must sign in to vote. You will be redirected to the sign-in page.</p>
+                  <p className={styles.signInHint}>{t("tierList.modalSignInHint")}</p>
                   <button type="button" className={styles.voteBtn} onClick={goToSignInPage}>
-                    Go to sign in
+                    {t("tierList.modalGoSignIn")}
                   </button>
                 </>
               )}
             </div>
 
             <div>
-              <p className={styles.buildsLabel}>Public builds</p>
+              <p className={styles.buildsLabel}>{t("tierList.modalPublicBuilds")}</p>
               {buildsLoading ? (
-                <p className={styles.emptyBuilds}>Loading…</p>
+                <p className={styles.emptyBuilds}>{t("tierList.modalLoadingBuilds")}</p>
               ) : publicBuilds && publicBuilds.length > 0 ? (
                 publicBuilds.map((b) => (
                   <Link key={`${b.username}-${b.buildId}`} href={b.href} className={styles.buildLink}>
@@ -259,8 +265,9 @@ export function CommunityTierList() {
                 ))
               ) : (
                 <p className={styles.emptyBuilds}>
-                  No public builds listed for this {tab === "weapons" ? "weapon" : "descendant"} yet. Mark a build as tier hub
-                  in the tracker (Builds tab) with profile sharing open.
+                  {t("tierList.modalNoBuilds", {
+                    target: t(tab === "weapons" ? "tierList.targetWeapon" : "tierList.targetDescendant"),
+                  })}
                 </p>
               )}
             </div>

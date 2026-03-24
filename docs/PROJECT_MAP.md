@@ -18,10 +18,11 @@ Use this file to orient before large changes. **AI continuity:** `docs/AI_HANDOF
 
 | Path | Role |
 |------|------|
-| `src/app/` | Routes: `/`, `/tracker`, `/u/[username]`, **`/u/[username]/b/[buildId]`** (single shared build), `/share/[token]`, `/share/user/[userId]` |
+| `src/app/` | Routes: `/`, **`/tier-list`** (community tier list), `/tracker`, `/u/[username]`, **`/u/[username]/b/[buildId]`** (single shared build), `/share/[token]`, `/share/user/[userId]` |
 | `src/app/api/` | REST: **`state`** (main blob), **`share`**, **`profile`**, **`friends`**, **`tier-list`** (+ **`vote`**, **`public-builds`**), domain CRUD (**`weapons`**, **`descendants`**, **`reactors`**, **`goals`**), **`nexon/catalog/[kind]`** |
 | `src/app/tracker/components/` | Tab UIs: `BuildsTab`, `BuildPlannerPanel`, `DescendantsTab`, `WeaponsTab`, … |
 | `src/lib/` | **Business logic:** `tfd-modules.ts`, `tfd-stat-engine.ts`, `build-planner-stats.ts`, `nexon-catalog-transform.ts`, `fetch-game-catalog.ts`, `tracker-data.ts`, `tracker-default-state.ts`, Prisma helpers |
+| `src/contexts/i18n-context.tsx`, `src/lib/i18n/config.ts`, `src/messages/*.json` | **i18n:** client `I18nProvider` in `app/providers.tsx`; locale in **`localStorage`** + **`tfd-locale`** cookie; `lang` set on `<html>` (layout inline script + provider) |
 | `public/data/` | Committed Nexon-derived JSON + hand-curated (`external-components.json`, `ancestor-modules.json`, …) — see `public/data/README.md` |
 | `scripts/` | `fetch-game-data.ts`, `fetch-game-stats.js`, `download-assets.mjs`, `link-public.js`, `postinstall-run.js` |
 | `prisma/schema.prisma` | `User`, **`AppState`** (JSON), `ShareToken`, `SavedFriend`, plus **optional** normalized `WeaponEntry`, `DescendantEntry`, … |

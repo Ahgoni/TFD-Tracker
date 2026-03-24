@@ -1,8 +1,10 @@
 # TFD Tracker — handoff / session memory
 
-**Last updated:** 2026-03-24 (auth signIn + public build spotlight URL)
+**Last updated:** 2026-03-24 (Overframe nav + site-wide i18n)
 
-**Latest (2026-03-24):** **NextAuth:** removed **`pages.signIn: "/"`** — custom sign-in on the landing page broke Discord OAuth (users landed on `/?callbackUrl=…` with no provider flow). Default **`/api/auth/signin`** is used again. **Shared builds:** tier hub + Copy link use **`/u/{username}/b/{buildId}`** (single-build read-only page). Old **`#build-`** profile URLs **redirect** to `/b/`. **`PublicBuildCard`** extracted for reuse.
+**Latest (2026-03-24):** **Nav + i18n:** **Overframe-style** top bar: **Home**, **Tier List**, **Tracker** (when signed in), plus **language** (`LanguageSelect`), theme, auth. **`/tier-list`** route hosts **`CommunityTierList`**; landing links there via hero strip. **`I18nProvider`** wraps the app (`localStorage` + **`tfd-locale`** cookie, **`document.documentElement.lang`** + inline script in `layout.tsx`). Messages: **`src/messages/{en,ko,ja,…}.json`**. **`SiteTopNav`**, **`LanguageSelect`**, **`HomeLandingContent`**, tracker top bar **Home / Tier List** links.
+
+**Earlier (2026-03-24):** **NextAuth:** removed **`pages.signIn: "/"`** — custom sign-in on the landing page broke Discord OAuth (users landed on `/?callbackUrl=…` with no provider flow). Default **`/api/auth/signin`** is used again. **Shared builds:** tier hub + Copy link use **`/u/{username}/b/{buildId}`** (single-build read-only page). Old **`#build-`** profile URLs **redirect** to `/b/`. **`PublicBuildCard`** extracted for reuse.
 
 **Earlier (2026-03-24):** **`npm run build`** runs **`prisma generate && next build`** so VPS builds never use a stale Prisma client. Tier list enums use **`src/lib/tier-list-category.ts`** (not importing `TierListCategory` from `@prisma/client` in API routes).
 
@@ -221,6 +223,7 @@ After deploy: **hard refresh** to clear stale asset caches.
 
 | Date       | Summary |
 |-----------|---------|
+| 2026-03-24 | **Nav + i18n:** `SiteTopNav` (Home / Tier List / Tracker), `/tier-list`, `I18nProvider` + cookie/storage + `html[lang]`, `LanguageSelect`, `HomeLandingContent`, tracker links; `community-tier-list` + messages (en/ko/ja + empty locale fallbacks). |
 | 2026-03-24 | **Auth + share links:** Removed `pages.signIn: "/"`; shared build route `/u/…/b/…`; `BuildHashRedirect`; tier hub `href` + BuildsTab `copyBuildLink`. |
 | 2026-03-24 | **Deploy fix:** `package.json` `build` = `prisma generate && next build`; `TierListCategory` from `src/lib/tier-list-category.ts`; `DEPLOY_UBUNTU.md` note. Fixes VPS `Module '@prisma/client' has no exported member 'TierListCategory'`. |
 | 2026-03-24 | **Community tier list** on `/`: voting APIs, `TierVote` + `PublicBuildListing`, build flag `communityPublic`, landing `CommunityTierList` modal (votes + public build links). Migration `0007_tier_list_community`. |

@@ -51,6 +51,11 @@ export default function RootLayout({
             __html: `(function(){var t=localStorage.getItem('theme')||'dark';document.documentElement.setAttribute('data-theme',t);})();`,
           }}
         />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){var k='tfd-locale';var v=null;try{var m=document.cookie.match(new RegExp('(?:^|; )'+k+'=([^;]*)'));if(m)v=decodeURIComponent(m[1]);if(!v)v=localStorage.getItem(k);}catch(e){}var L={'en':'en','ko':'ko','ja':'ja','de':'de','fr':'fr','zh-CN':'zh-CN','es':'es'};document.documentElement.lang=L[v]||'en';})();`,
+          }}
+        />
       </head>
       <body><Providers>{children}</Providers></body>
     </html>

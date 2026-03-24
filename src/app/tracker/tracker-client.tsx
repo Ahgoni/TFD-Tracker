@@ -1,7 +1,11 @@
 "use client";
 
 import { useEffect, useRef, useState, useCallback } from "react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useSession } from "next-auth/react";
+import { useI18n } from "@/contexts/i18n-context";
+import { LanguageSelect } from "@/components/language-select";
 import { WelcomeTab } from "./components/WelcomeTab";
 import { DescendantsTab } from "./components/DescendantsTab";
 import { WeaponsTab } from "./components/WeaponsTab";
@@ -512,22 +516,36 @@ export function TrackerClient() {
     : "";
 
   const activeTab = state.tabs.includes(state.activeTab) ? state.activeTab : "Welcome";
+  const { t } = useI18n();
+  const pathname = usePathname() ?? "";
+
   return (
     <div className="app">
       <header className="topbar">
         <div className="topbar-row">
-          <div className="brand">
-            <h1>
-              <BrandLogo size={26} />
-              <span className="brand-tfd">TFD</span> Tracker
-            </h1>
-            <p>Cloud inventory · Discord login · private per-user data</p>
+          <div className="topbar-left-cluster">
+            <div className="brand">
+              <h1>
+                <BrandLogo size={26} />
+                <span className="brand-tfd">TFD</span> Tracker
+              </h1>
+              <p>Cloud inventory · Discord login · private per-user data</p>
+            </div>
+            <nav className="topbar-site-links" aria-label="Site">
+              <Link href="/" className={pathname === "/" ? "active" : undefined}>
+                {t("nav.home")}
+              </Link>
+              <Link href="/tier-list" className={pathname.startsWith("/tier-list") ? "active" : undefined}>
+                {t("nav.tierList")}
+              </Link>
+            </nav>
           </div>
           <div className="topbar-right">
             <span className={`save-status ${statusClass}`}>
               {saveStatus === "saving" && <span className="save-pulse" />}
               {statusText}
             </span>
+            <LanguageSelect />
             <ThemeToggle compact />
             <ProfileMenu
               onShare={handleShare}
