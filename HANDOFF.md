@@ -1,8 +1,10 @@
 # TFD Tracker — handoff / session memory
 
-**Last updated:** 2026-03-24 (tier list weighted voting + Overframe-style bars)
+**Last updated:** 2026-03-24 (tier list mod panel + synthetic overlay)
 
-**Latest (2026-03-24):** **Community tier list:** votes aggregate with **weights S=5 … D=1**. **Row placement** uses **rounded weighted mean** (not raw plurality). **Score %** = `(mean − 1) / 4 × 100` (D→0%, S→100%). **Bar** = vote share by tier; **letter in bar** = **plurality** (ties S→D). API: `votesByTier`, `scorePercent`, `consensusTier`. UI: `community-tier-list` list rows + modal blurb. Lib: `tier-list-aggregate.ts`.
+**Latest (2026-03-24):** **Tier list mod (owner-only):** env **`TIER_LIST_MOD_DISCORD_IDS`** (comma-separated snowflakes) gates **`/api/tier-list/mod/*`**. Matching Discord sign-in sees collapsible **`TierListModPanel`** on the tier list; others see nothing. **Synthetic overlay** (`TierListModOverlay`) adjusts per-tier counts on read (real `TierVote` rows unchanged unless mod deletes them). Run **`prisma migrate deploy`** for new table.
+
+**Earlier (2026-03-24):** **Community tier list:** votes aggregate with **weights S=5 … D=1**. **Row placement** uses **rounded weighted mean** (not raw plurality). **Score %** = `(mean − 1) / 4 × 100` (D→0%, S→100%). **Bar** = vote share by tier; **letter in bar** = **plurality** (ties S→D). API: `votesByTier`, `scorePercent`, `consensusTier`. UI: `community-tier-list` list rows + modal blurb. Lib: `tier-list-aggregate.ts`.
 
 **Earlier (2026-03-24):** **`error=OAuthCallback`:** token/userinfo step with Discord failed (not Prisma). **`authOptions.secret`** from `NEXTAUTH_SECRET` or `AUTH_SECRET`; **`logger.error`** → server console. **`DEPLOY_UBUNTU.md` §10:** nginx **`X-Forwarded-Proto $scheme`** (was missing); §11 troubleshooting (WAF, ad-block, env).
 
@@ -233,6 +235,7 @@ After deploy: **hard refresh** to clear stale asset caches.
 
 | Date       | Summary |
 |-----------|---------|
+| 2026-03-24 | **Tier list mod:** `TIER_LIST_MOD_DISCORD_IDS` + `tier-list-mod.ts`; Prisma `TierListModOverlay`; APIs `mod/session`, `overview`, `voters`, `overlay`, `overlay/reset`, `vote` DELETE; `TierListModPanel`; public `GET /api/tier-list` merges overlay. |
 | 2026-03-24 | **Tier list:** weighted mean (S=5…D=1) for row + score %; plurality label on bar; `tier-list-aggregate.ts`, `GET /api/tier-list` fields, `CommunityTierList` + CSS + i18n (en/ko/ja). |
 | 2026-03-24 | **Auth:** `createPrismaAuthAdapter` + Discord `allowDangerousEmailAccountLinking` (fix `error=Callback` / Prisma create / orphaned users). |
 | 2026-03-24 | **`redirectToDiscordOAuth`** (skip failing `getProviders` → no NextAuth HTML); **`callbacks.redirect`**; language chip CSS. |

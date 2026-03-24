@@ -57,6 +57,8 @@ NEXTAUTH_SECRET="<generate below>"
 NEXTAUTH_URL="https://yourdomain.com"
 DISCORD_CLIENT_ID="your-discord-client-id"
 DISCORD_CLIENT_SECRET="your-discord-client-secret"
+# Optional: comma-separated Discord user IDs allowed to use tier-list mod tools (synthetic vote overlay + delete votes). Empty = disabled.
+# TIER_LIST_MOD_DISCORD_IDS="123456789012345678"
 ```
 
 Generate a secure AUTH_SECRET:

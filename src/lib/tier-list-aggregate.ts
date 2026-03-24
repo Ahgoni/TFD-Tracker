@@ -27,8 +27,69 @@ export type EntityVoteStats = {
   modeTier: TierLetter;
 };
 
-function emptyDistribution(): VoteDistribution {
+export function emptyDistribution(): VoteDistribution {
   return { S: 0, A: 0, B: 0, C: 0, D: 0 };
+}
+
+/** Count real votes (one string per voter). */
+export function distributionFromVoteTiers(votes: string[]): VoteDistribution {
+  const dist = emptyDistribution();
+  for (const raw of votes) {
+    if ((TIERS as readonly string[]).includes(raw)) {
+      dist[raw as keyof VoteDistribution]++;
+    }
+  }
+  return dist;
+}
+
+/** Per-tier synthetic deltas from mod overlay; missing tiers = 0. */
+export function mergeDistributionWithOverlay(
+  base: VoteDistribution,
+  overlay: VoteDistribution | undefined,
+): VoteDistribution {
+  if (!overlay) return base;
+  const out = emptyDistribution();
+  for (const t of TIERS) {
+    out[t] = Math.max(0, base[t] + overlay[t]);
+  }
+  return out;
+}
+
+export function statsFromDistribution(dist: VoteDistribution): EntityVoteStats {
+  const total = dist.S + dist.A + dist.B + dist.C + dist.D;
+  if (total === 0) {
+    return {
+      distribution: dist,
+      totalVotes: 0,
+      weightedMean: null,
+      scorePercent: null,
+      bucketTier: "UNRANKED",
+      modeTier: "UNRANKED",
+    };
+  }
+  let sum = 0;
+  for (const t of TIERS) {
+    sum += TIER_WEIGHT[t] * dist[t];
+  }
+  const weightedMean = sum / total;
+  const scorePercent = Math.round(((weightedMean - 1) / 4) * 100);
+  return {
+    distribution: dist,
+    totalVotes: total,
+    weightedMean,
+    scorePercent,
+    bucketTier: tierFromRoundedMean(weightedMean),
+    modeTier: modeTierFromCounts(dist),
+  };
+}
+
+export function computeEntityVoteStats(
+  votes: string[],
+  overlay?: VoteDistribution,
+): EntityVoteStats {
+  const base = distributionFromVoteTiers(votes);
+  const dist = mergeDistributionWithOverlay(base, overlay);
+  return statsFromDistribution(dist);
 }
 
 function tierFromRoundedMean(mean: number): (typeof TIERS)[number] {
@@ -58,50 +119,21 @@ function modeTierFromCounts(counts: VoteDistribution): TierLetter {
   return best;
 }
 
-export function computeEntityVoteStats(votes: string[]): EntityVoteStats {
-  const dist = emptyDistribution();
-  for (const raw of votes) {
-    if ((TIERS as readonly string[]).includes(raw)) {
-      dist[raw as keyof VoteDistribution]++;
-    }
-  }
-  const total = dist.S + dist.A + dist.B + dist.C + dist.D;
-  if (total === 0) {
-    return {
-      distribution: dist,
-      totalVotes: 0,
-      weightedMean: null,
-      scorePercent: null,
-      bucketTier: "UNRANKED",
-      modeTier: "UNRANKED",
-    };
-  }
-  let sum = 0;
-  for (const t of TIERS) {
-    sum += TIER_WEIGHT[t] * dist[t];
-  }
-  const weightedMean = sum / total;
-  const scorePercent = Math.round(((weightedMean - 1) / 4) * 100);
-  return {
-    distribution: dist,
-    totalVotes: total,
-    weightedMean,
-    scorePercent,
-    bucketTier: tierFromRoundedMean(weightedMean),
-    modeTier: modeTierFromCounts(dist),
-  };
-}
-
 export function bucketEntitiesByTier(
   entities: TierListEntity[],
   votesByEntity: Map<string, string[]>,
+  overlayByEntity?: Map<string, VoteDistribution>,
 ): {
   buckets: Record<TierLetter, TierListEntity[]>;
   statsByEntity: Map<string, EntityVoteStats>;
 } {
   const statsByEntity = new Map<string, EntityVoteStats>();
   for (const e of entities) {
-    statsByEntity.set(e.entityKey, computeEntityVoteStats(votesByEntity.get(e.entityKey) ?? []));
+    const overlay = overlayByEntity?.get(e.entityKey);
+    statsByEntity.set(
+      e.entityKey,
+      computeEntityVoteStats(votesByEntity.get(e.entityKey) ?? [], overlay),
+    );
   }
 
   const buckets: Record<TierLetter, TierListEntity[]> = {

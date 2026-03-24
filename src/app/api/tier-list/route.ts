@@ -3,7 +3,21 @@ import { prisma } from "@/lib/prisma";
 import { TierListCategory } from "@/lib/tier-list-category";
 import { requireUserId } from "@/lib/require-user";
 import { getTierListDescendants, getTierListWeapons } from "@/lib/tier-list-catalog";
-import { bucketEntitiesByTier, type TierLetter } from "@/lib/tier-list-aggregate";
+import {
+  bucketEntitiesByTier,
+  type TierLetter,
+  type VoteDistribution,
+} from "@/lib/tier-list-aggregate";
+
+function overlayRowToDist(row: {
+  deltaS: number;
+  deltaA: number;
+  deltaB: number;
+  deltaC: number;
+  deltaD: number;
+}): VoteDistribution {
+  return { S: row.deltaS, A: row.deltaA, B: row.deltaB, C: row.deltaC, D: row.deltaD };
+}
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
@@ -26,7 +40,14 @@ export async function GET(request: Request) {
     votesByEntity.set(v.entityKey, list);
   }
 
-  const { buckets, statsByEntity } = bucketEntitiesByTier(entities, votesByEntity);
+  const overlayRows = await prisma.tierListModOverlay.findMany({ where: { category } });
+  const overlayByEntity = new Map<string, VoteDistribution>();
+  for (const row of overlayRows) {
+    if (!entityKeys.has(row.entityKey)) continue;
+    overlayByEntity.set(row.entityKey, overlayRowToDist(row));
+  }
+
+  const { buckets, statsByEntity } = bucketEntitiesByTier(entities, votesByEntity, overlayByEntity);
 
   const userId = await requireUserId();
   let myVotes: Record<string, string> = {};

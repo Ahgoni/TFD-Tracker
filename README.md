@@ -3,7 +3,7 @@
 This app adds Discord login and private per-user cloud state for The First Descendant tracker.
 
 ## Quick start
-1. Copy `.env.example` to `.env` and fill values.
+1. Copy `.env.example` to `.env` and fill values. (Optional: **`TIER_LIST_MOD_DISCORD_IDS`** — your Discord snowflake — enables private tier-list mod tools on `/tier-list` after deploy.)
 2. Start Postgres (`docker compose up -d db`).
 3. Install and run migrations:
    - `npm install`

@@ -5,6 +5,7 @@ import { useCallback, useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import { redirectToDiscordOAuth } from "@/lib/discord-oauth-redirect";
 import { useI18n } from "@/contexts/i18n-context";
+import { TierListModPanel } from "@/components/tier-list-mod-panel";
 import styles from "./community-tier-list.module.css";
 
 type VoteTierKey = "S" | "A" | "B" | "C" | "D";
@@ -208,6 +209,8 @@ export function CommunityTierList() {
           {t("tierList.tabWeapons")}
         </button>
       </div>
+
+      <TierListModPanel tab={tab} onTierListChanged={() => void loadTierList()} />
 
       {loadError && <p className={styles.loading}>{loadError}</p>}
       {!data && !loadError && <p className={styles.loading}>{t("tierList.loading")}</p>}

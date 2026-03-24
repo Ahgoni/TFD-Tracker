@@ -236,3 +236,20 @@ enum TierListCategory {
   DESCENDANT
   WEAPON
 }
+
+/// Synthetic per-tier vote deltas applied only on read (real TierVote rows unchanged). Editable by env-gated mod APIs.
+model TierListModOverlay {
+  id         String           @id @default(cuid())
+  category   TierListCategory
+  entityKey  String
+  deltaS     Int              @default(0)
+  deltaA     Int              @default(0)
+  deltaB     Int              @default(0)
+  deltaC     Int              @default(0)
+  deltaD     Int              @default(0)
+  createdAt  DateTime         @default(now())
+  updatedAt  DateTime         @updatedAt
+
+  @@unique([category, entityKey])
+  @@index([category])
+}

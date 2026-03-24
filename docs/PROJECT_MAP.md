@@ -19,7 +19,7 @@ Use this file to orient before large changes. **AI continuity:** `docs/AI_HANDOF
 | Path | Role |
 |------|------|
 | `src/app/` | Routes: `/`, **`/tier-list`** (community tier list), `/tracker`, `/u/[username]`, **`/u/[username]/b/[buildId]`** (single shared build), `/share/[token]`, `/share/user/[userId]` |
-| `src/app/api/` | REST: **`state`** (main blob), **`share`**, **`profile`**, **`friends`**, **`tier-list`** (+ **`vote`**, **`public-builds`**), domain CRUD (**`weapons`**, **`descendants`**, **`reactors`**, **`goals`**), **`nexon/catalog/[kind]`** |
+| `src/app/api/` | REST: **`state`** (main blob), **`share`**, **`profile`**, **`friends`**, **`tier-list`** (+ **`vote`**, **`public-builds`**, **`mod/*`** Discord-ID–gated overlay + voter tools), domain CRUD (**`weapons`**, **`descendants`**, **`reactors`**, **`goals`**), **`nexon/catalog/[kind]`** |
 | `src/app/tracker/components/` | Tab UIs: `BuildsTab`, `BuildPlannerPanel`, `DescendantsTab`, `WeaponsTab`, … |
 | `src/lib/` | **Business logic:** `tfd-modules.ts`, `tfd-stat-engine.ts`, `build-planner-stats.ts`, `nexon-catalog-transform.ts`, `fetch-game-catalog.ts`, `tracker-data.ts`, `tracker-default-state.ts`, Prisma helpers |
 | `src/contexts/i18n-context.tsx`, `src/lib/i18n/config.ts`, `src/messages/*.json` | **i18n:** client `I18nProvider` in `app/providers.tsx`; locale in **`localStorage`** + **`tfd-locale`** cookie; `lang` set on `<html>` (layout inline script + provider) |
@@ -78,7 +78,7 @@ Use this file to orient before large changes. **AI continuity:** `docs/AI_HANDOF
 | Tracker shell | `tracker-client.tsx`, `tracker-default-state.ts` |
 | Public build stats | `public-build-stats-client.tsx`, `public-build-types.ts` |
 | Friends | `FriendsTab.tsx`, `api/friends/*` |
-| Community tier list | `community-tier-list.tsx`, `api/tier-list/*`, `tier-list-aggregate.ts` (weighted mean S=5…D=1, distribution + score in JSON), Prisma `TierVote` / `PublicBuildListing` |
+| Community tier list | `community-tier-list.tsx`, `tier-list-mod-panel.tsx`, `api/tier-list/*` (including **`mod/*`**), `tier-list-aggregate.ts`, `tier-list-mod.ts`, Prisma **`TierVote`**, **`PublicBuildListing`**, **`TierListModOverlay`** (synthetic per-tier deltas; env **`TIER_LIST_MOD_DISCORD_IDS`**) |
 | Theme | `theme-toggle.tsx`, `globals.css` `:root` / `[data-theme="light"]` |
 
 ---
