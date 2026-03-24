@@ -261,10 +261,23 @@ export function BuildsTab({ state, setState }: Props) {
     setState((prev) => pushActivity({ ...prev, builds: [...(prev.builds ?? []), copy] }, `Duplicated build: ${b.name}`));
   }
 
-  function copyProfileLink(anchor?: string) {
+  async function copyProfileLink(anchor?: string) {
     const base = typeof window !== "undefined" ? window.location.origin : "";
-    const path = username ? `${base}/u/${encodeURIComponent(username)}${anchor ?? ""}` : `${base}/tracker`;
-    navigator.clipboard.writeText(path).catch(() => {});
+    if (!username) {
+      setCopyLinkFeedback("Set a username on your account to share profile and build links.");
+      window.setTimeout(() => setCopyLinkFeedback(null), 5000);
+      return;
+    }
+    const path = `${base}/u/${encodeURIComponent(username)}${anchor ?? ""}`;
+    const ok = await copyTextToClipboard(path);
+    if (ok) {
+      setCopyLinkFeedback(
+        anchor ? "Build link copied to clipboard." : "Profile link copied to clipboard."
+      );
+    } else {
+      setCopyLinkFeedback("Could not copy automatically — copy the URL from your address bar or try again.");
+    }
+    window.setTimeout(() => setCopyLinkFeedback(null), 5000);
   }
 
   const plannerSlice: PlannerFormSlice = {
@@ -355,7 +368,7 @@ export function BuildsTab({ state, setState }: Props) {
 
         {username && (
           <p className="builds-share-hint">
-            <button type="button" className="filter-chip" onClick={() => copyProfileLink()}>
+            <button type="button" className="filter-chip" onClick={() => void copyProfileLink()}>
               Copy profile link
             </button>
             {copyLinkFeedback && (
@@ -603,7 +616,11 @@ export function BuildsTab({ state, setState }: Props) {
                     Duplicate
                   </button>
                   {username && (
-                    <button type="button" className="filter-chip" onClick={() => copyProfileLink(`#build-${b.id}`)}>
+                    <button
+                      type="button"
+                      className="filter-chip"
+                      onClick={() => void copyProfileLink(`#build-${b.id}`)}
+                    >
                       Copy link
                     </button>
                   )}
