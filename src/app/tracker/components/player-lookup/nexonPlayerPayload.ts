@@ -227,6 +227,17 @@ export function extractBasicInfo(basicJson: unknown): {
   };
 }
 
+/** True when JSON is the flat `/user/reactor` row (Nexon UserReactor — not wrapped in `reactor`). */
+function looksLikeUserReactorRoot(r: Record<string, unknown>): boolean {
+  if (r.descendant_id != null || r.descendantId != null) return false;
+  const id = r.reactor_id ?? r.reactorId;
+  if (typeof id === "string" && id.length > 0) return true;
+  if (r.reactor_level != null || r.reactorLevel != null) {
+    if (r.reactor_slot_id != null || r.reactorSlotId != null) return true;
+  }
+  return false;
+}
+
 /** Reactor entries — keep flexible for rendering */
 export function extractReactorList(reactorJson: unknown): Record<string, unknown>[] {
   const unwrapped = unwrapPayload(reactorJson);
@@ -252,6 +263,8 @@ export function extractReactorList(reactorJson: unknown): Record<string, unknown
     if (Array.isArray(v)) return v.filter((x) => asRecord(x)) as Record<string, unknown>[];
     if (v && typeof v === "object" && !Array.isArray(v)) return [v as Record<string, unknown>];
   }
+  /** Nexon returns UserReactor fields at the root: reactor_id, reactor_level, reactor_additional_stat, … */
+  if (looksLikeUserReactorRoot(root)) return [root];
   return [];
 }
 

@@ -244,14 +244,21 @@ function ExternalComponentCard({
 }
 
 function ReactorProfileCard({ row, index }: { row: Record<string, unknown>; index: number }) {
+  const rid = String(row.reactor_id ?? row.reactorId ?? "").trim();
   const name = String(
-    row.reactor_name ?? row.reactorName ?? row.reactor_display_name ?? `Reactor ${index + 1}`,
+    row.reactor_name ??
+      row.reactorName ??
+      row.reactor_display_name ??
+      (rid ? `Reactor (${rid})` : `Reactor ${index + 1}`),
   );
   const level = row.reactor_level ?? row.reactorLevel ?? row.level;
+  const enchant = row.reactor_enchant_level ?? row.reactorEnchantLevel;
 
   const candidates = [
     row.reactor_substat,
     row.reactor_substats,
+    row.reactor_additional_stat,
+    row.reactorAdditionalStat,
     row.substat,
     row.substats,
     row.reactor_option,
@@ -277,13 +284,25 @@ function ReactorProfileCard({ row, index }: { row: Record<string, unknown>; inde
             · Lv. {String(level)}
           </span>
         ) : null}
+        {enchant != null ? (
+          <span className="muted" style={{ fontWeight: 400, fontSize: "0.85rem" }}>
+            {" "}
+            · Enh. +{String(enchant)}
+          </span>
+        ) : null}
       </h4>
 
       {substats.length > 0 ? (
         <ul className={styles.subList}>
           {substats.map((o, i) => {
-            const sn = String(o.substat_name ?? o.stat_name ?? o.name ?? `Stat ${i + 1}`);
-            const sv = o.substat_value ?? o.stat_value ?? o.value;
+            const sn = String(
+              o.substat_name ??
+                o.stat_name ??
+                o.additional_stat_name ??
+                o.name ??
+                `Stat ${i + 1}`,
+            );
+            const sv = o.substat_value ?? o.stat_value ?? o.additional_stat_value ?? o.value;
             return (
               <li key={`${sn}-${i}`}>
                 <span>{sn}</span>
@@ -319,8 +338,10 @@ function ReactorFallbackKv({ row }: { row: Record<string, unknown> }) {
       const parsed = parseJsonRecordArray(v);
       if (parsed.length > 0) {
         for (const p of parsed) {
-          const label = String(p.substat_name ?? p.stat_name ?? p.name ?? "Stat");
-          const val = p.substat_value ?? p.stat_value ?? p.value;
+          const label = String(
+            p.substat_name ?? p.stat_name ?? p.additional_stat_name ?? p.name ?? "Stat",
+          );
+          const val = p.substat_value ?? p.stat_value ?? p.additional_stat_value ?? p.value;
           rows.push({ k: label, raw: val, tiered: true });
         }
         continue;
