@@ -190,7 +190,7 @@ export function BuildsTab({ state, setState }: Props) {
       imageUrl: resolved.imageUrl,
       moduleSlots: legacyLines,
       plannerSlots: (form.plannerSlots ?? []).some(Boolean) ? [...form.plannerSlots] : null,
-      reactor: form.reactor ?? null,
+      reactor: form.targetType === "descendant" ? (form.reactor ?? null) : null,
       targetLevel: form.targetLevel,
       archeLevel: form.archeLevel,
       externalComponents: form.externalComponents.length > 0 ? form.externalComponents : undefined,
@@ -235,7 +235,7 @@ export function BuildsTab({ state, setState }: Props) {
       targetKey: b.targetKey,
       moduleSlots: [...(b.moduleSlots ?? []), ...Array(12)].slice(0, 12).map((x) => (typeof x === "string" ? x : "")),
       plannerSlots: planner,
-      reactor: b.reactor ?? null,
+      reactor: b.targetType === "descendant" ? (b.reactor ?? null) : null,
       targetLevel: b.targetLevel ?? (b.targetType === "weapon" ? 100 : 40),
       archeLevel: ((b as unknown as Record<string, unknown>).archeLevel as number) ?? 0,
       externalComponents: b.externalComponents ?? [],
@@ -257,6 +257,7 @@ export function BuildsTab({ state, setState }: Props) {
       id: uuid(),
       name: `${b.name} (copy)`,
       updatedAt: new Date().toISOString(),
+      reactor: b.targetType === "descendant" ? b.reactor : null,
     };
     setState((prev) => pushActivity({ ...prev, builds: [...(prev.builds ?? []), copy] }, `Duplicated build: ${b.name}`));
   }
@@ -405,6 +406,7 @@ export function BuildsTab({ state, setState }: Props) {
                     targetType,
                     targetKey: "",
                     plannerSlots: emptyPlannerSlots(targetType),
+                    reactor: targetType === "weapon" ? null : f.reactor,
                   }));
                 }}
               >

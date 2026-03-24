@@ -3503,22 +3503,33 @@ td .badge { display: inline-flex; align-items: center; gap: 0.35rem; }
   display: grid;
   gap: 0.45rem;
 }
+/* Weapon: 10 slots = 5×2 (in-game). Descendant: 12 slots = 6×2. */
 .builder-slots-weapon {
   grid-template-columns: repeat(5, minmax(0, 1fr));
-  max-width: 640px;
-}
-.builder-slots-descendant {
-  grid-template-columns: repeat(4, minmax(0, 1fr));
   max-width: 720px;
 }
+.builder-slots-descendant {
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  max-width: 900px;
+}
+@media (max-width: 900px) {
+  .builder-slots-descendant {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    max-width: 640px;
+  }
+}
 @media (max-width: 700px) {
-  .builder-slots-weapon { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-  .builder-slots-descendant { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .builder-slots-weapon {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  .builder-slots-descendant {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
 }
 
 .builder-slot {
   position: relative;
-  min-height: 160px;
+  min-height: 152px;
   border-radius: 10px;
   border: 1px dashed rgba(255,255,255,0.12);
   background: rgba(0,0,0,0.2);
@@ -3560,8 +3571,19 @@ td .badge { display: inline-flex; align-items: center; gap: 0.35rem; }
   padding: 1.35rem 0.35rem 0.35rem;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: stretch;
   gap: 0.2rem;
+  min-height: 0;
+  width: 100%;
+}
+.builder-slot-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  width: 100%;
+  min-height: 0;
 }
 .builder-slot-x {
   position: absolute;
@@ -3595,8 +3617,10 @@ td .badge { display: inline-flex; align-items: center; gap: 0.35rem; }
   width: 40px;
   height: 40px;
   border-radius: 8px;
-  object-fit: cover;
+  object-fit: contain;
+  object-position: center;
   border: 1px solid var(--line);
+  background: rgba(0, 0, 0, 0.25);
 }
 .builder-slot-icon-ph {
   background: rgba(255,255,255,0.06);
@@ -3631,8 +3655,10 @@ td .badge { display: inline-flex; align-items: center; gap: 0.35rem; }
   align-items: center;
   justify-content: center;
   gap: 0.35rem;
-  margin-top: 0.2rem;
+  margin-top: auto;
+  padding-top: 0.35rem;
   width: 100%;
+  flex-shrink: 0;
 }
 .builder-lvl-btn {
   width: 26px;
@@ -3940,6 +3966,28 @@ td .badge { display: inline-flex; align-items: center; gap: 0.35rem; }
   width: 160px;
   overflow: hidden;
   background: rgba(0,0,0,0.45);
+}
+/* Weapon art is wide — show full gun with padding instead of a zoomed barrel crop */
+.builder-portrait-wrap-weapon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(ellipse 85% 75% at 50% 45%, rgba(30, 40, 55, 0.9) 0%, rgba(0, 0, 0, 0.88) 72%);
+}
+.builder-portrait-wrap-weapon .builder-portrait-img {
+  object-fit: contain;
+  object-position: center;
+  padding: 0.45rem 0.35rem;
+  width: 100%;
+  height: auto;
+  max-height: 200px;
+  min-height: 140px;
+}
+.builder-hero-bg-weapon .builder-portrait-bg {
+  object-fit: contain;
+  object-position: center;
+  opacity: 0.1;
+  filter: blur(10px) saturate(0.45) brightness(0.55);
 }
 .builder-portrait-img {
   width: 100%;

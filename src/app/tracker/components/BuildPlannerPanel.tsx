@@ -1190,13 +1190,17 @@ function BuildPlannerPanelInner({
         {/* Overframe-style hero */}
         <header className="builder-hero builder-hero-overframe">
           {hero?.imageUrl && (
-            <div className="builder-hero-bg-clip">
+            <div
+              className={`builder-hero-bg-clip${form.targetType === "weapon" ? " builder-hero-bg-weapon" : ""}`}
+            >
               <img src={hero.imageUrl} alt="" className="builder-portrait-bg" aria-hidden="true" />
             </div>
           )}
           <div className="builder-hero-inner">
             {hero?.imageUrl && (
-              <div className="builder-portrait-wrap">
+              <div
+                className={`builder-portrait-wrap${form.targetType === "weapon" ? " builder-portrait-wrap-weapon" : ""}`}
+              >
                 <img src={hero.imageUrl} alt={hero?.title ?? ""} className="builder-portrait-img" />
               </div>
             )}
@@ -1552,7 +1556,9 @@ function BuildPlannerPanelInner({
               />
             )}
 
-            <ReactorSection reactor={reactor} onChange={onReactorChange ?? (() => {})} savedReactors={savedReactors} />
+            {form.targetType === "descendant" && (
+              <ReactorSection reactor={reactor} onChange={onReactorChange ?? (() => {})} savedReactors={savedReactors} />
+            )}
 
             {form.targetType === "descendant" && onExternalComponentsChange && (
               <ExternalComponentsSection
