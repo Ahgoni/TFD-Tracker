@@ -57,13 +57,11 @@ const TIER_ORDER: readonly VoteTierKey[] = ["S", "A", "B", "C", "D"];
 
 function VoteDistributionBar({
   votesByTier,
-  consensusTier,
   total,
   label,
   decorative = false,
 }: {
   votesByTier: Record<VoteTierKey, number>;
-  consensusTier: VoteTierKey | null;
   total: number;
   /** When false, provide a short description for screen readers. */
   label?: string;
@@ -92,13 +90,24 @@ function VoteDistributionBar({
             key={t}
             className={`${styles.barSeg} ${DIST_CLASS[t]}`}
             style={{ flexGrow: n, flexBasis: 0, minWidth: n > 0 ? "4px" : 0 }}
-          >
-            {consensusTier === t ? <span className={styles.consensusInBar}>{t}</span> : null}
-          </div>
+          />
         );
       })}
     </div>
   );
+}
+
+const DISPLAY_STORAGE_KEY = "tfd-tier-list-display";
+
+function readStoredDisplayMode(): "tiers" | "votes" {
+  if (typeof window === "undefined") return "tiers";
+  try {
+    const v = window.sessionStorage.getItem(DISPLAY_STORAGE_KEY);
+    if (v === "votes" || v === "tiers") return v;
+  } catch {
+    /* ignore */
+  }
+  return "tiers";
 }
 
 function goToDiscordSignIn() {
@@ -120,6 +129,19 @@ export function CommunityTierList() {
   const [publicBuilds, setPublicBuilds] = useState<PublicBuildRow[] | null>(null);
   const [buildsLoading, setBuildsLoading] = useState(false);
   const [voteBusy, setVoteBusy] = useState(false);
+  const [displayMode, setDisplayMode] = useState<"tiers" | "votes">("tiers");
+
+  useEffect(() => {
+    setDisplayMode(readStoredDisplayMode());
+  }, []);
+
+  useEffect(() => {
+    try {
+      window.sessionStorage.setItem(DISPLAY_STORAGE_KEY, displayMode);
+    } catch {
+      /* ignore */
+    }
+  }, [displayMode]);
 
   const loadTierList = useCallback(async () => {
     setLoadError(null);
@@ -189,25 +211,46 @@ export function CommunityTierList() {
         <p className={styles.sub}>{t("tierList.subtitle")}</p>
       </div>
 
-      <div className={styles.tabs} role="tablist" aria-label={t("tierList.tabsAria")}>
-        <button
-          type="button"
-          role="tab"
-          aria-selected={tab === "descendants"}
-          className={`${styles.tab} ${tab === "descendants" ? styles.tabActive : ""}`}
-          onClick={() => setTab("descendants")}
-        >
-          {t("tierList.tabDescendants")}
-        </button>
-        <button
-          type="button"
-          role="tab"
-          aria-selected={tab === "weapons"}
-          className={`${styles.tab} ${tab === "weapons" ? styles.tabActive : ""}`}
-          onClick={() => setTab("weapons")}
-        >
-          {t("tierList.tabWeapons")}
-        </button>
+      <div className={styles.tabsRow}>
+        <div className={styles.tabs} role="tablist" aria-label={t("tierList.tabsAria")}>
+          <button
+            type="button"
+            role="tab"
+            aria-selected={tab === "descendants"}
+            className={`${styles.tab} ${tab === "descendants" ? styles.tabActive : ""}`}
+            onClick={() => setTab("descendants")}
+          >
+            {t("tierList.tabDescendants")}
+          </button>
+          <button
+            type="button"
+            role="tab"
+            aria-selected={tab === "weapons"}
+            className={`${styles.tab} ${tab === "weapons" ? styles.tabActive : ""}`}
+            onClick={() => setTab("weapons")}
+          >
+            {t("tierList.tabWeapons")}
+          </button>
+        </div>
+        <div className={styles.displayToggle} role="group" aria-label={t("tierList.displayAria")}>
+          <span className={styles.displayLabel}>{t("tierList.displayLabel")}</span>
+          <button
+            type="button"
+            className={`${styles.displayBtn} ${displayMode === "tiers" ? styles.displayBtnActive : ""}`}
+            aria-pressed={displayMode === "tiers"}
+            onClick={() => setDisplayMode("tiers")}
+          >
+            {t("tierList.displayTiers")}
+          </button>
+          <button
+            type="button"
+            className={`${styles.displayBtn} ${displayMode === "votes" ? styles.displayBtnActive : ""}`}
+            aria-pressed={displayMode === "votes"}
+            onClick={() => setDisplayMode("votes")}
+          >
+            {t("tierList.displayVotes")}
+          </button>
+        </div>
       </div>
 
       <TierListModPanel tab={tab} onTierListChanged={() => void loadTierList()} />
@@ -229,11 +272,34 @@ export function CommunityTierList() {
               >
                 {row.tier === "UNRANKED" ? "?" : row.tier}
               </div>
-              <div className={styles.itemList}>
+              <div className={displayMode === "votes" ? styles.itemList : styles.portraitList}>
                 {row.items.length === 0 ? (
                   <span className={styles.emptyBuilds} style={{ padding: "0.35rem" }}>
                     —
                   </span>
+                ) : displayMode === "tiers" ? (
+                  <div className={styles.portraitRow}>
+                    {row.items.map((item) => (
+                      <button
+                        key={item.entityKey}
+                        type="button"
+                        className={styles.portraitBtn}
+                        onClick={() => setModal(item)}
+                        title={t("tierList.voteCount", {
+                          name: item.displayName,
+                          count: String(item.voteCount),
+                        })}
+                      >
+                        {item.image ? (
+                          // eslint-disable-next-line @next/next/no-img-element
+                          <img className={styles.portraitImg} src={item.image} alt="" />
+                        ) : (
+                          <div className={styles.portraitImg} aria-hidden />
+                        )}
+                        <span className={styles.portraitNameTiers}>{item.displayName}</span>
+                      </button>
+                    ))}
+                  </div>
                 ) : (
                   row.items.map((item) => {
                     const total = item.voteCount;
@@ -271,7 +337,6 @@ export function CommunityTierList() {
                             votesByTier={
                               item.votesByTier ?? { S: 0, A: 0, B: 0, C: 0, D: 0 }
                             }
-                            consensusTier={item.consensusTier}
                             total={total}
                             decorative
                           />
@@ -325,7 +390,6 @@ export function CommunityTierList() {
                 <div className={styles.modalStatsRow}>
                   <VoteDistributionBar
                     votesByTier={modal.votesByTier}
-                    consensusTier={modal.consensusTier}
                     total={modal.voteCount}
                     label={t("tierList.rowAria", {
                       name: modal.displayName,
