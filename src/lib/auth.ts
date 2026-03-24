@@ -3,8 +3,26 @@ import DiscordProvider from "next-auth/providers/discord";
 import { prisma } from "@/lib/prisma";
 import { createPrismaAuthAdapter } from "@/lib/prisma-auth-adapter";
 
+const authSecret = process.env.NEXTAUTH_SECRET ?? process.env.AUTH_SECRET;
+
 export const authOptions: NextAuthOptions = {
+  /** Required for OAuth state / PKCE cookies; without it, Discord callback often fails as `OAuthCallback`. */
+  secret: authSecret,
   adapter: createPrismaAuthAdapter(),
+  /** Log the real error on the server (browser only shows the generic sign-in page). */
+  logger: {
+    error(code, metadata) {
+      console.error("[next-auth]", code, metadata);
+    },
+    warn(code) {
+      console.warn("[next-auth]", code);
+    },
+    debug(code, metadata) {
+      if (process.env.AUTH_DEBUG === "true") {
+        console.debug("[next-auth]", code, metadata);
+      }
+    },
+  },
   providers: [
     DiscordProvider({
       clientId: process.env.DISCORD_CLIENT_ID ?? "",

@@ -2,7 +2,9 @@
 
 **Last updated:** 2026-03-24 (Discord direct OAuth + language chip)
 
-**Latest (2026-03-24):** **NextAuth `error=Callback` / sign-in failure:** wrapped Prisma adapter **`createPrismaAuthAdapter`** only writes `name`/`email`/`emailVerified`/`image` (avoids Prisma rejects from extra profile keys). Discord **`allowDangerousEmailAccountLinking: true`** links an existing `User` with the same email when the `Account` row is missing (single-provider app).
+**Latest (2026-03-24):** **`error=OAuthCallback`:** token/userinfo step with Discord failed (not Prisma). **`authOptions.secret`** from `NEXTAUTH_SECRET` or `AUTH_SECRET`; **`logger.error`** → server console. **`DEPLOY_UBUNTU.md` §10:** nginx **`X-Forwarded-Proto $scheme`** (was missing); §11 troubleshooting (WAF, ad-block, env).
+
+**Earlier (2026-03-24):** **NextAuth `error=Callback` / sign-in failure:** wrapped Prisma adapter **`createPrismaAuthAdapter`** only writes `name`/`email`/`emailVerified`/`image` (avoids Prisma rejects from extra profile keys). Discord **`allowDangerousEmailAccountLinking: true`** links an existing `User` with the same email when the `Account` row is missing (single-provider app).
 
 **Earlier (2026-03-24):** **`redirectToDiscordOAuth`** (`src/lib/discord-oauth-redirect.ts`) POSTs to `/api/auth/signin/discord` without calling **`/api/auth/providers`** first (when that fetch failed, NextAuth used to send users to the built-in **`/api/auth/signin`** page). **`callbacks.redirect`** normalizes relative `callbackUrl`s (reduces `error=Callback`). **Language:** globe + `<select>` in one bordered **`language-select-inner`** chip for alignment.
 

@@ -149,6 +149,7 @@ server {
         proxy_set_header   Host $host;
         proxy_set_header   X-Real-IP $remote_addr;
         proxy_set_header   X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header   X-Forwarded-Proto $scheme;
         proxy_cache_bypass $http_upgrade;
     }
 }
@@ -172,6 +173,8 @@ Add:
 ```
 https://yourdomain.com/api/auth/callback/discord
 ```
+
+If sign-in fails with **`error=OAuthCallback`** in the URL, the Discord **code → token** step failed (before your database). Common fixes: (1) nginx must send **`X-Forwarded-Proto $scheme`** (see §10) so NextAuth sees HTTPS; (2) **`NEXTAUTH_SECRET`** / **`AUTH_SECRET`** must be set and stable; (3) **`NEXTAUTH_URL`** must exactly match the public origin (no trailing slash); (4) disable ad-blockers for this site (they can block auth scripts/cookies); (5) check **`pm2 logs`** for **`[next-auth] OAUTH_CALLBACK_ERROR`** after a failed attempt.
 
 Also update `NEXTAUTH_URL` in `.env` to `https://yourdomain.com` and restart:
 ```bash
