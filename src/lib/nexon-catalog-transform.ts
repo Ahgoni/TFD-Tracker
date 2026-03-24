@@ -11,6 +11,7 @@ export const NEXON_DESCENDANT_JSON = `${NEXON_META_EN_BASE}/descendant.json`;
 export const NEXON_WEAPON_JSON = `${NEXON_META_EN_BASE}/weapon.json`;
 export const NEXON_MODULE_JSON = `${NEXON_META_EN_BASE}/module.json`;
 export const NEXON_EXTERNAL_COMPONENT_JSON = `${NEXON_META_EN_BASE}/external-component.json`;
+export const NEXON_REACTOR_JSON = `${NEXON_META_EN_BASE}/reactor.json`;
 
 const ELEMENT_MAP: Record<string, string> = {
   Chill: "chill",
@@ -217,6 +218,52 @@ export function transformExternalComponentsFromNexon(raw: unknown): ExternalComp
       equipmentType: String(r.external_component_equipment_type ?? ""),
       tier: tierFromExternalComponentTierId(r.external_component_tier_id as string | undefined),
       setOptionDetail,
+    };
+  });
+}
+
+/** Nexon reactor_name prefixes → in-game element label (library naming). */
+const REACTOR_NAME_ELEMENT: Record<string, string> = {
+  Tingling: "Electric",
+  Burning: "Fire",
+  Frozen: "Chill",
+  Toxic: "Toxic",
+  Materialized: "Non-Attribute",
+};
+
+function reactorNameParts(name: string): { element: string; attribute: string } {
+  const m = name.trim().match(/^(\S+)\s+(\S+)\s+Reactor$/i);
+  if (!m) return { element: "", attribute: "" };
+  const prefix = m[1] ?? "";
+  const attr = m[2] ?? "";
+  return {
+    element: REACTOR_NAME_ELEMENT[prefix] ?? prefix,
+    attribute: attr,
+  };
+}
+
+/** Compact reactor row for Player Lookup (matches Nexon reactor.json). */
+export type ReactorCatalogRow = {
+  id: string;
+  name: string;
+  image: string;
+  tier: string;
+  element: string;
+  attribute: string;
+};
+
+export function transformReactorsFromNexon(raw: unknown): ReactorCatalogRow[] {
+  if (!Array.isArray(raw)) return [];
+  return raw.map((r: Record<string, unknown>) => {
+    const name = String(r.reactor_name ?? "");
+    const { element, attribute } = reactorNameParts(name);
+    return {
+      id: String(r.reactor_id ?? ""),
+      name,
+      image: typeof r.image_url === "string" ? r.image_url : "",
+      tier: tierFromId(r.reactor_tier_id as string | undefined),
+      element,
+      attribute,
     };
   });
 }

@@ -1,6 +1,6 @@
 # TFD Tracker — handoff / session memory
 
-**Last updated:** 2026-03-24 (Player Lookup Nexon flat reactor payload)
+**Last updated:** 2026-03-24 (Player Lookup reactor card + Nexon reactor catalog)
 
 At the **start** of a new chat or agent swap: **`HANDOFF.md`** → **`docs/PROJECT_MAP.md`** → **`docs/AI_HANDOFF.md`** (process + VPS git).
 At the **end** of a session or after a major feature: update this file + session log; update other docs per **`docs/AI_HANDOFF.md`**.
@@ -205,7 +205,7 @@ After deploy: **hard refresh** to clear stale asset caches.
 
 | Date       | Summary |
 |-----------|---------|
-| 2026-03-24 | **Player Lookup**: descendant.gg-style CSS + **`/user/reactor`** fix — Nexon returns **flat `UserReactor`** at JSON root; `extractReactorList` now detects it. **`ReactorProfileCard`**: `reactor_additional_stat`, `additional_stat_*`, enchant, `Reactor (id)` fallback. **`CapacityBar`**: `showCapacityLabel` on weapon rows. |
+| 2026-03-24 | **Player Lookup**: flat **`UserReactor`** parsing; **`/api/nexon/catalog/reactors`** + `transformReactorsFromNexon`; reactor card (icon, level badge, Nexon **name**, **element/attribute** chips, tier glow, rolls); descendant.gg CSS + **`CapacityBar`** weapon label. |
 | 2026-03-23 | **`HANDOFF.md`**: added **“Chat session summary (2026-03-23)”** — full digest of thread (capacity, group peers, Nexon API, docs, deploy). Cursor rules list completed. |
 | 2026-03-23 | **`docs/PROJECT_MAP.md`**, **`docs/AI_HANDOFF.md`** (AI continuity + VPS `git pull`/`public/data`). **`DEPLOY_UBUNTU.md`** §12d. **`FarmingTab`** hardened. Updated **AGENTS**, **CURSOR_MEMORY**, **`.cursorrules`**, **`memory-handoff.mdc`**, **README**. |
 | 2026-03-20 | Full audit + cleanup: fixed 17 issues (CSS duplication, dead code, hero-badge collision, mini-btn light mode, --card-bg, tier-norm, username normalization, import catalog merge, descFilter removal). Build passes clean. |

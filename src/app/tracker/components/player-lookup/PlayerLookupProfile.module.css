@@ -1028,3 +1028,181 @@
 .dgWeaponModWrap {
   margin-top: 0.25rem;
 }
+
+/* Descendant.gg–style reactor row (icon + name + element/attribute + rolls) */
+.dgReactorCard {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  padding: 0.65rem 0.75rem 0.85rem;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  background: linear-gradient(145deg, rgba(15, 23, 42, 0.95) 0%, var(--panel) 55%, var(--panel-2) 100%);
+}
+
+.dgReactorGlow {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 96px;
+  pointer-events: none;
+  background: radial-gradient(ellipse 90% 75% at 0% 45%, rgba(212, 164, 26, 0.2), transparent 72%);
+}
+
+.dgReactorCard.tierUltimate .dgReactorGlow {
+  background: radial-gradient(ellipse 90% 75% at 0% 45%, rgba(212, 164, 26, 0.28), transparent 72%);
+}
+
+.tierTranscendent.dgReactorCard .dgReactorGlow,
+.dgReactorCard.tierTranscendent .dgReactorGlow {
+  background: radial-gradient(ellipse 90% 75% at 0% 45%, rgba(249, 115, 22, 0.22), transparent 72%);
+}
+
+.tierRare.dgReactorCard .dgReactorGlow,
+.dgReactorCard.tierRare .dgReactorGlow {
+  background: radial-gradient(ellipse 90% 75% at 0% 45%, rgba(56, 189, 248, 0.15), transparent 72%);
+}
+
+.dgReactorMain {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 0.75rem 1rem;
+}
+
+.dgReactorIconWrap {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.dgReactorIcon {
+  width: 56px;
+  height: 56px;
+  border-radius: 8px;
+  border: 1px solid var(--line);
+  background: var(--panel-2);
+  object-fit: contain;
+}
+
+.dgReactorIconPh {
+  width: 56px;
+  height: 56px;
+  border-radius: 8px;
+  border: 1px dashed var(--line);
+  background: var(--panel-2);
+}
+
+.dgReactorLvBadge {
+  position: absolute;
+  right: -4px;
+  bottom: -4px;
+  min-width: 1.6rem;
+  padding: 0.12rem 0.28rem;
+  border-radius: 4px;
+  font-size: 0.62rem;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.1;
+  text-align: center;
+  background: rgba(15, 23, 42, 0.92);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: var(--foreground, #e5e7eb);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
+}
+
+.dgReactorIdentity {
+  flex: 1;
+  min-width: 140px;
+  max-width: 100%;
+}
+
+.dgReactorTitleRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.35rem 0.65rem;
+}
+
+.dgReactorName {
+  font-size: 0.92rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  line-height: 1.25;
+}
+
+.dgReactorEnh {
+  font-size: 0.76rem;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.dgReactorMeta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin-top: 0.35rem;
+}
+
+.dgReactorChip {
+  display: inline-block;
+  padding: 0.12rem 0.45rem;
+  border-radius: 6px;
+  font-size: 0.68rem;
+  font-weight: 600;
+  border: 1px solid var(--line);
+  background: rgba(34, 211, 238, 0.08);
+  color: #7dd3fc;
+}
+
+.dgReactorChipMuted {
+  display: inline-block;
+  padding: 0.12rem 0.45rem;
+  border-radius: 6px;
+  font-size: 0.65rem;
+  font-weight: 600;
+  color: var(--muted);
+  border: 1px solid var(--line);
+  background: var(--panel-2);
+}
+
+.dgReactorRolls {
+  flex: 1 1 200px;
+  min-width: min(100%, 220px);
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  justify-content: center;
+}
+
+.dgReactorRollLine {
+  font-size: 0.78rem;
+  line-height: 1.4;
+}
+
+.dgReactorRollLine .subValue {
+  font-weight: 700;
+}
+
+.dgReactorRollLabel {
+  color: var(--muted);
+  font-weight: 500;
+}
+
+.dgReactorRollsFallback {
+  width: 100%;
+  font-size: 0.76rem;
+}
+
+.dgReactorRollsFallback p {
+  margin: 0;
+}
+
+.dgReactorRollsFallback dl {
+  margin: 0;
+  font-size: 0.74rem;
+}

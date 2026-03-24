@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState, type ReactNode } from "react";
 import type {
   DescendantCatalogRow,
   ExternalComponentCatalogRow,
+  ReactorCatalogRow,
   WeaponCatalogRow,
 } from "@/lib/nexon-catalog-transform";
 import type { ModuleRecord } from "@/lib/tfd-modules";
@@ -33,6 +34,7 @@ export type PlayerLookupCatalogs = {
   descendants: Map<string, DescendantCatalogRow>;
   weapons: Map<string, WeaponCatalogRow>;
   externalComponents: Map<string, ExternalComponentCatalogRow>;
+  reactors: Map<string, ReactorCatalogRow>;
 };
 
 const EXTERNAL_SLOT_LABELS = ["Auxiliary Power", "Sensor", "Memory", "Processor"];
@@ -243,14 +245,19 @@ function ExternalComponentCard({
   );
 }
 
-function ReactorProfileCard({ row, index }: { row: Record<string, unknown>; index: number }) {
+function ReactorProfileCard({
+  row,
+  index,
+  catalog,
+}: {
+  row: Record<string, unknown>;
+  index: number;
+  catalog: ReactorCatalogRow | undefined;
+}) {
   const rid = String(row.reactor_id ?? row.reactorId ?? "").trim();
-  const name = String(
-    row.reactor_name ??
-      row.reactorName ??
-      row.reactor_display_name ??
-      (rid ? `Reactor (${rid})` : `Reactor ${index + 1}`),
-  );
+  const nameFromApi = String(row.reactor_name ?? row.reactorName ?? row.reactor_display_name ?? "").trim();
+  const displayName =
+    catalog?.name || nameFromApi || (rid ? `Reactor (${rid})` : `Reactor ${index + 1}`);
   const level = row.reactor_level ?? row.reactorLevel ?? row.level;
   const enchant = row.reactor_enchant_level ?? row.reactorEnchantLevel;
 
@@ -274,46 +281,67 @@ function ReactorProfileCard({ row, index }: { row: Record<string, unknown>; inde
     }
   }
 
-  return (
-    <div className={styles.flexCard}>
-      <h4 className={styles.cardTitle} style={{ marginTop: 0 }}>
-        {name}
-        {level != null ? (
-          <span className="muted" style={{ fontWeight: 400, fontSize: "0.85rem" }}>
-            {" "}
-            · Lv. {String(level)}
-          </span>
-        ) : null}
-        {enchant != null ? (
-          <span className="muted" style={{ fontWeight: 400, fontSize: "0.85rem" }}>
-            {" "}
-            · Enh. +{String(enchant)}
-          </span>
-        ) : null}
-      </h4>
+  const tierFrame = catalog ? tierClass(catalog.tier) : styles.tierNormal;
 
-      {substats.length > 0 ? (
-        <ul className={styles.subList}>
-          {substats.map((o, i) => {
-            const sn = String(
-              o.substat_name ??
-                o.stat_name ??
-                o.additional_stat_name ??
-                o.name ??
-                `Stat ${i + 1}`,
-            );
-            const sv = o.substat_value ?? o.stat_value ?? o.additional_stat_value ?? o.value;
-            return (
-              <li key={`${sn}-${i}`}>
-                <span>{sn}</span>
-                <TieredStatValue statName={sn} raw={sv} />
-              </li>
-            );
-          })}
-        </ul>
-      ) : (
-        <ReactorFallbackKv row={row} />
-      )}
+  return (
+    <div className={`${styles.dgReactorCard} ${tierFrame}`}>
+      <div className={styles.dgReactorGlow} aria-hidden />
+      <div className={styles.dgReactorMain}>
+        <div className={styles.dgReactorIconWrap}>
+          {catalog?.image ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img className={styles.dgReactorIcon} src={catalog.image} alt="" />
+          ) : (
+            <div className={styles.dgReactorIconPh} aria-hidden />
+          )}
+          {level != null ? (
+            <div className={styles.dgReactorLvBadge} title="Reactor level">
+              {String(level)}
+            </div>
+          ) : null}
+        </div>
+
+        <div className={styles.dgReactorIdentity}>
+          <div className={styles.dgReactorTitleRow}>
+            <span className={styles.dgReactorName}>{displayName}</span>
+            {enchant != null ? (
+              <span className={styles.dgReactorEnh}>Enh. +{String(enchant)}</span>
+            ) : null}
+          </div>
+          <div className={styles.dgReactorMeta}>
+            {catalog?.element ? <span className={styles.dgReactorChip}>{catalog.element}</span> : null}
+            {catalog?.attribute ? (
+              <span className={styles.dgReactorChip}>{catalog.attribute}</span>
+            ) : null}
+            {catalog?.tier ? <span className={styles.dgReactorChipMuted}>{catalog.tier}</span> : null}
+          </div>
+        </div>
+
+        <div className={styles.dgReactorRolls}>
+          {substats.length > 0 ? (
+            substats.map((o, i) => {
+              const sn = String(
+                o.substat_name ??
+                  o.stat_name ??
+                  o.additional_stat_name ??
+                  o.name ??
+                  `Stat ${i + 1}`,
+              );
+              const sv = o.substat_value ?? o.stat_value ?? o.additional_stat_value ?? o.value;
+              return (
+                <div key={`${sn}-${i}`} className={styles.dgReactorRollLine}>
+                  <span className={styles.dgReactorRollLabel}>{sn}: </span>
+                  <TieredStatValue statName={sn} raw={sv} />
+                </div>
+              );
+            })
+          ) : (
+            <div className={styles.dgReactorRollsFallback}>
+              <ReactorFallbackKv row={row} />
+            </div>
+          )}
+        </div>
+      </div>
     </div>
   );
 }
@@ -557,8 +585,13 @@ function ModuleGrid({
 type TabDef = { id: string; label: string };
 
 export function PlayerLookupProfile({ data, catalogs }: Props) {
-  const { modules: moduleById, descendants: descById, weapons: weaponById, externalComponents: extById } =
-    catalogs;
+  const {
+    modules: moduleById,
+    descendants: descById,
+    weapons: weaponById,
+    externalComponents: extById,
+    reactors: reactorById,
+  } = catalogs;
 
   const basicRaw = data.basic;
   const basic = useMemo(() => extractBasicInfo(basicRaw), [basicRaw]);
@@ -694,9 +727,17 @@ export function PlayerLookupProfile({ data, catalogs }: Props) {
         {reactors.length > 0 || externals.length > 0 ? (
           <section className={styles.dgGearSection}>
             <h3 className={styles.dgSectionTitle}>Reactor & Components</h3>
-            {reactors.map((r, i) => (
-              <ReactorProfileCard key={`dg-reactor-${i}`} row={r} index={i} />
-            ))}
+            {reactors.map((r, i) => {
+              const rid = String(r.reactor_id ?? r.reactorId ?? "").trim();
+              return (
+                <ReactorProfileCard
+                  key={`dg-reactor-${i}`}
+                  row={r}
+                  index={i}
+                  catalog={reactorById.get(rid)}
+                />
+              );
+            })}
             {externals.length > 0 ? <ExternalSetBonusesBanner sets={setProgress} /> : null}
             <div className={styles.dgExtGrid}>
               {externals.map((r, i) => {
@@ -781,9 +822,12 @@ export function PlayerLookupProfile({ data, catalogs }: Props) {
 
   const renderReactorPanel = () => (
     <div className={styles.inventoryPane}>
-      {reactors.map((r, i) => (
-        <ReactorProfileCard key={`reactor-${i}`} row={r} index={i} />
-      ))}
+      {reactors.map((r, i) => {
+        const rid = String(r.reactor_id ?? r.reactorId ?? "").trim();
+        return (
+          <ReactorProfileCard key={`reactor-${i}`} row={r} index={i} catalog={reactorById.get(rid)} />
+        );
+      })}
     </div>
   );
 

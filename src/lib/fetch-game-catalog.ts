@@ -6,6 +6,7 @@
 import type {
   DescendantCatalogRow,
   ExternalComponentCatalogRow,
+  ReactorCatalogRow,
   WeaponCatalogRow,
 } from "@/lib/nexon-catalog-transform";
 import type { ModuleRecord } from "@/lib/tfd-modules";
@@ -49,6 +50,13 @@ export async function fetchWeaponsCatalogRows(): Promise<WeaponCatalogRow[] | nu
 /** External components (icons + set metadata) — Nexon static JSON only. */
 export async function fetchExternalComponentCatalogRows(): Promise<ExternalComponentCatalogRow[] | null> {
   const live = await tryJson<ExternalComponentCatalogRow[]>("/api/nexon/catalog/external-components");
+  if (Array.isArray(live) && live.length > 0) return live;
+  return null;
+}
+
+/** Reactor library (name, image, element/attribute from Nexon reactor.json). */
+export async function fetchReactorsCatalogRows(): Promise<ReactorCatalogRow[] | null> {
+  const live = await tryJson<ReactorCatalogRow[]>("/api/nexon/catalog/reactors");
   if (Array.isArray(live) && live.length > 0) return live;
   return null;
 }

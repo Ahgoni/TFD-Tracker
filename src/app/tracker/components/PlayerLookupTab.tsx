@@ -5,6 +5,7 @@ import {
   fetchDescendantsCatalogRows,
   fetchExternalComponentCatalogRows,
   fetchModulesCatalog,
+  fetchReactorsCatalogRows,
   fetchWeaponsCatalogRows,
 } from "@/lib/fetch-game-catalog";
 import type { PlayerLookupCatalogs } from "./player-lookup/PlayerLookupProfile";
@@ -48,13 +49,15 @@ export function PlayerLookupTab() {
       fetchDescendantsCatalogRows(),
       fetchWeaponsCatalogRows(),
       fetchExternalComponentCatalogRows(),
-    ]).then(([m, d, w, ext]) => {
+      fetchReactorsCatalogRows(),
+    ]).then(([m, d, w, ext, react]) => {
       if (cancelled) return;
       setCatalogs({
         modules: new Map((m ?? []).map((x) => [x.id, x])),
         descendants: new Map((d ?? []).map((x) => [x.id, x])),
         weapons: new Map((w ?? []).map((x) => [x.id, x])),
         externalComponents: new Map((ext ?? []).map((x) => [x.id, x])),
+        reactors: new Map((react ?? []).map((x) => [x.id, x])),
       });
     });
     return () => {

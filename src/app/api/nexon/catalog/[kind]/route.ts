@@ -3,10 +3,12 @@ import {
   NEXON_DESCENDANT_JSON,
   NEXON_EXTERNAL_COMPONENT_JSON,
   NEXON_MODULE_JSON,
+  NEXON_REACTOR_JSON,
   NEXON_WEAPON_JSON,
   transformDescendantsFromNexon,
   transformExternalComponentsFromNexon,
   transformModulesFromNexon,
+  transformReactorsFromNexon,
   transformWeaponsFromNexon,
 } from "@/lib/nexon-catalog-transform";
 
@@ -34,12 +36,19 @@ export async function GET(_req: Request, { params }: { params: Promise<{ kind: s
       url: NEXON_EXTERNAL_COMPONENT_JSON,
       transform: transformExternalComponentsFromNexon,
     },
+    reactors: {
+      url: NEXON_REACTOR_JSON,
+      transform: transformReactorsFromNexon,
+    },
   } as const;
 
   const entry = config[kind as keyof typeof config];
   if (!entry) {
     return NextResponse.json(
-      { error: "unknown_kind", allowed: ["descendants", "weapons", "modules", "external-components"] },
+      {
+        error: "unknown_kind",
+        allowed: ["descendants", "weapons", "modules", "external-components", "reactors"],
+      },
       { status: 400 },
     );
   }
