@@ -1,8 +1,10 @@
 # TFD Tracker — handoff / session memory
 
-**Last updated:** 2026-03-24 (Discord direct OAuth + language chip)
+**Last updated:** 2026-03-24 (tier list weighted voting + Overframe-style bars)
 
-**Latest (2026-03-24):** **`error=OAuthCallback`:** token/userinfo step with Discord failed (not Prisma). **`authOptions.secret`** from `NEXTAUTH_SECRET` or `AUTH_SECRET`; **`logger.error`** → server console. **`DEPLOY_UBUNTU.md` §10:** nginx **`X-Forwarded-Proto $scheme`** (was missing); §11 troubleshooting (WAF, ad-block, env).
+**Latest (2026-03-24):** **Community tier list:** votes aggregate with **weights S=5 … D=1**. **Row placement** uses **rounded weighted mean** (not raw plurality). **Score %** = `(mean − 1) / 4 × 100` (D→0%, S→100%). **Bar** = vote share by tier; **letter in bar** = **plurality** (ties S→D). API: `votesByTier`, `scorePercent`, `consensusTier`. UI: `community-tier-list` list rows + modal blurb. Lib: `tier-list-aggregate.ts`.
+
+**Earlier (2026-03-24):** **`error=OAuthCallback`:** token/userinfo step with Discord failed (not Prisma). **`authOptions.secret`** from `NEXTAUTH_SECRET` or `AUTH_SECRET`; **`logger.error`** → server console. **`DEPLOY_UBUNTU.md` §10:** nginx **`X-Forwarded-Proto $scheme`** (was missing); §11 troubleshooting (WAF, ad-block, env).
 
 **Earlier (2026-03-24):** **NextAuth `error=Callback` / sign-in failure:** wrapped Prisma adapter **`createPrismaAuthAdapter`** only writes `name`/`email`/`emailVerified`/`image` (avoids Prisma rejects from extra profile keys). Discord **`allowDangerousEmailAccountLinking: true`** links an existing `User` with the same email when the `Account` row is missing (single-provider app).
 
@@ -16,7 +18,7 @@
 
 **Earlier (2026-03-24):** **`npm run build`** runs **`prisma generate && next build`** so VPS builds never use a stale Prisma client. Tier list enums use **`src/lib/tier-list-category.ts`** (not importing `TierListCategory` from `@prisma/client` in API routes).
 
-**Earlier (2026-03-24):** **Landing** — community **tier list** (Descendants / Weapons tabs): plurality voting (Discord sign-in), merged **base + Ultimate** descendants by `descendant_group_id`. **`BuildEntry.communityPublic`** + **`PublicBuildListing`** (synced on **`/api/state`** when **`sharePrivacy === "open"`**) powers “public builds” links from tier portraits → **`/u/{username}#build-{id}`**. Prisma: **`TierVote`**, **`PublicBuildListing`**, migration **`0007_tier_list_community`**. Weapon keys use **`public/weapons-catalog.json`** slugs (matches build `targetKey`).
+**Earlier (2026-03-24):** **Landing** — community **tier list** (Descendants / Weapons tabs): Discord sign-in, merged **base + Ultimate** descendants by `descendant_group_id`. (Ranking now **weighted mean** + distribution UI — see **Latest**.) **`BuildEntry.communityPublic`** + **`PublicBuildListing`** (synced on **`/api/state`** when **`sharePrivacy === "open"`**) powers “public builds” links from tier rows → **`/u/{username}/b/{buildId}`**. Prisma: **`TierVote`**, **`PublicBuildListing`**, migration **`0007_tier_list_community`**. Weapon keys use **`public/weapons-catalog.json`** slugs (matches build `targetKey`).
 
 **Earlier (2026-03-24):** **Player Lookup** — **Dia Modules** trigger slot: show only **icon, module name, and “Trigger”** (tier border preserved). Removed capacity corner badge, inline roll/catalog lines, and hover detail panel — API does not reliably expose the player’s real trigger rolls in this view.
 
@@ -231,6 +233,7 @@ After deploy: **hard refresh** to clear stale asset caches.
 
 | Date       | Summary |
 |-----------|---------|
+| 2026-03-24 | **Tier list:** weighted mean (S=5…D=1) for row + score %; plurality label on bar; `tier-list-aggregate.ts`, `GET /api/tier-list` fields, `CommunityTierList` + CSS + i18n (en/ko/ja). |
 | 2026-03-24 | **Auth:** `createPrismaAuthAdapter` + Discord `allowDangerousEmailAccountLinking` (fix `error=Callback` / Prisma create / orphaned users). |
 | 2026-03-24 | **`redirectToDiscordOAuth`** (skip failing `getProviders` → no NextAuth HTML); **`callbacks.redirect`**; language chip CSS. |
 | 2026-03-24 | **Discord sign-in:** `SignInWithDiscordLink` + `signIn("discord")` (no GET `/api/auth/signin`); **`User.nexonIngameName`** + profile API + Friends tab + public profile line (self-attested; not Nexon OAuth). |

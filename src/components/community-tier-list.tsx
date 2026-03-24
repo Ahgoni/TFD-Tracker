@@ -7,11 +7,16 @@ import { redirectToDiscordOAuth } from "@/lib/discord-oauth-redirect";
 import { useI18n } from "@/contexts/i18n-context";
 import styles from "./community-tier-list.module.css";
 
+type VoteTierKey = "S" | "A" | "B" | "C" | "D";
+
 type TierItem = {
   entityKey: string;
   displayName: string;
   image: string;
   voteCount: number;
+  votesByTier: Record<VoteTierKey, number>;
+  scorePercent: number | null;
+  consensusTier: VoteTierKey | null;
 };
 
 type TierRow = { tier: string; items: TierItem[] };
@@ -38,6 +43,62 @@ const TIER_CLASS: Record<string, string> = {
   D: styles.tD,
   UNRANKED: styles.tU,
 };
+
+const DIST_CLASS: Record<VoteTierKey, string> = {
+  S: styles.distS,
+  A: styles.distA,
+  B: styles.distB,
+  C: styles.distC,
+  D: styles.distD,
+};
+
+const TIER_ORDER: readonly VoteTierKey[] = ["S", "A", "B", "C", "D"];
+
+function VoteDistributionBar({
+  votesByTier,
+  consensusTier,
+  total,
+  label,
+  decorative = false,
+}: {
+  votesByTier: Record<VoteTierKey, number>;
+  consensusTier: VoteTierKey | null;
+  total: number;
+  /** When false, provide a short description for screen readers. */
+  label?: string;
+  /** Hide from assistive tech when an ancestor already names the control (e.g. list row button). */
+  decorative?: boolean;
+}) {
+  if (total <= 0) {
+    return (
+      <div className={styles.barTrack} aria-hidden={decorative || undefined}>
+        <div className={styles.barEmpty} />
+      </div>
+    );
+  }
+  return (
+    <div
+      className={styles.barTrack}
+      role={decorative ? undefined : "img"}
+      aria-hidden={decorative || undefined}
+      aria-label={decorative ? undefined : label}
+    >
+      {TIER_ORDER.map((t) => {
+        const n = votesByTier[t];
+        if (n <= 0) return null;
+        return (
+          <div
+            key={t}
+            className={`${styles.barSeg} ${DIST_CLASS[t]}`}
+            style={{ flexGrow: n, flexBasis: 0, minWidth: n > 0 ? "4px" : 0 }}
+          >
+            {consensusTier === t ? <span className={styles.consensusInBar}>{t}</span> : null}
+          </div>
+        );
+      })}
+    </div>
+  );
+}
 
 function goToDiscordSignIn() {
   if (typeof window === "undefined") return;
@@ -165,32 +226,63 @@ export function CommunityTierList() {
               >
                 {row.tier === "UNRANKED" ? "?" : row.tier}
               </div>
-              <div className={styles.portraitRow}>
+              <div className={styles.itemList}>
                 {row.items.length === 0 ? (
                   <span className={styles.emptyBuilds} style={{ padding: "0.35rem" }}>
                     —
                   </span>
                 ) : (
-                  row.items.map((item) => (
-                    <button
-                      key={item.entityKey}
-                      type="button"
-                      className={styles.portraitBtn}
-                      onClick={() => setModal(item)}
-                      title={t("tierList.voteCount", {
-                        name: item.displayName,
-                        count: String(item.voteCount),
-                      })}
-                    >
-                      {item.image ? (
-                        // eslint-disable-next-line @next/next/no-img-element
-                        <img className={styles.portraitImg} src={item.image} alt="" />
-                      ) : (
-                        <div className={styles.portraitImg} aria-hidden />
-                      )}
-                      <span className={styles.portraitName}>{item.displayName}</span>
-                    </button>
-                  ))
+                  row.items.map((item) => {
+                    const total = item.voteCount;
+                    const scoreLabel =
+                      item.scorePercent != null
+                        ? t("tierList.rowAria", {
+                            name: item.displayName,
+                            score: String(item.scorePercent),
+                            count: String(total),
+                          })
+                        : t("tierList.rowAriaUnranked", { name: item.displayName });
+                    return (
+                      <button
+                        key={item.entityKey}
+                        type="button"
+                        className={styles.itemRow}
+                        onClick={() => setModal(item)}
+                        title={t("tierList.voteCount", {
+                          name: item.displayName,
+                          count: String(item.voteCount),
+                        })}
+                        aria-label={scoreLabel}
+                      >
+                        <div className={styles.itemLead}>
+                          {item.image ? (
+                            // eslint-disable-next-line @next/next/no-img-element
+                            <img className={styles.portraitImg} src={item.image} alt="" />
+                          ) : (
+                            <div className={styles.portraitImg} aria-hidden />
+                          )}
+                          <span className={styles.portraitName}>{item.displayName}</span>
+                        </div>
+                        <div className={styles.barCell}>
+                          <VoteDistributionBar
+                            votesByTier={
+                              item.votesByTier ?? { S: 0, A: 0, B: 0, C: 0, D: 0 }
+                            }
+                            consensusTier={item.consensusTier}
+                            total={total}
+                            decorative
+                          />
+                        </div>
+                        <div className={styles.scoreCol} aria-hidden>
+                          {item.scorePercent != null ? (
+                            <span className={styles.scorePct}>{item.scorePercent}%</span>
+                          ) : (
+                            <span className={styles.scoreDash}>—</span>
+                          )}
+                        </div>
+                      </button>
+                    );
+                  })
                 )}
               </div>
             </div>
@@ -223,6 +315,26 @@ export function CommunityTierList() {
                 ×
               </button>
             </div>
+
+            {modal.voteCount > 0 && modal.scorePercent != null && modal.votesByTier && (
+              <div className={styles.modalStats}>
+                <p className={styles.modalStatsLabel}>{t("tierList.communityScore")}</p>
+                <div className={styles.modalStatsRow}>
+                  <VoteDistributionBar
+                    votesByTier={modal.votesByTier}
+                    consensusTier={modal.consensusTier}
+                    total={modal.voteCount}
+                    label={t("tierList.rowAria", {
+                      name: modal.displayName,
+                      score: String(modal.scorePercent),
+                      count: String(modal.voteCount),
+                    })}
+                  />
+                  <span className={styles.modalScorePct}>{modal.scorePercent}%</span>
+                </div>
+                <p className={styles.modalStatsHint}>{t("tierList.scoreHint")}</p>
+              </div>
+            )}
 
             <div className={styles.voteBlock}>
               <p className={styles.voteLabel}>{t("tierList.modalYourVote")}</p>

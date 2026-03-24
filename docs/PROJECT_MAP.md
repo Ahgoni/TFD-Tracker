@@ -78,6 +78,7 @@ Use this file to orient before large changes. **AI continuity:** `docs/AI_HANDOF
 | Tracker shell | `tracker-client.tsx`, `tracker-default-state.ts` |
 | Public build stats | `public-build-stats-client.tsx`, `public-build-types.ts` |
 | Friends | `FriendsTab.tsx`, `api/friends/*` |
+| Community tier list | `community-tier-list.tsx`, `api/tier-list/*`, `tier-list-aggregate.ts` (weighted mean S=5…D=1, distribution + score in JSON), Prisma `TierVote` / `PublicBuildListing` |
 | Theme | `theme-toggle.tsx`, `globals.css` `:root` / `[data-theme="light"]` |
 
 ---

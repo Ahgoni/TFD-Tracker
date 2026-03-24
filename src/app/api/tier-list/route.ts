@@ -26,7 +26,7 @@ export async function GET(request: Request) {
     votesByEntity.set(v.entityKey, list);
   }
 
-  const buckets = bucketEntitiesByTier(entities, votesByEntity);
+  const { buckets, statsByEntity } = bucketEntitiesByTier(entities, votesByEntity);
 
   const userId = await requireUserId();
   let myVotes: Record<string, string> = {};
@@ -43,12 +43,18 @@ export async function GET(request: Request) {
     tab,
     tiers: tierOrder.map((tier) => ({
       tier,
-      items: buckets[tier].map((e) => ({
-        entityKey: e.entityKey,
-        displayName: e.displayName,
-        image: e.image,
-        voteCount: votesByEntity.get(e.entityKey)?.length ?? 0,
-      })),
+      items: buckets[tier].map((e) => {
+        const stats = statsByEntity.get(e.entityKey)!;
+        return {
+          entityKey: e.entityKey,
+          displayName: e.displayName,
+          image: e.image,
+          voteCount: stats.totalVotes,
+          votesByTier: stats.distribution,
+          scorePercent: stats.scorePercent,
+          consensusTier: stats.modeTier === "UNRANKED" ? null : stats.modeTier,
+        };
+      }),
     })),
     myVotes,
   };
