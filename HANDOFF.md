@@ -1,8 +1,10 @@
 # TFD Tracker — handoff / session memory
 
-**Last updated:** 2026-03-24 (Community tier list + public build hub)
+**Last updated:** 2026-03-24 (tier list deploy: prisma generate + local enum)
 
-**Latest (2026-03-24):** **Landing** — community **tier list** (Descendants / Weapons tabs): plurality voting (Discord sign-in), merged **base + Ultimate** descendants by `descendant_group_id`. **`BuildEntry.communityPublic`** + **`PublicBuildListing`** (synced on **`/api/state`** when **`sharePrivacy === "open"`**) powers “public builds” links from tier portraits → **`/u/{username}#build-{id}`**. Prisma: **`TierVote`**, **`PublicBuildListing`**, migration **`0007_tier_list_community`**. Weapon keys use **`public/weapons-catalog.json`** slugs (matches build `targetKey`).
+**Latest (2026-03-24):** **`npm run build`** runs **`prisma generate && next build`** so VPS builds never use a stale Prisma client. Tier list enums use **`src/lib/tier-list-category.ts`** (not importing `TierListCategory` from `@prisma/client` in API routes).
+
+**Earlier (2026-03-24):** **Landing** — community **tier list** (Descendants / Weapons tabs): plurality voting (Discord sign-in), merged **base + Ultimate** descendants by `descendant_group_id`. **`BuildEntry.communityPublic`** + **`PublicBuildListing`** (synced on **`/api/state`** when **`sharePrivacy === "open"`**) powers “public builds” links from tier portraits → **`/u/{username}#build-{id}`**. Prisma: **`TierVote`**, **`PublicBuildListing`**, migration **`0007_tier_list_community`**. Weapon keys use **`public/weapons-catalog.json`** slugs (matches build `targetKey`).
 
 **Earlier (2026-03-24):** **Player Lookup** — **Dia Modules** trigger slot: show only **icon, module name, and “Trigger”** (tier border preserved). Removed capacity corner badge, inline roll/catalog lines, and hover detail panel — API does not reliably expose the player’s real trigger rolls in this view.
 
@@ -217,6 +219,7 @@ After deploy: **hard refresh** to clear stale asset caches.
 
 | Date       | Summary |
 |-----------|---------|
+| 2026-03-24 | **Deploy fix:** `package.json` `build` = `prisma generate && next build`; `TierListCategory` from `src/lib/tier-list-category.ts`; `DEPLOY_UBUNTU.md` note. Fixes VPS `Module '@prisma/client' has no exported member 'TierListCategory'`. |
 | 2026-03-24 | **Community tier list** on `/`: voting APIs, `TierVote` + `PublicBuildListing`, build flag `communityPublic`, landing `CommunityTierList` modal (votes + public build links). Migration `0007_tier_list_community`. |
 | 2026-03-24 | **Player Lookup** Dia Modules trigger: card shows name + tag only; removed cost badge, rolls, blurb, hover panel (`PlayerLookupProfile` + CSS). |
 | 2026-03-24 | **Materials removed**: tab/API/Prisma `MaterialEntry`; Welcome + share pages + landing/meta; `migrateStateNoMaterials` + `tracker-default-state`; docs/README/PROJECT_MAP. Run `prisma migrate deploy` on servers with DB. |

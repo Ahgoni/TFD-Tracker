@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
-import { TierListCategory } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
+import { TierListCategory } from "@/lib/tier-list-category";
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);

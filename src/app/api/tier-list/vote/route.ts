@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
-import { TierListCategory } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
+import { TierListCategory } from "@/lib/tier-list-category";
 import { requireUserId } from "@/lib/require-user";
 import { getTierListDescendants, weaponSlugSet } from "@/lib/tier-list-catalog";
 

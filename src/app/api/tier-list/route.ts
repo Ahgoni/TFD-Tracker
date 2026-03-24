@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
-import { TierListCategory } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
+import { TierListCategory } from "@/lib/tier-list-category";
 import { requireUserId } from "@/lib/require-user";
 import { getTierListDescendants, getTierListWeapons } from "@/lib/tier-list-catalog";
 import { bucketEntitiesByTier, type TierLetter } from "@/lib/tier-list-aggregate";

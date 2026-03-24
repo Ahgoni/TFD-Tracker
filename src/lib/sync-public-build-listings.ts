@@ -1,5 +1,5 @@
-import { TierListCategory } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
+import { TierListCategory, type TierListCategoryValue } from "@/lib/tier-list-category";
 import { descendantNameToGroupId, weaponSlugSet } from "@/lib/tier-list-catalog";
 
 type RawBuild = {
@@ -26,7 +26,7 @@ export async function syncPublicBuildListings(userId: string, state: Record<stri
   const rows: Array<{
     userId: string;
     buildId: string;
-    category: TierListCategory;
+    category: TierListCategoryValue;
     entityKey: string;
     buildName: string;
   }> = [];

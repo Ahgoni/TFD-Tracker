@@ -104,6 +104,8 @@ npx prisma db push   # pushes schema directly (no migration files needed)
 
 ## 8) Build the app
 
+`npm run build` runs **`prisma generate`** first (so `@prisma/client` matches `schema.prisma`), then **`next build`**. If you ever run `next build` alone on the server, run **`npx prisma generate`** first.
+
 ```bash
 npm run build
 ```
