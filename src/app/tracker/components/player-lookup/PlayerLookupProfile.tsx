@@ -270,8 +270,16 @@ function ExternalComponentDgCard({
         {hasAnyStats ? (
           <div className={styles.dgExtStatsWrap}>
             {cores.length > 0 ? (
-              <div className={styles.dgExtStatSection}>
-                <div className={styles.dgExtStatBlockHeading}>Core</div>
+              <div className={`${styles.dgExtStatSection} ${styles.dgExtStatSectionCore}`}>
+                <div className={styles.dgExtStatHeadingRow}>
+                  <span className={styles.dgExtStatBlockHeading}>Core</span>
+                  <span
+                    className={styles.dgExtCoreUltimatePill}
+                    title="Augmentation core slots — Ultimate-tier roll pool (Recovery / Defense, etc.). Separate from substats."
+                  >
+                    Ultimate
+                  </span>
+                </div>
                 <div className={styles.dgExtStatBlock}>
                   {cores.map((o, i) => {
                     const name = String(o.core_option_name ?? o.option_name ?? o.name ?? `Core ${i + 1}`);
@@ -279,7 +287,9 @@ function ExternalComponentDgCard({
                     return (
                       <p key={`core-${name}-${i}`} className={styles.dgExtStatRow}>
                         <span className={styles.dgExtFooterLab}>{name}: </span>
-                        <span className={styles.dgExtFooterValCore}>{formatGearStatValue(name, raw)}</span>
+                        <span className={styles.dgExtFooterValCoreUltimate}>
+                          {formatGearStatValue(name, raw)}
+                        </span>
                       </p>
                     );
                   })}
@@ -287,8 +297,10 @@ function ExternalComponentDgCard({
               </div>
             ) : null}
             {addStats.length > 0 ? (
-              <div className={styles.dgExtStatSection}>
-                <div className={styles.dgExtStatBlockHeading}>Substats</div>
+              <div className={`${styles.dgExtStatSection} ${styles.dgExtStatSectionSub}`}>
+                <div className={styles.dgExtStatHeadingRow}>
+                  <span className={styles.dgExtStatBlockHeading}>Substats</span>
+                </div>
                 <div className={styles.dgExtStatBlock}>
                   {addStats.map((o, i) => {
                     const name = String(
@@ -298,7 +310,9 @@ function ExternalComponentDgCard({
                     return (
                       <p key={`sub-${name}-${i}`} className={styles.dgExtStatRow}>
                         <span className={styles.dgExtFooterLab}>{name}: </span>
-                        <span className={styles.dgExtFooterValSub}>{formatGearStatValue(name, raw)}</span>
+                        <span className={styles.dgExtFooterValSubstatPool}>
+                          {formatGearStatValue(name, raw)}
+                        </span>
                       </p>
                     );
                   })}

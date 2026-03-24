@@ -1216,13 +1216,46 @@
   min-width: 0;
 }
 
+.dgExtStatHeadingRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35rem 0.5rem;
+  margin-bottom: 0.32rem;
+}
+
 .dgExtStatBlockHeading {
-  margin: 0 0 0.32rem;
+  margin: 0;
   font-size: 0.58rem;
   font-weight: 700;
   letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--muted);
+}
+
+.dgExtCoreUltimatePill {
+  display: inline-block;
+  padding: 0.06rem 0.38rem;
+  border-radius: 4px;
+  font-size: 0.55rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #fde68a;
+  background: rgba(15, 23, 42, 0.9);
+  border: 1px solid #e8b923;
+  box-shadow: 0 0 0 1px rgba(232, 185, 35, 0.25);
+}
+
+.dgExtStatSectionCore {
+  border-left: 2px solid rgba(251, 191, 36, 0.45);
+  padding-left: 0.45rem;
+  margin-left: 0;
+}
+
+.dgExtStatSectionSub {
+  border-left: 2px solid rgba(56, 189, 248, 0.28);
+  padding-left: 0.45rem;
 }
 
 .dgExtStatBlock {
@@ -1252,20 +1285,25 @@
   word-break: break-word;
 }
 
-.dgExtStatRow .dgExtFooterValCore,
-.dgExtStatRow .dgExtFooterValSub {
+.dgExtStatRow .dgExtFooterValCoreUltimate,
+.dgExtStatRow .dgExtFooterValSubstatPool {
   flex-shrink: 0;
   text-align: right;
 }
 
-.dgExtFooterValSub {
+/* Core augmentation slots — Ultimate-tier pool (in-game: Recovery / Defense cores, gold rolls) */
+.dgExtFooterValCoreUltimate {
   font-weight: 700;
-  color: #ffc857;
+  color: #fcd34d;
+  text-shadow: 0 0 14px rgba(251, 191, 36, 0.22);
+  font-variant-numeric: tabular-nums;
 }
 
-.dgExtFooterValCore {
+/* Additional-stat pool — separate from core augments (grantable substats) */
+.dgExtFooterValSubstatPool {
   font-weight: 700;
   color: #7dd3fc;
+  font-variant-numeric: tabular-nums;
 }
 
 .dgWeaponModWrap {

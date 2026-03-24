@@ -205,7 +205,7 @@ After deploy: **hard refresh** to clear stale asset caches.
 
 | Date       | Summary |
 |-----------|---------|
-| 2026-03-24 | **Player Lookup**: reactor **element** chip colors (Fire red, Toxic green, Electric yellow, Chill blue, Non-Attr grey); **Ultimate** tier pill **gold border**; ext cards — **Core** vs **Substats** blocks, centered icon frame, spacing; 4-slot grid + set under. |
+| 2026-03-24 | **Player Lookup**: ext **Core** = augmentation **Ultimate** pool (gold values + pill + gold accent); **Substats** = grantable pool (blue values); reactor chip colors; 4-slot grid. |
 | 2026-03-23 | **`HANDOFF.md`**: added **“Chat session summary (2026-03-23)”** — full digest of thread (capacity, group peers, Nexon API, docs, deploy). Cursor rules list completed. |
 | 2026-03-23 | **`docs/PROJECT_MAP.md`**, **`docs/AI_HANDOFF.md`** (AI continuity + VPS `git pull`/`public/data`). **`DEPLOY_UBUNTU.md`** §12d. **`FarmingTab`** hardened. Updated **AGENTS**, **CURSOR_MEMORY**, **`.cursorrules`**, **`memory-handoff.mdc`**, **README**. |
 | 2026-03-20 | Full audit + cleanup: fixed 17 issues (CSS duplication, dead code, hero-badge collision, mini-btn light mode, --card-bg, tier-norm, username normalization, import catalog merge, descFilter removal). Build passes clean. |
