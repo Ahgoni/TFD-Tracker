@@ -27,8 +27,10 @@ import {
   extractBasicInfo,
   extractDescendantBuilds,
   extractExternalList,
+  extractModuleRollRows,
   extractReactorsMerged,
   extractWeaponBuilds,
+  moduleDisplayDescription,
   type DescendantBuildParsed,
   type WeaponBuildParsed,
 } from "./nexonPlayerPayload";
@@ -571,18 +573,59 @@ function DescendantDgModules({
     const cost = rec ? capacityCostAtLevel(rec, m.enchantLevel) : 0;
     const name = rec?.name ?? `Module ${m.moduleId}`;
     const img = rec?.image ?? "";
+    const rolls = extractModuleRollRows(m.raw);
+    const blurb = moduleDisplayDescription(rec?.preview, m.raw);
+    const hasDetail = rolls.length > 0 || Boolean(blurb);
     triggerBlock = (
       <div className={styles.dgTriggerWrap}>
-        <div className={`${styles.moduleCard} ${styles.dgTriggerCard} ${rec ? tierClass(rec.tier) : ""}`}>
-          <span className={styles.cost}>{cost}</span>
-          {img ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img className={styles.dgTriggerImg} src={img} alt="" />
-          ) : (
-            <div className={styles.dgTriggerImg} />
-          )}
-          <p className={styles.dgTriggerName}>{name}</p>
-          <span className={styles.dgTriggerTag}>Trigger</span>
+        <div
+          className={styles.dgTriggerHoverHost}
+          tabIndex={0}
+          aria-describedby={hasDetail ? `trigger-module-${m.moduleId}` : undefined}
+        >
+          <div className={`${styles.moduleCard} ${styles.dgTriggerCard} ${rec ? tierClass(rec.tier) : ""}`}>
+            <span className={styles.cost}>{cost}</span>
+            {img ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img className={styles.dgTriggerImg} src={img} alt="" />
+            ) : (
+              <div className={styles.dgTriggerImg} />
+            )}
+            <p className={styles.dgTriggerName}>{name}</p>
+            <span className={styles.dgTriggerTag}>Trigger</span>
+          </div>
+          {rolls.length > 0 ? (
+            <ul className={styles.dgTriggerRollsInline} aria-label="Trigger module rolls">
+              {rolls.slice(0, 4).map((r, i) => (
+                <li key={`${r.label}-${i}`} className={styles.dgTriggerRollLine}>
+                  <span className={styles.dgTriggerRollLab}>{r.label}</span>
+                  <span className={styles.dgTriggerRollVal}>{r.value}</span>
+                </li>
+              ))}
+            </ul>
+          ) : blurb ? (
+            <p className={styles.dgTriggerBlurbClamp}>{blurb}</p>
+          ) : null}
+          {hasDetail ? (
+            <div
+              className={styles.dgTriggerHoverPanel}
+              id={`trigger-module-${m.moduleId}`}
+              role="tooltip"
+            >
+              {blurb ? <p className={styles.dgTriggerPanelDesc}>{blurb}</p> : null}
+              {rolls.length > 0 ? (
+                <dl className={styles.dgTriggerRollDl}>
+                  {rolls.map((r, i) => (
+                    <div key={`tip-${r.label}-${i}`} className={styles.dgTriggerRollDlRow}>
+                      <dt>{r.label}</dt>
+                      <dd>{r.value}</dd>
+                    </div>
+                  ))}
+                </dl>
+              ) : null}
+              <p className={styles.dgTriggerPanelMeta}>Enchant +{m.enchantLevel}</p>
+            </div>
+          ) : null}
         </div>
       </div>
     );

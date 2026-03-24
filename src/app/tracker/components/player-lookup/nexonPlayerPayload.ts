@@ -7,6 +7,8 @@ export type ModuleSlotParsed = {
   slotId: string;
   moduleId: string;
   enchantLevel: number;
+  /** Original Nexon module row — may contain roll / option fields not modeled above. */
+  raw?: Record<string, unknown>;
 };
 
 export type DescendantBuildParsed = {
@@ -50,7 +52,138 @@ function parseModuleSlot(m: unknown): ModuleSlotParsed | null {
   if (typeof moduleId !== "string" || !moduleId) return null;
   const slotId = String(r.module_slot_id ?? r.moduleSlotId ?? r.slot_id ?? "");
   const enchantLevel = Math.min(10, Math.max(0, Math.round(num(r.module_enchant_level ?? r.moduleEnchantLevel, 0))));
-  return { slotId, moduleId, enchantLevel };
+  return { slotId, moduleId, enchantLevel, raw: { ...r } };
+}
+
+/** Keys that may hold arrays of name/value roll rows on user module objects. */
+const MODULE_ROLL_ARRAY_KEYS = [
+  "module_additional_stat",
+  "moduleAdditionalStat",
+  "additional_stat",
+  "additionalStat",
+  "module_option",
+  "moduleOption",
+  "module_option_list",
+  "moduleOptionList",
+  "module_random_option",
+  "moduleRandomOption",
+  "random_option",
+  "randomOption",
+  "module_sub_stat",
+  "moduleSubStat",
+  "sub_stat",
+  "subStat",
+  "basic_info",
+  "basicInfo",
+];
+
+function parseJsonArrayString(v: unknown): unknown[] | null {
+  if (typeof v !== "string" || !v.trim().startsWith("[")) return null;
+  try {
+    const p = JSON.parse(v) as unknown;
+    return Array.isArray(p) ? p : null;
+  } catch {
+    return null;
+  }
+}
+
+function rollRowFromRecord(o: Record<string, unknown>): { label: string; value: string } | null {
+  const label = String(
+    o.stat_name ??
+      o.additional_stat_name ??
+      o.statName ??
+      o.additionalStatName ??
+      o.option_name ??
+      o.optionName ??
+      o.module_option_name ??
+      o.name ??
+      o.label ??
+      "",
+  ).trim();
+  if (!label) return null;
+  const val =
+    o.stat_value ??
+    o.additional_stat_value ??
+    o.statValue ??
+    o.additionalStatValue ??
+    o.option_value ??
+    o.optionValue ??
+    o.value ??
+    o.module_option_value;
+  return { label, value: val == null || val === "" ? "—" : String(val) };
+}
+
+function pushRollRowsFromArray(arr: unknown[], out: Map<string, { label: string; value: string }>) {
+  for (const item of arr) {
+    const row = asRecord(item);
+    if (!row) continue;
+    const parsed = rollRowFromRecord(row);
+    if (parsed) out.set(`${parsed.label}\0${parsed.value}`, parsed);
+  }
+}
+
+/**
+ * Best-effort: equipped-module **rolls** (e.g. Skill Power Increase) from Nexon `user/descendant` module rows.
+ * Field names vary; we merge unique label+value pairs from known array keys and parsed JSON strings.
+ */
+export function extractModuleRollRows(raw: Record<string, unknown> | undefined): { label: string; value: string }[] {
+  if (!raw) return [];
+  const out = new Map<string, { label: string; value: string }>();
+
+  for (const key of MODULE_ROLL_ARRAY_KEYS) {
+    const v = raw[key];
+    if (Array.isArray(v)) {
+      pushRollRowsFromArray(v, out);
+    } else {
+      const parsed = parseJsonArrayString(v);
+      if (parsed) pushRollRowsFromArray(parsed, out);
+    }
+  }
+
+  if (out.size === 0 && raw) {
+    collectRollRowsFromNestedArrays(raw, 0, out);
+  }
+
+  return [...out.values()];
+}
+
+/** Fallback: any array of objects with stat-like keys anywhere under the module row. */
+function collectRollRowsFromNestedArrays(
+  obj: unknown,
+  depth: number,
+  out: Map<string, { label: string; value: string }>,
+): void {
+  if (depth > 8 || !obj || typeof obj !== "object") return;
+  if (Array.isArray(obj)) {
+    for (const el of obj) {
+      const row = asRecord(el);
+      if (row) {
+        const parsed = rollRowFromRecord(row);
+        if (parsed) out.set(`${parsed.label}\0${parsed.value}`, parsed);
+        collectRollRowsFromNestedArrays(el, depth + 1, out);
+      }
+    }
+    return;
+  }
+  for (const v of Object.values(obj as Record<string, unknown>)) {
+    collectRollRowsFromNestedArrays(v, depth + 1, out);
+  }
+}
+
+/**
+ * Prefer catalog `preview` unless it is a useless stub; then try long description fields on the API row.
+ */
+export function moduleDisplayDescription(
+  catalogPreview: string | undefined,
+  raw?: Record<string, unknown>,
+): string {
+  const p = catalogPreview?.trim() ?? "";
+  if (p && p !== "Basic Info" && p.length > 8) return p;
+  for (const k of ["module_description", "moduleDescription", "description", "module_effect_description"]) {
+    const v = raw?.[k];
+    if (typeof v === "string" && v.trim().length > 20) return v.trim();
+  }
+  return p;
 }
 
 function parseModuleList(raw: unknown): ModuleSlotParsed[] {

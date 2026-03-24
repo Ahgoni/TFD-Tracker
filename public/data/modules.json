@@ -23008,7 +23008,7 @@
       0,
       0
     ],
-    "preview": "Basic Info"
+    "preview": "Cooldown\t(1.5~5.5)s\n\nEarthquake\nContinuous Damage\tSkill Power x 376%\nDamage Interval\t1s\nDuration\t3s\nDEF Decrease Amount\tDEF x (5.00~25.00)%\nNon-Attribute Skill Resistance Reduction\tDEF x (5.00~25.00)%\nFire Skill Resistance Reduction\tDEF x (5.00~25.00)%\nChill Skill Resistance Reduction\tDEF x (5.00~25.00)%\nElectric Skill Resistance Reduction\tDEF x (5.00~25.00)%\nToxic Skill Resistance Reduction\tDEF x (5.00~25.00)%\nRange\tRadius 12.0m\n\nTaunt\nDuration\t5s"
   },
   {
     "id": "255000002",
@@ -23033,7 +23033,7 @@
       0,
       0
     ],
-    "preview": "Basic Info"
+    "preview": "Cooldown\t15s\n\nArche Leak\nDuration\t30s\nSkill Cost\t(-20.00~-10.00)%\nMP Cost per Attack\t-3.5\nSkill Power Modifier Increase\tMax (20.00~120.00)%\nMP Recovery per Skill Use\tMax MP x 4%\nMP Recovery per Enemy Kill\tMax MP x 2.9%"
   },
   {
     "id": "255000003",
@@ -23058,7 +23058,7 @@
       0,
       0
     ],
-    "preview": "Basic Info"
+    "preview": "Skill Power Increase\t(5.00~15.00)%\n\nVoid Recharge\nDuration\t15s\nMax Stacks\t4\n\nAmorphous Phenomenon\nDuration\t10s\nRange\tRadius 16.0m\nATK Reduction\tSkill Effect Range x (10.00~20.00)%"
   },
   {
     "id": "255000004",
@@ -23083,7 +23083,7 @@
       0,
       0
     ],
-    "preview": "Basic Info"
+    "preview": "Additional Damage Trigger Rate\tBase 100% - Skill Cooldown\nAdditional Damage\t(5.00~35.00)%"
   },
   {
     "id": "255000005",
@@ -23108,7 +23108,7 @@
       0,
       0
     ],
-    "preview": "Basic Info"
+    "preview": "Cooldown\t(0.5~2.5)s\n\nResidual Arche Preservation Stacks\nTracking Projectile\t2 stacks\nExplosive Projectile\t4 stacks\nMulti-Explosive Projectile\t4 stacks\nPiercing Projectile\t6 stacks\n\nResidual Arche Preservation\nDuration\t15s\nMax Stacks\t12\n\nArche Meteor\nTrigger Range\tRadius 12.0m\nMax Trigger Targets\tMax 6 within Range\nDamage Range\tRadius 2.0m\nDamage\tSkill Power x (422.00~922.00)%"
   },
   {
     "id": "255000006",
@@ -23133,7 +23133,7 @@
       0,
       0
     ],
-    "preview": "Basic Info"
+    "preview": "Cooldown\t1s\n\nParticle Transmission\nTransmission Range\tRadius 20.0m\nDuration\t15s\nMax Stacks\t12\n\nParticle Emission\nDuration\t5s\nDamage\tSkill Power x (11.00~71.00)%\nDamage Interval\t0.33s\nDamage Range\tMax 20.0m\nDuration Increase Amount\t2s\nMax Duration Increase\tMax (7~20)s"
   },
   {
     "id": "255000007",
@@ -23183,7 +23183,7 @@
       0,
       0
     ],
-    "preview": "Basic Info"
+    "preview": "Base Recoil Increase\t(20.00~60.00)%\nTrigger Rate\t(80.00~100.00)% x Recoil Increase\n\nForced Weakening\nMax Stacks\t30\nDuration\t15s\nStacks Removed per Weak Point Attack\t2\nWeak Point DMG per Stack\t+8.1%\nMax HP per Stack\t-2% Decrease\nStack Removal HP Recovery\tMax HP x 1%"
   },
   {
     "id": "255000009",
@@ -23233,7 +23233,7 @@
       0,
       0
     ],
-    "preview": "Basic Info"
+    "preview": "Cooldown\t6s\nMax Spawned per Projectile\tx2\n\nEye of the Storm\nSpawn Rate\t(25.00~45.00)%\nContinuous Damage\tSkill Power x (85.00~198.00)%\nDuration\t5s\nDamage Interval\t0.5s\nDamage Range\tRadius 3.0m"
   },
   {
     "id": "255000014",
@@ -23258,7 +23258,7 @@
       0,
       0
     ],
-    "preview": "Basic Info"
+    "preview": "Cooldown\t18s\nRange\tRadius 15.0m\n\nTactical Acceleration\nDuration\t(5.5~12)s\nMovement Speed While Firing\t+(10.00~30.00)%\nCooldown\t8s"
   },
   {
     "id": "255000015",
@@ -23283,7 +23283,7 @@
       0,
       0
     ],
-    "preview": "Basic Info"
+    "preview": "Cooldown\t4s\n\nBlazing Zone\nSpawn Rate\t(47.00~100.00)%\nContinuous Damage\tSkill Power x (337.00~425.00)%\nDuration\t4s\nDamage Interval\t0.5s\nDamage Range\tRadius 7.0m"
   },
   {
     "id": "255000016",
@@ -23333,7 +23333,7 @@
       0,
       0
     ],
-    "preview": "Basic Info"
+    "preview": "Cooldown\t3s\n\nWave Eruption\nIncoming Damage Reduction\t(-30.00~-5.00)%\nMovement Speed\t+120%\nAdditional Damage per Stack\tSkill Power x (30.00~110.00)%\nMaximum Stacks\t25\nStack Cooldown\t0.2s\nStack Duration\t3s\nKnockback Resistance Chance\t100%"
   },
   {
     "id": "255000018",
@@ -23358,7 +23358,7 @@
       0,
       0
     ],
-    "preview": "Basic Info"
+    "preview": "Cooldown\t3s\n\nRhythmic Step\nMovement Speed per Stack\t+(0.500~3.500)%\nMax Shield per Stack\t+(5.00~20.00)%\nMaximum Stacks\t10\nStack Cooldown\t0.2s\nStack Duration\t7s"
   },
   {
     "id": "255000019",
@@ -23383,7 +23383,7 @@
       0,
       0
     ],
-    "preview": "Basic Info"
+    "preview": "Cooldown\t15s\n\nSteel Vanguard\nBase Damage\tSkill Power x 271%\nDamage\tBase Damage x Damage Multiplier%\nDamage Multiplier\t(Max HP + Max Shield) x (0.5~1.5)%\nMax Damage Multiplier\t600%\nDuration\t(5~15)s\nDamage Interval\t1s\nDamage Range\tRadius 7.0m"
   },
   {
     "id": "255000021",
@@ -23408,7 +23408,7 @@
       0,
       0
     ],
-    "preview": "Basic Info"
+    "preview": "Cooldown\t(0.8~6)s\n\nRelative Speed\nMaximum Stacks\t30\nMax Acquired Relative Speed Stacks\t10\nBase Damage\tSkill Power x 758%\nDamage\tBase Damage x Damage Multiplier%\nDamage Multiplier\tMax MP x (175.00~375.00)%\nMax Damage Multiplier\t1650%\nDamage Range\tRadius 15.0m"
   },
   {
     "id": "255000022",
@@ -23508,7 +23508,7 @@
       0,
       0
     ],
-    "preview": "Basic Info"
+    "preview": "Cooldown\t15s\n\nInstant Acceleration\nMovement Speed\t+(40.00~80.00)%\nDuration\t(5~12)s"
   },
   {
     "id": "255000026",
@@ -23533,7 +23533,7 @@
       0,
       0
     ],
-    "preview": "Basic Info"
+    "preview": "Cooldown\t4s\nImbue Rate\t(5.00~35.00)%\n\nStrike Target\nMax Stacks\t20\nDuration\t10s\nDamage\tSkill Power x 2531%\nAdditional Skill ATK (vs. Colossus)\t(1000~7000)\nAdditional Skill ATK (vs. Elite)\t(1000~7000)\nAdditional Skill ATK (vs. Commander)\t(1000~7000)\nAdditional Skill ATK (vs. Tyrant)\t(1000~7000)"
   },
   {
     "id": "255000027",
@@ -23558,7 +23558,7 @@
       0,
       0
     ],
-    "preview": "Basic Info"
+    "preview": "Cooldown\t5s\n\nTactical Target\nDuration\t15s\nRange\tRadius (4~10)m\nDamage\tSkill Power x (1134.00~5326.00)%"
   },
   {
     "id": "255000028",
@@ -23583,7 +23583,7 @@
       0,
       0
     ],
-    "preview": "Basic Info"
+    "preview": "Front Side Imbue Rate\t(20.0~80.0)%\nCooldown\t10s\n\nHeads\nSkill Power Increase\t(5.00~24.00)%\nDuration\t10s\n\nTails\nSkill Range Increase\t(15.00~95.00)%\nDuration\t10s"
   },
   {
     "id": "255000029",
@@ -23633,7 +23633,7 @@
       0,
       0
     ],
-    "preview": "Basic Info"
+    "preview": "Cooldown\t2s\nBase Damage\tSkill Power x (1057.00~2065.00)%\nDamage Range\tRadius 15.0m\nAdditional Skill ATK (vs. Colossus)\t(125~508) per Stack\nAdditional Skill ATK (vs. Elite)\t(125~508) per Stack\nAdditional Skill ATK (vs. Commander)\t(125~508) per Stack\nAdditional Skill ATK (vs. Tyrant)\t(125~508) per Stack\n\nIcebreaker\nMax Stacks\t30\nDuration\t60s"
   },
   {
     "id": "255000031",
@@ -23683,7 +23683,7 @@
       0,
       0
     ],
-    "preview": "Basic Info"
+    "preview": "Cooldown\t5s\nDamage Range\tRadius 15.0m\nDamage\tSkill Power x (3052.00~5092.00)%\nAmmo Recovery\t(3.00~25.00)%\n\nCombat Readiness\nDuration\t10s\nIncoming Damage Reduction\t-30%\nAdditional Skill ATK (vs. Colossus)\t(2500~4000)\nAdditional Skill ATK (vs. Elite)\t(2500~4000)\nAdditional Skill ATK (vs. Commander)\t(2500~4000)\nAdditional Skill ATK (vs. Tyrant)\t(2500~4000)"
   },
   {
     "id": "255000033",
@@ -23708,7 +23708,7 @@
       0,
       0
     ],
-    "preview": "Basic Info"
+    "preview": "Blood Drop\nGain Interval\tMax 0.1s\nMax Stacks\t25\n\nBloody Edge\nMax Stacks\t25\nDuration\t15s\nAdditional Damage Trigger Rate\t(30.00~90.00)%\nAdditional Damage\tAdditional Damage x Damage Multiplier%\nAdditional Damage\tSkill Power x 262%\nDamage Multiplier\t(0.05~0.15)% of Max HP\nMax Damage Multiplier\t3500%"
   },
   {
     "id": "261001001",

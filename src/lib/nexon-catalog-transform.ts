@@ -79,6 +79,12 @@ function previewFromStats(
   const v = row?.value;
   if (typeof v !== "string") return "";
   if (isTranscendent) return v;
+  const firstLine = v.split("\n")[0]?.trim() ?? "";
+  /** Many modules (e.g. Trigger) use first line "Basic Info" then full roll layout — keep the rest. */
+  if (firstLine === "Basic Info" && v.includes("\n")) {
+    const rest = v.slice(v.indexOf("\n") + 1).trim();
+    return rest.length > 2200 ? `${rest.slice(0, 2197)}…` : rest;
+  }
   const line = v.split("\n")[0] ?? v;
   return line.length > 160 ? `${line.slice(0, 157)}…` : line;
 }

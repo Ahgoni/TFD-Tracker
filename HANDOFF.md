@@ -2,7 +2,9 @@
 
 **Last updated:** 2026-03-24 (Player Lookup tier logic: reactor / external / core)
 
-**Latest (2026-03-24):** Player Lookup — reactor substats use `inferTierFromReactorSubstat` (tfdtools reactor bands; fixes decimal % rolls e.g. crit damage). External substats use `inferTierFromExternalSubstat` only. Core augments use `inferTierFromCoreAugment` (grantable %/DEF bands) with per-roll tier colors. **Ultimate** rarity chip moved next to set name (item rarity), not on the Core heading. `ReactorsTab` / build planner reactor save use reactor-only tiering. Files: `src/lib/tracker-data.ts`, `PlayerLookupProfile.tsx` + `.module.css`.
+**Latest (2026-03-24):** Player Lookup — **Trigger** column: shows Nexon **roll** rows when present on equipped module `raw` (`extractModuleRollRows`), plus catalog **preview** (fixed `previewFromStats` to skip stub line `Basic Info` so Trigger modules get full `module_stat` text like Power Beyond). Inline list under card + hover/focus panel; `npm run fetch:data` refreshes `modules.json` previews. Files: `nexonPlayerPayload.ts`, `PlayerLookupProfile.tsx` + CSS, `nexon-catalog-transform.ts`, `public/data/*.json`.
+
+**Earlier (2026-03-24):** Player Lookup — reactor substats use `inferTierFromReactorSubstat` (tfdtools reactor bands; fixes decimal % rolls e.g. crit damage). External substats use `inferTierFromExternalSubstat` only. Core augments use `inferTierFromCoreAugment` (grantable %/DEF bands) with per-roll tier colors. **Ultimate** rarity chip moved next to set name (item rarity), not on the Core heading. `ReactorsTab` / build planner reactor save use reactor-only tiering. Files: `src/lib/tracker-data.ts`, `PlayerLookupProfile.tsx` + `.module.css`.
 
 At the **start** of a new chat or agent swap: **`HANDOFF.md`** → **`docs/PROJECT_MAP.md`** → **`docs/AI_HANDOFF.md`** (process + VPS git).
 At the **end** of a session or after a major feature: update this file + session log; update other docs per **`docs/AI_HANDOFF.md`**.
@@ -207,6 +209,7 @@ After deploy: **hard refresh** to clear stale asset caches.
 
 | Date       | Summary |
 |-----------|---------|
+| 2026-03-24 | **Player Lookup Trigger**: preserve module `raw` from Nexon; `extractModuleRollRows` + hover/inline UI; `previewFromStats` skips `Basic Info` stub so Trigger catalog text matches game; `fetch:data` modules.json. |
 | 2026-03-24 | **Tier inference**: reactor vs external vs core augment ranges; decimal % normalization; Ultimate chip by set (item rarity). `tracker-data` helpers; ReactorsTab/BuildPlanner use reactor-only tiers. |
 | 2026-03-24 | **Player Lookup**: ext **Core** = augmentation **Ultimate** pool (gold values + pill + gold accent); **Substats** = grantable pool (blue values); reactor chip colors; 4-slot grid. |
 | 2026-03-23 | **`HANDOFF.md`**: added **“Chat session summary (2026-03-23)”** — full digest of thread (capacity, group peers, Nexon API, docs, deploy). Cursor rules list completed. |
