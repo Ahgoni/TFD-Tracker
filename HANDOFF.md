@@ -1,10 +1,12 @@
 # TFD Tracker — handoff / session memory
 
-**Last updated:** 2026-03-24 (Materials feature removed)
+**Last updated:** 2026-03-24 (Player Lookup: Trigger column minimal)
 
-**Latest (2026-03-24):** **Materials** tracking removed app-wide (tab, Welcome stats/cards, share/public pages, landing copy). State migration strips legacy `materials` and `Materials` tab from saved JSON. Prisma: `MaterialEntry` dropped (migration `0006_remove_material_entry`). `/api/materials` deleted. If `next build` fails on stale `.next` route validator after deleting an API route, delete `.next` and rebuild.
+**Latest (2026-03-24):** **Player Lookup** — **Dia Modules** trigger slot: show only **icon, module name, and “Trigger”** (tier border preserved). Removed capacity corner badge, inline roll/catalog lines, and hover detail panel — API does not reliably expose the player’s real trigger rolls in this view.
 
-**Earlier (2026-03-24):** **Reactors** tab: removed Descendant field/column; enhancement is only `0`–`5` (max = 5); `normalizeReactorEntry` maps legacy `Max` → `5` on load. **Player Lookup** header: `Level: n, Arche Level: n` when Nexon sends arche fields; Chill uses icy-blue text + element icon. Trigger card: one short preview line + hover panel (no huge duplicate block).
+**Earlier (2026-03-24):** **Materials** tracking removed app-wide (tab, Welcome stats/cards, share/public pages, landing copy). State migration strips legacy `materials` and `Materials` tab from saved JSON. Prisma: `MaterialEntry` dropped (migration `0006_remove_material_entry`). `/api/materials` deleted. If `next build` fails on stale `.next` route validator after deleting an API route, delete `.next` and rebuild.
+
+**Earlier (2026-03-24):** **Reactors** tab: removed Descendant field/column; enhancement is only `0`–`5` (max = 5); `normalizeReactorEntry` maps legacy `Max` → `5` on load. **Player Lookup** header: `Level: n, Arche Level: n` when Nexon sends arche fields; Chill uses icy-blue text + element icon.
 
 **Earlier (2026-03-24):** Player Lookup — **Trigger** column: shows Nexon **roll** rows when present on equipped module `raw` (`extractModuleRollRows`), plus catalog **preview** (fixed `previewFromStats` to skip stub line `Basic Info` so Trigger modules get full `module_stat` text like Power Beyond). Inline list under card + hover/focus panel; `npm run fetch:data` refreshes `modules.json` previews. Files: `nexonPlayerPayload.ts`, `PlayerLookupProfile.tsx` + CSS, `nexon-catalog-transform.ts`, `public/data/*.json`.
 
@@ -213,6 +215,7 @@ After deploy: **hard refresh** to clear stale asset caches.
 
 | Date       | Summary |
 |-----------|---------|
+| 2026-03-24 | **Player Lookup** Dia Modules trigger: card shows name + tag only; removed cost badge, rolls, blurb, hover panel (`PlayerLookupProfile` + CSS). |
 | 2026-03-24 | **Materials removed**: tab/API/Prisma `MaterialEntry`; Welcome + share pages + landing/meta; `migrateStateNoMaterials` + `tracker-default-state`; docs/README/PROJECT_MAP. Run `prisma migrate deploy` on servers with DB. |
 | 2026-03-24 | **Reactors tab**: no Descendant column; enh. 0–5 only; migrate `Max`→`5`. **Player Lookup**: arche level line, Chill styling + icon, cleaner trigger preview. |
 | 2026-03-24 | **Player Lookup Trigger**: preserve module `raw` from Nexon; `extractModuleRollRows` + hover/inline UI; `previewFromStats` skips `Basic Info` stub so Trigger catalog text matches game; `fetch:data` modules.json. |
