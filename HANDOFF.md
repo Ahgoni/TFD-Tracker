@@ -1,8 +1,10 @@
 # TFD Tracker — handoff / session memory
 
-**Last updated:** 2026-03-24 (tier list deploy: prisma generate + local enum)
+**Last updated:** 2026-03-24 (auth signIn + public build spotlight URL)
 
-**Latest (2026-03-24):** **`npm run build`** runs **`prisma generate && next build`** so VPS builds never use a stale Prisma client. Tier list enums use **`src/lib/tier-list-category.ts`** (not importing `TierListCategory` from `@prisma/client` in API routes).
+**Latest (2026-03-24):** **NextAuth:** removed **`pages.signIn: "/"`** — custom sign-in on the landing page broke Discord OAuth (users landed on `/?callbackUrl=…` with no provider flow). Default **`/api/auth/signin`** is used again. **Shared builds:** tier hub + Copy link use **`/u/{username}/b/{buildId}`** (single-build read-only page). Old **`#build-`** profile URLs **redirect** to `/b/`. **`PublicBuildCard`** extracted for reuse.
+
+**Earlier (2026-03-24):** **`npm run build`** runs **`prisma generate && next build`** so VPS builds never use a stale Prisma client. Tier list enums use **`src/lib/tier-list-category.ts`** (not importing `TierListCategory` from `@prisma/client` in API routes).
 
 **Earlier (2026-03-24):** **Landing** — community **tier list** (Descendants / Weapons tabs): plurality voting (Discord sign-in), merged **base + Ultimate** descendants by `descendant_group_id`. **`BuildEntry.communityPublic`** + **`PublicBuildListing`** (synced on **`/api/state`** when **`sharePrivacy === "open"`**) powers “public builds” links from tier portraits → **`/u/{username}#build-{id}`**. Prisma: **`TierVote`**, **`PublicBuildListing`**, migration **`0007_tier_list_community`**. Weapon keys use **`public/weapons-catalog.json`** slugs (matches build `targetKey`).
 
@@ -219,6 +221,7 @@ After deploy: **hard refresh** to clear stale asset caches.
 
 | Date       | Summary |
 |-----------|---------|
+| 2026-03-24 | **Auth + share links:** Removed `pages.signIn: "/"`; shared build route `/u/…/b/…`; `BuildHashRedirect`; tier hub `href` + BuildsTab `copyBuildLink`. |
 | 2026-03-24 | **Deploy fix:** `package.json` `build` = `prisma generate && next build`; `TierListCategory` from `src/lib/tier-list-category.ts`; `DEPLOY_UBUNTU.md` note. Fixes VPS `Module '@prisma/client' has no exported member 'TierListCategory'`. |
 | 2026-03-24 | **Community tier list** on `/`: voting APIs, `TierVote` + `PublicBuildListing`, build flag `communityPublic`, landing `CommunityTierList` modal (votes + public build links). Migration `0007_tier_list_community`. |
 | 2026-03-24 | **Player Lookup** Dia Modules trigger: card shows name + tag only; removed cost badge, rolls, blurb, hover panel (`PlayerLookupProfile` + CSS). |

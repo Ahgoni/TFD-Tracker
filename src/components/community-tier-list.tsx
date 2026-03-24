@@ -38,8 +38,10 @@ const TIER_CLASS: Record<string, string> = {
 };
 
 function goToSignInPage() {
-  const callbackUrl = typeof window !== "undefined" ? window.location.href : "/";
-  window.location.assign(`/api/auth/signin?callbackUrl=${encodeURIComponent(callbackUrl)}`);
+  if (typeof window === "undefined") return;
+  const u = new URL(window.location.href);
+  u.hash = "";
+  window.location.assign(`/api/auth/signin?callbackUrl=${encodeURIComponent(u.toString())}`);
 }
 
 export function CommunityTierList() {

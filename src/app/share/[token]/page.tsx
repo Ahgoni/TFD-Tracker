@@ -71,7 +71,7 @@ export default async function SharePage({ params }: { params: Promise<{ token: s
           )}
         </div>
         <div style={{ paddingTop: "0.3rem" }}>
-          <Link className="filter-chip" href="/">
+          <Link className="filter-chip" href="/api/auth/signin">
             Sign in to track your own inventory
           </Link>
         </div>

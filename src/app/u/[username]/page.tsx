@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { BuildHashScroll } from "./build-hash-scroll";
+import { BuildHashRedirect } from "./build-hash-redirect";
 import { PublicBuildsSection } from "@/components/public-builds-section";
 import type { PublicBuild } from "@/lib/public-build-types";
 
@@ -99,7 +99,7 @@ export default async function UsernameProfilePage({ params }: { params: Promise<
 
   return (
     <div className="app">
-      <BuildHashScroll />
+      <BuildHashRedirect />
       <header className="topbar">
         <div className="topbar-row">
           <div className="brand">
@@ -114,7 +114,9 @@ export default async function UsernameProfilePage({ params }: { params: Promise<
           )}
         </div>
         <div style={{ paddingTop: "0.3rem" }}>
-          <Link className="filter-chip" href="/">Sign in to track your own inventory</Link>
+          <Link className="filter-chip" href="/api/auth/signin">
+            Sign in to track your own inventory
+          </Link>
         </div>
       </header>
 

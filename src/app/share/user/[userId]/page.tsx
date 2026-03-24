@@ -92,7 +92,7 @@ export default async function UserProfileSharePage({ params }: { params: Promise
           )}
         </div>
         <div style={{ paddingTop: "0.3rem" }}>
-          <Link className="filter-chip" href="/">Sign in to track your own inventory</Link>
+          <Link className="filter-chip" href="/api/auth/signin">Sign in to track your own inventory</Link>
         </div>
       </header>
 

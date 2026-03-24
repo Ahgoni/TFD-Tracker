@@ -27,7 +27,5 @@ export const authOptions: NextAuthOptions = {
   session: {
     strategy: "database",
   },
-  pages: {
-    signIn: "/",
-  },
+  /** Use NextAuth default `/api/auth/signin` — a custom `signIn: "/"` breaks OAuth (landing never completes Discord). */
 };

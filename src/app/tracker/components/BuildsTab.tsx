@@ -268,19 +268,34 @@ export function BuildsTab({ state, setState }: Props) {
     setState((prev) => pushActivity({ ...prev, builds: [...(prev.builds ?? []), copy] }, `Duplicated build: ${b.name}`));
   }
 
-  async function copyProfileLink(anchor?: string) {
+  async function copyProfileLink() {
     const base = typeof window !== "undefined" ? window.location.origin : "";
     if (!username) {
       setCopyLinkFeedback("Set a username on your account to share profile and build links.");
       window.setTimeout(() => setCopyLinkFeedback(null), 5000);
       return;
     }
-    const path = `${base}/u/${encodeURIComponent(username)}${anchor ?? ""}`;
+    const path = `${base}/u/${encodeURIComponent(username)}`;
     const ok = await copyTextToClipboard(path);
     if (ok) {
-      setCopyLinkFeedback(
-        anchor ? "Build link copied to clipboard." : "Profile link copied to clipboard."
-      );
+      setCopyLinkFeedback("Profile link copied to clipboard.");
+    } else {
+      setCopyLinkFeedback("Could not copy automatically — copy the URL from your address bar or try again.");
+    }
+    window.setTimeout(() => setCopyLinkFeedback(null), 5000);
+  }
+
+  async function copyBuildLink(buildId: string) {
+    const base = typeof window !== "undefined" ? window.location.origin : "";
+    if (!username) {
+      setCopyLinkFeedback("Set a username on your account to share build links.");
+      window.setTimeout(() => setCopyLinkFeedback(null), 5000);
+      return;
+    }
+    const path = `${base}/u/${encodeURIComponent(username)}/b/${encodeURIComponent(buildId)}`;
+    const ok = await copyTextToClipboard(path);
+    if (ok) {
+      setCopyLinkFeedback("Build link copied to clipboard.");
     } else {
       setCopyLinkFeedback("Could not copy automatically — copy the URL from your address bar or try again.");
     }
@@ -644,7 +659,7 @@ export function BuildsTab({ state, setState }: Props) {
                     <button
                       type="button"
                       className="filter-chip"
-                      onClick={() => void copyProfileLink(`#build-${b.id}`)}
+                      onClick={() => void copyBuildLink(b.id)}
                     >
                       Copy link
                     </button>

@@ -27,7 +27,7 @@ export async function GET(request: Request) {
       buildName: r.buildName,
       username: r.user.username as string,
       authorName: r.user.name,
-      href: `/u/${encodeURIComponent(r.user.username as string)}#build-${r.buildId}`,
+      href: `/u/${encodeURIComponent(r.user.username as string)}/b/${encodeURIComponent(r.buildId)}`,
     }));
 
   return NextResponse.json({ builds });
