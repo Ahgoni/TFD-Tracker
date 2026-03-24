@@ -25,6 +25,7 @@ import {
   type DescendantBuildParsed,
   type WeaponBuildParsed,
 } from "./nexonPlayerPayload";
+import { ExternalSetBonusesBanner, type ExternalSetBonusSet } from "../ExternalSetBonusesBanner";
 import styles from "./PlayerLookupProfile.module.css";
 
 export type PlayerLookupCatalogs = {
@@ -125,17 +126,10 @@ function externalSlotLabel(slotId: unknown): string {
   return EXTERNAL_SLOT_LABELS[ix] ?? `Slot ${n}`;
 }
 
-type EquippedSetInfo = {
-  setName: string;
-  count: number;
-  twoEffect: string;
-  fourEffect: string;
-};
-
 function aggregateEquippedSets(
   equipped: Record<string, unknown>[],
   byId: Map<string, ExternalComponentCatalogRow>,
-): EquippedSetInfo[] {
+): ExternalSetBonusSet[] {
   const counts = new Map<string, number>();
   const sample = new Map<string, ExternalComponentCatalogRow>();
   for (const eq of equipped) {
@@ -146,7 +140,7 @@ function aggregateEquippedSets(
     counts.set(setName, (counts.get(setName) ?? 0) + 1);
     if (!sample.has(setName)) sample.set(setName, cat);
   }
-  const out: EquippedSetInfo[] = [];
+  const out: ExternalSetBonusSet[] = [];
   for (const [setName, count] of counts) {
     const c = sample.get(setName)!;
     const two = c.setOptionDetail.find((d) => d.setCount === 2);
@@ -159,32 +153,6 @@ function aggregateEquippedSets(
     });
   }
   return out.sort((a, b) => b.count - a.count);
-}
-
-function SetBonusesBanner({ sets }: { sets: EquippedSetInfo[] }) {
-  const active = sets.filter((s) => s.count >= 2);
-  if (active.length === 0) return null;
-  return (
-    <div style={{ display: "flex", flexDirection: "column", gap: "0.45rem" }}>
-      {active.map((s) => (
-        <div key={s.setName} className={styles.setBanner}>
-          <strong>
-            {s.setName} — {s.count}/4 equipped
-          </strong>
-          {s.count >= 2 && s.twoEffect ? (
-            <span className={styles.setTier}>
-              <strong>2-piece:</strong> {s.twoEffect}
-            </span>
-          ) : null}
-          {s.count >= 4 && s.fourEffect ? (
-            <span className={styles.setTier}>
-              <strong>4-piece:</strong> {s.fourEffect}
-            </span>
-          ) : null}
-        </div>
-      ))}
-    </div>
-  );
 }
 
 function ExternalComponentCard({
@@ -750,7 +718,7 @@ export function PlayerLookupProfile({ data, catalogs }: Props) {
 
   const renderComponentsPanel = () => (
     <div className={styles.inventoryPane}>
-      <SetBonusesBanner sets={setProgress} />
+      <ExternalSetBonusesBanner sets={setProgress} />
       <div style={{ display: "grid", gap: "0.5rem" }}>
         {externals.map((r, i) => {
           const id = String(r.external_component_id ?? r.externalComponentId ?? "");

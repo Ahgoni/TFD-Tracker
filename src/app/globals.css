@@ -4325,13 +4325,13 @@ td .badge { display: inline-flex; align-items: center; gap: 0.35rem; }
   container-name: builder-center;
 }
 
-/* Narrow center column: 2×2 component cards (viewport-wide breakpoints miss 3-column layouts) */
-@container builder-center (max-width: 760px) {
+/* External component cards: stay 4-up on wide center; stack only when column is very narrow */
+@container builder-center (max-width: 520px) {
   .builder-comp-grid {
-    grid-template-columns: repeat(2, minmax(168px, 1fr));
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
-@container builder-center (max-width: 380px) {
+@container builder-center (max-width: 300px) {
   .builder-comp-grid {
     grid-template-columns: minmax(0, 1fr);
   }
@@ -4619,6 +4619,31 @@ td .badge { display: inline-flex; align-items: center; gap: 0.35rem; }
   color: #f87171;
 }
 
+/* ── External component set bonuses (Player Lookup + Builds) ─────── */
+.ext-set-bonuses-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  margin-bottom: 0.65rem;
+}
+.ext-set-banner {
+  padding: 0.5rem 0.65rem;
+  border-radius: 8px;
+  border: 1px solid rgba(168, 85, 247, 0.45);
+  background: rgba(168, 85, 247, 0.08);
+  font-size: 0.76rem;
+  line-height: 1.35;
+}
+.ext-set-banner strong {
+  color: #c4b5fd;
+}
+.ext-set-banner .ext-set-tier {
+  display: block;
+  margin-top: 0.35rem;
+  color: var(--muted);
+  white-space: pre-wrap;
+}
+
 /* ── External Components section ─────────────────────────────────── */
 .builder-components-section {
   border: 1px solid var(--line);
@@ -4626,18 +4651,16 @@ td .badge { display: inline-flex; align-items: center; gap: 0.35rem; }
   padding: 0.85rem 1rem;
   background: rgba(168,85,247,0.04);
   min-width: 0;
-  /* Allow horizontal scroll if the center column is narrow; grid uses minmax(0,1fr) so columns don't overflow. */
-  overflow-x: auto;
+  overflow-x: visible;
   overflow-y: visible;
+  width: 100%;
 }
 .builder-comp-grid {
   display: grid;
-  grid-template-columns: repeat(4, minmax(168px, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 0.65rem;
   margin-top: 0.5rem;
   width: 100%;
-  /* 4 × 168px — keeps column headers even (e.g. Auxiliary Power); parent scrolls horizontally when needed */
-  min-width: 672px;
 }
 .builder-comp-card {
   border: 1px solid var(--line);
@@ -4688,66 +4711,6 @@ td .badge { display: inline-flex; align-items: center; gap: 0.35rem; }
 }
 .builder-comp-sub .comp-val-input {
   font-size: 0.72rem;
-}
-.builder-comp-set-bonuses {
-  margin-top: 0.55rem;
-  border-top: 1px solid rgba(255,255,255,0.06);
-  padding-top: 0.45rem;
-}
-.builder-comp-set-bonus {
-  display: flex;
-  flex-direction: column;
-  align-items: stretch;
-  gap: 0.35rem;
-  font-size: 0.72rem;
-  margin-bottom: 0.45rem;
-}
-.comp-set-head {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  gap: 0.35rem 0.5rem;
-}
-.comp-set-name {
-  font-weight: 800;
-  color: #a855f7;
-  min-width: 80px;
-}
-.comp-set-pieces {
-  flex-shrink: 0;
-  font-size: 0.68rem;
-  font-weight: 900;
-  color: #38bdf8;
-  padding: 0.1rem 0.35rem;
-  border-radius: 4px;
-  background: rgba(56, 189, 248, 0.12);
-}
-.comp-set-effect-block {
-  display: flex;
-  flex-direction: column;
-  gap: 0.2rem;
-  width: 100%;
-  line-height: 1.35;
-  word-break: break-word;
-}
-.comp-set-4pc-block {
-  padding-top: 0.15rem;
-  border-top: 1px dashed rgba(255,255,255,0.08);
-}
-.comp-set-effect {
-  color: #22c55e;
-}
-.comp-set-4pc {
-  color: #fbbf24;
-}
-@media (max-width: 1200px) {
-  .builder-comp-grid {
-    grid-template-columns: repeat(2, minmax(168px, 1fr));
-    min-width: 0;
-  }
-}
-@media (max-width: 600px) {
-  .builder-comp-grid { grid-template-columns: minmax(0, 1fr); }
 }
 
 /* ── Expanded module cards ───────────────────────────────────────── */

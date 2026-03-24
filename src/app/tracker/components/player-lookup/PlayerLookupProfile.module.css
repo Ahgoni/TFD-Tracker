@@ -54,26 +54,6 @@
   gap: 0.65rem;
 }
 
-.setBanner {
-  padding: 0.5rem 0.65rem;
-  border-radius: 8px;
-  border: 1px solid rgba(168, 85, 247, 0.45);
-  background: rgba(168, 85, 247, 0.08);
-  font-size: 0.76rem;
-  line-height: 1.35;
-}
-
-.setBanner strong {
-  color: #c4b5fd;
-}
-
-.setBanner .setTier {
-  display: block;
-  margin-top: 0.35rem;
-  color: var(--muted);
-  white-space: pre-wrap;
-}
-
 .extCardRow {
   display: flex;
   gap: 0.65rem;

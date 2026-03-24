@@ -78,6 +78,7 @@ import {
   getReactorName,
   inferTierFromValue,
 } from "@/lib/tracker-data";
+import { ExternalSetBonusesBanner, type ExternalSetBonusSet } from "./ExternalSetBonusesBanner";
 
 const ultimateToBase: Record<string, string> = {
   "101000004": "101000001", "101000007": "101000002", "101000010": "101000003",
@@ -459,16 +460,6 @@ type ExtCompDb = {
   sets: Record<string, { "2pc": string; "4pc": string }>;
 };
 
-/** Split long set descriptions (e.g. "9% Skill Cost 15% Base?") into lines after each `%` + space. */
-function splitSetEffectLines(text: string | undefined): string[] {
-  if (!text?.trim()) return [];
-  return text
-    .trim()
-    .split(/(?<=%)\s+/)
-    .map((p) => p.trim())
-    .filter(Boolean);
-}
-
 // Child: External Components section
 
 function ExternalComponentsSection({
@@ -516,9 +507,22 @@ function ExternalComponentsSection({
     components.push(defaults[components.length] ?? defaults[0]);
   }
 
+  const setCounts: Record<string, number> = {};
+  components.forEach((c) => {
+    if (c.set) setCounts[c.set] = (setCounts[c.set] ?? 0) + 1;
+  });
+  const setBonusRows: ExternalSetBonusSet[] = Object.entries(setCounts).map(([setName, count]) => ({
+    setName,
+    count,
+    twoEffect: db.sets[setName]?.["2pc"] ?? "",
+    fourEffect: db.sets[setName]?.["4pc"] ?? "",
+  }));
+  setBonusRows.sort((a, b) => b.count - a.count);
+
   return (
     <div className="builder-components-section">
       <h4 className="builder-stats-h">External Components</h4>
+      <ExternalSetBonusesBanner sets={setBonusRows} />
       <div className="builder-comp-grid">
         {db.slots.map((slotDef, idx) => {
           const comp = components[idx] ?? defaults[idx];
@@ -564,40 +568,6 @@ function ExternalComponentsSection({
           );
         })}
       </div>
-      {(() => {
-        const setCounts: Record<string, number> = {};
-        components.forEach((c) => { if (c.set) setCounts[c.set] = (setCounts[c.set] ?? 0) + 1; });
-        const activeSets = Object.entries(setCounts).filter(([, count]) => count >= 2);
-        if (activeSets.length === 0) return null;
-        return (
-          <div className="builder-comp-set-bonuses">
-            {activeSets.map(([name, count]) => (
-              <div key={name} className="builder-comp-set-bonus">
-                <div className="comp-set-head">
-                  <span className="comp-set-name">{name}</span>
-                  <span className="comp-set-pieces">{count}/4</span>
-                </div>
-                <div className="comp-set-effect-block">
-                  {splitSetEffectLines(db.sets[name]?.["2pc"]).map((line, i) => (
-                    <div key={`2-${i}`} className="comp-set-effect">
-                      {line}
-                    </div>
-                  ))}
-                </div>
-                {count >= 4 && (
-                  <div className="comp-set-effect-block comp-set-4pc-block">
-                    {splitSetEffectLines(db.sets[name]?.["4pc"]).map((line, i) => (
-                      <div key={`4-${i}`} className="comp-set-effect comp-set-4pc">
-                        {line}
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
-            ))}
-          </div>
-        );
-      })()}
     </div>
   );
 }
