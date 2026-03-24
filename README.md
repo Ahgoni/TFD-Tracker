@@ -26,7 +26,7 @@ Names, skills, modules, and stats should match **Nexon’s official library**, e
 - `/tracker` authenticated tracker state editor/importer
 - `/api/state` GET/PUT per-user state JSON
 - `/api/state/import` POST one-time localStorage import
-- `/api/weapons`, `/api/reactors`, `/api/descendants`, `/api/materials`, `/api/goals` domain routes
+- `/api/weapons`, `/api/reactors`, `/api/descendants`, `/api/goals` domain routes
 
 See `DEPLOY_UBUNTU.md` for production setup.
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).

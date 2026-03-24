@@ -19,7 +19,7 @@ export const metadata: Metadata = {
     template: "%s | TFD Tracker",
   },
   description:
-    "Track every reactor, weapon, descendant, and material in The First Descendant. Sign in with Discord and keep your full inventory synced, private, and shareable with your squad.",
+    "Track every reactor, weapon, and descendant in The First Descendant. Sign in with Discord and keep your full inventory synced, private, and shareable with your squad.",
   metadataBase: new URL("https://tfdtracker.gg"),
   openGraph: {
     type: "website",
@@ -27,7 +27,7 @@ export const metadata: Metadata = {
     siteName: "TFD Tracker",
     title: "TFD Tracker — The First Descendant Inventory Tracker",
     description:
-      "Track reactors, weapons, descendants & materials. Sign in with Discord — free, private, shareable.",
+      "Track reactors, weapons, and descendants. Sign in with Discord — free, private, shareable.",
   },
   twitter: {
     card: "summary",

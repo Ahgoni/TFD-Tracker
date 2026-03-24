@@ -6,7 +6,6 @@ import { WelcomeTab } from "./components/WelcomeTab";
 import { DescendantsTab } from "./components/DescendantsTab";
 import { WeaponsTab } from "./components/WeaponsTab";
 import { ReactorsTab } from "./components/ReactorsTab";
-import { MaterialsTab } from "./components/MaterialsTab";
 import { FarmingTab } from "./components/FarmingTab";
 import { MasteryTab } from "./components/MasteryTab";
 import { BuildsTab } from "./components/BuildsTab";
@@ -83,12 +82,6 @@ export interface DescendantEntry {
   owned: boolean;
   /** Nexon `descendant_group_id` — same group shares Transcendent modules (base ↔ Ultimate). */
   groupId?: string;
-}
-
-export interface MaterialEntry {
-  id: string;
-  name: string;
-  qty: number;
 }
 
 export interface GoalEntry {
@@ -180,7 +173,6 @@ export interface TrackerState {
   activities: ActivityEntry[];
   weapons: WeaponEntry[];
   reactors: ReactorEntry[];
-  materials: MaterialEntry[];
   descendants: DescendantEntry[];
   builds: BuildEntry[];
   goals: GoalEntry[];
@@ -199,7 +191,6 @@ const DEFAULT_STATE: TrackerState = {
     "Descendants",
     "Weapons",
     "Reactors",
-    "Materials",
     "Farming",
     "Mastery",
     "Player Lookup",
@@ -210,7 +201,6 @@ const DEFAULT_STATE: TrackerState = {
   activities: [],
   weapons: [],
   reactors: [],
-  materials: [],
   descendants: [],
   builds: [],
   goals: [],
@@ -224,6 +214,15 @@ const DEFAULT_STATE: TrackerState = {
 };
 
 const STORAGE_KEY = "tfd-tracker-v2";
+
+/** Strip legacy materials feature from persisted JSON (tab removed from app). */
+function migrateStateNoMaterials(raw: Record<string, unknown>): void {
+  delete raw.materials;
+  if (Array.isArray(raw.tabs)) {
+    raw.tabs = (raw.tabs as string[]).filter((t) => t !== "Materials");
+  }
+  if (raw.activeTab === "Materials") raw.activeTab = "Welcome";
+}
 
 // ── Weapons catalog helpers ───────────────────────────────────────────────────
 
@@ -337,11 +336,16 @@ export function TrackerClient() {
         const res = await fetch("/api/state", { cache: "no-store" });
         if (!res.ok) { setSaveStatus("error"); return; }
         const data = await res.json();
+        const rawState = { ...(data.state ?? {}) } as Record<string, unknown>;
+        migrateStateNoMaterials(rawState);
 
         let loaded: TrackerState = {
           ...DEFAULT_STATE,
-          ...(data.state ?? {}),
-          weaponFilters: { ...DEFAULT_STATE.weaponFilters, ...(data.state?.weaponFilters ?? {}) },
+          ...(rawState as Partial<TrackerState>),
+          weaponFilters: {
+            ...DEFAULT_STATE.weaponFilters,
+            ...(data.state?.weaponFilters ?? {}),
+          },
           descFilters: { ...DEFAULT_STATE.descFilters, ...(data.state?.descFilters ?? {}) },
           buildFilters: { ...DEFAULT_STATE.buildFilters, ...(data.state?.buildFilters ?? {}) },
           goalsFilters: { ...DEFAULT_STATE.goalsFilters, ...(data.state?.goalsFilters ?? {}) },
@@ -432,13 +436,14 @@ export function TrackerClient() {
     const raw = window.localStorage.getItem(STORAGE_KEY);
     if (!raw) { setSaveStatus("error"); return; }
     try {
-      const parsed = JSON.parse(raw);
+      const parsed = JSON.parse(raw) as Record<string, unknown>;
+      migrateStateNoMaterials(parsed);
       await fetch("/api/state/import", {
         method: "POST",
         headers: { "content-type": "application/json" },
         body: JSON.stringify({ state: parsed }),
       });
-      const merged: TrackerState = { ...DEFAULT_STATE, ...parsed };
+      const merged: TrackerState = { ...DEFAULT_STATE, ...(parsed as Partial<TrackerState>) };
       if (!Array.isArray(merged.builds)) merged.builds = [];
       merged.buildFilters = { ...DEFAULT_STATE.buildFilters, ...merged.buildFilters };
       if (Array.isArray(merged.reactors)) {
@@ -573,9 +578,6 @@ export function TrackerClient() {
         )}
         {activeTab === "Reactors" && (
           <ReactorsTab state={state} setState={setState} />
-        )}
-        {activeTab === "Materials" && (
-          <MaterialsTab state={state} setState={setState} />
         )}
         {activeTab === "Farming" && (
           <FarmingTab state={state} setState={setState} />

@@ -19,7 +19,7 @@ Use this file to orient before large changes. **AI continuity:** `docs/AI_HANDOF
 | Path | Role |
 |------|------|
 | `src/app/` | Routes: `/`, `/tracker`, `/u/[username]`, `/share/[token]`, `/share/user/[userId]` |
-| `src/app/api/` | REST: **`state`** (main blob), **`share`**, **`profile`**, **`friends`**, domain CRUD (**`weapons`**, **`descendants`**, **`reactors`**, **`materials`**, **`goals`**), **`nexon/catalog/[kind]`** |
+| `src/app/api/` | REST: **`state`** (main blob), **`share`**, **`profile`**, **`friends`**, domain CRUD (**`weapons`**, **`descendants`**, **`reactors`**, **`goals`**), **`nexon/catalog/[kind]`** |
 | `src/app/tracker/components/` | Tab UIs: `BuildsTab`, `BuildPlannerPanel`, `DescendantsTab`, `WeaponsTab`, … |
 | `src/lib/` | **Business logic:** `tfd-modules.ts`, `tfd-stat-engine.ts`, `build-planner-stats.ts`, `nexon-catalog-transform.ts`, `fetch-game-catalog.ts`, `tracker-data.ts`, `tracker-default-state.ts`, Prisma helpers |
 | `public/data/` | Committed Nexon-derived JSON + hand-curated (`external-components.json`, `ancestor-modules.json`, …) — see `public/data/README.md` |
@@ -33,12 +33,12 @@ Use this file to orient before large changes. **AI continuity:** `docs/AI_HANDOF
 ### A. Source of truth for the tracker UI: **`AppState` JSON**
 
 - **GET/PUT `/api/state`** reads/writes `prisma.appState.data` for the logged-in user.
-- The full **`TrackerState`** shape lives here: `weapons`, `descendants`, `reactors`, `builds`, `materials`, `goals`, `activities`, filters, `notesTabs`, `sharePrivacy`, etc.
+- The full **`TrackerState`** shape lives here: `weapons`, `descendants`, `reactors`, `builds`, `goals`, `activities`, filters, `notesTabs`, `sharePrivacy`, etc.
 - **Debounced save** (~600ms) on every state change after initial load (`tracker-client.tsx`).
 
 ### B. Normalized Prisma tables (`WeaponEntry`, `DescendantEntry`, …)
 
-- **GET/PUT `/api/weapons`**, **`/api/descendants`**, **`/api/reactors`**, **`/api/materials`**, **`/api/goals`** exist and sync **row** tables.
+- **GET/PUT `/api/weapons`**, **`/api/descendants`**, **`/api/reactors`**, **`/api/goals`** exist and sync **row** tables.
 - The **React tracker does not call these routes** in the current codebase (grep shows no client usage). They are available for **other clients**, **future refactors**, or **ops**.
 - **Do not assume** the UI reads from both places — **AppState is what the tracker uses**.
 

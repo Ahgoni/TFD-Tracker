@@ -46,20 +46,6 @@ const SECTION_CARDS = [
     accent: "#f59e0b",
   },
   {
-    tab: "Materials",
-    icon: (
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
-        <rect x="2" y="7" width="20" height="14" rx="2" />
-        <path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2" />
-        <line x1="12" y1="12" x2="12" y2="16" />
-        <line x1="10" y1="14" x2="14" y2="14" />
-      </svg>
-    ),
-    title: "Materials",
-    desc: "Quick +/- counters for every crafting material. Always know what you have.",
-    accent: "#10b981",
-  },
-  {
     tab: "Farming",
     icon: (
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
@@ -116,7 +102,6 @@ function activityToTab(text: string): string | null {
   if (t.includes("weapon") || t.includes("acquired")) return "Weapons";
   if (t.includes("reactor")) return "Reactors";
   if (t.includes("descendant")) return "Descendants";
-  if (t.includes("material")) return "Materials";
   if (t.includes("goal") || t.includes("farming")) return "Farming";
   if (t.includes("build")) return "Builds";
   return null;
@@ -129,7 +114,6 @@ export function WelcomeTab({ state, setTab }: Props) {
   const ownedWeapons = state.weapons.filter((w) => w.acquired).length;
   const totalWeapons = state.weapons.length;
   const activeGoals = state.goals.filter((g) => g.active && !g.completed).length;
-  const totalMaterials = state.materials.reduce((s, m) => s + Number(m.qty ?? 0), 0);
   const ownedDescendants = state.descendants.filter((d) => d.owned).length;
   const totalDescendants = state.descendants.length;
 
@@ -180,11 +164,6 @@ export function WelcomeTab({ state, setTab }: Props) {
         <div className="wstat">
           <span className="wstat-value">{activeGoals}</span>
           <span className="wstat-label">Active Goals</span>
-        </div>
-        <div className="wstat-divider" />
-        <div className="wstat">
-          <span className="wstat-value">{totalMaterials}</span>
-          <span className="wstat-label">Total Materials</span>
         </div>
       </section>
 

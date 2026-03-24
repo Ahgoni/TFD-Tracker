@@ -8,7 +8,6 @@ interface SharedState {
   reactors?: Array<{ id: string; name: string; element: string; skillType: string; level: number; enhancement: string; descendant?: string }>;
   weapons?: Array<{ slug: string; name: string; rarity: string; roundsType: string; acquired: boolean; level: number; enhancement: number }>;
   descendants?: Array<{ id: string; name: string; element: string; level: number; archeLevel: number; catalysts: number }>;
-  materials?: Array<{ id: string; name: string; qty: number }>;
   goals?: Array<{ id: string; text: string; completed: boolean; active: boolean }>;
   builds?: Array<{
     id: string;
@@ -126,7 +125,6 @@ export default async function UsernameProfilePage({ params }: { params: Promise<
           { label: "Named Builds", value: (state.builds ?? []).filter((b) => b?.name).length },
           { label: "Max Enhancement Reactors", value: maxedReactors.length },
           { label: "Active Farming Goals", value: activeGoals.length },
-          { label: "Total Materials", value: (state.materials ?? []).reduce((s, m) => s + Number(m.qty ?? 0), 0) },
         ].map((s) => (
           <div className="stat-card" key={s.label}>
             <div className="label">{s.label}</div>
@@ -202,22 +200,6 @@ export default async function UsernameProfilePage({ params }: { params: Promise<
               </li>
             ))}
           </ul>
-        </section>
-      )}
-
-      {(state.materials ?? []).length > 0 && (
-        <section className="panel">
-          <h2>Materials</h2>
-          <div className="card-grid">
-            {state.materials!.map((m) => (
-              <article className="card" key={m.id}>
-                <div className="row">
-                  <strong style={{ fontSize: "0.85rem" }}>{m.name}</strong>
-                  <span className="qty">{m.qty}</span>
-                </div>
-              </article>
-            ))}
-          </div>
         </section>
       )}
     </div>

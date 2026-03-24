@@ -42,14 +42,14 @@ const features = [
   {
     icon: (
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-        <rect x="2" y="7" width="20" height="14" rx="2"/>
-        <path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/>
-        <line x1="12" y1="12" x2="12" y2="16"/>
-        <line x1="10" y1="14" x2="14" y2="14"/>
+        <rect x="3" y="3" width="7" height="7" rx="1"/>
+        <rect x="14" y="3" width="7" height="7" rx="1"/>
+        <rect x="14" y="14" width="7" height="7" rx="1"/>
+        <rect x="3" y="14" width="7" height="7" rx="1"/>
       </svg>
     ),
-    title: "Materials Inventory",
-    desc: "Quick +/- counters for every crafting material so you always know exactly what you have on hand.",
+    title: "Saved Builds",
+    desc: "Plan module loadouts per weapon or descendant, save named builds, and share them with your squad.",
   },
   {
     icon: (
@@ -118,7 +118,7 @@ export default async function Home() {
           <div className="hero-badge">The First Descendant</div>
           <h1 className="hero-title">Your Personal<br />Inventory Tracker</h1>
           <p className="hero-sub">
-            Keep track of every reactor, weapon, descendant, and material — saved to your account,
+            Keep track of every reactor, weapon, and descendant — saved to your account,
             accessible anywhere, shareable with your squad.
           </p>
           <div className="hero-actions">
