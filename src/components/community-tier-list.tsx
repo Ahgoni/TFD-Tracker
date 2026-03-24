@@ -1,8 +1,8 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
-import { useSession, signIn } from "next-auth/react";
+import { useCallback, useEffect, useState } from "react";
+import { useSession } from "next-auth/react";
 import styles from "./community-tier-list.module.css";
 
 type TierItem = {
@@ -36,6 +36,11 @@ const TIER_CLASS: Record<string, string> = {
   D: styles.tD,
   UNRANKED: styles.tU,
 };
+
+function goToSignInPage() {
+  const callbackUrl = typeof window !== "undefined" ? window.location.href : "/";
+  window.location.assign(`/api/auth/signin?callbackUrl=${encodeURIComponent(callbackUrl)}`);
+}
 
 export function CommunityTierList() {
   const { data: session, status } = useSession();
@@ -82,6 +87,10 @@ export function CommunityTierList() {
 
   async function submitVote(tier: string) {
     if (!modal) return;
+    if (status !== "authenticated" || !session?.user) {
+      goToSignInPage();
+      return;
+    }
     setVoteBusy(true);
     try {
       const res = await fetch("/api/tier-list/vote", {
@@ -224,9 +233,9 @@ export function CommunityTierList() {
                 </div>
               ) : (
                 <>
-                  <p className={styles.signInHint}>Sign in with Discord to add your vote.</p>
-                  <button type="button" className={styles.voteBtn} onClick={() => void signIn("discord")}>
-                    Sign in with Discord
+                  <p className={styles.signInHint}>You must sign in to vote. You will be redirected to the sign-in page.</p>
+                  <button type="button" className={styles.voteBtn} onClick={goToSignInPage}>
+                    Go to sign in
                   </button>
                 </>
               )}
