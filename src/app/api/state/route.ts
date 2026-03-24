@@ -3,6 +3,7 @@ import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { requireUserId } from "@/lib/require-user";
 import { defaultTrackerState } from "@/lib/tracker-default-state";
+import { syncPublicBuildListings } from "@/lib/sync-public-build-listings";
 
 const statePayload = z.record(z.string(), z.unknown());
 
@@ -35,13 +36,17 @@ export async function PUT(request: Request) {
     return NextResponse.json({ error: "Invalid payload" }, { status: 400 });
   }
 
+  const payload = parsed.data as Record<string, unknown>;
+
   const saved = await prisma.appState.upsert({
     where: { userId },
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    update: { data: parsed.data as any },
-    create: { userId, data: parsed.data as any },
+    update: { data: payload as any },
+    create: { userId, data: payload as any },
     select: { updatedAt: true },
   });
+
+  await syncPublicBuildListings(userId, payload).catch(() => {});
 
   return NextResponse.json({ ok: true, updatedAt: saved.updatedAt.toISOString() });
 }

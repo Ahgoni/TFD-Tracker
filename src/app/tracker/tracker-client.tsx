@@ -163,6 +163,8 @@ export interface BuildEntry {
   externalComponents?: ExternalComponent[];
   /** @deprecated Optional legacy field; pairing notes field removed from editor. */
   reactorNotes?: string;
+  /** When true, build can appear on the public community tier hub (requires open profile sharing). */
+  communityPublic?: boolean;
   notes: string;
   updatedAt: string;
 }
@@ -375,6 +377,10 @@ export function TrackerClient() {
         }
         loaded.tabs = loaded.tabs.filter((t) => t !== "Progression");
         if (!Array.isArray(loaded.builds)) loaded.builds = [];
+        loaded.builds = loaded.builds.map((b) => ({
+          ...b,
+          communityPublic: b.communityPublic === true,
+        }));
 
         if (Array.isArray(loaded.reactors)) {
           loaded.reactors = loaded.reactors.map((x) =>
@@ -445,6 +451,10 @@ export function TrackerClient() {
       });
       const merged: TrackerState = { ...DEFAULT_STATE, ...(parsed as Partial<TrackerState>) };
       if (!Array.isArray(merged.builds)) merged.builds = [];
+      merged.builds = merged.builds.map((b) => ({
+        ...b,
+        communityPublic: b.communityPublic === true,
+      }));
       merged.buildFilters = { ...DEFAULT_STATE.buildFilters, ...merged.buildFilters };
       if (Array.isArray(merged.reactors)) {
         merged.reactors = merged.reactors.map((x) =>

@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { requireUserId } from "@/lib/require-user";
+import { syncPublicBuildListings } from "@/lib/sync-public-build-listings";
 
 const importSchema = z.object({
   state: z.record(z.string(), z.unknown()),
@@ -22,6 +23,8 @@ export async function POST(request: Request) {
     update: { data: stateData },
     create: { userId, data: stateData },
   });
+
+  await syncPublicBuildListings(userId, stateData as Record<string, unknown>).catch(() => {});
 
   return NextResponse.json({ ok: true });
 }

@@ -2982,6 +2982,15 @@ td .badge { display: inline-flex; align-items: center; gap: 0.35rem; }
 }
 
 .builds-form { display: flex; flex-direction: column; gap: 0.75rem; }
+.build-community-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  font-size: 0.88rem;
+  cursor: pointer;
+  line-height: 1.35;
+}
+.build-community-row input { margin-top: 0.2rem; flex-shrink: 0; }
 .builds-form-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));

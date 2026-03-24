@@ -79,6 +79,7 @@ export function BuildsTab({ state, setState }: Props) {
     archeLevel: number;
     externalComponents: ExternalComponent[];
     notes: string;
+    communityPublic: boolean;
   }>({
     name: "",
     targetType: "descendant",
@@ -90,6 +91,7 @@ export function BuildsTab({ state, setState }: Props) {
     archeLevel: 0,
     externalComponents: [],
     notes: "",
+    communityPublic: false,
   });
 
   const bf = state.buildFilters ?? { search: "", type: "all" };
@@ -157,6 +159,7 @@ export function BuildsTab({ state, setState }: Props) {
       archeLevel: 0,
       externalComponents: [],
       notes: "",
+      communityPublic: false,
     });
     setEditingId(null);
   }
@@ -196,6 +199,7 @@ export function BuildsTab({ state, setState }: Props) {
       externalComponents: form.externalComponents.length > 0 ? form.externalComponents : undefined,
       reactorNotes: "",
       notes: form.notes.trim(),
+      communityPublic: form.communityPublic,
       updatedAt: now,
     };
 
@@ -240,6 +244,7 @@ export function BuildsTab({ state, setState }: Props) {
       archeLevel: ((b as unknown as Record<string, unknown>).archeLevel as number) ?? 0,
       externalComponents: b.externalComponents ?? [],
       notes: b.notes ?? "",
+      communityPublic: b.communityPublic === true,
     });
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
@@ -258,6 +263,7 @@ export function BuildsTab({ state, setState }: Props) {
       name: `${b.name} (copy)`,
       updatedAt: new Date().toISOString(),
       reactor: b.targetType === "descendant" ? b.reactor : null,
+      communityPublic: b.communityPublic === true,
     };
     setState((prev) => pushActivity({ ...prev, builds: [...(prev.builds ?? []), copy] }, `Duplicated build: ${b.name}`));
   }
@@ -491,6 +497,18 @@ export function BuildsTab({ state, setState }: Props) {
             />
           </label>
 
+          <label className="build-community-row">
+            <input
+              type="checkbox"
+              checked={form.communityPublic}
+              onChange={(e) => setForm((f) => ({ ...f, communityPublic: e.target.checked }))}
+            />
+            <span>List on community tier hub (home page)</span>
+          </label>
+          <p className="muted" style={{ fontSize: "0.78rem", margin: "-0.35rem 0 0.5rem" }}>
+            Discoverable from the public tier list when your profile sharing is <strong>Open</strong> (Friends tab).
+          </p>
+
           <div className="builds-form-actions">
             <button type="submit" className="btn-primary">
               {editingId ? "Save changes" : "Save build"}
@@ -560,6 +578,11 @@ export function BuildsTab({ state, setState }: Props) {
                     <p className="build-card-meta">
                       <span className={`build-type-tag ${b.targetType}`}>{b.targetType}</span>
                       {b.displayName}
+                      {b.communityPublic ? (
+                        <span className="filter-chip" style={{ marginLeft: 6, fontSize: "0.65rem" }}>
+                          Tier hub
+                        </span>
+                      ) : null}
                     </p>
                     <p className="build-card-date">Updated {new Date(b.updatedAt).toLocaleString()}</p>
                   </div>

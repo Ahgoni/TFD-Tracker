@@ -26,6 +26,8 @@ model User {
   notes         NoteEntry[]
   shareTokens   ShareToken[]
   savedFriends  SavedFriend[]
+  tierVotes     TierVote[]
+  publicBuilds  PublicBuildListing[]
   lastSeen      DateTime?
   createdAt     DateTime         @default(now())
   updatedAt     DateTime         @updatedAt
@@ -196,4 +198,39 @@ model SavedFriend {
 
   @@unique([userId, token])
   @@index([userId])
+}
+
+/// Community tier list: one vote per user per entity (descendant group or weapon id).
+model TierVote {
+  id        String           @id @default(cuid())
+  userId    String
+  category  TierListCategory
+  entityKey String
+  tier      String
+  createdAt DateTime         @default(now())
+  updatedAt DateTime         @updatedAt
+  user      User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, category, entityKey])
+  @@index([category, entityKey])
+}
+
+/// Denormalized index for community tier hub: builds opted-in with public profile.
+model PublicBuildListing {
+  id        String           @id @default(cuid())
+  userId    String
+  buildId   String
+  category  TierListCategory
+  entityKey String
+  buildName String
+  updatedAt DateTime         @updatedAt
+  user      User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, buildId])
+  @@index([category, entityKey])
+}
+
+enum TierListCategory {
+  DESCENDANT
+  WEAPON
 }

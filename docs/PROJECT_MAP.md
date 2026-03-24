@@ -19,7 +19,7 @@ Use this file to orient before large changes. **AI continuity:** `docs/AI_HANDOF
 | Path | Role |
 |------|------|
 | `src/app/` | Routes: `/`, `/tracker`, `/u/[username]`, `/share/[token]`, `/share/user/[userId]` |
-| `src/app/api/` | REST: **`state`** (main blob), **`share`**, **`profile`**, **`friends`**, domain CRUD (**`weapons`**, **`descendants`**, **`reactors`**, **`goals`**), **`nexon/catalog/[kind]`** |
+| `src/app/api/` | REST: **`state`** (main blob), **`share`**, **`profile`**, **`friends`**, **`tier-list`** (+ **`vote`**, **`public-builds`**), domain CRUD (**`weapons`**, **`descendants`**, **`reactors`**, **`goals`**), **`nexon/catalog/[kind]`** |
 | `src/app/tracker/components/` | Tab UIs: `BuildsTab`, `BuildPlannerPanel`, `DescendantsTab`, `WeaponsTab`, … |
 | `src/lib/` | **Business logic:** `tfd-modules.ts`, `tfd-stat-engine.ts`, `build-planner-stats.ts`, `nexon-catalog-transform.ts`, `fetch-game-catalog.ts`, `tracker-data.ts`, `tracker-default-state.ts`, Prisma helpers |
 | `public/data/` | Committed Nexon-derived JSON + hand-curated (`external-components.json`, `ancestor-modules.json`, …) — see `public/data/README.md` |

@@ -4,6 +4,7 @@ import { authOptions } from "@/lib/auth";
 import { DiscordSignInButton } from "./discord-signin-button";
 import { ThemeToggle } from "./theme-toggle";
 import { BrandLogo } from "./brand-logo";
+import { CommunityTierList } from "@/components/community-tier-list";
 
 const features = [
   {
@@ -106,6 +107,8 @@ export default async function Home() {
           )}
         </div>
       </nav>
+
+      <CommunityTierList />
 
       {/* ── Hero ────────────────────────────────────────────── */}
       <div style={{ position: "relative" }}>
