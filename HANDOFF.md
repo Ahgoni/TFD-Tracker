@@ -1,6 +1,6 @@
 # TFD Tracker — handoff / session memory
 
-**Last updated:** 2026-03-23 (AI handoff process + deploy docs)
+**Last updated:** 2026-03-24 (Player Lookup descendant.gg layout CSS)
 
 At the **start** of a new chat or agent swap: **`HANDOFF.md`** → **`docs/PROJECT_MAP.md`** → **`docs/AI_HANDOFF.md`** (process + VPS git).
 At the **end** of a session or after a major feature: update this file + session log; update other docs per **`docs/AI_HANDOFF.md`**.
@@ -205,6 +205,7 @@ After deploy: **hard refresh** to clear stale asset caches.
 
 | Date       | Summary |
 |-----------|---------|
+| 2026-03-24 | **Player Lookup (`PlayerLookupProfile`)**: completed **descendant.gg-style** CSS — page hero (portrait + meta), trigger column + 5-col module rows, reactor/gear sections, `dgCapacityRow` / trigger cards. **`CapacityBar`**: `showCapacityLabel` to avoid duplicate “Capacity” on weapon rows. Build passes. |
 | 2026-03-23 | **`HANDOFF.md`**: added **“Chat session summary (2026-03-23)”** — full digest of thread (capacity, group peers, Nexon API, docs, deploy). Cursor rules list completed. |
 | 2026-03-23 | **`docs/PROJECT_MAP.md`**, **`docs/AI_HANDOFF.md`** (AI continuity + VPS `git pull`/`public/data`). **`DEPLOY_UBUNTU.md`** §12d. **`FarmingTab`** hardened. Updated **AGENTS**, **CURSOR_MEMORY**, **`.cursorrules`**, **`memory-handoff.mdc`**, **README**. |
 | 2026-03-20 | Full audit + cleanup: fixed 17 issues (CSS duplication, dead code, hero-badge collision, mini-btn light mode, --card-bg, tier-norm, username normalization, import catalog merge, descFilter removal). Build passes clean. |

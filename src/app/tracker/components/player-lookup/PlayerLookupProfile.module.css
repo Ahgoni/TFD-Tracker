@@ -624,3 +624,407 @@
 .tierNormal {
   border-color: var(--line);
 }
+
+/* —— Descendant.gg–style player profile (Player Lookup) —— */
+.dgPageHero {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 1rem;
+  margin-bottom: 0.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--line);
+}
+
+.dgPagePortrait {
+  width: 72px;
+  height: 72px;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  background: var(--panel-2);
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.dgPagePortraitPh {
+  width: 72px;
+  height: 72px;
+  border-radius: 10px;
+  border: 1px dashed var(--line);
+  background: var(--panel-2);
+  flex-shrink: 0;
+}
+
+.dgPageHeroText {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.dgPageCharName {
+  margin: 0;
+  font-size: 1.35rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+
+.dgPageUser {
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--fg);
+  opacity: 0.92;
+}
+
+.dgPageMeta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem 0.85rem;
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+.dgSheet {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.dgSectionTitle {
+  margin: 0 0 0.25rem;
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.dgSectionTitleMuted {
+  margin: 0 0 0.25rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.dgDescHeader {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 0.35rem 0;
+}
+
+.dgDescPortrait {
+  width: 56px;
+  height: 56px;
+  border-radius: 8px;
+  border: 1px solid var(--line);
+  background: var(--panel-2);
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.dgDescPortraitPh {
+  width: 56px;
+  height: 56px;
+  border-radius: 8px;
+  border: 1px dashed var(--line);
+  background: var(--panel-2);
+  flex-shrink: 0;
+}
+
+.dgDescTitle {
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.dgDescSub {
+  margin: 0.2rem 0 0;
+  font-size: 0.78rem;
+  color: var(--muted);
+}
+
+.dgEnergyRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 0.75rem;
+  margin: 0.15rem 0 0.65rem;
+}
+
+.dgEnergyLabel {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.dgEnergyValue {
+  font-size: 0.85rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.dgEnergySpacer {
+  flex: 1;
+  min-width: 0;
+}
+
+.dgCapacityRow {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem 0.65rem;
+  flex: 1;
+  min-width: 0;
+  flex-wrap: wrap;
+}
+
+.dgCapacityRow .capacityBar {
+  flex: 1;
+  min-width: 120px;
+  max-width: 420px;
+}
+
+.dgCapacityLabel {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--muted);
+  flex-shrink: 0;
+}
+
+.dgCapacityBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.2rem 0.55rem;
+  border-radius: 6px;
+  border: 1px solid var(--line);
+  background: var(--panel-2);
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.dgSubSectionTitle {
+  margin: 0.5rem 0 0.35rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+/* Trigger + numbered list (two columns, descendant.gg) */
+.dgModulesBlock {
+  margin-top: 0.25rem;
+}
+
+.dgModulesSection {
+  display: grid;
+  grid-template-columns: minmax(120px, 160px) minmax(0, 1fr);
+  gap: 0.65rem 0.85rem;
+  align-items: start;
+}
+
+@media (max-width: 640px) {
+  .dgModulesSection {
+    grid-template-columns: 1fr;
+  }
+}
+
+.dgTriggerWrap {
+  position: sticky;
+  top: 0;
+}
+
+.dgTriggerCard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 0.5rem 0.4rem 0.55rem;
+  min-height: 120px;
+}
+
+.dgTriggerImg {
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
+  margin: 0.25rem 0;
+  border-radius: 6px;
+  background: var(--panel);
+}
+
+.dgTriggerName {
+  margin: 0.25rem 0 0.15rem;
+  font-size: 0.72rem;
+  font-weight: 600;
+  line-height: 1.2;
+  word-break: break-word;
+}
+
+.dgTriggerTag {
+  font-size: 0.62rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+}
+
+.dgTriggerEmpty {
+  min-height: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px dashed var(--line);
+  border-radius: 8px;
+  background: var(--panel-2);
+  padding: 0.75rem;
+}
+
+.dgModList {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  overflow: hidden;
+  background: var(--panel);
+  min-width: 0;
+}
+
+.dgModRow {
+  display: grid;
+  grid-template-columns: 1.35rem 38px 1.75rem minmax(0, 1fr) minmax(3.5rem, auto);
+  gap: 0.4rem 0.45rem;
+  align-items: center;
+  padding: 0.4rem 0.5rem;
+  border-bottom: 1px solid var(--line);
+  font-size: 0.76rem;
+}
+
+.dgModRow:last-child {
+  border-bottom: none;
+}
+
+.dgModRowSkill {
+  box-shadow: inset 3px 0 0 rgba(45, 212, 191, 0.55);
+}
+
+.dgModRowMelee {
+  box-shadow: inset 3px 0 0 rgba(212, 164, 26, 0.65);
+}
+
+.dgModIdx {
+  text-align: right;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+  font-size: 0.72rem;
+}
+
+.dgModIcon {
+  width: 34px;
+  height: 34px;
+  border-radius: 6px;
+  border: 1px solid var(--line);
+  background: var(--panel-2);
+  object-fit: contain;
+}
+
+.dgModIconPh {
+  width: 34px;
+  height: 34px;
+  border-radius: 6px;
+  border: 1px dashed var(--line);
+  background: var(--panel-2);
+  opacity: 0.5;
+}
+
+.dgModCap {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  color: var(--muted);
+  font-size: 0.7rem;
+}
+
+.dgModNameCol {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.08rem;
+}
+
+.dgModName {
+  font-weight: 600;
+  line-height: 1.2;
+  word-break: break-word;
+}
+
+.dgModNameMuted {
+  color: var(--muted);
+  font-style: italic;
+}
+
+.dgModType {
+  font-size: 0.68rem;
+  color: var(--muted);
+}
+
+.dgModSock {
+  font-size: 0.65rem;
+  text-align: right;
+  color: var(--muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.dgAppliedSection {
+  margin-top: 0.5rem;
+  padding-top: 0.65rem;
+  border-top: 1px dashed var(--line);
+}
+
+.dgGearSection {
+  margin-top: 0.35rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid var(--line);
+}
+
+.dgStatList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.dgStatRow {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.75rem;
+  font-size: 0.76rem;
+  line-height: 1.35;
+}
+
+.dgStatRow span:first-child {
+  color: var(--muted);
+}
+
+.dgStatRow span:last-child {
+  font-weight: 600;
+  text-align: right;
+}
+
+.dgExtGrid {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.dgWeaponModWrap {
+  margin-top: 0.25rem;
+}

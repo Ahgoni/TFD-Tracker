@@ -351,12 +351,15 @@ function ReactorFallbackKv({ row }: { row: Record<string, unknown> }) {
   );
 }
 
-function DescendantModuleInventory({
+/** descendant.gg–style: Trigger column + numbered 1–12 rows (6×2 order). */
+function DescendantDgModules({
   mods,
   moduleById,
+  sectionTitle,
 }: {
   mods: DescendantBuildParsed["modules"];
   moduleById: Map<string, ModuleRecord>;
+  sectionTitle: string;
 }) {
   if (mods.length === 0) return <p className="muted">No modules reported.</p>;
 
@@ -364,11 +367,11 @@ function DescendantModuleInventory({
   const bodyMods = filterDescendantBodyMods(mods, moduleById);
   const cells = buildDescendantModuleGrid(bodyMods, moduleById);
 
-  const accentCellClass = (a: string | null) =>
+  const rowAccent = (a: string | null) =>
     a === "skill-teal"
-      ? styles.slotAccentSkill
+      ? styles.dgModRowSkill
       : a === "sub-melee-gold"
-        ? styles.slotAccentSubMelee
+        ? styles.dgModRowMelee
         : "";
 
   let triggerBlock: ReactNode;
@@ -379,50 +382,47 @@ function DescendantModuleInventory({
     const name = rec?.name ?? `Module ${m.moduleId}`;
     const img = rec?.image ?? "";
     triggerBlock = (
-      <div
-        className={`${styles.moduleCard} ${styles.triggerModuleCard} ${rec ? tierClass(rec.tier) : ""}`}
-        title="Trigger module"
-      >
-        <span className={styles.cost}>{cost}</span>
-        {img ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img className={styles.modImg} src={img} alt="" />
-        ) : (
-          <div className={styles.modImg} />
-        )}
-        <p className={styles.modName}>{name}</p>
-        <div className={styles.modMeta}>
-          Trigger
-          <br />
-          {rec?.socket ?? "—"} · +{m.enchantLevel}
+      <div className={styles.dgTriggerWrap}>
+        <div className={`${styles.moduleCard} ${styles.dgTriggerCard} ${rec ? tierClass(rec.tier) : ""}`}>
+          <span className={styles.cost}>{cost}</span>
+          {img ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img className={styles.dgTriggerImg} src={img} alt="" />
+          ) : (
+            <div className={styles.dgTriggerImg} />
+          )}
+          <p className={styles.dgTriggerName}>{name}</p>
+          <span className={styles.dgTriggerTag}>Trigger</span>
         </div>
       </div>
     );
   } else {
     triggerBlock = (
-      <div className={styles.triggerEmpty} aria-hidden>
-        <span className={styles.triggerEmptyHint}>No trigger</span>
+      <div className={styles.dgTriggerWrap}>
+        <div className={styles.dgTriggerEmpty}>
+          <span className="muted">No trigger</span>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className={styles.descendantModuleBoard}>
-      <div className={styles.triggerColumn}>
-        <span className={styles.boardColumnLabel}>Trigger</span>
+    <section className={styles.dgModulesBlock} aria-label="Descendant modules">
+      <h3 className={styles.dgSectionTitle}>{sectionTitle}</h3>
+      <div className={styles.dgModulesSection}>
         {triggerBlock}
-      </div>
-
-      <div className={styles.bodyGridWrap}>
-        <div className={styles.descGrid}>
+        <div className={styles.dgModList}>
           {cells.map((cell, i) => {
+            const n = i + 1;
             if (!cell) {
               return (
-                <div
-                  key={`empty-${i}`}
-                  className={`${styles.emptyModCell} ${styles.descGridCell}`}
-                  aria-hidden
-                />
+                <div key={`empty-${i}`} className={styles.dgModRow}>
+                  <span className={styles.dgModIdx}>{n}</span>
+                  <div className={styles.dgModIconPh} aria-hidden />
+                  <span className={styles.dgModCap}>—</span>
+                  <span className={styles.dgModNameMuted}>Empty module</span>
+                  <span className={styles.dgModSock}>—</span>
+                </div>
               );
             }
             const m = cell.moduleSlot;
@@ -430,62 +430,56 @@ function DescendantModuleInventory({
             const cost = rec ? capacityCostAtLevel(rec, m.enchantLevel) : 0;
             const name = rec?.name ?? `Module ${m.moduleId}`;
             const img = rec?.image ?? "";
-            const cap =
-              cell.accent === "sub-melee-gold"
-                ? "Sub Module"
-                : cell.accent === "skill-teal"
-                  ? "Skill Modules"
-                  : null;
+            const typeLine = rec?.type?.trim() ? rec.type : "Descendant";
             return (
               <div
                 key={`${m.slotId}-${m.moduleId}-${i}`}
-                className={`${styles.descGridCell} ${accentCellClass(cell.accent)}`}
+                className={`${styles.dgModRow} ${rowAccent(cell.accent)}`}
               >
-                <div className={styles.slotCardStack}>
-                  <div
-                    className={`${styles.moduleCard} ${styles.descBoardCard} ${rec ? tierClass(rec.tier) : ""}`}
-                    title={
-                      cell.accent === "sub-melee-gold"
-                        ? "Sub Module — Malachite / Charged Sub slot"
-                        : cell.accent === "skill-teal"
-                          ? "Skill Modules — Sub 1 (skill slot)"
-                          : undefined
-                    }
-                  >
-                    <span className={styles.cost}>{cost}</span>
-                    {img ? (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img className={styles.modImg} src={img} alt="" />
-                    ) : (
-                      <div className={styles.modImg} />
-                    )}
-                    <p className={styles.modName}>{name}</p>
-                    <div className={styles.modMeta}>
-                      {rec?.type?.trim() ? rec.type : "Descendant"}
-                      <br />
-                      {rec?.socket ?? "—"} · +{m.enchantLevel}
-                    </div>
-                  </div>
-                  {cap ? <div className={styles.slotRoleLabel}>{cap}</div> : null}
+                <span className={styles.dgModIdx}>{n}</span>
+                {img ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img className={styles.dgModIcon} src={img} alt="" />
+                ) : (
+                  <div className={`${styles.dgModIcon} ${styles.dgModIconPh}`} />
+                )}
+                <span className={styles.dgModCap}>{cost}</span>
+                <div className={styles.dgModNameCol}>
+                  <span className={styles.dgModName}>{name}</span>
+                  <span className={styles.dgModType}>{typeLine}</span>
                 </div>
+                <span className={styles.dgModSock}>{rec?.socket ?? "—"}</span>
               </div>
             );
           })}
         </div>
       </div>
-    </div>
+    </section>
   );
 }
 
-function CapacityBar({ used, max }: { used: number; max: number }) {
+function CapacityBar({
+  used,
+  max,
+  layout = "default",
+  showCapacityLabel = true,
+}: {
+  used: number;
+  max: number;
+  layout?: "default" | "dg";
+  /** When layout is dg, hide the inline "Capacity" label (e.g. weapon row already has a label). */
+  showCapacityLabel?: boolean;
+}) {
   const pct = max > 0 ? Math.min(100, Math.round((used / max) * 100)) : 0;
+  const rowClass = layout === "dg" ? styles.dgCapacityRow : styles.capacityRow;
   return (
-    <div className={styles.capacityRow}>
+    <div className={rowClass}>
+      {layout === "dg" && showCapacityLabel ? <span className={styles.dgCapacityLabel}>Capacity</span> : null}
       <div className={styles.capacityBar} title={`${used} / ${max}`}>
         <div className={styles.capacityFill} style={{ width: `${pct}%` }} />
       </div>
-      <span className={styles.badge}>
-        {used} / {max} capacity
+      <span className={layout === "dg" ? styles.dgCapacityBadge : styles.badge}>
+        {used} / {max}
       </span>
     </div>
   );
@@ -579,8 +573,9 @@ export function PlayerLookupProfile({ data, catalogs }: Props) {
       const wrow = weaponById.get(w.weaponId);
       t.push({ id: `weapon-${wi}`, label: wrow?.name ?? `Weapon ${wi + 1}` });
     });
-    if (externals.length > 0) t.push({ id: "components", label: "Components" });
-    if (reactors.length > 0) t.push({ id: "reactor", label: "Reactor" });
+    const mergedGearIntoDesc = descendantBuilds.length > 0;
+    if (!mergedGearIntoDesc && externals.length > 0) t.push({ id: "components", label: "Components" });
+    if (!mergedGearIntoDesc && reactors.length > 0) t.push({ id: "reactor", label: "Reactor" });
     if (t.length === 0) t.push({ id: "empty", label: "Overview" });
     return t;
   }, [descendantBuilds, descById, weaponBuilds, weaponById, externals.length, reactors.length]);
@@ -632,48 +627,64 @@ export function PlayerLookupProfile({ data, catalogs }: Props) {
   const renderDescendantPanel = (bi: number) => {
     const build = descendantBuilds[bi];
     if (!build) return <p className="muted">No descendant data.</p>;
+    const row = descById.get(build.descendantId);
     const mods = formatModifierBlock(descStats[bi]?.modifiers ?? {});
+    const modTitle = `${row?.name ?? "Descendant"} Modules`;
     return (
-      <div className={styles.inventoryPane}>
-        {reactors.length > 0 ? (
-          <button
-            type="button"
-            className={styles.reactorStrip}
-            onClick={() => setActiveTab("reactor")}
-          >
-            <span>
-              <strong>Reactor</strong>:{" "}
-              {String(
-                reactors[0].reactor_name ??
-                  reactors[0].reactorName ??
-                  reactors[0].reactor_display_name ??
-                  "Equipped reactor",
-              )}
-            </span>
-            <span className="muted">View →</span>
-          </button>
-        ) : null}
-        <p className="muted" style={{ fontSize: "0.78rem", margin: 0 }}>
-          Energy activator uses: {build.energyActivatorCount}
-        </p>
-        <CapacityBar used={build.moduleUsedCapacity} max={Math.max(build.moduleMaxCapacity, 1)} />
-        <p className="muted" style={{ fontSize: "0.72rem", margin: "0 0 0.35rem" }}>
-          Matches in-game layout: Trigger (left), then 6×2 — top-left teal = Skill Modules, bottom-left gold =
-          Sub Module (melee).
-        </p>
-        <DescendantModuleInventory mods={build.modules} moduleById={moduleById} />
+      <div className={styles.dgSheet}>
+        <div className={styles.dgDescHeader}>
+          {row?.image ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img className={styles.dgDescPortrait} src={row.image} alt="" />
+          ) : (
+            <div className={styles.dgDescPortraitPh} aria-hidden />
+          )}
+          <div>
+            <h2 className={styles.dgDescTitle}>{row?.name ?? "Descendant"}</h2>
+            <p className={styles.dgDescSub}>
+              Lv. {build.level}
+              {row?.element ? ` · ${row.element}` : ""}
+            </p>
+          </div>
+        </div>
+
+        <div className={styles.dgEnergyRow}>
+          <span className={styles.dgEnergyLabel}>Energy Activator</span>
+          <span className={styles.dgEnergyValue}>{build.energyActivatorCount}</span>
+          <CapacityBar used={build.moduleUsedCapacity} max={Math.max(build.moduleMaxCapacity, 1)} layout="dg" />
+        </div>
+
+        <DescendantDgModules mods={build.modules} moduleById={moduleById} sectionTitle={modTitle} />
+
         {mods.length > 0 ? (
-          <details className={styles.statsPanel}>
-            <summary>Applied module stats (estimated)</summary>
-            <ul className={styles.statList}>
+          <section className={styles.dgAppliedSection}>
+            <h3 className={styles.dgSectionTitle}>Applied Module Stats</h3>
+            <ul className={styles.dgStatList}>
               {mods.map((r) => (
-                <li key={r.label} className={styles.statRow}>
+                <li key={r.label} className={styles.dgStatRow}>
                   <span>{r.label}</span>
                   <span>{r.value}</span>
                 </li>
               ))}
             </ul>
-          </details>
+          </section>
+        ) : null}
+
+        {reactors.length > 0 || externals.length > 0 ? (
+          <section className={styles.dgGearSection}>
+            <h3 className={styles.dgSectionTitle}>Reactor & Components</h3>
+            {reactors.map((r, i) => (
+              <ReactorProfileCard key={`dg-reactor-${i}`} row={r} index={i} />
+            ))}
+            {externals.length > 0 ? <ExternalSetBonusesBanner sets={setProgress} /> : null}
+            <div className={styles.dgExtGrid}>
+              {externals.map((r, i) => {
+                const id = String(r.external_component_id ?? r.externalComponentId ?? "");
+                const cat = extById.get(id);
+                return <ExternalComponentCard key={`dg-ext-${id}-${i}`} row={r} catalog={cat} />;
+              })}
+            </div>
+          </section>
         ) : null}
       </div>
     );
@@ -684,38 +695,51 @@ export function PlayerLookupProfile({ data, catalogs }: Props) {
     if (!w) return <p className="muted">No weapon data.</p>;
     const wrow = weaponById.get(w.weaponId);
     const mods = formatModifierBlock(weaponStats[wi]?.modifiers ?? {});
+    const wTitle = `${wrow?.name ?? "Weapon"} Modules`;
     return (
-      <div className={styles.inventoryPane}>
-        <div className={styles.weaponHeader}>
+      <div className={styles.dgSheet}>
+        <h3 className={styles.dgSectionTitle}>Weapons & Modules</h3>
+        <div className={styles.dgDescHeader}>
           {wrow?.image ? (
             // eslint-disable-next-line @next/next/no-img-element
-            <img className={styles.weaponImg} src={wrow.image} alt={wrow?.name ?? ""} />
+            <img className={styles.dgDescPortrait} src={wrow.image} alt="" />
           ) : (
-            <div className={styles.weaponImg} />
+            <div className={styles.dgDescPortraitPh} aria-hidden />
           )}
           <div>
-            <h4 className={styles.sectionTitle} style={{ margin: 0 }}>
-              {wrow?.name ?? `Weapon ${w.weaponId}`}
-            </h4>
-            <p className="muted" style={{ margin: "0.2rem 0 0", fontSize: "0.82rem" }}>
-              {wrow?.type ?? "—"} · Lv. {w.level} · {wrow?.roundsType ?? ""}
+            <h2 className={styles.dgDescTitle}>{wrow?.name ?? `Weapon ${w.weaponId}`}</h2>
+            <p className={styles.dgDescSub}>
+              {wrow?.type ?? "—"} · Lv. {w.level}
+              {wrow?.roundsType ? ` · ${wrow.roundsType}` : ""}
             </p>
           </div>
         </div>
-        <CapacityBar used={w.moduleUsedCapacity} max={Math.max(w.moduleMaxCapacity, 1)} />
-        <ModuleGrid mods={w.modules} moduleById={moduleById} emptyHint="No weapon modules." compact />
+        <div className={styles.dgEnergyRow}>
+          <span className={styles.dgEnergyLabel}>Capacity</span>
+          <span className={styles.dgEnergySpacer} />
+          <CapacityBar
+            used={w.moduleUsedCapacity}
+            max={Math.max(w.moduleMaxCapacity, 1)}
+            layout="dg"
+            showCapacityLabel={false}
+          />
+        </div>
+        <h4 className={styles.dgSubSectionTitle}>{wTitle}</h4>
+        <div className={styles.dgWeaponModWrap}>
+          <ModuleGrid mods={w.modules} moduleById={moduleById} emptyHint="No weapon modules." compact />
+        </div>
         {mods.length > 0 ? (
-          <details className={styles.statsPanel}>
-            <summary>Applied module stats (estimated)</summary>
-            <ul className={styles.statList}>
+          <section className={styles.dgAppliedSection}>
+            <h3 className={styles.dgSectionTitle}>Applied Module Stats</h3>
+            <ul className={styles.dgStatList}>
               {mods.map((r) => (
-                <li key={r.label} className={styles.statRow}>
+                <li key={r.label} className={styles.dgStatRow}>
                   <span>{r.label}</span>
                   <span>{r.value}</span>
                 </li>
               ))}
             </ul>
-          </details>
+          </section>
         ) : null}
       </div>
     );
@@ -762,27 +786,21 @@ export function PlayerLookupProfile({ data, catalogs }: Props) {
 
   return (
     <div className={styles.profile}>
-      <header className={`${styles.hero} ${styles.heroCompact}`}>
+      <header className={styles.dgPageHero}>
         {primaryRow?.image ? (
           // eslint-disable-next-line @next/next/no-img-element
-          <img className={styles.portraitSm} src={primaryRow.image} alt={primaryRow.name} />
+          <img className={styles.dgPagePortrait} src={primaryRow.image} alt={primaryRow.name} />
         ) : (
-          <div className={styles.portraitSm} />
+          <div className={styles.dgPagePortraitPh} aria-hidden />
         )}
-        <div className={styles.heroText}>
-          <h3>{displayName}</h3>
-          {primaryRow ? (
-            <p className={styles.meta}>
-              {primaryRow.name} · Lv. {primaryDesc?.level ?? "—"} · {primaryRow.element}
-            </p>
-          ) : (
-            <p className={styles.meta}>Profile</p>
-          )}
-          {basic.masteryRank != null ? (
-            <p className={styles.meta}>
-              <strong>Mastery rank:</strong> {basic.masteryRank}
-            </p>
-          ) : null}
+        <div className={styles.dgPageHeroText}>
+          <h1 className={styles.dgPageCharName}>{primaryRow?.name ?? "Loadout"}</h1>
+          <p className={styles.dgPageUser}>{displayName}</p>
+          <div className={styles.dgPageMeta}>
+            <span>Lv. {primaryDesc?.level ?? "—"}</span>
+            {basic.masteryRank != null ? <span>Mastery Rank: {basic.masteryRank}</span> : null}
+            {primaryRow?.element ? <span>{primaryRow.element}</span> : null}
+          </div>
         </div>
       </header>
 
