@@ -56,6 +56,21 @@ export function isChargedSubAttackModule(mod: ModuleRecord | undefined): boolean
   return mod.preview.trim() === CHARGED_SUB_ATTACK_PREVIEW;
 }
 
+/**
+ * In-game bottom-left “Sub Module” cell: true Charged Sub Attack mods **or** Malachite
+ * sub-slot exclusives (e.g. Mid-Air Maneuvering) that share that board position — not the top-left skill slot.
+ */
+export function isSubModuleBoardSlot(mod: ModuleRecord | undefined): boolean {
+  if (!mod) return false;
+  if (isChargedSubAttackModule(mod)) return true;
+  if (mod.moduleClass === "Descendant" && mod.socket === "Malachite") {
+    const p = mod.preview?.trim().toLowerCase() ?? "";
+    if (p.includes("grappling")) return true;
+    if (mod.name === "Mid-Air Maneuvering") return true;
+  }
+  return false;
+}
+
 /** Descendant-only: Trigger modules sit in the tall slot left of the 6×2 board (not in the 12 body cells). */
 export function isTriggerModule(mod: ModuleRecord | undefined): boolean {
   return mod?.type === "Trigger";

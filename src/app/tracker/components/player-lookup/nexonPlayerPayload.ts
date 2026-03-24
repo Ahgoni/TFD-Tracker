@@ -235,13 +235,74 @@ export function extractReactorList(reactorJson: unknown): Record<string, unknown
   }
   const root = asRecord(unwrapped);
   if (!root) return [];
-  const keys = ["reactor", "reactors", "user_reactor", "user_reactor_list", "reactor_list", "descendant_reactor"];
+  const keys = [
+    "reactor",
+    "reactors",
+    "user_reactor",
+    "userReactor",
+    "user_reactor_list",
+    "reactor_list",
+    "descendant_reactor",
+    "equipped_reactor",
+    "equippedReactor",
+    "data",
+  ];
   for (const k of keys) {
     const v = root[k];
     if (Array.isArray(v)) return v.filter((x) => asRecord(x)) as Record<string, unknown>[];
     if (v && typeof v === "object" && !Array.isArray(v)) return [v as Record<string, unknown>];
   }
   return [];
+}
+
+/** Some Nexon payloads nest equipped reactor under each descendant row instead of `reactor` root. */
+function extractReactorsFromDescendantJson(descendantJson: unknown): Record<string, unknown>[] {
+  const out: Record<string, unknown>[] = [];
+  const unwrapped = unwrapPayload(descendantJson);
+  const collectRow = (row: Record<string, unknown>) => {
+    const r = row.reactor ?? row.user_reactor ?? row.userReactor ?? row.equipped_reactor;
+    if (r && typeof r === "object" && !Array.isArray(r)) out.push(r as Record<string, unknown>);
+  };
+  if (Array.isArray(unwrapped)) {
+    unwrapped.forEach((x) => {
+      const row = asRecord(x);
+      if (row) collectRow(row);
+    });
+    return out;
+  }
+  const root = asRecord(unwrapped);
+  if (!root) return [];
+  for (const k of ["descendant", "user_descendant", "descendants", "user_descendant_list", "descendant_list"]) {
+    const t = root[k];
+    if (Array.isArray(t)) {
+      t.forEach((x) => {
+        const row = asRecord(x);
+        if (row) collectRow(row);
+      });
+    } else if (t && typeof t === "object" && !Array.isArray(t)) collectRow(t as Record<string, unknown>);
+  }
+  return out;
+}
+
+function dedupeReactors(rows: Record<string, unknown>[]): Record<string, unknown>[] {
+  const seen = new Set<string>();
+  const out: Record<string, unknown>[] = [];
+  for (const r of rows) {
+    const id = String(r.reactor_id ?? r.reactorId ?? r.id ?? "").trim();
+    if (id) {
+      if (seen.has(id)) continue;
+      seen.add(id);
+    }
+    out.push(r);
+  }
+  return out;
+}
+
+/** Merge `/user/reactor` and per-descendant reactor blocks (deduped by reactor id). */
+export function extractReactorsMerged(profile: Record<string, unknown>): Record<string, unknown>[] {
+  const fromApi = extractReactorList(profile.reactor);
+  const fromDesc = extractReactorsFromDescendantJson(profile.descendant);
+  return dedupeReactors([...fromApi, ...fromDesc]);
 }
 
 export function extractExternalList(extJson: unknown): Record<string, unknown>[] {

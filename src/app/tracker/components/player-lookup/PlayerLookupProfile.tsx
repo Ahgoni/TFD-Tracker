@@ -20,7 +20,7 @@ import {
   extractBasicInfo,
   extractDescendantBuilds,
   extractExternalList,
-  extractReactorList,
+  extractReactorsMerged,
   extractWeaponBuilds,
   type DescendantBuildParsed,
   type WeaponBuildParsed,
@@ -441,30 +441,32 @@ function DescendantModuleInventory({
                 key={`${m.slotId}-${m.moduleId}-${i}`}
                 className={`${styles.descGridCell} ${accentCellClass(cell.accent)}`}
               >
-                <div
-                  className={`${styles.moduleCard} ${styles.descBoardCard} ${rec ? tierClass(rec.tier) : ""}`}
-                  title={
-                    cell.accent === "sub-melee-gold"
-                      ? "Sub Module — Charged Sub Attack (melee)"
-                      : cell.accent === "skill-teal"
-                        ? "Skill Modules — Sub 1 (skill / red slot)"
-                        : undefined
-                  }
-                >
-                  <span className={styles.cost}>{cost}</span>
-                  {img ? (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img className={styles.modImg} src={img} alt="" />
-                  ) : (
-                    <div className={styles.modImg} />
-                  )}
-                  <p className={styles.modName}>{name}</p>
-                  <div className={styles.modMeta}>
-                    {rec?.type?.trim() ? rec.type : "Descendant"}
-                    <br />
-                    {rec?.socket ?? "—"} · +{m.enchantLevel}
+                <div className={styles.slotCardStack}>
+                  <div
+                    className={`${styles.moduleCard} ${styles.descBoardCard} ${rec ? tierClass(rec.tier) : ""}`}
+                    title={
+                      cell.accent === "sub-melee-gold"
+                        ? "Sub Module — Malachite / Charged Sub slot"
+                        : cell.accent === "skill-teal"
+                          ? "Skill Modules — Sub 1 (skill slot)"
+                          : undefined
+                    }
+                  >
+                    <span className={styles.cost}>{cost}</span>
+                    {img ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img className={styles.modImg} src={img} alt="" />
+                    ) : (
+                      <div className={styles.modImg} />
+                    )}
+                    <p className={styles.modName}>{name}</p>
+                    <div className={styles.modMeta}>
+                      {rec?.type?.trim() ? rec.type : "Descendant"}
+                      <br />
+                      {rec?.socket ?? "—"} · +{m.enchantLevel}
+                    </div>
                   </div>
-                  {cap ? <div className={styles.slotCaption}>{cap}</div> : null}
+                  {cap ? <div className={styles.slotRoleLabel}>{cap}</div> : null}
                 </div>
               </div>
             );
@@ -548,7 +550,10 @@ export function PlayerLookupProfile({ data, catalogs }: Props) {
 
   const descendantBuilds = useMemo(() => extractDescendantBuilds(data.descendant), [data.descendant]);
   const weaponBuilds = useMemo(() => extractWeaponBuilds(data.weapon), [data.weapon]);
-  const reactors = useMemo(() => extractReactorList(data.reactor), [data.reactor]);
+  const reactors = useMemo(
+    () => extractReactorsMerged(data as Record<string, unknown>),
+    [data],
+  );
   const externals = useMemo(() => extractExternalList(data.externalComponent), [data.externalComponent]);
 
   const displayName =

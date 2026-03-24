@@ -4,7 +4,7 @@
  */
 
 import type { ModuleRecord } from "@/lib/tfd-modules";
-import { isChargedSubAttackModule, isTriggerModule } from "@/lib/tfd-modules";
+import { isSubModuleBoardSlot, isTriggerModule } from "@/lib/tfd-modules";
 import type { DescendantBuildParsed } from "./nexonPlayerPayload";
 
 export type SlotAccent = "skill-teal" | "sub-melee-gold" | null;
@@ -85,14 +85,14 @@ export function buildDescendantModuleGrid(
     placed.add(modKey(m));
   }
 
-  const meleeMod = mods.find((m) => isChargedSubAttackModule(moduleById.get(m.moduleId)));
-  if (meleeMod) placeAt(6, meleeMod, "sub-melee-gold");
+  const subBoardMod = mods.find((m) => isSubModuleBoardSlot(moduleById.get(m.moduleId)));
+  if (subBoardMod) placeAt(6, subBoardMod, "sub-melee-gold");
 
   const sub1 = mods.find((m) => {
     if (placed.has(modKey(m))) return false;
     return normalizeSlotId(m.slotId) === "Sub 1";
   });
-  if (sub1 && !isChargedSubAttackModule(moduleById.get(sub1.moduleId))) {
+  if (sub1 && !isSubModuleBoardSlot(moduleById.get(sub1.moduleId))) {
     placeAt(0, sub1, "skill-teal");
   }
 
@@ -110,7 +110,7 @@ export function buildDescendantModuleGrid(
     if (!m) break;
     const rec = moduleById.get(m.moduleId);
     let accent: SlotAccent = null;
-    if (isChargedSubAttackModule(rec)) accent = "sub-melee-gold";
+    if (isSubModuleBoardSlot(rec)) accent = "sub-melee-gold";
     else if (normalizeSlotId(m.slotId) === "Sub 1") accent = "skill-teal";
     cells[i] = { index: i, moduleSlot: m, rec, accent };
     placed.add(modKey(m));
