@@ -10,7 +10,7 @@ export async function GET(
 
   const user = await prisma.user.findFirst({
     where: { username: clean },
-    select: { id: true, name: true, image: true, username: true },
+    select: { id: true, name: true, image: true, username: true, nexonIngameName: true },
   });
 
   if (!user) return NextResponse.json({ error: "User not found" }, { status: 404 });
@@ -27,6 +27,11 @@ export async function GET(
 
   return NextResponse.json({
     state: stateData,
-    owner: { name: user.name, image: user.image, username: user.username },
+    owner: {
+      name: user.name,
+      image: user.image,
+      username: user.username,
+      nexonIngameName: user.nexonIngameName,
+    },
   });
 }

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { SignInWithDiscordLink } from "@/components/sign-in-discord-link";
 import { PublicBuildsSection } from "@/components/public-builds-section";
 import type { PublicBuild } from "@/lib/public-build-types";
 
@@ -71,9 +72,9 @@ export default async function SharePage({ params }: { params: Promise<{ token: s
           )}
         </div>
         <div style={{ paddingTop: "0.3rem" }}>
-          <Link className="filter-chip" href="/api/auth/signin">
+          <SignInWithDiscordLink className="filter-chip">
             Sign in to track your own inventory
-          </Link>
+          </SignInWithDiscordLink>
         </div>
       </header>
 

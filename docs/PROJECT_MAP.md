@@ -23,6 +23,7 @@ Use this file to orient before large changes. **AI continuity:** `docs/AI_HANDOF
 | `src/app/tracker/components/` | Tab UIs: `BuildsTab`, `BuildPlannerPanel`, `DescendantsTab`, `WeaponsTab`, … |
 | `src/lib/` | **Business logic:** `tfd-modules.ts`, `tfd-stat-engine.ts`, `build-planner-stats.ts`, `nexon-catalog-transform.ts`, `fetch-game-catalog.ts`, `tracker-data.ts`, `tracker-default-state.ts`, Prisma helpers |
 | `src/contexts/i18n-context.tsx`, `src/lib/i18n/config.ts`, `src/messages/*.json` | **i18n:** client `I18nProvider` in `app/providers.tsx`; locale in **`localStorage`** + **`tfd-locale`** cookie; `lang` set on `<html>` (layout inline script + provider) |
+| **Auth** | **Discord** via NextAuth (`src/lib/auth.ts`). Start OAuth with **`signIn("discord", { callbackUrl })`** or **`SignInWithDiscordLink`** — do not link users to GET **`/api/auth/signin`** (that only renders NextAuth’s provider picker). Optional **`User.nexonIngameName`** is self-attested (not Nexon OAuth). |
 | `public/data/` | Committed Nexon-derived JSON + hand-curated (`external-components.json`, `ancestor-modules.json`, …) — see `public/data/README.md` |
 | `scripts/` | `fetch-game-data.ts`, `fetch-game-stats.js`, `download-assets.mjs`, `link-public.js`, `postinstall-run.js` |
 | `prisma/schema.prisma` | `User`, **`AppState`** (JSON), `ShareToken`, `SavedFriend`, plus **optional** normalized `WeaponEntry`, `DescendantEntry`, … |

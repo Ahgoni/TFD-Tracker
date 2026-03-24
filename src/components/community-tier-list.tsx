@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
-import { useSession } from "next-auth/react";
+import { signIn, useSession } from "next-auth/react";
 import { useI18n } from "@/contexts/i18n-context";
 import styles from "./community-tier-list.module.css";
 
@@ -38,11 +38,11 @@ const TIER_CLASS: Record<string, string> = {
   UNRANKED: styles.tU,
 };
 
-function goToSignInPage() {
+function goToDiscordSignIn() {
   if (typeof window === "undefined") return;
   const u = new URL(window.location.href);
   u.hash = "";
-  window.location.assign(`/api/auth/signin?callbackUrl=${encodeURIComponent(u.toString())}`);
+  void signIn("discord", { callbackUrl: u.toString() });
 }
 
 export function CommunityTierList() {
@@ -92,7 +92,7 @@ export function CommunityTierList() {
   async function submitVote(tier: string) {
     if (!modal) return;
     if (status !== "authenticated" || !session?.user) {
-      goToSignInPage();
+      goToDiscordSignIn();
       return;
     }
     setVoteBusy(true);
@@ -242,7 +242,7 @@ export function CommunityTierList() {
               ) : (
                 <>
                   <p className={styles.signInHint}>{t("tierList.modalSignInHint")}</p>
-                  <button type="button" className={styles.voteBtn} onClick={goToSignInPage}>
+                  <button type="button" className={styles.voteBtn} onClick={goToDiscordSignIn}>
                     {t("tierList.modalGoSignIn")}
                   </button>
                 </>

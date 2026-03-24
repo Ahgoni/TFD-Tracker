@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { SignInWithDiscordLink } from "@/components/sign-in-discord-link";
 import { PublicBuildCard } from "@/components/public-build-card";
 import type { PublicBuild } from "@/lib/public-build-types";
 
@@ -147,9 +148,9 @@ export default async function PublicBuildPage({
           <Link className="filter-chip" href={`/u/${encodeURIComponent(username)}`}>
             @{owner.username ?? username} full profile
           </Link>
-          <Link className="filter-chip" href="/api/auth/signin">
+          <SignInWithDiscordLink className="filter-chip">
             Sign in to track your own builds
-          </Link>
+          </SignInWithDiscordLink>
         </div>
       </header>
 

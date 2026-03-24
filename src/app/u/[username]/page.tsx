@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { SignInWithDiscordLink } from "@/components/sign-in-discord-link";
 import { BuildHashRedirect } from "./build-hash-redirect";
 import { PublicBuildsSection } from "@/components/public-builds-section";
 import type { PublicBuild } from "@/lib/public-build-types";
@@ -36,6 +37,7 @@ interface Owner {
   name: string | null;
   image: string | null;
   username: string | null;
+  nexonIngameName?: string | null;
 }
 
 async function getProfileData(username: string): Promise<{ owner: Owner; state: SharedState } | null> {
@@ -104,7 +106,14 @@ export default async function UsernameProfilePage({ params }: { params: Promise<
         <div className="topbar-row">
           <div className="brand">
             <h1>TFD Tracker — @{owner.username ?? username}</h1>
-            <p>Read-only view · {owner.name ?? "a player"}&apos;s inventory</p>
+            <p>
+              Read-only view · {owner.name ?? "a player"}&apos;s inventory
+              {owner.nexonIngameName ? (
+                <span className="muted" style={{ display: "block", marginTop: "0.25rem", fontSize: "0.85rem" }}>
+                  TFD in-game: {owner.nexonIngameName}
+                </span>
+              ) : null}
+            </p>
           </div>
           {owner.image && (
             <span className="user-chip">
@@ -114,9 +123,9 @@ export default async function UsernameProfilePage({ params }: { params: Promise<
           )}
         </div>
         <div style={{ paddingTop: "0.3rem" }}>
-          <Link className="filter-chip" href="/api/auth/signin">
+          <SignInWithDiscordLink className="filter-chip">
             Sign in to track your own inventory
-          </Link>
+          </SignInWithDiscordLink>
         </div>
       </header>
 

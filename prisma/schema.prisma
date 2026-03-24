@@ -10,6 +10,8 @@ datasource db {
 model User {
   id            String           @id @default(cuid())
   username      String?          @unique
+  /** Optional self-attested TFD in-game name (not verified by Nexon; see auth docs). */
+  nexonIngameName String?
   name          String?
   email         String?          @unique
   emailVerified DateTime?

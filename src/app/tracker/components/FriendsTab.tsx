@@ -101,6 +101,7 @@ export function FriendsTab({ sharePrivacy, onPrivacyChange, shareToken, onGenera
 
 
   const username = (session?.user as Record<string, unknown> | undefined)?.username as string | null;
+  const nexonIngameName = (session?.user as Record<string, unknown> | undefined)?.nexonIngameName as string | null;
   const origin = typeof window !== "undefined" ? window.location.origin : "";
   const profileUrl = username ? `${origin}/u/${username}` : null;
   const shareUrl = shareToken ? `${origin}/share/${shareToken}` : null;
@@ -109,6 +110,11 @@ export function FriendsTab({ sharePrivacy, onPrivacyChange, shareToken, onGenera
   const [newUsername, setNewUsername] = useState("");
   const [usernameError, setUsernameError] = useState("");
   const [savingUsername, setSavingUsername] = useState(false);
+
+  const [editingNexon, setEditingNexon] = useState(false);
+  const [newNexon, setNewNexon] = useState("");
+  const [nexonError, setNexonError] = useState("");
+  const [savingNexon, setSavingNexon] = useState(false);
 
   useEffect(() => {
     fetch("/api/friends")
@@ -152,6 +158,30 @@ export function FriendsTab({ sharePrivacy, onPrivacyChange, shareToken, onGenera
       setUsernameError("Network error.");
     } finally {
       setSavingUsername(false);
+    }
+  }
+
+  async function saveNexon(e: React.FormEvent) {
+    e.preventDefault();
+    setNexonError("");
+    setSavingNexon(true);
+    try {
+      const res = await fetch("/api/profile", {
+        method: "PUT",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ nexonIngameName: newNexon.trim() }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setNexonError(typeof data.error === "string" ? data.error : "Failed to save.");
+        return;
+      }
+      setEditingNexon(false);
+      window.location.reload();
+    } catch {
+      setNexonError("Network error.");
+    } finally {
+      setSavingNexon(false);
     }
   }
 
@@ -318,6 +348,52 @@ export function FriendsTab({ sharePrivacy, onPrivacyChange, shareToken, onGenera
             {usernameError && <p className="social-msg social-msg-error">{usernameError}</p>}
             <p className="social-username-rules">3–20 characters · lowercase letters, numbers, underscores · must start with a letter</p>
           </form>
+        )}
+
+        {!editingUsername && (
+          <div style={{ marginTop: "0.75rem", paddingTop: "0.75rem", borderTop: "1px solid var(--line)" }}>
+            <div style={{ fontSize: "0.78rem", color: "var(--muted)", marginBottom: "0.35rem" }}>
+              TFD in-game name <span style={{ opacity: 0.85 }}>(optional — shown on your public profile; not verified by Nexon)</span>
+            </div>
+            {!editingNexon ? (
+              <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", flexWrap: "wrap" }}>
+                <span style={{ fontWeight: 600 }}>{nexonIngameName ?? "— not set —"}</span>
+                <button
+                  type="button"
+                  className="social-copy-btn"
+                  style={{ fontSize: "0.72rem" }}
+                  onClick={() => {
+                    setNewNexon(nexonIngameName ?? "");
+                    setEditingNexon(true);
+                    setNexonError("");
+                  }}
+                >
+                  {nexonIngameName ? "Edit" : "Add"}
+                </button>
+              </div>
+            ) : (
+              <form className="social-username-form" onSubmit={saveNexon}>
+                <input
+                  value={newNexon}
+                  onChange={(e) => setNewNexon(e.target.value)}
+                  placeholder="Exact in-game name"
+                  maxLength={32}
+                  autoFocus
+                  className="social-field-input"
+                  style={{ maxWidth: "18rem" }}
+                />
+                <div className="social-username-actions">
+                  <button type="submit" className="btn btn-primary btn-sm" disabled={savingNexon}>
+                    {savingNexon ? "Saving…" : "Save"}
+                  </button>
+                  <button type="button" className="btn btn-ghost btn-sm" onClick={() => setEditingNexon(false)}>
+                    Cancel
+                  </button>
+                </div>
+                {nexonError && <p className="social-msg social-msg-error">{nexonError}</p>}
+              </form>
+            )}
+          </div>
         )}
 
         {sharePrivacy === "open" && profileUrl && !editingUsername && (
