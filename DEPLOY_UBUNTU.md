@@ -135,7 +135,21 @@ curl http://localhost:3000   # should return HTML
 sudo apt install -y nginx certbot python3-certbot-nginx
 ```
 
-Create `/etc/nginx/sites-available/tfd`:
+**Important:** Your Next.js app lives under something like **`/home/ubuntu/apps/TFD/tfd-web/`**. Nginx **never** lives inside that folder — it is configured under **`/etc/nginx/`** on the server. The repo file **`nginx.conf.example`** is the full production template (path comment inside it: **`/etc/nginx/sites-available/tfdtracker.gg`**). It already includes **`X-Forwarded-Proto $scheme`** on every `proxy_pass` block.
+
+Do **not** assume the site file is named `tfd`. See what you actually have:
+
+```bash
+ls -la /etc/nginx/sites-enabled/
+```
+
+Edit the enabled site (often **`tfdtracker.gg`**, **`default`**, or another name), e.g.:
+
+```bash
+sudo nano /etc/nginx/sites-available/tfdtracker.gg
+```
+
+Minimal proxy snippet (if you use a simpler config than `nginx.conf.example`):
 
 ```nginx
 server {
@@ -155,8 +169,10 @@ server {
 }
 ```
 
+Enable + reload (adjust the filename to match yours):
+
 ```bash
-sudo ln -s /etc/nginx/sites-available/tfd /etc/nginx/sites-enabled/
+sudo ln -sf /etc/nginx/sites-available/tfdtracker.gg /etc/nginx/sites-enabled/tfdtracker.gg
 sudo nginx -t && sudo systemctl reload nginx
 
 # Provision TLS (replace with your actual domain)
