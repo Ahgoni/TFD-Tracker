@@ -2,7 +2,8 @@
 
 import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
-import { signIn, useSession } from "next-auth/react";
+import { useSession } from "next-auth/react";
+import { redirectToDiscordOAuth } from "@/lib/discord-oauth-redirect";
 import { useI18n } from "@/contexts/i18n-context";
 import styles from "./community-tier-list.module.css";
 
@@ -42,7 +43,9 @@ function goToDiscordSignIn() {
   if (typeof window === "undefined") return;
   const u = new URL(window.location.href);
   u.hash = "";
-  void signIn("discord", { callbackUrl: u.toString() });
+  void redirectToDiscordOAuth(u.toString()).catch(() => {
+    window.alert("Could not start Discord sign-in.");
+  });
 }
 
 export function CommunityTierList() {

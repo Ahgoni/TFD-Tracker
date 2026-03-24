@@ -1,8 +1,10 @@
 # TFD Tracker — handoff / session memory
 
-**Last updated:** 2026-03-24 (Discord sign-in UX + optional in-game name)
+**Last updated:** 2026-03-24 (Discord direct OAuth + language chip)
 
-**Latest (2026-03-24):** **Auth UX:** Avoid NextAuth’s generic GET **`/api/auth/signin`** (provider picker page). Use **`signIn("discord", { callbackUrl })`** or **`SignInWithDiscordLink`** everywhere. **`User.nexonIngameName`** optional self-attested TFD name (Friends tab + public `/u/…`); Nexon does not offer public OAuth for arbitrary sites — see comment in **`src/lib/auth.ts`**.
+**Latest (2026-03-24):** **`redirectToDiscordOAuth`** (`src/lib/discord-oauth-redirect.ts`) POSTs to `/api/auth/signin/discord` without calling **`/api/auth/providers`** first (when that fetch failed, NextAuth used to send users to the built-in **`/api/auth/signin`** page). **`callbacks.redirect`** normalizes relative `callbackUrl`s (reduces `error=Callback`). **Language:** globe + `<select>` in one bordered **`language-select-inner`** chip for alignment.
+
+**Earlier (2026-03-24):** **Auth / profile:** **`User.nexonIngameName`** (optional, self-attested); Nexon does not offer public OAuth for arbitrary sites — **`src/lib/auth.ts`**.
 
 **Earlier (2026-03-24):** **Nav + i18n:** **Overframe-style** top bar: **Home**, **Tier List**, **Tracker** (when signed in), plus **language** (`LanguageSelect`), theme, auth. **`/tier-list`** route hosts **`CommunityTierList`**; landing links there via hero strip. **`I18nProvider`** wraps the app (`localStorage` + **`tfd-locale`** cookie, **`document.documentElement.lang`** + inline script in `layout.tsx`). Messages: **`src/messages/{en,ko,ja,…}.json`**. **`SiteTopNav`**, **`LanguageSelect`**, **`HomeLandingContent`**, tracker top bar **Home / Tier List** links.
 
@@ -225,6 +227,7 @@ After deploy: **hard refresh** to clear stale asset caches.
 
 | Date       | Summary |
 |-----------|---------|
+| 2026-03-24 | **`redirectToDiscordOAuth`** (skip failing `getProviders` → no NextAuth HTML); **`callbacks.redirect`**; language chip CSS. |
 | 2026-03-24 | **Discord sign-in:** `SignInWithDiscordLink` + `signIn("discord")` (no GET `/api/auth/signin`); **`User.nexonIngameName`** + profile API + Friends tab + public profile line (self-attested; not Nexon OAuth). |
 | 2026-03-24 | **Nav + i18n:** `SiteTopNav` (Home / Tier List / Tracker), `/tier-list`, `I18nProvider` + cookie/storage + `html[lang]`, `LanguageSelect`, `HomeLandingContent`, tracker links; `community-tier-list` + messages (en/ko/ja + empty locale fallbacks). |
 | 2026-03-24 | **Auth + share links:** Removed `pages.signIn: "/"`; shared build route `/u/…/b/…`; `BuildHashRedirect`; tier hub `href` + BuildsTab `copyBuildLink`. |

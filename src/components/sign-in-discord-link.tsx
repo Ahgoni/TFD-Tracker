@@ -1,6 +1,6 @@
 "use client";
 
-import { signIn } from "next-auth/react";
+import { redirectToDiscordOAuth } from "@/lib/discord-oauth-redirect";
 
 type Props = {
   /** Where to send the user after Discord returns (defaults to current page when clicked). */
@@ -10,8 +10,8 @@ type Props = {
 };
 
 /**
- * Starts Discord OAuth without visiting NextAuth’s generic GET `/api/auth/signin` page
- * (that page only exists for provider selection). Uses the same POST flow as `signIn()`.
+ * Starts Discord OAuth via POST `/api/auth/signin/discord` (skips `getProviders()`, which can
+ * fall back to GET `/api/auth/signin` and show NextAuth’s built-in page).
  */
 export function SignInWithDiscordLink({ callbackUrl, className, children }: Props) {
   return (
@@ -22,7 +22,9 @@ export function SignInWithDiscordLink({ callbackUrl, className, children }: Prop
         e.preventDefault();
         const target =
           callbackUrl ?? (typeof window !== "undefined" ? window.location.href : "/tracker");
-        void signIn("discord", { callbackUrl: target });
+        void redirectToDiscordOAuth(target).catch((err) => {
+          window.alert(err instanceof Error ? err.message : "Sign-in failed.");
+        });
       }}
     >
       {children}

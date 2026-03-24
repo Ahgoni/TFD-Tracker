@@ -12,6 +12,12 @@ export const authOptions: NextAuthOptions = {
     }),
   ],
   callbacks: {
+    /** Required for App Router / relative `callbackUrl` values (avoids OAuth "Callback" errors). */
+    async redirect({ url, baseUrl }) {
+      if (url.startsWith(baseUrl)) return url;
+      if (url.startsWith("/")) return `${baseUrl}${url}`;
+      return baseUrl;
+    },
     async session({ session, user }) {
       if (session.user) {
         session.user.id = user.id;
@@ -30,7 +36,7 @@ export const authOptions: NextAuthOptions = {
   },
   /**
    * Do not set `pages.signIn` to a custom marketing page — it breaks the OAuth callback unless that page hosts the real sign-in UI.
-   * For Discord, always start OAuth via `signIn("discord", { callbackUrl })` or `SignInWithDiscordLink`, not GET `/api/auth/signin` (that URL only shows NextAuth’s provider picker).
+   * For Discord, use `redirectToDiscordOAuth` / `SignInWithDiscordLink` / `DiscordSignInButton` (POST `/api/auth/signin/discord`). Avoid `signIn()` if `/api/auth/providers` fails (it falls back to GET `/api/auth/signin`). Do not link users to GET `/api/auth/signin` alone.
    * Nexon does not ship a public “Sign in with Nexon” OAuth for arbitrary third-party sites; optional in-game name is stored on `User.nexonIngameName` (self-attested).
    */
 };

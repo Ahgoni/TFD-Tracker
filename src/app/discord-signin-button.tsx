@@ -1,6 +1,6 @@
 "use client";
 
-import { signIn } from "next-auth/react";
+import { redirectToDiscordOAuth } from "@/lib/discord-oauth-redirect";
 
 /* Official Discord chat-bubble mark — white fill on blurple background */
 const discordIcon = (
@@ -12,13 +12,24 @@ const discordIcon = (
 interface Props {
   label?: string;
   size?: "sm" | "lg";
+  /** Default: `/tracker` (always normalized to an absolute URL for OAuth). */
+  callbackUrl?: string;
 }
 
-export function DiscordSignInButton({ label = "Sign in with Discord — it's free", size = "lg" }: Props) {
+export function DiscordSignInButton({
+  label = "Sign in with Discord — it's free",
+  size = "lg",
+  callbackUrl = "/tracker",
+}: Props) {
   return (
     <button
+      type="button"
       className={`btn discord-btn btn-${size}`}
-      onClick={() => signIn("discord", { callbackUrl: "/tracker" })}
+      onClick={() => {
+        void redirectToDiscordOAuth(callbackUrl).catch((e) => {
+          window.alert(e instanceof Error ? e.message : "Sign-in failed.");
+        });
+      }}
     >
       {discordIcon}
       {label}
