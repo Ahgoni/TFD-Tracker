@@ -205,7 +205,7 @@ After deploy: **hard refresh** to clear stale asset caches.
 
 | Date       | Summary |
 |-----------|---------|
-| 2026-03-24 | **Player Lookup**: Nexon reactor catalog + cards; flat **`UserReactor`** parse; **Ultimate** gold border; **5-segment enh. bar** (yellow → burnt orange at +5); descendant.gg layout + **`CapacityBar`** weapon label. |
+| 2026-03-24 | **Player Lookup**: reactor catalog/cards + enh. bar; **external components** as **4-slot row** (descendant.gg), set banners **under** grid; flat **`UserReactor`** parse; **`CapacityBar`** weapon label. |
 | 2026-03-23 | **`HANDOFF.md`**: added **“Chat session summary (2026-03-23)”** — full digest of thread (capacity, group peers, Nexon API, docs, deploy). Cursor rules list completed. |
 | 2026-03-23 | **`docs/PROJECT_MAP.md`**, **`docs/AI_HANDOFF.md`** (AI continuity + VPS `git pull`/`public/data`). **`DEPLOY_UBUNTU.md`** §12d. **`FarmingTab`** hardened. Updated **AGENTS**, **CURSOR_MEMORY**, **`.cursorrules`**, **`memory-handoff.mdc`**, **README**. |
 | 2026-03-20 | Full audit + cleanup: fixed 17 issues (CSS duplication, dead code, hero-badge collision, mini-btn light mode, --card-bg, tier-norm, username normalization, import catalog merge, descFilter removal). Build passes clean. |

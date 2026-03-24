@@ -39,6 +39,66 @@ export type PlayerLookupCatalogs = {
 
 const EXTERNAL_SLOT_LABELS = ["Auxiliary Power", "Sensor", "Memory", "Processor"];
 
+function parseExternalEquipmentStats(row: Record<string, unknown>) {
+  const addRaw = row.external_component_additional_stat ?? row.externalComponentAdditionalStat;
+  const coresRaw = row.core ?? row.cores ?? row.core_option;
+  return {
+    addStats: parseJsonRecordArray(addRaw),
+    cores: parseJsonRecordArray(coresRaw),
+  };
+}
+
+type ExternalStatLine = { label: string; raw: unknown; kind: "core" | "sub" };
+
+function externalStatLines(row: Record<string, unknown>): ExternalStatLine[] {
+  const { addStats, cores } = parseExternalEquipmentStats(row);
+  const lines: ExternalStatLine[] = [];
+  for (const o of cores) {
+    lines.push({
+      label: String(o.core_option_name ?? o.option_name ?? o.name ?? "Core"),
+      raw: o.core_option_value ?? o.option_value ?? o.value,
+      kind: "core",
+    });
+  }
+  for (const o of addStats) {
+    lines.push({
+      label: String(o.additional_stat_name ?? o.stat_name ?? o.name ?? "Stat"),
+      raw: o.additional_stat_value ?? o.stat_value ?? o.value,
+      kind: "sub",
+    });
+  }
+  return lines;
+}
+
+function externalSlotNumber(slotId: unknown): number {
+  const n = typeof slotId === "number" ? slotId : parseInt(String(slotId ?? ""), 10);
+  return Number.isNaN(n) ? -1 : n;
+}
+
+/** Fixed 4 slots (Auxiliary → Processor); unslotted / overflow fills first empty cell. */
+function externalsBySlotFour(externals: Record<string, unknown>[]): (Record<string, unknown> | null)[] {
+  const bySlot = new Map<number, Record<string, unknown>>();
+  const unplaced: Record<string, unknown>[] = [];
+  for (const r of externals) {
+    const n = externalSlotNumber(r.external_component_slot_id ?? r.externalComponentSlotId);
+    if (n >= 1 && n <= 4) {
+      if (!bySlot.has(n)) bySlot.set(n, r);
+      else unplaced.push(r);
+    } else {
+      unplaced.push(r);
+    }
+  }
+  const grid = [1, 2, 3, 4].map((s) => bySlot.get(s) ?? null);
+  let u = 0;
+  for (let i = 0; i < 4 && u < unplaced.length; i++) {
+    if (grid[i] === null) {
+      grid[i] = unplaced[u]!;
+      u += 1;
+    }
+  }
+  return grid;
+}
+
 type Props = {
   data: Record<string, unknown>;
   catalogs: PlayerLookupCatalogs;
@@ -121,13 +181,6 @@ function TieredStatValue({ statName, raw }: { statName: string; raw: unknown }) 
   );
 }
 
-function externalSlotLabel(slotId: unknown): string {
-  const n = typeof slotId === "number" ? slotId : parseInt(String(slotId ?? ""), 10);
-  if (Number.isNaN(n) || n < 1) return "Component";
-  const ix = Math.min(Math.max(0, n - 1), EXTERNAL_SLOT_LABELS.length - 1);
-  return EXTERNAL_SLOT_LABELS[ix] ?? `Slot ${n}`;
-}
-
 function aggregateEquippedSets(
   equipped: Record<string, unknown>[],
   byId: Map<string, ExternalComponentCatalogRow>,
@@ -157,90 +210,84 @@ function aggregateEquippedSets(
   return out.sort((a, b) => b.count - a.count);
 }
 
-function ExternalComponentCard({
+/** descendant.gg–style compact card: icon on top, level diamond + name, primary stat, 2 footer lines (sub gold / core blue). */
+function ExternalComponentDgCard({
   row,
   catalog,
+  slotIndex,
 }: {
-  row: Record<string, unknown>;
+  row: Record<string, unknown> | null;
   catalog: ExternalComponentCatalogRow | undefined;
+  slotIndex: number;
 }) {
-  const slotId = row.external_component_slot_id ?? row.externalComponentSlotId;
-  const level = row.external_component_level ?? row.externalComponentLevel ?? row.level;
-  const addRaw = row.external_component_additional_stat ?? row.externalComponentAdditionalStat;
-  const coresRaw = row.core ?? row.cores ?? row.core_option;
+  const slotTitle = EXTERNAL_SLOT_LABELS[slotIndex - 1] ?? `Slot ${slotIndex}`;
 
-  const addStats = parseJsonRecordArray(addRaw);
-  const cores = parseJsonRecordArray(coresRaw);
-
-  const slotTitle = externalSlotLabel(slotId);
-  const setChip = catalog?.setOptionDetail?.[0]?.setName;
-
-  return (
-    <div className={`${styles.flexCard} ${catalog ? tierClass(catalog.tier) : ""}`}>
-      <div className={styles.extCardRow}>
-        {catalog?.image ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img className={styles.extIcon} src={catalog.image} alt="" />
-        ) : (
-          <div className={styles.extIconPh}>?</div>
-        )}
-        <div style={{ flex: 1, minWidth: 0 }}>
-          <h4 className={styles.cardTitle} style={{ marginTop: 0 }}>
-            {catalog?.name ?? "External component"}
-            {setChip ? <span className={styles.setChip}>{setChip}</span> : null}
-          </h4>
-          <p className="muted" style={{ fontSize: "0.78rem", margin: "0.15rem 0 0" }}>
-            {slotTitle}
-            {catalog?.equipmentType ? ` · ${catalog.equipmentType}` : null}
-            {catalog?.tier ? ` · ${catalog.tier}` : null}
-            {level != null ? ` · Lv. ${String(level)}` : null}
-          </p>
+  if (!row) {
+    return (
+      <div className={`${styles.dgExtCard} ${styles.dgExtCardEmpty}`}>
+        <div className={styles.dgExtGlow} aria-hidden />
+        <div className={styles.dgExtIconZone}>
+          <div className={styles.dgExtIconPhLg} aria-hidden />
+        </div>
+        <div className={styles.dgExtCardBody}>
+          <p className={styles.dgExtSlotLabel}>{slotTitle}</p>
+          <p className={styles.dgExtEmptyHint}>Empty slot</p>
         </div>
       </div>
+    );
+  }
 
-      {addStats.length > 0 ? (
-        <>
-          <div className={styles.subHeading}>Substats</div>
-          <ul className={styles.subList}>
-            {addStats.map((o, i) => {
-              const name = String(
-                o.additional_stat_name ?? o.stat_name ?? o.name ?? `Stat ${i + 1}`,
-              );
-              const val = o.additional_stat_value ?? o.stat_value ?? o.value;
-              return (
-                <li key={`${name}-${i}`}>
-                  <span>{name}</span>
-                  <TieredStatValue statName={name} raw={val} />
-                </li>
-              );
-            })}
-          </ul>
-        </>
-      ) : null}
+  const level = row.external_component_level ?? row.externalComponentLevel ?? row.level;
+  const lines = externalStatLines(row);
+  const primary = lines[0];
+  const footer = lines.slice(1, 3);
+  const tierFrame = catalog ? tierClass(catalog.tier) : styles.tierNormal;
+  const displayName = catalog?.name ?? "External component";
 
-      {cores.length > 0 ? (
-        <>
-          <div className={styles.subHeading}>Core</div>
-          <ul className={styles.subList}>
-            {cores.map((o, i) => {
-              const name = String(o.core_option_name ?? o.option_name ?? o.name ?? `Core ${i + 1}`);
-              const val = o.core_option_value ?? o.option_value ?? o.value;
-              return (
-                <li key={`${name}-${i}`}>
-                  <span>{name}</span>
-                  <TieredStatValue statName={name} raw={val} />
-                </li>
-              );
-            })}
-          </ul>
-        </>
-      ) : null}
-
-      {addStats.length === 0 && cores.length === 0 ? (
-        <p className="muted" style={{ fontSize: "0.82rem", margin: "0.35rem 0 0" }}>
-          No roll details parsed.
-        </p>
-      ) : null}
+  return (
+    <div className={`${styles.dgExtCard} ${tierFrame}`}>
+      <div className={styles.dgExtGlow} aria-hidden />
+      <div className={styles.dgExtIconZone}>
+        {catalog?.image ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img className={styles.dgExtIconLg} src={catalog.image} alt="" />
+        ) : (
+          <div className={styles.dgExtIconPhLg} aria-hidden />
+        )}
+      </div>
+      <div className={styles.dgExtCardBody}>
+        <div className={styles.dgExtNameRow}>
+          {level != null ? (
+            <div className={styles.dgExtLvDiamond} title={`Lv. ${String(level)}`}>
+              <span>{String(level)}</span>
+            </div>
+          ) : null}
+          <span className={styles.dgExtItemName}>{displayName}</span>
+        </div>
+        {catalog?.setOptionDetail?.[0]?.setName ? (
+          <span className={`${styles.setChip} ${styles.dgExtSetChipInline}`}>{catalog.setOptionDetail[0].setName}</span>
+        ) : null}
+        {primary ? (
+          <p className={styles.dgExtPrimaryLine}>
+            <span className={styles.dgExtPrimaryLab}>{primary.label}: </span>
+            <span className={styles.dgExtPrimaryVal}>{formatGearStatValue(primary.label, primary.raw)}</span>
+          </p>
+        ) : (
+          <p className={styles.dgExtPrimaryLineMuted}>No roll details</p>
+        )}
+        <div className={styles.dgExtFooterStats}>
+          {footer.map((ln, i) => (
+            <p key={`${ln.label}-${i}`} className={styles.dgExtFooterRow}>
+              <span className={styles.dgExtFooterLab}>{ln.label}: </span>
+              {ln.kind === "sub" ? (
+                <span className={styles.dgExtFooterValSub}>{formatGearStatValue(ln.label, ln.raw)}</span>
+              ) : (
+                <span className={styles.dgExtFooterValCore}>{formatGearStatValue(ln.label, ln.raw)}</span>
+              )}
+            </p>
+          ))}
+        </div>
+      </div>
     </div>
   );
 }
@@ -769,14 +816,30 @@ export function PlayerLookupProfile({ data, catalogs }: Props) {
                 />
               );
             })}
-            {externals.length > 0 ? <ExternalSetBonusesBanner sets={setProgress} /> : null}
-            <div className={styles.dgExtGrid}>
-              {externals.map((r, i) => {
-                const id = String(r.external_component_id ?? r.externalComponentId ?? "");
-                const cat = extById.get(id);
-                return <ExternalComponentCard key={`dg-ext-${id}-${i}`} row={r} catalog={cat} />;
-              })}
-            </div>
+            {externals.length > 0 ? (
+              <>
+                <div className={styles.dgExtQuadGrid}>
+                  {externalsBySlotFour(externals).map((slotRow, i) => {
+                    const ix = i + 1;
+                    const id = slotRow
+                      ? String(slotRow.external_component_id ?? slotRow.externalComponentId ?? "")
+                      : "";
+                    const cat = id ? extById.get(id) : undefined;
+                    return (
+                      <ExternalComponentDgCard
+                        key={`dg-ext-slot-${ix}`}
+                        row={slotRow}
+                        catalog={cat}
+                        slotIndex={ix}
+                      />
+                    );
+                  })}
+                </div>
+                <div className={styles.dgExtSetBonusesBelow}>
+                  <ExternalSetBonusesBanner sets={setProgress} />
+                </div>
+              </>
+            ) : null}
           </section>
         ) : null}
       </div>
@@ -840,13 +903,20 @@ export function PlayerLookupProfile({ data, catalogs }: Props) {
 
   const renderComponentsPanel = () => (
     <div className={styles.inventoryPane}>
-      <ExternalSetBonusesBanner sets={setProgress} />
-      <div style={{ display: "grid", gap: "0.5rem" }}>
-        {externals.map((r, i) => {
-          const id = String(r.external_component_id ?? r.externalComponentId ?? "");
-          const cat = extById.get(id);
-          return <ExternalComponentCard key={`ext-${id}-${i}`} row={r} catalog={cat} />;
+      <div className={styles.dgExtQuadGrid}>
+        {externalsBySlotFour(externals).map((slotRow, i) => {
+          const ix = i + 1;
+          const id = slotRow
+            ? String(slotRow.external_component_id ?? slotRow.externalComponentId ?? "")
+            : "";
+          const cat = id ? extById.get(id) : undefined;
+          return (
+            <ExternalComponentDgCard key={`ext-slot-${ix}`} row={slotRow} catalog={cat} slotIndex={ix} />
+          );
         })}
+      </div>
+      <div className={styles.dgExtSetBonusesBelow}>
+        <ExternalSetBonusesBanner sets={setProgress} />
       </div>
     </div>
   );

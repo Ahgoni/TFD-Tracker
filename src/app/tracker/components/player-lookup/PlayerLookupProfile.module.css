@@ -1019,10 +1019,221 @@
   text-align: right;
 }
 
-.dgExtGrid {
+/* External components — 4-slot row (descendant.gg) */
+.dgExtQuadGrid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.55rem;
+  width: 100%;
+}
+
+@media (max-width: 960px) {
+  .dgExtQuadGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 440px) {
+  .dgExtQuadGrid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.dgExtSetBonusesBelow {
+  margin-top: 0.75rem;
+}
+
+.dgExtSetBonusesBelow :global(.ext-set-bonuses-wrap) {
+  margin-bottom: 0;
+}
+
+.dgExtCard {
+  position: relative;
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  min-width: 0;
+  padding: 0.5rem 0.5rem 0.55rem;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  background: linear-gradient(165deg, rgba(10, 15, 30, 0.98) 0%, var(--panel) 55%, var(--panel-2) 100%);
+  overflow: hidden;
+}
+
+.dgExtCardEmpty {
+  opacity: 0.88;
+}
+
+.dgExtCard.tierUltimate {
+  border-color: #e8b923;
+  box-shadow:
+    0 0 0 1px rgba(232, 185, 35, 0.45),
+    0 0 14px rgba(255, 210, 100, 0.18);
+}
+
+.dgExtGlow {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 85%;
+  height: 50%;
+  pointer-events: none;
+  background: radial-gradient(ellipse 75% 85% at 0% 0%, rgba(212, 164, 26, 0.16), transparent 68%);
+}
+
+.dgExtCard.tierUltimate .dgExtGlow {
+  background: radial-gradient(ellipse 75% 85% at 0% 0%, rgba(232, 185, 35, 0.22), transparent 68%);
+}
+
+.dgExtCard.tierTranscendent .dgExtGlow {
+  background: radial-gradient(ellipse 75% 85% at 0% 0%, rgba(249, 115, 22, 0.14), transparent 68%);
+}
+
+.dgExtCard.tierRare .dgExtGlow {
+  background: radial-gradient(ellipse 75% 85% at 0% 0%, rgba(56, 189, 248, 0.12), transparent 68%);
+}
+
+.dgExtIconZone {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  justify-content: center;
+  padding: 0.25rem 0 0.4rem;
+}
+
+.dgExtIconLg {
+  width: 52px;
+  height: 52px;
+  border-radius: 8px;
+  border: 1px solid var(--line);
+  background: var(--panel-2);
+  object-fit: contain;
+}
+
+.dgExtIconPhLg {
+  width: 52px;
+  height: 52px;
+  border-radius: 8px;
+  border: 1px dashed var(--line);
+  background: var(--panel-2);
+}
+
+.dgExtCardBody {
+  position: relative;
+  z-index: 1;
+  min-width: 0;
+}
+
+.dgExtSlotLabel {
+  margin: 0;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-align: center;
+  color: var(--muted);
+}
+
+.dgExtEmptyHint {
+  margin: 0.35rem 0 0;
+  font-size: 0.68rem;
+  text-align: center;
+  color: var(--muted);
+}
+
+.dgExtNameRow {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.35rem;
+}
+
+.dgExtLvDiamond {
+  flex-shrink: 0;
+  width: 22px;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 1px;
+  transform: rotate(45deg);
+  border-radius: 3px;
+  background: rgba(51, 65, 85, 0.95);
+  border: 1px solid rgba(148, 163, 184, 0.42);
+}
+
+.dgExtLvDiamond span {
+  transform: rotate(-45deg);
+  font-size: 0.56rem;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+}
+
+.dgExtItemName {
+  flex: 1;
+  min-width: 0;
+  font-size: 0.7rem;
+  font-weight: 700;
+  line-height: 1.25;
+  word-break: break-word;
+}
+
+.dgExtSetChipInline {
+  display: inline-block;
+  margin-top: 0.2rem;
+  max-width: 100%;
+  font-size: 0.6rem;
+  padding: 0.06rem 0.32rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.dgExtPrimaryLine {
+  margin: 0.32rem 0 0;
+  font-size: 0.7rem;
+  line-height: 1.35;
+}
+
+.dgExtPrimaryLineMuted {
+  margin: 0.32rem 0 0;
+  font-size: 0.66rem;
+  color: var(--muted);
+}
+
+.dgExtPrimaryLab {
+  color: var(--muted);
+  font-weight: 500;
+}
+
+.dgExtPrimaryVal {
+  font-weight: 700;
+  color: var(--foreground, #f1f5f9);
+}
+
+.dgExtFooterStats {
+  margin-top: 0.38rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.18rem;
+}
+
+.dgExtFooterRow {
+  margin: 0;
+  font-size: 0.65rem;
+  line-height: 1.35;
+  color: #8a92a3;
+}
+
+.dgExtFooterLab {
+  color: #8a92a3;
+}
+
+.dgExtFooterValSub {
+  font-weight: 700;
+  color: #ffc857;
+}
+
+.dgExtFooterValCore {
+  font-weight: 700;
+  color: #7dd3fc;
 }
 
 .dgWeaponModWrap {
