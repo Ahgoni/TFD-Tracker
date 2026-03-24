@@ -1,14 +1,20 @@
 import type { NextAuthOptions } from "next-auth";
 import DiscordProvider from "next-auth/providers/discord";
-import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import { prisma } from "@/lib/prisma";
+import { createPrismaAuthAdapter } from "@/lib/prisma-auth-adapter";
 
 export const authOptions: NextAuthOptions = {
-  adapter: PrismaAdapter(prisma),
+  adapter: createPrismaAuthAdapter(),
   providers: [
     DiscordProvider({
       clientId: process.env.DISCORD_CLIENT_ID ?? "",
       clientSecret: process.env.DISCORD_CLIENT_SECRET ?? "",
+      /**
+       * If a `User` row already exists with the same Discord email (e.g. orphaned `Account` row,
+       * DB restore, or prior provider), link this Discord account instead of failing sign-in.
+       * Safe here because Discord is the only OAuth provider.
+       */
+      allowDangerousEmailAccountLinking: true,
     }),
   ],
   callbacks: {

@@ -2,7 +2,9 @@
 
 **Last updated:** 2026-03-24 (Discord direct OAuth + language chip)
 
-**Latest (2026-03-24):** **`redirectToDiscordOAuth`** (`src/lib/discord-oauth-redirect.ts`) POSTs to `/api/auth/signin/discord` without calling **`/api/auth/providers`** first (when that fetch failed, NextAuth used to send users to the built-in **`/api/auth/signin`** page). **`callbacks.redirect`** normalizes relative `callbackUrl`s (reduces `error=Callback`). **Language:** globe + `<select>` in one bordered **`language-select-inner`** chip for alignment.
+**Latest (2026-03-24):** **NextAuth `error=Callback` / sign-in failure:** wrapped Prisma adapter **`createPrismaAuthAdapter`** only writes `name`/`email`/`emailVerified`/`image` (avoids Prisma rejects from extra profile keys). Discord **`allowDangerousEmailAccountLinking: true`** links an existing `User` with the same email when the `Account` row is missing (single-provider app).
+
+**Earlier (2026-03-24):** **`redirectToDiscordOAuth`** (`src/lib/discord-oauth-redirect.ts`) POSTs to `/api/auth/signin/discord` without calling **`/api/auth/providers`** first (when that fetch failed, NextAuth used to send users to the built-in **`/api/auth/signin`** page). **`callbacks.redirect`** normalizes relative `callbackUrl`s (reduces `error=Callback`). **Language:** globe + `<select>` in one bordered **`language-select-inner`** chip for alignment.
 
 **Earlier (2026-03-24):** **Auth / profile:** **`User.nexonIngameName`** (optional, self-attested); Nexon does not offer public OAuth for arbitrary sites — **`src/lib/auth.ts`**.
 
@@ -227,6 +229,7 @@ After deploy: **hard refresh** to clear stale asset caches.
 
 | Date       | Summary |
 |-----------|---------|
+| 2026-03-24 | **Auth:** `createPrismaAuthAdapter` + Discord `allowDangerousEmailAccountLinking` (fix `error=Callback` / Prisma create / orphaned users). |
 | 2026-03-24 | **`redirectToDiscordOAuth`** (skip failing `getProviders` → no NextAuth HTML); **`callbacks.redirect`**; language chip CSS. |
 | 2026-03-24 | **Discord sign-in:** `SignInWithDiscordLink` + `signIn("discord")` (no GET `/api/auth/signin`); **`User.nexonIngameName`** + profile API + Friends tab + public profile line (self-attested; not Nexon OAuth). |
 | 2026-03-24 | **Nav + i18n:** `SiteTopNav` (Home / Tier List / Tracker), `/tier-list`, `I18nProvider` + cookie/storage + `html[lang]`, `LanguageSelect`, `HomeLandingContent`, tracker links; `community-tier-list` + messages (en/ko/ja + empty locale fallbacks). |
