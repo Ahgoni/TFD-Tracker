@@ -48,28 +48,6 @@ function parseExternalEquipmentStats(row: Record<string, unknown>) {
   };
 }
 
-type ExternalStatLine = { label: string; raw: unknown; kind: "core" | "sub" };
-
-function externalStatLines(row: Record<string, unknown>): ExternalStatLine[] {
-  const { addStats, cores } = parseExternalEquipmentStats(row);
-  const lines: ExternalStatLine[] = [];
-  for (const o of cores) {
-    lines.push({
-      label: String(o.core_option_name ?? o.option_name ?? o.name ?? "Core"),
-      raw: o.core_option_value ?? o.option_value ?? o.value,
-      kind: "core",
-    });
-  }
-  for (const o of addStats) {
-    lines.push({
-      label: String(o.additional_stat_name ?? o.stat_name ?? o.name ?? "Stat"),
-      raw: o.additional_stat_value ?? o.stat_value ?? o.value,
-      kind: "sub",
-    });
-  }
-  return lines;
-}
-
 function externalSlotNumber(slotId: unknown): number {
   const n = typeof slotId === "number" ? slotId : parseInt(String(slotId ?? ""), 10);
   return Number.isNaN(n) ? -1 : n;
@@ -110,6 +88,25 @@ function tierClass(tier: string): string {
   if (t.includes("ultimate")) return styles.tierUltimate;
   if (t.includes("rare")) return styles.tierRare;
   return styles.tierNormal;
+}
+
+/** Reactor element pill — matches in-game element colors (catalog uses Fire, Electric, …). */
+function reactorElementChipClass(element: string): string {
+  const e = element.trim().toLowerCase();
+  if (e === "fire") return styles.dgReactorChipFire;
+  if (e === "toxic") return styles.dgReactorChipToxic;
+  if (e === "electric") return styles.dgReactorChipElectric;
+  if (e === "chill") return styles.dgReactorChipChill;
+  if (e === "non-attribute" || e === "nonattribute") return styles.dgReactorChipNeutral;
+  return styles.dgReactorChipNeutral;
+}
+
+function reactorTierChipClass(tier: string): string {
+  const t = tier.trim().toLowerCase();
+  if (t.includes("ultimate")) return styles.dgReactorChipUltimate;
+  if (t.includes("transcendent")) return styles.dgReactorChipTierTranscendent;
+  if (t.includes("rare")) return styles.dgReactorChipTierRare;
+  return styles.dgReactorChipTier;
 }
 
 function sortSlotId(a: string, b: string): number {
@@ -227,7 +224,9 @@ function ExternalComponentDgCard({
       <div className={`${styles.dgExtCard} ${styles.dgExtCardEmpty}`}>
         <div className={styles.dgExtGlow} aria-hidden />
         <div className={styles.dgExtIconZone}>
-          <div className={styles.dgExtIconPhLg} aria-hidden />
+          <div className={styles.dgExtIconFrame}>
+            <div className={styles.dgExtIconPhLg} aria-hidden />
+          </div>
         </div>
         <div className={styles.dgExtCardBody}>
           <p className={styles.dgExtSlotLabel}>{slotTitle}</p>
@@ -238,22 +237,23 @@ function ExternalComponentDgCard({
   }
 
   const level = row.external_component_level ?? row.externalComponentLevel ?? row.level;
-  const lines = externalStatLines(row);
-  const primary = lines[0];
-  const footer = lines.slice(1, 3);
+  const { addStats, cores } = parseExternalEquipmentStats(row);
   const tierFrame = catalog ? tierClass(catalog.tier) : styles.tierNormal;
   const displayName = catalog?.name ?? "External component";
+  const hasAnyStats = cores.length > 0 || addStats.length > 0;
 
   return (
     <div className={`${styles.dgExtCard} ${tierFrame}`}>
       <div className={styles.dgExtGlow} aria-hidden />
       <div className={styles.dgExtIconZone}>
-        {catalog?.image ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img className={styles.dgExtIconLg} src={catalog.image} alt="" />
-        ) : (
-          <div className={styles.dgExtIconPhLg} aria-hidden />
-        )}
+        <div className={styles.dgExtIconFrame}>
+          {catalog?.image ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img className={styles.dgExtIconLg} src={catalog.image} alt="" />
+          ) : (
+            <div className={styles.dgExtIconPhLg} aria-hidden />
+          )}
+        </div>
       </div>
       <div className={styles.dgExtCardBody}>
         <div className={styles.dgExtNameRow}>
@@ -267,26 +267,48 @@ function ExternalComponentDgCard({
         {catalog?.setOptionDetail?.[0]?.setName ? (
           <span className={`${styles.setChip} ${styles.dgExtSetChipInline}`}>{catalog.setOptionDetail[0].setName}</span>
         ) : null}
-        {primary ? (
-          <p className={styles.dgExtPrimaryLine}>
-            <span className={styles.dgExtPrimaryLab}>{primary.label}: </span>
-            <span className={styles.dgExtPrimaryVal}>{formatGearStatValue(primary.label, primary.raw)}</span>
-          </p>
+        {hasAnyStats ? (
+          <div className={styles.dgExtStatsWrap}>
+            {cores.length > 0 ? (
+              <div className={styles.dgExtStatSection}>
+                <div className={styles.dgExtStatBlockHeading}>Core</div>
+                <div className={styles.dgExtStatBlock}>
+                  {cores.map((o, i) => {
+                    const name = String(o.core_option_name ?? o.option_name ?? o.name ?? `Core ${i + 1}`);
+                    const raw = o.core_option_value ?? o.option_value ?? o.value;
+                    return (
+                      <p key={`core-${name}-${i}`} className={styles.dgExtStatRow}>
+                        <span className={styles.dgExtFooterLab}>{name}: </span>
+                        <span className={styles.dgExtFooterValCore}>{formatGearStatValue(name, raw)}</span>
+                      </p>
+                    );
+                  })}
+                </div>
+              </div>
+            ) : null}
+            {addStats.length > 0 ? (
+              <div className={styles.dgExtStatSection}>
+                <div className={styles.dgExtStatBlockHeading}>Substats</div>
+                <div className={styles.dgExtStatBlock}>
+                  {addStats.map((o, i) => {
+                    const name = String(
+                      o.additional_stat_name ?? o.stat_name ?? o.name ?? `Stat ${i + 1}`,
+                    );
+                    const raw = o.additional_stat_value ?? o.stat_value ?? o.value;
+                    return (
+                      <p key={`sub-${name}-${i}`} className={styles.dgExtStatRow}>
+                        <span className={styles.dgExtFooterLab}>{name}: </span>
+                        <span className={styles.dgExtFooterValSub}>{formatGearStatValue(name, raw)}</span>
+                      </p>
+                    );
+                  })}
+                </div>
+              </div>
+            ) : null}
+          </div>
         ) : (
           <p className={styles.dgExtPrimaryLineMuted}>No roll details</p>
         )}
-        <div className={styles.dgExtFooterStats}>
-          {footer.map((ln, i) => (
-            <p key={`${ln.label}-${i}`} className={styles.dgExtFooterRow}>
-              <span className={styles.dgExtFooterLab}>{ln.label}: </span>
-              {ln.kind === "sub" ? (
-                <span className={styles.dgExtFooterValSub}>{formatGearStatValue(ln.label, ln.raw)}</span>
-              ) : (
-                <span className={styles.dgExtFooterValCore}>{formatGearStatValue(ln.label, ln.raw)}</span>
-              )}
-            </p>
-          ))}
-        </div>
       </div>
     </div>
   );
@@ -387,11 +409,19 @@ function ReactorProfileCard({
             {enchantLevel !== null ? <ReactorEnhancementBar level={enchantLevel} /> : null}
           </div>
           <div className={styles.dgReactorMeta}>
-            {catalog?.element ? <span className={styles.dgReactorChip}>{catalog.element}</span> : null}
-            {catalog?.attribute ? (
-              <span className={styles.dgReactorChip}>{catalog.attribute}</span>
+            {catalog?.element ? (
+              <span className={`${styles.dgReactorChip} ${reactorElementChipClass(catalog.element)}`}>
+                {catalog.element}
+              </span>
             ) : null}
-            {catalog?.tier ? <span className={styles.dgReactorChipMuted}>{catalog.tier}</span> : null}
+            {catalog?.attribute ? (
+              <span className={`${styles.dgReactorChip} ${styles.dgReactorChipAttr}`}>{catalog.attribute}</span>
+            ) : null}
+            {catalog?.tier ? (
+              <span className={`${styles.dgReactorChip} ${reactorTierChipClass(catalog.tier)}`}>
+                {catalog.tier}
+              </span>
+            ) : null}
           </div>
         </div>
 
