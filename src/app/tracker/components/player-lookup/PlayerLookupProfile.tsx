@@ -245,6 +245,38 @@ function ExternalComponentCard({
   );
 }
 
+const REACTOR_ENH_MAX = 5;
+
+function parseReactorEnchantLevel(raw: unknown): number | null {
+  if (raw === undefined || raw === null || raw === "") return null;
+  const n = typeof raw === "number" ? raw : parseFloat(String(raw));
+  if (Number.isNaN(n)) return null;
+  return Math.min(REACTOR_ENH_MAX, Math.max(0, Math.round(n)));
+}
+
+/** Vertical stack of 5 segments; bottom fills first. At max (5) filled segments use burnt orange. */
+function ReactorEnhancementBar({ level }: { level: number }) {
+  const n = Math.min(REACTOR_ENH_MAX, Math.max(0, level));
+  const maxed = n >= REACTOR_ENH_MAX;
+  return (
+    <div
+      className={styles.dgReactorEnhBar}
+      role="img"
+      aria-label={`Reactor enhancement ${n} of ${REACTOR_ENH_MAX}`}
+    >
+      {Array.from({ length: REACTOR_ENH_MAX }, (_, i) => {
+        const filled = n > i;
+        const segClass = filled
+          ? maxed
+            ? styles.dgReactorEnhSegMax
+            : styles.dgReactorEnhSegFill
+          : styles.dgReactorEnhSegEmpty;
+        return <div key={i} className={`${styles.dgReactorEnhSeg} ${segClass}`} />;
+      })}
+    </div>
+  );
+}
+
 function ReactorProfileCard({
   row,
   index,
@@ -259,7 +291,8 @@ function ReactorProfileCard({
   const displayName =
     catalog?.name || nameFromApi || (rid ? `Reactor (${rid})` : `Reactor ${index + 1}`);
   const level = row.reactor_level ?? row.reactorLevel ?? row.level;
-  const enchant = row.reactor_enchant_level ?? row.reactorEnchantLevel;
+  const enchantRaw = row.reactor_enchant_level ?? row.reactorEnchantLevel;
+  const enchantLevel = parseReactorEnchantLevel(enchantRaw);
 
   const candidates = [
     row.reactor_substat,
@@ -304,9 +337,7 @@ function ReactorProfileCard({
         <div className={styles.dgReactorIdentity}>
           <div className={styles.dgReactorTitleRow}>
             <span className={styles.dgReactorName}>{displayName}</span>
-            {enchant != null ? (
-              <span className={styles.dgReactorEnh}>Enh. +{String(enchant)}</span>
-            ) : null}
+            {enchantLevel !== null ? <ReactorEnhancementBar level={enchantLevel} /> : null}
           </div>
           <div className={styles.dgReactorMeta}>
             {catalog?.element ? <span className={styles.dgReactorChip}>{catalog.element}</span> : null}

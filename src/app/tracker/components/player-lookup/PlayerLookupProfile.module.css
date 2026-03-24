@@ -1042,6 +1042,15 @@
   background: linear-gradient(145deg, rgba(15, 23, 42, 0.95) 0%, var(--panel) 55%, var(--panel-2) 100%);
 }
 
+/* Ultimate — continuous gold frame (descendant.gg reactor card) */
+.dgReactorCard.tierUltimate {
+  border-color: #e8b923;
+  box-shadow:
+    0 0 0 1px rgba(232, 185, 35, 0.65),
+    0 0 18px rgba(255, 210, 100, 0.28),
+    inset 0 0 40px rgba(212, 164, 26, 0.08);
+}
+
 .dgReactorGlow {
   position: absolute;
   left: 0;
@@ -1124,8 +1133,8 @@
 .dgReactorTitleRow {
   display: flex;
   flex-wrap: wrap;
-  align-items: baseline;
-  gap: 0.35rem 0.65rem;
+  align-items: center;
+  gap: 0.5rem 0.75rem;
 }
 
 .dgReactorName {
@@ -1135,10 +1144,36 @@
   line-height: 1.25;
 }
 
-.dgReactorEnh {
-  font-size: 0.76rem;
-  font-weight: 600;
-  color: var(--muted);
+/* Reactor enhancement: 5 vertical segments (bottom = +1); max = burnt orange */
+.dgReactorEnhBar {
+  display: flex;
+  flex-direction: column-reverse;
+  flex-shrink: 0;
+  gap: 3px;
+}
+
+.dgReactorEnhSeg {
+  width: 15px;
+  height: 9px;
+  border-radius: 2px;
+  box-sizing: border-box;
+}
+
+.dgReactorEnhSegEmpty {
+  background: rgba(30, 41, 59, 0.95);
+  border: 1px solid rgba(100, 116, 139, 0.45);
+}
+
+.dgReactorEnhSegFill {
+  background: #f5d547;
+  border: 1px solid rgba(255, 236, 153, 0.9);
+  box-shadow: 0 0 8px rgba(245, 213, 71, 0.4);
+}
+
+.dgReactorEnhSegMax {
+  background: #c45c18;
+  border: 1px solid rgba(230, 130, 60, 0.95);
+  box-shadow: 0 0 10px rgba(196, 92, 24, 0.45);
 }
 
 .dgReactorMeta {
