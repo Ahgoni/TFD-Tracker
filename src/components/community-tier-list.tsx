@@ -25,6 +25,7 @@ type TierRow = { tier: string; items: TierItem[] };
 type ApiPayload = {
   tab: string;
   tiers: TierRow[];
+  unranked?: TierItem[];
   myVotes: Record<string, string>;
 };
 
@@ -42,7 +43,6 @@ const TIER_CLASS: Record<string, string> = {
   B: styles.tB,
   C: styles.tC,
   D: styles.tD,
-  UNRANKED: styles.tU,
 };
 
 const DIST_CLASS: Record<VoteTierKey, string> = {
@@ -201,6 +201,117 @@ function goToDiscordSignIn() {
   });
 }
 
+type Translate = (key: string, vars?: Record<string, string>) => string;
+
+function TierListItemBlock({
+  items,
+  displayMode,
+  setModal,
+  t,
+  emptyDash,
+}: {
+  items: TierItem[];
+  displayMode: "tiers" | "votes";
+  setModal: (item: TierItem) => void;
+  t: Translate;
+  /** When true and items empty, show em dash (S–D tier rows). */
+  emptyDash?: boolean;
+}) {
+  if (items.length === 0) {
+    if (!emptyDash) return null;
+    return (
+      <span className={styles.emptyBuilds} style={{ padding: "0.35rem" }}>
+        —
+      </span>
+    );
+  }
+  if (displayMode === "tiers") {
+    return (
+      <div className={styles.portraitRow}>
+        {items.map((item) => (
+          <button
+            key={item.entityKey}
+            type="button"
+            className={styles.portraitBtn}
+            onClick={() => setModal(item)}
+            title={t("tierList.voteCount", {
+              name: item.displayName,
+              count: String(item.voteCount),
+            })}
+          >
+            {item.image ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img className={styles.portraitImg} src={item.image} alt="" />
+            ) : (
+              <div className={styles.portraitImg} aria-hidden />
+            )}
+            <span className={styles.portraitNameTiers}>{item.displayName}</span>
+          </button>
+        ))}
+      </div>
+    );
+  }
+  return (
+    <>
+      {items.map((item) => {
+        const total = item.voteCount;
+        const vbt = item.votesByTier ?? emptyVotesByTier();
+        const partsStr = voteBreakdownParts(vbt);
+        const srExtra =
+          total > 0
+            ? partsStr
+              ? ` ${t("tierList.voteBreakdownSr", { parts: partsStr, total: String(total) })}`
+              : ` ${t("tierList.totalVotes", { n: String(total) })}`
+            : "";
+        const scoreLabel =
+          item.scorePercent != null
+            ? `${t("tierList.rowAria", {
+                name: item.displayName,
+                score: String(item.scorePercent),
+                count: String(total),
+              })}${srExtra}`
+            : `${t("tierList.rowAriaUnranked", { name: item.displayName })}${srExtra}`;
+        return (
+          <button
+            key={item.entityKey}
+            type="button"
+            className={styles.itemRow}
+            onClick={() => setModal(item)}
+            title={t("tierList.voteCount", {
+              name: item.displayName,
+              count: String(item.voteCount),
+            })}
+            aria-label={scoreLabel}
+          >
+            <div className={styles.itemLead}>
+              {item.image ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img className={styles.portraitImg} src={item.image} alt="" />
+              ) : (
+                <div className={styles.portraitImg} aria-hidden />
+              )}
+              <span className={styles.portraitName}>{item.displayName}</span>
+            </div>
+            <div className={styles.barCell}>
+              <VoteBarInteractive votesByTier={vbt} total={total} decorative t={t} variant="list" />
+            </div>
+            <div className={styles.scoreCol} aria-hidden>
+              {item.scorePercent != null ? (
+                <span className={styles.scorePct}>{item.scorePercent}%</span>
+              ) : (
+                <span className={styles.scoreDash}>—</span>
+              )}
+              <span className={styles.voteTotalNum}>
+                {total > 0 ? t("tierList.totalVotes", { n: String(total) }) : "—"}
+              </span>
+            </div>
+          </button>
+        );
+      })}
+    </>
+  );
+}
+
 export function CommunityTierList() {
   const { t } = useI18n();
   const { data: session, status } = useSession();
@@ -345,109 +456,38 @@ export function CommunityTierList() {
           {data.tiers.map((row) => (
             <div className={styles.tierRow} key={row.tier}>
               <div
-                className={`${styles.tierBadge} ${TIER_CLASS[row.tier] ?? styles.tU}`}
-                title={
-                  row.tier === "UNRANKED"
-                    ? t("tierList.tierUnrankedTitle")
-                    : t("tierList.tierRankTitle", { tier: row.tier })
-                }
+                className={`${styles.tierBadge} ${TIER_CLASS[row.tier]}`}
+                title={t("tierList.tierRankTitle", { tier: row.tier })}
               >
-                {row.tier === "UNRANKED" ? "?" : row.tier}
+                {row.tier}
               </div>
               <div className={displayMode === "votes" ? styles.itemList : styles.portraitList}>
-                {row.items.length === 0 ? (
-                  <span className={styles.emptyBuilds} style={{ padding: "0.35rem" }}>
-                    —
-                  </span>
-                ) : displayMode === "tiers" ? (
-                  <div className={styles.portraitRow}>
-                    {row.items.map((item) => (
-                      <button
-                        key={item.entityKey}
-                        type="button"
-                        className={styles.portraitBtn}
-                        onClick={() => setModal(item)}
-                        title={t("tierList.voteCount", {
-                          name: item.displayName,
-                          count: String(item.voteCount),
-                        })}
-                      >
-                        {item.image ? (
-                          // eslint-disable-next-line @next/next/no-img-element
-                          <img className={styles.portraitImg} src={item.image} alt="" />
-                        ) : (
-                          <div className={styles.portraitImg} aria-hidden />
-                        )}
-                        <span className={styles.portraitNameTiers}>{item.displayName}</span>
-                      </button>
-                    ))}
-                  </div>
-                ) : (
-                  row.items.map((item) => {
-                    const total = item.voteCount;
-                    const vbt = item.votesByTier ?? emptyVotesByTier();
-                    const partsStr = voteBreakdownParts(vbt);
-                    const srExtra =
-                      total > 0
-                        ? partsStr
-                          ? ` ${t("tierList.voteBreakdownSr", { parts: partsStr, total: String(total) })}`
-                          : ` ${t("tierList.totalVotes", { n: String(total) })}`
-                        : "";
-                    const scoreLabel =
-                      item.scorePercent != null
-                        ? `${t("tierList.rowAria", {
-                            name: item.displayName,
-                            score: String(item.scorePercent),
-                            count: String(total),
-                          })}${srExtra}`
-                        : `${t("tierList.rowAriaUnranked", { name: item.displayName })}${srExtra}`;
-                    return (
-                      <button
-                        key={item.entityKey}
-                        type="button"
-                        className={styles.itemRow}
-                        onClick={() => setModal(item)}
-                        title={t("tierList.voteCount", {
-                          name: item.displayName,
-                          count: String(item.voteCount),
-                        })}
-                        aria-label={scoreLabel}
-                      >
-                        <div className={styles.itemLead}>
-                          {item.image ? (
-                            // eslint-disable-next-line @next/next/no-img-element
-                            <img className={styles.portraitImg} src={item.image} alt="" />
-                          ) : (
-                            <div className={styles.portraitImg} aria-hidden />
-                          )}
-                          <span className={styles.portraitName}>{item.displayName}</span>
-                        </div>
-                        <div className={styles.barCell}>
-                          <VoteBarInteractive
-                            votesByTier={vbt}
-                            total={total}
-                            decorative
-                            t={t}
-                            variant="list"
-                          />
-                        </div>
-                        <div className={styles.scoreCol} aria-hidden>
-                          {item.scorePercent != null ? (
-                            <span className={styles.scorePct}>{item.scorePercent}%</span>
-                          ) : (
-                            <span className={styles.scoreDash}>—</span>
-                          )}
-                          <span className={styles.voteTotalNum}>
-                            {total > 0 ? t("tierList.totalVotes", { n: String(total) }) : "—"}
-                          </span>
-                        </div>
-                      </button>
-                    );
-                  })
-                )}
+                <TierListItemBlock
+                  items={row.items}
+                  displayMode={displayMode}
+                  setModal={setModal}
+                  t={t}
+                  emptyDash
+                />
               </div>
             </div>
           ))}
+          {(data.unranked ?? []).length > 0 ? (
+            <div className={styles.tierRow} key="unranked-section">
+              <div className={styles.tierBadgeSpacer} aria-hidden />
+              <div className={styles.unrankedCell}>
+                <p className={styles.unrankedHeading}>{t("tierList.tierUnrankedTitle")}</p>
+                <div className={displayMode === "votes" ? styles.itemList : styles.portraitList}>
+                  <TierListItemBlock
+                    items={data.unranked ?? []}
+                    displayMode={displayMode}
+                    setModal={setModal}
+                    t={t}
+                  />
+                </div>
+              </div>
+            </div>
+          ) : null}
         </div>
       )}
 

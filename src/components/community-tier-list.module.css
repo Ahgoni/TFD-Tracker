@@ -557,15 +557,32 @@
 .tD {
   background: linear-gradient(145deg, #4ade80, #16a34a);
 }
-.tU {
-  background: var(--panel);
-  border: 1px solid var(--line);
+
+.tierBadgeSpacer {
+  width: 44px;
+  height: 44px;
+  flex-shrink: 0;
+}
+
+@media (max-width: 520px) {
+  .tierBadgeSpacer {
+    width: 36px;
+    height: 36px;
+  }
+}
+
+.unrankedCell {
+  min-width: 0;
+}
+
+.unrankedHeading {
+  margin: 0 0 0.4rem;
+  padding: 0 0.15rem;
+  font-size: 0.68rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
   color: var(--muted);
-  font-size: 0.62rem;
-  font-weight: 700;
-  text-align: center;
-  line-height: 1.1;
-  padding: 2px;
 }
 
 .portraitImg {

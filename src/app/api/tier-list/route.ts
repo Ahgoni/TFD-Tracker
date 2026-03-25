@@ -59,24 +59,27 @@ export async function GET(request: Request) {
     myVotes = Object.fromEntries(mine.map((m) => [m.entityKey, m.tier]));
   }
 
-  const tierOrder: TierLetter[] = ["S", "A", "B", "C", "D", "UNRANKED"];
+  const mapEntityToItem = (e: (typeof entities)[number]) => {
+    const stats = statsByEntity.get(e.entityKey)!;
+    return {
+      entityKey: e.entityKey,
+      displayName: e.displayName,
+      image: e.image,
+      voteCount: stats.totalVotes,
+      votesByTier: stats.distribution,
+      scorePercent: stats.scorePercent,
+      consensusTier: stats.modeTier === "UNRANKED" ? null : stats.modeTier,
+    };
+  };
+
+  const tierOrder: TierLetter[] = ["S", "A", "B", "C", "D"];
   const response = {
     tab,
     tiers: tierOrder.map((tier) => ({
       tier,
-      items: buckets[tier].map((e) => {
-        const stats = statsByEntity.get(e.entityKey)!;
-        return {
-          entityKey: e.entityKey,
-          displayName: e.displayName,
-          image: e.image,
-          voteCount: stats.totalVotes,
-          votesByTier: stats.distribution,
-          scorePercent: stats.scorePercent,
-          consensusTier: stats.modeTier === "UNRANKED" ? null : stats.modeTier,
-        };
-      }),
+      items: buckets[tier].map(mapEntityToItem),
     })),
+    unranked: buckets.UNRANKED.map(mapEntityToItem),
     myVotes,
   };
 

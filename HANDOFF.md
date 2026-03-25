@@ -235,6 +235,7 @@ After deploy: **hard refresh** to clear stale asset caches.
 
 | Date       | Summary |
 |-----------|---------|
+| 2026-03-24 | **Tier list:** removed **? / UNRANKED** row; `GET /api/tier-list` adds **`unranked`[]**; UI shows **S–D** only + optional **Unranked** section (text heading, spacer) when entries have no votes. |
 | 2026-03-24 | **Tier list votes view:** hover tooltip + touch chips for S–D counts; column shows total votes; modal caption; **language `<select>`** dark-mode `option` + `color-scheme` in `globals.css`. |
 | 2026-03-24 | **Tier list UI:** Display **Tiers** (default portrait grid) vs **Votes** (bars + %); sessionStorage `tfd-tier-list-display`; removed in-bar consensus letters; i18n en/ko/ja. |
 | 2026-03-24 | **Tier list mod:** `TIER_LIST_MOD_DISCORD_IDS` + `tier-list-mod.ts`; Prisma `TierListModOverlay`; APIs `mod/session`, `overview`, `voters`, `overlay`, `overlay/reset`, `vote` DELETE; `TierListModPanel`; public `GET /api/tier-list` merges overlay. |
