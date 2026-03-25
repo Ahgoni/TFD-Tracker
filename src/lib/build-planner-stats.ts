@@ -3,7 +3,9 @@ import type { ModuleRecord } from "@/lib/tfd-modules";
 import {
   capacityAtLevel,
   isChargedSubAttackModule,
+  isSubModuleBoardSlot,
   subAttackMaxCapacityBonusAtLevel,
+  subSlotMaxCapacityBonusAtSlot,
   totalCapacityCost,
 } from "@/lib/tfd-modules";
 
@@ -128,13 +130,15 @@ export function scalePreviewPercentagesForLevel(mod: ModuleRecord, level: number
 export function computePlannerMetrics(
   slots: (PlacedModule | null)[],
   moduleById: Map<string, ModuleRecord>,
-  maxCapacity: number
+  maxCapacity: number,
+  catalystCornersPerSlot?: (string | null)[][] | null,
 ): BuildPlannerMetrics {
   const placed = slots.filter((s): s is PlacedModule => Boolean(s));
   const n = slots.length;
   const totalCapacity = totalCapacityCost(
     slots.map((s) => (s ? { moduleId: s.moduleId, level: s.level } : null)),
-    moduleById
+    moduleById,
+    catalystCornersPerSlot,
   );
   const tierCounts: Record<string, number> = {};
   const socketSet = new Set<string>();
@@ -144,7 +148,9 @@ export function computePlannerMetrics(
   const allContribs: { bucket: string; value: number }[] = [];
   const capacityRatios: { name: string; ratio: number; level: number }[] = [];
 
-  for (const p of placed) {
+  for (let si = 0; si < slots.length; si++) {
+    const p = slots[si];
+    if (!p) continue;
     tierCounts[p.tier] = (tierCounts[p.tier] ?? 0) + 1;
     if (p.socket) socketSet.add(p.socket);
     levelSum += p.level;
@@ -157,9 +163,10 @@ export function computePlannerMetrics(
 
     if (m) {
       let ratio = 1;
-      if (isChargedSubAttackModule(m)) {
-        const b0 = subAttackMaxCapacityBonusAtLevel(m, 0);
-        const bL = subAttackMaxCapacityBonusAtLevel(m, p.level);
+      const corners = catalystCornersPerSlot?.[si] ?? null;
+      if (isSubModuleBoardSlot(m)) {
+        const b0 = subSlotMaxCapacityBonusAtSlot(si, m, 0, corners);
+        const bL = subSlotMaxCapacityBonusAtSlot(si, m, p.level, corners);
         ratio = b0 > 0 ? bL / b0 : p.level > 0 ? 1 : 0;
         capacityRatios.push({ name: p.name, ratio: Math.round(ratio * 1000) / 1000, level: p.level });
       } else {

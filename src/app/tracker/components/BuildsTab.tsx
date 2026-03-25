@@ -5,7 +5,12 @@ import { useSession } from "next-auth/react";
 import type { TrackerState, BuildEntry, PlacedModule, BuildReactor, ExternalComponent } from "../tracker-client";
 import { uuid } from "@/lib/uuid";
 import { BuildPlannerPanel, type PlannerFormSlice, type PlannerHeroProps } from "./BuildPlannerPanel";
-import { WEAPON_TYPE_TO_NEXON, type ModuleRecord, slotCountForTarget } from "@/lib/tfd-modules";
+import {
+  WEAPON_TYPE_TO_NEXON,
+  type ModuleRecord,
+  normalizePlannerSlotCatalysts,
+  slotCountForTarget,
+} from "@/lib/tfd-modules";
 import { formatExternalComponentSetsSummary } from "@/lib/external-components-summary";
 import { copyTextToClipboard } from "@/lib/copy-to-clipboard";
 import { fetchModulesCatalog, fetchWeaponsCatalogRows } from "@/lib/fetch-game-catalog";
@@ -122,6 +127,7 @@ export function BuildsTab({ state, setState }: Props) {
     targetKey: string;
     moduleSlots: string[];
     plannerSlots: (PlacedModule | null)[];
+    plannerSlotCatalysts: (string | null)[][];
     reactor: BuildReactor | null;
     targetLevel: number;
     archeLevel: number;
@@ -134,6 +140,7 @@ export function BuildsTab({ state, setState }: Props) {
     targetKey: "",
     moduleSlots: Array(12).fill(""),
     plannerSlots: emptyPlannerSlots("descendant"),
+    plannerSlotCatalysts: normalizePlannerSlotCatalysts(null, slotCountForTarget("descendant")),
     reactor: null,
     targetLevel: 40,
     archeLevel: 0,
@@ -180,10 +187,13 @@ export function BuildsTab({ state, setState }: Props) {
     setForm((f) => {
       const cur = [...(f.plannerSlots ?? [])];
       while (cur.length < n) cur.push(null);
-      if (cur.length !== n) {
-        return { ...f, plannerSlots: cur.slice(0, n) };
-      }
-      return f;
+      const slotsNext = cur.slice(0, n);
+      const catNext = normalizePlannerSlotCatalysts(f.plannerSlotCatalysts, n);
+      const slotsSame = slotsNext.length === (f.plannerSlots ?? []).length &&
+        slotsNext.every((s, i) => s === (f.plannerSlots ?? [])[i]);
+      const catSame = JSON.stringify(catNext) === JSON.stringify(f.plannerSlotCatalysts ?? []);
+      if (slotsSame && catSame) return f;
+      return { ...f, plannerSlots: slotsNext, plannerSlotCatalysts: catNext };
     });
   }, [form.targetType, form.targetKey]);
 
@@ -202,6 +212,7 @@ export function BuildsTab({ state, setState }: Props) {
       targetKey: "",
       moduleSlots: Array(12).fill(""),
       plannerSlots: emptyPlannerSlots("descendant"),
+      plannerSlotCatalysts: normalizePlannerSlotCatalysts(null, slotCountForTarget("descendant")),
       reactor: null,
       targetLevel: 40,
       archeLevel: 0,
@@ -244,6 +255,11 @@ export function BuildsTab({ state, setState }: Props) {
       reactor: form.targetType === "descendant" ? (form.reactor ?? null) : null,
       targetLevel: form.targetLevel,
       archeLevel: form.archeLevel,
+      plannerSlotCatalysts:
+        form.targetType === "descendant" &&
+        (form.plannerSlotCatalysts ?? []).some((row) => row.some(Boolean))
+          ? form.plannerSlotCatalysts
+          : undefined,
       externalComponents: form.externalComponents.length > 0 ? form.externalComponents : undefined,
       reactorNotes: "",
       notes: form.notes.trim(),
@@ -287,6 +303,7 @@ export function BuildsTab({ state, setState }: Props) {
       targetKey: b.targetKey,
       moduleSlots: [...(b.moduleSlots ?? []), ...Array(12)].slice(0, 12).map((x) => (typeof x === "string" ? x : "")),
       plannerSlots: planner,
+      plannerSlotCatalysts: normalizePlannerSlotCatalysts(b.plannerSlotCatalysts, n),
       reactor: b.targetType === "descendant" ? (b.reactor ?? null) : null,
       targetLevel: b.targetLevel ?? (b.targetType === "weapon" ? 100 : 40),
       archeLevel: ((b as unknown as Record<string, unknown>).archeLevel as number) ?? 0,
@@ -361,6 +378,7 @@ export function BuildsTab({ state, setState }: Props) {
     targetType: form.targetType,
     targetKey: form.targetKey,
     plannerSlots: form.plannerSlots,
+    plannerSlotCatalysts: form.plannerSlotCatalysts,
   };
 
   const plannerHero: PlannerHeroProps | null = useMemo(() => {
@@ -413,12 +431,14 @@ export function BuildsTab({ state, setState }: Props) {
           targetType: f.targetType,
           targetKey: f.targetKey,
           plannerSlots: f.plannerSlots,
+          plannerSlotCatalysts: f.plannerSlotCatalysts,
         });
         return {
           ...f,
           targetType: next.targetType,
           targetKey: next.targetKey,
           plannerSlots: next.plannerSlots,
+          plannerSlotCatalysts: next.plannerSlotCatalysts ?? f.plannerSlotCatalysts,
         };
       });
     } else {
@@ -427,6 +447,9 @@ export function BuildsTab({ state, setState }: Props) {
         targetType: action.targetType,
         targetKey: action.targetKey,
         plannerSlots: action.plannerSlots,
+        plannerSlotCatalysts:
+          action.plannerSlotCatalysts ??
+          normalizePlannerSlotCatalysts(f.plannerSlotCatalysts, slotCountForTarget(action.targetType)),
       }));
     }
   };
@@ -482,6 +505,7 @@ export function BuildsTab({ state, setState }: Props) {
                     targetType,
                     targetKey: "",
                     plannerSlots: emptyPlannerSlots(targetType),
+                    plannerSlotCatalysts: normalizePlannerSlotCatalysts(null, slotCountForTarget(targetType)),
                     reactor: targetType === "weapon" ? null : f.reactor,
                   }));
                 }}
@@ -501,6 +525,7 @@ export function BuildsTab({ state, setState }: Props) {
                     ...f,
                     targetKey: key,
                     plannerSlots: emptyPlannerSlots(f.targetType),
+                    plannerSlotCatalysts: normalizePlannerSlotCatalysts(null, slotCountForTarget(f.targetType)),
                     archeLevel: d?.archeLevel ?? f.archeLevel,
                   }));
                 }}

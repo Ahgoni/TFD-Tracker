@@ -44,7 +44,7 @@ export function maxCapacityForTarget(targetType: "descendant" | "weapon"): numbe
   return targetType === "weapon" ? MAX_WEAPON_CAPACITY : MAX_DESCENDANT_CAPACITY;
 }
 
-/** Highest level index with positive capacity in Nexon `module_stat` (0–10). Falls back to 10. */
+/** Highest level index with positive capacity in Nexon `module_stat` (0–10). */
 export function maxModuleLevel(mod: ModuleRecord): number {
   const caps = mod.capacities;
   if (!caps?.length) return 10;
@@ -53,7 +53,12 @@ export function maxModuleLevel(mod: ModuleRecord): number {
     const c = caps[L];
     if (typeof c === "number" && c > 0) max = L;
   }
-  return max;
+  if (max > 0) return max;
+  /** Nexon often ships 0-cost Sub cells with all-zero `module_stat` capacities; they still enhance to +10 in-game. */
+  if (isChargedSubAttackModule(mod)) return 10;
+  const st = mod.slotTypes ?? [];
+  if (mod.moduleClass === "Descendant" && st.includes("Sub")) return 10;
+  return 0;
 }
 
 export function capacityAtLevel(mod: ModuleRecord, level: number): number {
@@ -98,6 +103,23 @@ export function capacityCostAtLevel(mod: ModuleRecord, level: number): number {
 }
 
 /**
+ * In-game: matching slot catalyst (socket type) halves module capacity cost (we use floor).
+ * Sub-slot modules that cost 0 stay 0.
+ */
+export function capacityCostAtLevelWithCatalyst(
+  mod: ModuleRecord,
+  level: number,
+  slotCatalystCorners: (string | null)[] | null | undefined,
+): number {
+  const base = capacityCostAtLevel(mod, level);
+  if (base <= 0) return 0;
+  const sock = (mod.socket ?? "").trim();
+  if (!sock || !slotCatalystCorners?.length) return base;
+  if (!slotCatalystCorners.includes(sock)) return base;
+  return Math.floor(base / 2);
+}
+
+/**
  * Bonus added to max descendant module capacity from a leveled sub-attack module.
  * Uses `capacities[level]` when &gt; 0 (see modules.json); otherwise +1 per level.
  */
@@ -110,8 +132,67 @@ export function subAttackMaxCapacityBonusAtLevel(mod: ModuleRecord, level: numbe
   return lv;
 }
 
+/**
+ * Raw +max-capacity from the Sub cell (index 6): Charged Sub Attack **or** other Sub-board mods (e.g. grappling),
+ * using Nexon `module_stat` when present, else +1 per level.
+ */
+export function rawSubSlotMaxCapacityBonus(mod: ModuleRecord, level: number): number {
+  if (!isSubModuleBoardSlot(mod)) return 0;
+  const capMax = maxModuleLevel(mod);
+  const lv = Math.min(capMax, Math.max(0, level));
+  const c = mod.capacities?.[lv];
+  if (typeof c === "number" && c > 0) return c;
+  return lv;
+}
+
+/**
+ * Sub cell only: bonus toward 75→85. If a slot catalyst matches the module socket, bonus stacks faster (×2, cap +10).
+ */
+export function subSlotMaxCapacityBonusAtSlot(
+  slotIndex: number,
+  mod: ModuleRecord | undefined,
+  level: number,
+  slotCatalystCorners: (string | null)[] | null | undefined,
+): number {
+  if (slotIndex !== 6 || !mod) return 0;
+  const raw = rawSubSlotMaxCapacityBonus(mod, level);
+  if (raw <= 0) return 0;
+  const sock = (mod.socket ?? "").trim();
+  const corners = slotCatalystCorners ?? [];
+  const match = !!(sock && corners.includes(sock));
+  const boosted = match ? raw * 2 : raw;
+  return Math.min(10, boosted);
+}
+
 /** Polarity labels (Nexon `module_socket_type`) for resolution / manual socket. */
 export const MODULE_POLARITY_OPTIONS = ["Almandine", "Cerulean", "Malachite", "Rutile", "Xantic"] as const;
+
+/** Per-slot catalyst layers (in-game “polarize” up to four times). */
+export const SLOT_CATALYST_CORNERS = 4;
+
+export function emptySlotCatalystCorners(): (string | null)[] {
+  return [null, null, null, null];
+}
+
+export function normalizeSlotCatalystCorners(raw: unknown): (string | null)[] {
+  const out = emptySlotCatalystCorners();
+  if (!Array.isArray(raw)) return out;
+  for (let i = 0; i < SLOT_CATALYST_CORNERS; i++) {
+    const v = raw[i];
+    if (v == null || v === "") out[i] = null;
+    else if (typeof v === "string" && (MODULE_POLARITY_OPTIONS as readonly string[]).includes(v)) out[i] = v;
+  }
+  return out;
+}
+
+export function normalizePlannerSlotCatalysts(raw: unknown, slotCount: number): (string | null)[][] {
+  const rows: (string | null)[][] = [];
+  const src = Array.isArray(raw) ? raw : [];
+  for (let i = 0; i < slotCount; i++) {
+    rows.push(normalizeSlotCatalystCorners(src[i]));
+  }
+  return rows;
+}
 
 /** One module per non-empty `module_type` on descendant builds; skip Ancestors (resolution rules apply separately). */
 export function descendantModuleTypeExclusionKey(mod: ModuleRecord): string | null {
@@ -154,36 +235,46 @@ export function defaultPlacedSocket(mod: ModuleRecord): string {
 
 export function totalCapacityCost(
   slots: Array<{ moduleId: string; level: number } | null | undefined>,
-  byId: Map<string, ModuleRecord>
+  byId: Map<string, ModuleRecord>,
+  catalystCornersPerSlot?: (string | null)[][] | null,
 ): number {
   let sum = 0;
-  for (const s of slots) {
+  for (let i = 0; i < slots.length; i++) {
+    const s = slots[i];
     if (!s) continue;
     const m = byId.get(s.moduleId);
     if (!m) continue;
-    sum += capacityCostAtLevel(m, s.level);
+    const corners = catalystCornersPerSlot?.[i] ?? null;
+    sum += capacityCostAtLevelWithCatalyst(m, s.level, corners);
   }
   return sum;
 }
 
+/** @deprecated Prefer {@link totalSubSlotCapacityBonus} (Sub cell only + catalyst). */
 export function totalSubAttackCapacityBonus(
   slots: Array<{ moduleId: string; level: number } | null | undefined>,
-  byId: Map<string, ModuleRecord>
+  byId: Map<string, ModuleRecord>,
 ): number {
-  let sum = 0;
-  for (const s of slots) {
-    if (!s) continue;
-    const m = byId.get(s.moduleId);
-    if (!m) continue;
-    sum += subAttackMaxCapacityBonusAtLevel(m, s.level);
-  }
-  return sum;
+  return totalSubSlotCapacityBonus(slots, byId, null);
+}
+
+/** Max descendant pool bonus from the Sub module cell (slot index 6) only. */
+export function totalSubSlotCapacityBonus(
+  slots: Array<{ moduleId: string; level: number } | null | undefined>,
+  byId: Map<string, ModuleRecord>,
+  catalystCornersPerSlot?: (string | null)[][] | null,
+): number {
+  const s = slots[6];
+  if (!s) return 0;
+  const m = byId.get(s.moduleId);
+  if (!m) return 0;
+  return subSlotMaxCapacityBonusAtSlot(6, m, s.level, catalystCornersPerSlot?.[6] ?? null);
 }
 
 /** @deprecated use totalCapacityCost */
 export function totalPlacedCapacity(
   slots: Array<{ moduleId: string; level: number } | null | undefined>,
-  byId: Map<string, ModuleRecord>
+  byId: Map<string, ModuleRecord>,
 ): number {
   return totalCapacityCost(slots, byId);
 }
@@ -191,12 +282,25 @@ export function totalPlacedCapacity(
 export function effectiveMaxCapacity(
   targetType: "descendant" | "weapon",
   slots: Array<{ moduleId: string; level: number } | null | undefined>,
-  byId: Map<string, ModuleRecord>
+  byId: Map<string, ModuleRecord>,
+  catalystCornersPerSlot?: (string | null)[][] | null,
 ): number {
   if (targetType === "weapon") return MAX_WEAPON_CAPACITY;
-  const bonus = totalSubAttackCapacityBonus(slots, byId);
-  /** 75 + 0…10 → up to 85; other Malachite mods (e.g. grappling) do not add this bonus. */
+  const bonus = totalSubSlotCapacityBonus(slots, byId, catalystCornersPerSlot);
   return Math.min(MAX_DESCENDANT_CAPACITY, DESCENDANT_BASE_CAPACITY + bonus);
+}
+
+/** Display number on the slot card: Sub cell shows +max bonus; others show discounted cost. */
+export function placedModuleCapacityDisplay(
+  mod: ModuleRecord,
+  slotIndex: number,
+  level: number,
+  slotCatalystCorners: (string | null)[] | null | undefined,
+): number {
+  if (isSubModuleBoardSlot(mod) && slotIndex === 6) {
+    return subSlotMaxCapacityBonusAtSlot(6, mod, level, slotCatalystCorners);
+  }
+  return capacityCostAtLevelWithCatalyst(mod, level, slotCatalystCorners);
 }
 
 const WEAPON_MODULE_CLASSES = new Set([

@@ -46,6 +46,8 @@ export interface PublicBuild {
   imageUrl: string;
   moduleSlots: string[];
   plannerSlots?: (PublicPlacedModule | null)[] | null;
+  /** Descendant builds: slot socket catalysts (same shape as `BuildEntry.plannerSlotCatalysts`). */
+  plannerSlotCatalysts?: (string | null)[][] | null;
   reactor?: PublicBuildReactor | null;
   targetLevel?: number;
   archeLevel?: number;

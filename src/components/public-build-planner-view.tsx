@@ -8,7 +8,7 @@ import {
 } from "@/app/tracker/components/BuildPlannerPanel";
 import type { PublicBuild } from "@/lib/public-build-types";
 import type { ModuleRecord } from "@/lib/tfd-modules";
-import { WEAPON_TYPE_TO_NEXON, slotCountForTarget } from "@/lib/tfd-modules";
+import { WEAPON_TYPE_TO_NEXON, normalizePlannerSlotCatalysts, slotCountForTarget } from "@/lib/tfd-modules";
 import { weaponNameToSlug } from "@/lib/weapon-slug";
 import { fetchDescendantsCatalogRows, fetchModulesCatalog, fetchWeaponsCatalogRows } from "@/lib/fetch-game-catalog";
 import type { DescendantCatalogRow } from "@/lib/nexon-catalog-transform";
@@ -94,8 +94,12 @@ export function PublicBuildPlannerView({ build }: { build: PublicBuild }) {
       targetType,
       targetKey,
       plannerSlots: raw.slice(0, n),
+      plannerSlotCatalysts:
+        targetType === "descendant"
+          ? normalizePlannerSlotCatalysts(build.plannerSlotCatalysts, n)
+          : undefined,
     };
-  }, [build.plannerSlots, targetType, targetKey]);
+  }, [build.plannerSlots, build.plannerSlotCatalysts, targetType, targetKey]);
 
   const noopSetPlanner = useCallback<React.Dispatch<React.SetStateAction<PlannerFormSlice>>>(() => {}, []);
 

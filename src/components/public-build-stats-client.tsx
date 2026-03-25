@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import type { PublicBuild } from "@/lib/public-build-types";
 import type { ModuleRecord } from "@/lib/tfd-modules";
-import { effectiveMaxCapacity } from "@/lib/tfd-modules";
+import { effectiveMaxCapacity, normalizePlannerSlotCatalysts, slotCountForTarget } from "@/lib/tfd-modules";
 import { computePlannerMetrics } from "@/lib/build-planner-stats";
 import { fetchModulesCatalog } from "@/lib/fetch-game-catalog";
 
@@ -28,9 +28,12 @@ export function PublicBuildStatRollup({ build }: { build: PublicBuild }) {
     const tt = build.targetType === "weapon" ? "weapon" : "descendant";
     const row = [...(build.plannerSlots ?? [])];
     const payload = row.map((s) => (s ? { moduleId: s.moduleId, level: s.level } : null));
-    const maxCap = effectiveMaxCapacity(tt, payload, moduleById);
-    return computePlannerMetrics(row, moduleById, maxCap);
-  }, [catalog, build.plannerSlots, build.targetType, slots.length]);
+    const n = slotCountForTarget(tt);
+    const cats =
+      tt === "descendant" ? normalizePlannerSlotCatalysts(build.plannerSlotCatalysts, n) : null;
+    const maxCap = effectiveMaxCapacity(tt, payload, moduleById, cats);
+    return computePlannerMetrics(row, moduleById, maxCap, cats);
+  }, [catalog, build.plannerSlots, build.plannerSlotCatalysts, build.targetType, slots.length]);
 
   if (slots.length === 0) return null;
 

@@ -51,11 +51,15 @@ import {
   MAX_DESCENDANT_CAPACITY,
   filterModuleLibrary,
   isChargedSubAttackModule,
+  isSubModuleBoardSlot,
   matchesModuleFilters,
   maxModuleLevel,
   MODULE_POLARITY_OPTIONS,
+  emptySlotCatalystCorners,
+  normalizePlannerSlotCatalysts,
+  placedModuleCapacityDisplay,
+  rawSubSlotMaxCapacityBonus,
   slotCountForTarget,
-  subAttackMaxCapacityBonusAtLevel,
   totalCapacityCost,
 } from "@/lib/tfd-modules";
 import {
@@ -169,6 +173,8 @@ export interface PlannerFormSlice {
   targetType: "descendant" | "weapon";
   targetKey: string;
   plannerSlots: (PlacedModule | null)[];
+  /** Descendant builds: per-slot socket catalysts (four corners). */
+  plannerSlotCatalysts?: (string | null)[][] | null;
 }
 
 interface Props {
@@ -212,8 +218,8 @@ function ModuleLibraryCard({ mod, disabled, expanded }: { mod: ModuleRecord; dis
       <div className="mod-lib-body">
         <div className="mod-lib-card-top">
           <span className="mod-lib-cap">
-            {isChargedSubAttackModule(mod)
-              ? `+${subAttackMaxCapacityBonusAtLevel(mod, 0)} max`
+            {isSubModuleBoardSlot(mod)
+              ? `+${rawSubSlotMaxCapacityBonus(mod, 0)} max`
               : capacityAtLevel(mod, 0)}
           </span>
           {mod.socket && <span className="mod-lib-socket" title={mod.socket}>{mod.socket}</span>}
@@ -229,10 +235,25 @@ function ModuleLibraryCard({ mod, disabled, expanded }: { mod: ModuleRecord; dis
   );
 }
 
+function catalystCornerLabel(p: string | null): string {
+  if (!p) return "\u2697";
+  return p.slice(0, 1);
+}
+
 // Child: Slot
 
 function SlotDrop({
-  index, placed, moduleById, onClear, onLevel, onEditAncestor, readOnly, targetType,
+  index,
+  placed,
+  moduleById,
+  onClear,
+  onLevel,
+  onEditAncestor,
+  readOnly,
+  targetType,
+  catalystCorners,
+  onCycleCatalystCorner,
+  onSetPrimaryCatalyst,
 }: {
   index: number;
   placed: PlacedModule | null | undefined;
@@ -242,6 +263,9 @@ function SlotDrop({
   onEditAncestor?: () => void;
   readOnly?: boolean;
   targetType: "descendant" | "weapon";
+  catalystCorners: (string | null)[];
+  onCycleCatalystCorner?: (cornerIndex: number) => void;
+  onSetPrimaryCatalyst?: (polarity: string | null) => void;
 }) {
   const { isOver, setNodeRef } = useDroppable({ id: droppableSlotId(index), disabled: !!readOnly });
   const mod = placed ? moduleById.get(placed.moduleId) : undefined;
@@ -252,15 +276,78 @@ function SlotDrop({
   const roleClass =
     slotRole === "skill" ? " builder-slot-role-skill" : slotRole === "sub" ? " builder-slot-role-sub" : "";
   const maxLv = mod ? maxModuleLevel(mod) : 10;
+  const showCatalyst = targetType === "descendant";
+  const corners =
+    targetType === "descendant" && catalystCorners.length >= 4
+      ? catalystCorners
+      : emptySlotCatalystCorners();
+  const capDisplay = mod ? placedModuleCapacityDisplay(mod, index, placed?.level ?? 0, corners) : 0;
+  const sock = (mod?.socket ?? placed?.socket ?? "").trim();
+  const socketMatchesCatalyst = !!(sock && corners.some((c) => c === sock));
+  const subBonusLine = !!(mod && isSubModuleBoardSlot(mod) && index === 6);
+
+  const cornerBtn = (ci: number, pos: "tl" | "tr" | "bl" | "br") => {
+    const v = corners[ci] ?? null;
+    if (!showCatalyst) return null;
+    if (readOnly) {
+      return (
+        <span
+          key={ci}
+          className={`builder-slot-catalyst-corner builder-slot-catalyst-${pos} builder-slot-catalyst-readonly`}
+          title={v ? `Catalyst: ${v}` : "No catalyst"}
+        >
+          {catalystCornerLabel(v)}
+        </span>
+      );
+    }
+    return (
+      <button
+        key={ci}
+        type="button"
+        className={`builder-slot-catalyst-corner builder-slot-catalyst-${pos}${v ? " has-val" : ""}`}
+        title={v ? `Catalyst: ${v} (click to change)` : "Add slot catalyst (socket type)"}
+        aria-label={v ? `Catalyst corner ${ci + 1}: ${v}` : `Catalyst corner ${ci + 1}: empty`}
+        onClick={(e) => {
+          e.stopPropagation();
+          onCycleCatalystCorner?.(ci);
+        }}
+      >
+        {catalystCornerLabel(v)}
+      </button>
+    );
+  };
 
   return (
     <div ref={setNodeRef} className={`builder-slot${roleClass}${isOver ? " slot-over" : ""}${placed ? " slot-filled" : ""}`}>
       <span className="builder-slot-idx">{index + 1}</span>
       {slotRole === "skill" && <span className="builder-slot-role-pill">Skill</span>}
       {slotRole === "sub" && <span className="builder-slot-role-pill">Sub</span>}
+      {showCatalyst && (
+        <div className="builder-slot-catalyst-layer">
+          {cornerBtn(0, "tl")}
+          {cornerBtn(1, "tr")}
+          {cornerBtn(2, "bl")}
+          {cornerBtn(3, "br")}
+        </div>
+      )}
       {!placed ? (
         <div className="builder-slot-empty">
           <span className="builder-slot-chip">{readOnly ? "—" : "Drop module"}</span>
+          {showCatalyst && onSetPrimaryCatalyst && !readOnly && (
+            <label className="builder-slot-catalyst-quick">
+              <span className="sr-only">Primary slot socket (catalyst)</span>
+              <select
+                value={corners[0] ?? ""}
+                onChange={(e) => onSetPrimaryCatalyst(e.target.value || null)}
+                onClick={(e) => e.stopPropagation()}
+              >
+                <option value="">Socket —</option>
+                {MODULE_POLARITY_OPTIONS.map((o) => (
+                  <option key={o} value={o}>{o}</option>
+                ))}
+              </select>
+            </label>
+          )}
         </div>
       ) : (
         <div className="builder-slot-filled">
@@ -287,10 +374,14 @@ function SlotDrop({
             <div className={`builder-slot-title ${mod?.tier === "Transcendent" ? "tier-transcendent" : mod?.tier === "Ultimate" ? "tier-ultimate" : mod?.tier === "Rare" ? "tier-rare" : ""}`} title={placed.name}>{placed.name}</div>
             <div className="builder-slot-meta">
               <span className={`builder-slot-socket ${mod?.tier === "Transcendent" ? "tier-transcendent" : ""}`}>{placed.socket}</span>
-              <span className={`builder-slot-cap${mod && isChargedSubAttackModule(mod) ? " builder-slot-cap-bonus" : ""}`}>
-                {mod && isChargedSubAttackModule(mod)
-                  ? `+${subAttackMaxCapacityBonusAtLevel(mod, placed.level)} max cap`
-                  : `${placed.capacity} cap`}
+              <span
+                className={`builder-slot-cap${
+                  subBonusLine ? " builder-slot-cap-bonus" : ""
+                }${!subBonusLine && socketMatchesCatalyst && capDisplay > 0 ? " builder-slot-cap-matched" : ""}`}
+              >
+                {subBonusLine
+                  ? `+${capDisplay} max cap`
+                  : `${capDisplay} cap`}
               </span>
             </div>
             {isAncestor && placed.ancestorStats ? (
@@ -312,16 +403,43 @@ function SlotDrop({
               );
             })() : null}
           </div>
+          {showCatalyst && onSetPrimaryCatalyst && !readOnly && (
+            <label className="builder-slot-catalyst-quick builder-slot-catalyst-quick-filled">
+              <span className="sr-only">Primary slot socket (catalyst)</span>
+              <select
+                value={corners[0] ?? ""}
+                onChange={(e) => onSetPrimaryCatalyst(e.target.value || null)}
+                onClick={(e) => e.stopPropagation()}
+              >
+                <option value="">Socket —</option>
+                {MODULE_POLARITY_OPTIONS.map((o) => (
+                  <option key={o} value={o}>{o}</option>
+                ))}
+              </select>
+            </label>
+          )}
           {readOnly ? (
             <div className="builder-slot-lvl builder-slot-lvl-readonly" aria-label="Module level">
+              <div className="builder-slot-lvl-track" aria-hidden>
+                {Array.from({ length: maxLv }, (_, i) => (
+                  <span key={i} className={`builder-slot-lvl-seg${i < placed.level ? " on" : ""}`} />
+                ))}
+              </div>
               <span className="builder-lvl-num">Lv {placed.level}</span>
             </div>
           ) : (
-            <div className="builder-slot-lvl" role="group" aria-label="Module level">
-              <button type="button" className="builder-lvl-btn" onClick={() => onLevel(-1)} disabled={placed.level <= 0}>{"\u2212"}</button>
-              <span className="builder-lvl-num">Lv {placed.level}</span>
-              <button type="button" className="builder-lvl-btn" onClick={() => onLevel(1)} disabled={placed.level >= maxLv}>+</button>
-            </div>
+            <>
+              <div className="builder-slot-lvl-track" aria-hidden>
+                {Array.from({ length: maxLv }, (_, i) => (
+                  <span key={i} className={`builder-slot-lvl-seg${i < placed.level ? " on" : ""}`} />
+                ))}
+              </div>
+              <div className="builder-slot-lvl" role="group" aria-label="Module level">
+                <button type="button" className="builder-lvl-btn" onClick={() => onLevel(-1)} disabled={placed.level <= 0}>{"\u2212"}</button>
+                <span className="builder-lvl-num">Lv {placed.level}</span>
+                <button type="button" className="builder-lvl-btn" onClick={() => onLevel(1)} disabled={placed.level >= maxLv}>+</button>
+              </div>
+            </>
           )}
         </div>
       )}
@@ -1105,21 +1223,89 @@ function BuildPlannerPanelInner({
     return arr.slice(0, nSlots);
   }, [form.plannerSlots, nSlots]);
 
+  const catalystRows = useMemo(
+    () =>
+      form.targetType === "descendant"
+        ? normalizePlannerSlotCatalysts(form.plannerSlotCatalysts, nSlots)
+        : null,
+    [form.targetType, form.plannerSlotCatalysts, nSlots],
+  );
+
   const maxCap = useMemo(
     () =>
       effectiveMaxCapacity(
         form.targetType,
         slots.map((s) => (s ? { moduleId: s.moduleId, level: s.level } : null)),
         moduleById,
+        catalystRows,
       ),
-    [form.targetType, slots, moduleById],
+    [form.targetType, slots, moduleById, catalystRows],
   );
 
-  const metrics = useMemo(() => computePlannerMetrics(slots, moduleById, maxCap), [slots, moduleById, maxCap]);
+  const metrics = useMemo(
+    () => computePlannerMetrics(slots, moduleById, maxCap, catalystRows),
+    [slots, moduleById, maxCap, catalystRows],
+  );
 
   const total = useMemo(
-    () => totalCapacityCost(slots.map((s) => (s ? { moduleId: s.moduleId, level: s.level } : null)), moduleById),
-    [slots, moduleById],
+    () =>
+      totalCapacityCost(
+        slots.map((s) => (s ? { moduleId: s.moduleId, level: s.level } : null)),
+        moduleById,
+        catalystRows,
+      ),
+    [slots, moduleById, catalystRows],
+  );
+
+  const cycleSlotCatalyst = useCallback(
+    (slotIndex: number, cornerIndex: number) => {
+      if (readOnly || form.targetType !== "descendant") return;
+      const order: (string | null)[] = [null, ...(MODULE_POLARITY_OPTIONS as unknown as string[])];
+      setForm((f) => {
+        const cats = normalizePlannerSlotCatalysts(f.plannerSlotCatalysts, nSlots);
+        const row = [...cats[slotIndex]];
+        const cur = row[cornerIndex] ?? null;
+        const idx = order.indexOf(cur);
+        row[cornerIndex] = order[(idx < 0 ? 0 : idx + 1) % order.length];
+        cats[slotIndex] = row;
+        const slotRow = [...(f.plannerSlots ?? [])];
+        while (slotRow.length < nSlots) slotRow.push(null);
+        const payload = slotRow.slice(0, nSlots).map((s) => (s ? { moduleId: s.moduleId, level: s.level } : null));
+        const tot = totalCapacityCost(payload, moduleById, cats);
+        const effMax = effectiveMaxCapacity(f.targetType, payload, moduleById, cats);
+        if (tot > effMax) {
+          window.alert(
+            "That catalyst change breaks the current module budget (or lowers max capacity). Adjust modules or levels first.",
+          );
+          return f;
+        }
+        return { ...f, plannerSlotCatalysts: cats };
+      });
+    },
+    [readOnly, form.targetType, nSlots, moduleById, setForm],
+  );
+
+  const setPrimaryCatalyst = useCallback(
+    (slotIndex: number, polarity: string | null) => {
+      if (readOnly || form.targetType !== "descendant") return;
+      setForm((f) => {
+        const cats = normalizePlannerSlotCatalysts(f.plannerSlotCatalysts, nSlots);
+        const row = [...cats[slotIndex]];
+        row[0] = polarity;
+        cats[slotIndex] = row;
+        const slotRow = [...(f.plannerSlots ?? [])];
+        while (slotRow.length < nSlots) slotRow.push(null);
+        const payload = slotRow.slice(0, nSlots).map((s) => (s ? { moduleId: s.moduleId, level: s.level } : null));
+        const tot = totalCapacityCost(payload, moduleById, cats);
+        const effMax = effectiveMaxCapacity(f.targetType, payload, moduleById, cats);
+        if (tot > effMax) {
+          window.alert("That socket would exceed your module budget with the current loadout.");
+          return f;
+        }
+        return { ...f, plannerSlotCatalysts: cats };
+      });
+    },
+    [readOnly, form.targetType, nSlots, moduleById, setForm],
   );
 
   const libraryBase = useMemo(
@@ -1218,15 +1404,15 @@ function BuildPlannerPanelInner({
       }
     }
 
-    if (form.targetType === "descendant" && isChargedSubAttackModule(mod)) {
+    if (form.targetType === "descendant" && isSubModuleBoardSlot(mod)) {
       const existingSub = slots.some((s, si) => {
         if (!s || si === idx) return false;
         const em = moduleById.get(s.moduleId);
-        return em ? isChargedSubAttackModule(em) : false;
+        return em ? isSubModuleBoardSlot(em) : false;
       });
       if (existingSub) {
         window.alert(
-          "Only one Charged Sub Attack module (Shortsword, Tonfa, Dual Claw, etc.) can be equipped at a time.",
+          "Only one Sub-slot module (Charged Sub Attack, Mid-Air Maneuvering, etc.) can be equipped at a time.",
         );
         return;
       }
@@ -1258,7 +1444,16 @@ function BuildPlannerPanelInner({
     }
 
     const row = [...slots];
-    const displayCap = isChargedSubAttackModule(mod) ? subAttackMaxCapacityBonusAtLevel(mod, 0) : capacityCostAtLevel(mod, 0);
+    const catMatrix =
+      form.targetType === "descendant"
+        ? (catalystRows ?? normalizePlannerSlotCatalysts(null, nSlots))
+        : null;
+    const displayCap = placedModuleCapacityDisplay(
+      mod,
+      idx,
+      0,
+      form.targetType === "descendant" ? (catMatrix![idx] ?? emptySlotCatalystCorners()) : emptySlotCatalystCorners(),
+    );
     const placed: PlacedModule = {
       moduleId: mod.id,
       level: 0,
@@ -1271,8 +1466,8 @@ function BuildPlannerPanelInner({
     const nextRow = [...row];
     nextRow[idx] = placed;
     const payload = nextRow.map((s) => (s ? { moduleId: s.moduleId, level: s.level } : null));
-    const tot = totalCapacityCost(payload, moduleById);
-    const effMax = effectiveMaxCapacity(form.targetType, payload, moduleById);
+    const tot = totalCapacityCost(payload, moduleById, catMatrix ?? undefined);
+    const effMax = effectiveMaxCapacity(form.targetType, payload, moduleById, catMatrix ?? undefined);
     if (tot > effMax) {
       window.alert(`Over capacity (max ${effMax}). Remove a module or lower levels.`);
       return;
@@ -1292,8 +1487,10 @@ function BuildPlannerPanelInner({
       const testRow = [...row];
       testRow[index] = next;
       const payload = testRow.map((s) => (s ? { moduleId: s.moduleId, level: s.level } : null));
-      const tot = totalCapacityCost(payload, moduleById);
-      const effMax = effectiveMaxCapacity(form.targetType, payload, moduleById);
+      const cats =
+        f.targetType === "descendant" ? normalizePlannerSlotCatalysts(f.plannerSlotCatalysts, nSlots) : undefined;
+      const tot = totalCapacityCost(payload, moduleById, cats);
+      const effMax = effectiveMaxCapacity(f.targetType, payload, moduleById, cats);
       if (tot > effMax) return f;
       row[index] = next;
       return { ...f, plannerSlots: row };
@@ -1310,12 +1507,21 @@ function BuildPlannerPanelInner({
       if (!mod) return f;
       const capLv = maxModuleLevel(mod);
       const nextLv = Math.min(capLv, Math.max(0, cur.level + delta));
-      const displayCap = isChargedSubAttackModule(mod) ? subAttackMaxCapacityBonusAtLevel(mod, nextLv) : capacityCostAtLevel(mod, nextLv);
+      const cats =
+        f.targetType === "descendant" ? normalizePlannerSlotCatalysts(f.plannerSlotCatalysts, nSlots) : undefined;
+      const displayCap = placedModuleCapacityDisplay(
+        mod,
+        slotIndex,
+        nextLv,
+        f.targetType === "descendant"
+          ? (cats![slotIndex] ?? emptySlotCatalystCorners())
+          : emptySlotCatalystCorners(),
+      );
       const nextRow = [...row];
       nextRow[slotIndex] = { ...cur, level: nextLv, capacity: displayCap };
       const payload = nextRow.map((s) => (s ? { moduleId: s.moduleId, level: s.level } : null));
-      const tot = totalCapacityCost(payload, moduleById);
-      const effMax = effectiveMaxCapacity(form.targetType, payload, moduleById);
+      const tot = totalCapacityCost(payload, moduleById, cats);
+      const effMax = effectiveMaxCapacity(f.targetType, payload, moduleById, cats);
       if (tot > effMax) return f;
       row[slotIndex] = nextRow[slotIndex]!;
       return { ...f, plannerSlots: row };
@@ -1347,9 +1553,22 @@ function BuildPlannerPanelInner({
         ? stats.positives.map((p) => `${p.stat}: +${p.value}`).join(", ") +
           (stats.negative ? `, ${stats.negative.stat}: ${stats.negative.value}` : "")
         : cur.customPreview ?? "";
+      const cats =
+        f.targetType === "descendant" ? normalizePlannerSlotCatalysts(f.plannerSlotCatalysts, nSlots) : undefined;
+      const capDisp = m
+        ? placedModuleCapacityDisplay(
+            { ...m, socket },
+            slotIndex,
+            cur.level,
+            f.targetType === "descendant"
+              ? (cats![slotIndex] ?? emptySlotCatalystCorners())
+              : emptySlotCatalystCorners(),
+          )
+        : cur.capacity;
       row[slotIndex] = {
         ...cur,
         socket,
+        capacity: capDisp,
         ...(hasStats
           ? { ancestorStats: { positives: stats.positives, negative: stats.negative }, customPreview: summary }
           : {}),
@@ -1815,10 +2034,11 @@ function BuildPlannerPanelInner({
                     if (!p) return null;
                     const m = moduleById.get(p.moduleId);
                     const spans = splitEffectSpans(m, p.level);
+                    const corners = catalystRows?.[i] ?? emptySlotCatalystCorners();
                     const capLabel = m
-                      ? isChargedSubAttackModule(m)
-                        ? `+${subAttackMaxCapacityBonusAtLevel(m, p.level)} max cap`
-                        : `${capacityAtLevel(m, p.level)} cap`
+                      ? isSubModuleBoardSlot(m) && i === 6
+                        ? `+${placedModuleCapacityDisplay(m, i, p.level, corners)} max cap`
+                        : `${placedModuleCapacityDisplay(m, i, p.level, corners)} cap`
                       : "";
                     return (
                       <li key={`${p.moduleId}-${i}`}>
@@ -1852,7 +2072,7 @@ function BuildPlannerPanelInner({
               className="builder-capacity-block"
               title={
                 form.targetType === "descendant"
-                  ? `Budget: base ${DESCENDANT_BASE_CAPACITY} + up to ${MAX_DESCENDANT_CAPACITY - DESCENDANT_BASE_CAPACITY} from Charged Sub Attack (melee) level ? max ${MAX_DESCENDANT_CAPACITY} at Lv10 melee (e.g. Tonfa). Other Malachite subs (e.g. grappling) do not raise this cap.`
+                  ? `Budget: base ${DESCENDANT_BASE_CAPACITY} + up to ${MAX_DESCENDANT_CAPACITY - DESCENDANT_BASE_CAPACITY} from the Sub module cell (slot 7) when leveled — Charged Sub Attack, Mid-Air Maneuvering, etc. Catalyze that cell with a matching socket to grow the bonus faster (toward ${MAX_DESCENDANT_CAPACITY}). Other slots: matching slot catalyst + module socket halves capacity cost (floor).`
                   : `Weapon module budget (max ${maxCap}).`
               }
             >
@@ -1879,6 +2099,9 @@ function BuildPlannerPanelInner({
                     placed={placed}
                     moduleById={moduleById}
                     targetType={form.targetType}
+                    catalystCorners={catalystRows?.[index] ?? emptySlotCatalystCorners()}
+                    onCycleCatalystCorner={(ci) => cycleSlotCatalyst(index, ci)}
+                    onSetPrimaryCatalyst={(p) => setPrimaryCatalyst(index, p)}
                     readOnly={readOnly}
                     onClear={() => setSlot(index, null)}
                     onLevel={(d) => changeLevel(index, d)}

@@ -157,6 +157,11 @@ export interface BuildEntry {
   moduleSlots: string[];
   /** Nexon-style planner: 10 slots (weapon) or 12 (descendant). */
   plannerSlots?: (PlacedModule | null)[] | null;
+  /**
+   * Descendant planner only: per-slot socket catalysts (up to four polarities per cell).
+   * When a value matches the equipped module’s `socket`, capacity cost is halved (floor) and Sub-cell max-cap bonus stacks faster.
+   */
+  plannerSlotCatalysts?: (string | null)[][] | null;
   /** Reactor paired with this build (inline or imported from inventory). */
   reactor?: BuildReactor | null;
   /** Target level for stat calculations (descendant 1-40, weapon 1-100). */
