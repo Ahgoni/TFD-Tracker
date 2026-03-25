@@ -19,6 +19,8 @@ interface SavedFriend {
 interface Props {
   sharePrivacy: "open" | "link_only";
   onPrivacyChange: (p: "open" | "link_only") => void;
+  buildsSharePrivacy: "public" | "private";
+  onBuildsPrivacyChange: (p: "public" | "private") => void;
   shareToken: string | null;
   onGenerateShare: () => void;
 }
@@ -87,7 +89,14 @@ function FriendAvatar({ name, image }: { name: string | null; image: string | nu
   );
 }
 
-export function FriendsTab({ sharePrivacy, onPrivacyChange, shareToken, onGenerateShare }: Props) {
+export function FriendsTab({
+  sharePrivacy,
+  onPrivacyChange,
+  buildsSharePrivacy,
+  onBuildsPrivacyChange,
+  shareToken,
+  onGenerateShare,
+}: Props) {
   const { data: session } = useSession();
   const [friends, setFriends] = useState<SavedFriend[]>([]);
   const [loading, setLoading] = useState(true);
@@ -428,6 +437,35 @@ export function FriendsTab({ sharePrivacy, onPrivacyChange, shareToken, onGenera
             ? "Friends can add you by username or profile link."
             : "Only people with your exact share link can view."}
         </p>
+
+        <div className="social-builds-privacy-block">
+          <div className="social-builds-privacy-head">
+            <span className="social-builds-privacy-title">Builds (profile + tier list)</span>
+            <div className="social-privacy-toggle">
+              <button
+                type="button"
+                className={`social-privacy-btn${buildsSharePrivacy === "private" ? " active" : ""}`}
+                onClick={() => onBuildsPrivacyChange("private")}
+                title="Hide builds from public profile and tier hub"
+              >
+                Private
+              </button>
+              <button
+                type="button"
+                className={`social-privacy-btn${buildsSharePrivacy === "public" ? " active" : ""}`}
+                onClick={() => onBuildsPrivacyChange("public")}
+                title="Allow public builds when marked Public on the Builds tab"
+              >
+                Public
+              </button>
+            </div>
+          </div>
+          <p className="social-builds-privacy-hint">
+            {buildsSharePrivacy === "public"
+              ? "Separate from inventory sharing above. Only builds you mark Public appear on your profile and the home tier list."
+              : "Builds stay off public URLs and the tier hub. Others cannot open your shared build links."}
+          </p>
+        </div>
       </div>
 
       {/* Add friend form (collapsible) */}

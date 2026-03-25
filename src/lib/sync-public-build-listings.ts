@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import { TierListCategory, type TierListCategoryValue } from "@/lib/tier-list-category";
 import { descendantNameToGroupId, weaponSlugSet } from "@/lib/tier-list-catalog";
+import { isBuildsSharingPublic } from "@/lib/public-profile-share";
 
 type RawBuild = {
   id?: string;
@@ -36,13 +37,12 @@ function matchDescendantToGroup(
 
 /**
  * Keeps `PublicBuildListing` in sync with saved builds. Only listings where
- * `communityPublic` is true and profile is `sharePrivacy === "open"` are kept.
+ * `communityPublic` is true and **builds sharing** is public (`buildsSharePrivacy !== "private"`).
  */
 export async function syncPublicBuildListings(userId: string, state: Record<string, unknown>): Promise<void> {
-  const sharePrivacy = (state.sharePrivacy as string) ?? "open";
   await prisma.publicBuildListing.deleteMany({ where: { userId } });
 
-  if (sharePrivacy !== "open") return;
+  if (!isBuildsSharingPublic(state)) return;
 
   const builds = (state.builds as RawBuild[]) ?? [];
   const nameToGroup = await descendantNameToGroupId();

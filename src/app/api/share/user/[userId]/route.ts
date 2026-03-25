@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { NextResponse } from "next/server";
+import { publicProfileStateFromSaved } from "@/lib/public-profile-share";
 
 // GET /api/share/user/[userId]
 // Returns a read-only snapshot of a user's tracker state if their privacy is "open".
@@ -13,19 +14,19 @@ export async function GET(
   const record = await prisma.appState.findUnique({ where: { userId } });
   if (!record) return NextResponse.json({ error: "User not found" }, { status: 404 });
 
-  // Check privacy setting — default to "open" if not set
   const stateData = record.data as Record<string, unknown> | null;
-  const privacy = stateData?.sharePrivacy ?? "open";
-
-  if (privacy === "link_only") {
-    return NextResponse.json({ error: "This user's inventory is private. Ask them for a share link." }, { status: 403 });
+  const shared = publicProfileStateFromSaved(stateData);
+  if (!shared.ok) {
+    return NextResponse.json(
+      { error: "This profile is not shared publicly. Ask them for a share link or to open inventory or builds sharing." },
+      { status: 403 },
+    );
   }
 
-  // Get display name
   const user = await prisma.user.findUnique({
     where: { id: userId },
     select: { name: true, image: true },
   });
 
-  return NextResponse.json({ state: stateData, owner: { name: user?.name ?? "Unknown", image: user?.image } });
+  return NextResponse.json({ state: shared.state, owner: { name: user?.name ?? "Unknown", image: user?.image } });
 }

@@ -2,6 +2,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { NextResponse } from "next/server";
+import { isBuildsSharingPublic, isInventorySharingOpen } from "@/lib/public-profile-share";
 
 async function resolveFriendUserId(token: string): Promise<string | null> {
   if (token.startsWith("username:")) {
@@ -79,9 +80,11 @@ export async function POST(req: Request) {
 
     const friendState = await prisma.appState.findUnique({ where: { userId: friendUser.id } });
     const stateData = friendState?.data as Record<string, unknown> | null;
-    const privacy = stateData?.sharePrivacy ?? "open";
-    if (privacy === "link_only") {
-      return NextResponse.json({ error: "This user has set their inventory to 'Link Only'. Ask them for a share link instead." }, { status: 403 });
+    if (!isInventorySharingOpen(stateData) && !isBuildsSharingPublic(stateData)) {
+      return NextResponse.json(
+        { error: "This user is not open to adds by username (inventory and builds are private). Ask them for a share link." },
+        { status: 403 },
+      );
     }
 
     const friend = await prisma.savedFriend.upsert({
@@ -103,9 +106,11 @@ export async function POST(req: Request) {
 
     const friendState = await prisma.appState.findUnique({ where: { userId: friendUserId } });
     const stateData = friendState?.data as Record<string, unknown> | null;
-    const privacy = stateData?.sharePrivacy ?? "open";
-    if (privacy === "link_only") {
-      return NextResponse.json({ error: "This user has set their inventory to 'Link Only'. Ask them for a share link instead." }, { status: 403 });
+    if (!isInventorySharingOpen(stateData) && !isBuildsSharingPublic(stateData)) {
+      return NextResponse.json(
+        { error: "This user is not open to adds by username (inventory and builds are private). Ask them for a share link." },
+        { status: 403 },
+      );
     }
 
     const friend = await prisma.savedFriend.upsert({

@@ -84,8 +84,10 @@ export default async function UsernameProfilePage({ params }: { params: Promise<
           <div className="brand"><h1>TFD Tracker</h1></div>
         </header>
         <section className="panel">
-          <h2>Inventory is Private</h2>
-          <p className="muted">@{username} has set their inventory to &quot;Link Only&quot;. Ask them for a share link.</p>
+          <h2>Profile not shared this way</h2>
+          <p className="muted">
+            @{username} has turned off public inventory and public builds (or both are private). Ask them for a share link, or to enable builds sharing if they only listed builds publicly.
+          </p>
           <div className="actions">
             <Link className="btn btn-primary" href="/">Go home</Link>
           </div>
@@ -95,6 +97,8 @@ export default async function UsernameProfilePage({ params }: { params: Promise<
   }
 
   const { owner, state } = data;
+  const stateKeys = Object.keys(state);
+  const buildsOnlyProfile = stateKeys.length === 1 && stateKeys[0] === "builds";
   const ownedWeapons = (state.weapons ?? []).filter((w) => w.acquired);
   const activeGoals = (state.goals ?? []).filter((g) => g.active && !g.completed);
   const maxedReactors = (state.reactors ?? []).filter((r) => r.enhancement === "5" || r.enhancement === "Max");
@@ -107,7 +111,10 @@ export default async function UsernameProfilePage({ params }: { params: Promise<
           <div className="brand">
             <h1>TFD Tracker — @{owner.username ?? username}</h1>
             <p>
-              Read-only view · {owner.name ?? "a player"}&apos;s inventory
+              Read-only view ·{" "}
+              {buildsOnlyProfile
+                ? `${owner.name ?? "A player"}'s public builds (inventory is link-only)`
+                : `${owner.name ?? "a player"}'s inventory`}
               {owner.nexonIngameName ? (
                 <span className="muted" style={{ display: "block", marginTop: "0.25rem", fontSize: "0.85rem" }}>
                   TFD in-game: {owner.nexonIngameName}

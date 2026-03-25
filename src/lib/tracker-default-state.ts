@@ -24,4 +24,5 @@ export const defaultTrackerState = {
   filters: { element: "all", skill: "all" },
   notesTabs: { Weapons: [] },
   sharePrivacy: "open" as const,
+  buildsSharePrivacy: "public" as const,
 };

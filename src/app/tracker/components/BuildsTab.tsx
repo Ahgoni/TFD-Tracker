@@ -572,8 +572,8 @@ export function BuildsTab({ state, setState }: Props) {
               <div>
                 <div className="tier-hub-visibility-title">Community tier list</div>
                 <p className="muted tier-hub-visibility-hint">
-                  <strong>Public</strong> listings can appear on the home tier list. Requires profile sharing{" "}
-                  <strong>Open</strong> in Friends — otherwise the index stays empty even if this is Public.
+                  <strong>Public</strong> can list on the home tier list and your /u profile when{" "}
+                  <strong>Builds sharing</strong> is Public in the profile menu (or Friends tab). Inventory sharing (Open / Link only) is separate.
                 </p>
               </div>
               <TierListVisibilitySwitch

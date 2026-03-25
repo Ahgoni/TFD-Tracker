@@ -47,7 +47,7 @@ Use this file to orient before large changes. **AI continuity:** `docs/AI_HANDOF
 ### Sharing & public profile
 
 - **`/api/share/[token]`** — loads **`AppState`** for a share token.
-- **`/api/share/u/[username]`** — public profile: reads **`AppState`** if `sharePrivacy === "open"`; **`link_only`** returns 403 (use direct share link).
+- **`/api/share/u/[username]`** — public profile: reads **`AppState`** through **`public-profile-share`**: inventory (`sharePrivacy`) and builds (`buildsSharePrivacy`) are independent; may return inventory-only, builds-only (community-public builds), full state, or 403.
 - **`/u/[username]`** — server page that fetches share API and renders **`PublicBuildsSection`**, etc.
 
 ---

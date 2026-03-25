@@ -167,7 +167,7 @@ export interface BuildEntry {
   externalComponents?: ExternalComponent[];
   /** @deprecated Optional legacy field; pairing notes field removed from editor. */
   reactorNotes?: string;
-  /** When true, build can appear on the public community tier hub (requires open profile sharing). */
+  /** When true, build can appear on the tier hub and public profile if builds sharing is Public. */
   communityPublic?: boolean;
   notes: string;
   updatedAt: string;
@@ -189,6 +189,8 @@ export interface TrackerState {
   filters: { element: string; skill: string };
   notesTabs: Record<string, Array<{ id: string; text: string; done?: boolean }>>;
   sharePrivacy: "open" | "link_only";
+  /** Public builds on profile + tier hub; separate from inventory sharing. */
+  buildsSharePrivacy: "public" | "private";
 }
 
 const DEFAULT_STATE: TrackerState = {
@@ -217,6 +219,7 @@ const DEFAULT_STATE: TrackerState = {
   filters: { element: "all", skill: "all" },
   notesTabs: { Weapons: [] },
   sharePrivacy: "open",
+  buildsSharePrivacy: "public",
 };
 
 const STORAGE_KEY = "tfd-tracker-v2";
@@ -386,6 +389,8 @@ export function TrackerClient() {
           communityPublic: b.communityPublic === true,
         }));
 
+        loaded.buildsSharePrivacy = loaded.buildsSharePrivacy === "private" ? "private" : "public";
+
         if (Array.isArray(loaded.reactors)) {
           loaded.reactors = loaded.reactors.map((x) =>
             normalizeReactorEntry(x as Parameters<typeof normalizeReactorEntry>[0]),
@@ -459,6 +464,7 @@ export function TrackerClient() {
         ...b,
         communityPublic: b.communityPublic === true,
       }));
+      merged.buildsSharePrivacy = merged.buildsSharePrivacy === "private" ? "private" : "public";
       merged.buildFilters = { ...DEFAULT_STATE.buildFilters, ...merged.buildFilters };
       if (Array.isArray(merged.reactors)) {
         merged.reactors = merged.reactors.map((x) =>
@@ -552,6 +558,8 @@ export function TrackerClient() {
               shareActive={showShare}
               sharePrivacy={state.sharePrivacy}
               onPrivacyChange={(p) => setState((prev) => ({ ...prev, sharePrivacy: p }))}
+              buildsSharePrivacy={state.buildsSharePrivacy}
+              onBuildsPrivacyChange={(p) => setState((prev) => ({ ...prev, buildsSharePrivacy: p }))}
               onImportFromBrowser={importFromLocalStorage}
             />
           </div>
@@ -623,6 +631,8 @@ export function TrackerClient() {
           <FriendsTab
             sharePrivacy={state.sharePrivacy}
             onPrivacyChange={(p) => setState((prev) => ({ ...prev, sharePrivacy: p }))}
+            buildsSharePrivacy={state.buildsSharePrivacy}
+            onBuildsPrivacyChange={(p) => setState((prev) => ({ ...prev, buildsSharePrivacy: p }))}
             shareToken={shareToken}
             onGenerateShare={handleShare}
           />

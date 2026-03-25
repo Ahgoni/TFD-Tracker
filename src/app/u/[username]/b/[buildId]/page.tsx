@@ -67,8 +67,8 @@ export default async function PublicBuildPage({
           </div>
         </header>
         <section className="panel">
-          <h2>Profile is private</h2>
-          <p className="muted">This profile is not available publicly.</p>
+          <h2>Build not available</h2>
+          <p className="muted">This user has not shared builds publicly, or the profile is restricted. Ask them to enable Builds sharing (Public) and mark the build Public.</p>
           <div className="actions">
             <Link className="btn btn-primary" href="/">
               Go home
