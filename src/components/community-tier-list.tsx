@@ -55,6 +55,88 @@ const DIST_CLASS: Record<VoteTierKey, string> = {
 
 const TIER_ORDER: readonly VoteTierKey[] = ["S", "A", "B", "C", "D"];
 
+function emptyVotesByTier(): Record<VoteTierKey, number> {
+  return { S: 0, A: 0, B: 0, C: 0, D: 0 };
+}
+
+function voteBreakdownParts(votesByTier: Record<VoteTierKey, number>): string {
+  return TIER_ORDER.filter((k) => votesByTier[k] > 0)
+    .map((k) => `${k} ${votesByTier[k]}`)
+    .join(", ");
+}
+
+function VoteBarInteractive({
+  votesByTier,
+  total,
+  decorative,
+  barLabel,
+  t,
+  variant = "list",
+}: {
+  votesByTier: Record<VoteTierKey, number>;
+  total: number;
+  decorative?: boolean;
+  /** Passed to the bar when not decorative (e.g. modal). */
+  barLabel?: string;
+  t: (key: string, vars?: Record<string, string>) => string;
+  /** List rows show inline chips on touch; modal relies on tooltip + caption. */
+  variant?: "list" | "modal";
+}) {
+  const breakdown = voteBreakdownParts(votesByTier);
+  const titleStr =
+    total > 0
+      ? breakdown
+        ? `${breakdown} — ${t("tierList.totalVotes", { n: String(total) })}`
+        : t("tierList.totalVotes", { n: String(total) })
+      : "";
+
+  if (total <= 0) {
+    return (
+      <VoteDistributionBar votesByTier={votesByTier} total={0} decorative={decorative} label={barLabel} />
+    );
+  }
+
+  return (
+    <>
+      <div className={styles.barHoverWrap} title={titleStr}>
+        <VoteDistributionBar
+          votesByTier={votesByTier}
+          total={total}
+          decorative={decorative}
+          label={barLabel}
+        />
+        <div className={styles.voteTooltip} role="tooltip">
+          <div className={styles.voteTooltipTitle}>{t("tierList.voteByTier")}</div>
+          {TIER_ORDER.map((tier) => {
+            const n = votesByTier[tier];
+            if (n <= 0) return null;
+            return (
+              <div key={tier} className={styles.voteTooltipRow}>
+                <span>{tier}</span>
+                <span>{n}</span>
+              </div>
+            );
+          })}
+          <div className={styles.voteTooltipFooter}>{t("tierList.totalVotes", { n: String(total) })}</div>
+        </div>
+      </div>
+      {variant === "list" ? (
+        <div className={styles.voteBreakdownNoHover} aria-hidden>
+          {TIER_ORDER.map((tier) => {
+            const n = votesByTier[tier];
+            if (n <= 0) return null;
+            return (
+              <span key={tier} className={styles.voteBreakdownChip}>
+                {tier}:{n}
+              </span>
+            );
+          })}
+        </div>
+      ) : null}
+    </>
+  );
+}
+
 function VoteDistributionBar({
   votesByTier,
   total,
@@ -303,14 +385,22 @@ export function CommunityTierList() {
                 ) : (
                   row.items.map((item) => {
                     const total = item.voteCount;
+                    const vbt = item.votesByTier ?? emptyVotesByTier();
+                    const partsStr = voteBreakdownParts(vbt);
+                    const srExtra =
+                      total > 0
+                        ? partsStr
+                          ? ` ${t("tierList.voteBreakdownSr", { parts: partsStr, total: String(total) })}`
+                          : ` ${t("tierList.totalVotes", { n: String(total) })}`
+                        : "";
                     const scoreLabel =
                       item.scorePercent != null
-                        ? t("tierList.rowAria", {
+                        ? `${t("tierList.rowAria", {
                             name: item.displayName,
                             score: String(item.scorePercent),
                             count: String(total),
-                          })
-                        : t("tierList.rowAriaUnranked", { name: item.displayName });
+                          })}${srExtra}`
+                        : `${t("tierList.rowAriaUnranked", { name: item.displayName })}${srExtra}`;
                     return (
                       <button
                         key={item.entityKey}
@@ -333,12 +423,12 @@ export function CommunityTierList() {
                           <span className={styles.portraitName}>{item.displayName}</span>
                         </div>
                         <div className={styles.barCell}>
-                          <VoteDistributionBar
-                            votesByTier={
-                              item.votesByTier ?? { S: 0, A: 0, B: 0, C: 0, D: 0 }
-                            }
+                          <VoteBarInteractive
+                            votesByTier={vbt}
                             total={total}
                             decorative
+                            t={t}
+                            variant="list"
                           />
                         </div>
                         <div className={styles.scoreCol} aria-hidden>
@@ -347,6 +437,9 @@ export function CommunityTierList() {
                           ) : (
                             <span className={styles.scoreDash}>—</span>
                           )}
+                          <span className={styles.voteTotalNum}>
+                            {total > 0 ? t("tierList.totalVotes", { n: String(total) }) : "—"}
+                          </span>
                         </div>
                       </button>
                     );
@@ -388,17 +481,35 @@ export function CommunityTierList() {
               <div className={styles.modalStats}>
                 <p className={styles.modalStatsLabel}>{t("tierList.communityScore")}</p>
                 <div className={styles.modalStatsRow}>
-                  <VoteDistributionBar
-                    votesByTier={modal.votesByTier}
-                    total={modal.voteCount}
-                    label={t("tierList.rowAria", {
-                      name: modal.displayName,
-                      score: String(modal.scorePercent),
-                      count: String(modal.voteCount),
-                    })}
-                  />
-                  <span className={styles.modalScorePct}>{modal.scorePercent}%</span>
+                  <div className={styles.modalBarCell}>
+                    <VoteBarInteractive
+                      votesByTier={modal.votesByTier}
+                      total={modal.voteCount}
+                      decorative={false}
+                      barLabel={t("tierList.rowAria", {
+                        name: modal.displayName,
+                        score: String(modal.scorePercent),
+                        count: String(modal.voteCount),
+                      })}
+                      t={t}
+                      variant="modal"
+                    />
+                  </div>
+                  <div className={styles.modalScoreBlock}>
+                    <span className={styles.modalScorePct}>{modal.scorePercent}%</span>
+                    <span className={styles.modalVoteTotal}>
+                      {t("tierList.totalVotes", { n: String(modal.voteCount) })}
+                    </span>
+                  </div>
                 </div>
+                <p className={styles.modalVoteDetail}>
+                  {(() => {
+                    const mp = voteBreakdownParts(modal.votesByTier);
+                    return mp
+                      ? `${mp} · ${t("tierList.totalVotes", { n: String(modal.voteCount) })}`
+                      : t("tierList.totalVotes", { n: String(modal.voteCount) });
+                  })()}
+                </p>
                 <p className={styles.modalStatsHint}>{t("tierList.scoreHint")}</p>
               </div>
             )}
@@ -409,15 +520,15 @@ export function CommunityTierList() {
                 <p className={styles.signInHint}>{t("tierList.modalCheckingSession")}</p>
               ) : session?.user ? (
                 <div className={styles.voteRow}>
-                  {(["S", "A", "B", "C", "D"] as const).map((t) => (
+                  {(["S", "A", "B", "C", "D"] as const).map((tierBtn) => (
                     <button
-                      key={t}
+                      key={tierBtn}
                       type="button"
-                      className={`${styles.voteBtn} ${myVoteForModal === t ? styles.voteBtnActive : ""}`}
+                      className={`${styles.voteBtn} ${myVoteForModal === tierBtn ? styles.voteBtnActive : ""}`}
                       disabled={voteBusy}
-                      onClick={() => void submitVote(t)}
+                      onClick={() => void submitVote(tierBtn)}
                     >
-                      {t}
+                      {tierBtn}
                     </button>
                   ))}
                 </div>

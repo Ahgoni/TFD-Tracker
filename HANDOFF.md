@@ -235,6 +235,7 @@ After deploy: **hard refresh** to clear stale asset caches.
 
 | Date       | Summary |
 |-----------|---------|
+| 2026-03-24 | **Tier list votes view:** hover tooltip + touch chips for S–D counts; column shows total votes; modal caption; **language `<select>`** dark-mode `option` + `color-scheme` in `globals.css`. |
 | 2026-03-24 | **Tier list UI:** Display **Tiers** (default portrait grid) vs **Votes** (bars + %); sessionStorage `tfd-tier-list-display`; removed in-bar consensus letters; i18n en/ko/ja. |
 | 2026-03-24 | **Tier list mod:** `TIER_LIST_MOD_DISCORD_IDS` + `tier-list-mod.ts`; Prisma `TierListModOverlay`; APIs `mod/session`, `overview`, `voters`, `overlay`, `overlay/reset`, `vote` DELETE; `TierListModPanel`; public `GET /api/tier-list` merges overlay. |
 | 2026-03-24 | **Tier list:** weighted mean (S=5…D=1) for row + score %; plurality label on bar; `tier-list-aggregate.ts`, `GET /api/tier-list` fields, `CommunityTierList` + CSS + i18n (en/ko/ja). |

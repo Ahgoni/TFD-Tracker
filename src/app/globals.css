@@ -1247,6 +1247,14 @@ td .badge { display: inline-flex; align-items: center; gap: 0.35rem; }
   cursor: pointer;
   max-width: 5.25rem;
   line-height: 1.2;
+  /* Helps native dropdown follow dark UI (avoids white popup + light text on Windows/Chrome). */
+  color-scheme: dark;
+}
+
+/* Dropdown list items: many browsers honor this; fixes white-on-white in dark mode. */
+.language-select option {
+  background-color: var(--panel-2);
+  color: var(--text);
 }
 
 .language-select:focus {
@@ -1261,6 +1269,15 @@ td .badge { display: inline-flex; align-items: center; gap: 0.35rem; }
 [data-theme="light"] .language-select-inner {
   background: var(--panel);
   border-color: var(--line);
+}
+
+[data-theme="light"] .language-select {
+  color-scheme: light;
+}
+
+[data-theme="light"] .language-select option {
+  background-color: #ffffff;
+  color: #0c1830;
 }
 
 .home-tier-cta-strip {

@@ -277,6 +277,103 @@
 
 .barCell {
   min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.barHoverWrap {
+  position: relative;
+  display: block;
+  min-width: 0;
+}
+
+.voteTooltip {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: calc(100% + 6px);
+  z-index: 60;
+  padding: 0.45rem 0.55rem;
+  border-radius: 8px;
+  border: 1px solid var(--line);
+  background: var(--panel-2, #111e33);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.55);
+  font-size: 0.72rem;
+  line-height: 1.35;
+  color: var(--text, #e2e8f0);
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 0.12s ease, visibility 0.12s ease;
+  pointer-events: none;
+}
+
+.voteTooltipTitle {
+  font-size: 0.62rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+  margin-bottom: 0.35rem;
+}
+
+.voteTooltipRow {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  font-variant-numeric: tabular-nums;
+  padding: 0.12rem 0;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.12);
+}
+
+.voteTooltipRow:last-of-type {
+  border-bottom: none;
+}
+
+.voteTooltipFooter {
+  margin-top: 0.35rem;
+  padding-top: 0.35rem;
+  border-top: 1px solid var(--line);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .barHoverWrap:hover .voteTooltip,
+  .barHoverWrap:focus-within .voteTooltip {
+    visibility: visible;
+    opacity: 1;
+  }
+}
+
+@media (hover: none), (pointer: coarse) {
+  .voteTooltip {
+    display: none !important;
+  }
+}
+
+.voteBreakdownNoHover {
+  display: none;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  align-items: center;
+}
+
+@media (hover: none), (pointer: coarse) {
+  .voteBreakdownNoHover {
+    display: flex;
+  }
+}
+
+.voteBreakdownChip {
+  font-size: 0.62rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: var(--muted);
+  padding: 0.08rem 0.28rem;
+  border-radius: 4px;
+  border: 1px solid var(--line);
+  background: rgba(15, 23, 42, 0.35);
 }
 
 .barTrack {
@@ -326,8 +423,22 @@
 }
 
 .scoreCol {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 0.12rem;
   text-align: right;
   font-variant-numeric: tabular-nums;
+}
+
+.voteTotalNum {
+  font-size: 0.65rem;
+  font-weight: 600;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+  line-height: 1.2;
+  white-space: nowrap;
 }
 
 .scorePct {
@@ -358,8 +469,44 @@
 
 .modalStatsRow {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 0.5rem;
+}
+
+.modalBarCell {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.modalBarCell .barTrack {
+  width: 100%;
+}
+
+.modalScoreBlock {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.15rem;
+  flex-shrink: 0;
+}
+
+.modalVoteTotal {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.modalVoteDetail {
+  margin: 0.35rem 0 0;
+  font-size: 0.75rem;
+  color: var(--muted);
+  line-height: 1.4;
+  font-variant-numeric: tabular-nums;
 }
 
 .modalStatsRow .barTrack {
