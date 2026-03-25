@@ -45,6 +45,7 @@ import {
   defaultPlacedSocket,
   descendantModuleTypeExclusionKey,
   descendantSlotAcceptsModule,
+  weaponModuleTypeExclusionKey,
   DESCENDANT_BASE_CAPACITY,
   effectiveMaxCapacity,
   isResolutionStyleModule,
@@ -207,42 +208,111 @@ interface Props {
 
 // Child: Module library card
 
-function ModuleLibraryCard({ mod, disabled, expanded }: { mod: ModuleRecord; disabled?: boolean; expanded?: boolean }) {
+function ModuleLibraryCard({ mod, disabled, expanded, equipped }: { mod: ModuleRecord; disabled?: boolean; expanded?: boolean; equipped?: boolean }) {
   const { attributes, listeners, setNodeRef, isDragging } = useDraggable({ id: draggableLibId(mod.id), disabled });
   const tBorder = tierBorderClass(mod.tier);
   const tText = tierTextClass(mod.tier);
+  const [showTip, setShowTip] = useState(false);
+  const [tipPos, setTipPos] = useState<{ top: number; left: number } | null>(null);
+  const cardRef = useRef<HTMLDivElement | null>(null);
+  const tipTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const hasPreview = !!mod.preview?.trim();
+  const hasType = !!mod.type?.trim();
+
+  const onEnter = useCallback(() => {
+    if (!hasPreview && !hasType) return;
+    tipTimer.current = setTimeout(() => {
+      const el = cardRef.current;
+      if (!el) return;
+      const r = el.getBoundingClientRect();
+      const tipW = 300;
+      let left = r.left - tipW - 8;
+      if (left < 8) left = r.right + 8;
+      if (left + tipW > window.innerWidth - 8) left = window.innerWidth - tipW - 8;
+      setTipPos({ top: r.top, left });
+      setShowTip(true);
+    }, 350);
+  }, [hasPreview, hasType]);
+
+  const onLeave = useCallback(() => {
+    if (tipTimer.current) { clearTimeout(tipTimer.current); tipTimer.current = null; }
+    setShowTip(false);
+    setTipPos(null);
+  }, []);
 
   return (
-    <div
-      ref={setNodeRef}
-      style={{ opacity: isDragging ? 0 : undefined }}
-      {...listeners}
-      {...attributes}
-      className={`mod-lib-card ${tBorder}${isDragging ? " is-dragging" : ""}${disabled ? " is-disabled" : ""}${expanded ? " mod-lib-expanded" : ""}`}
-    >
-      {mod.image ? <img src={mod.image} alt="" className="mod-lib-img" /> : <div className="mod-lib-img mod-lib-img-ph" />}
-      <div className="mod-lib-body">
-        <div className="mod-lib-card-top">
-          <span className="mod-lib-cap">
-            {isSubModuleBoardSlot(mod)
-              ? `+${rawSubSlotMaxCapacityBonus(mod, 0)} max`
-              : capacityAtLevel(mod, 0)}
-          </span>
-          {mod.socket && (
-            <span className={`mod-lib-socket ${socketColorClass(mod.socket)}`} title={mod.socket}>
-              <span className={socketDotClass(mod.socket)} />
-              {mod.socket}
+    <>
+      <div
+        ref={(el) => {
+          setNodeRef(el);
+          cardRef.current = el;
+        }}
+        style={{ opacity: isDragging ? 0 : undefined }}
+        {...listeners}
+        {...attributes}
+        className={`mod-lib-card ${tBorder}${isDragging ? " is-dragging" : ""}${disabled ? " is-disabled" : ""}${equipped ? " is-equipped" : ""}${expanded ? " mod-lib-expanded" : ""}`}
+        onPointerEnter={onEnter}
+        onPointerLeave={onLeave}
+      >
+        {equipped && <span className="mod-lib-equipped-badge">Equipped</span>}
+        {mod.image ? <img src={mod.image} alt="" className="mod-lib-img" /> : <div className="mod-lib-img mod-lib-img-ph" />}
+        <div className="mod-lib-body">
+          <div className="mod-lib-card-top">
+            <span className="mod-lib-cap">
+              {isSubModuleBoardSlot(mod)
+                ? `+${rawSubSlotMaxCapacityBonus(mod, 0)} max`
+                : capacityAtLevel(mod, 0)}
             </span>
-          )}
+            {mod.socket && (
+              <span className={`mod-lib-socket ${socketColorClass(mod.socket)}`} title={mod.socket}>
+                <span className={socketDotClass(mod.socket)} />
+                {mod.socket}
+              </span>
+            )}
+          </div>
+          <div className={`mod-lib-name ${tText}`}>{mod.name}</div>
+          <div className="mod-lib-meta-row">
+            <span className={`mod-lib-tier ${tText}`}>{mod.tier}</span>
+            {mod.moduleClass && <span className="mod-lib-class">{mod.moduleClass}</span>}
+          </div>
+          {expanded && mod.preview && <p className="mod-lib-preview-full">{mod.preview}</p>}
         </div>
-        <div className={`mod-lib-name ${tText}`}>{mod.name}</div>
-        <div className="mod-lib-meta-row">
-          <span className={`mod-lib-tier ${tText}`}>{mod.tier}</span>
-          {mod.moduleClass && <span className="mod-lib-class">{mod.moduleClass}</span>}
-        </div>
-        {expanded && mod.preview && <p className="mod-lib-preview-full">{mod.preview}</p>}
       </div>
-    </div>
+      {showTip && tipPos && typeof document !== "undefined" && createPortal(
+        <div
+          className="mod-lib-tooltip"
+          style={{ position: "fixed", top: tipPos.top, left: tipPos.left, zIndex: 100001 }}
+          onPointerEnter={() => { if (tipTimer.current) clearTimeout(tipTimer.current); }}
+          onPointerLeave={onLeave}
+        >
+          <div className="mod-lib-tooltip-header">
+            {mod.image && <img src={mod.image} alt="" className="mod-lib-tooltip-img" />}
+            <div>
+              <div className={`mod-lib-tooltip-name ${tText}`}>{mod.name}</div>
+              <div className="mod-lib-tooltip-meta">
+                <span className={tText}>{mod.tier}</span>
+                {mod.moduleClass && <span className="mod-lib-tooltip-class">{mod.moduleClass}</span>}
+                {mod.type && <span className="mod-lib-tooltip-type">{mod.type}</span>}
+              </div>
+            </div>
+          </div>
+          {hasPreview && (
+            <div className="mod-lib-tooltip-desc">
+              {mod.preview.split("\n").map((line, li) => (
+                <p key={li}>{line}</p>
+              ))}
+            </div>
+          )}
+          <div className="mod-lib-tooltip-footer">
+            <span>Cap: {isSubModuleBoardSlot(mod) ? `+${rawSubSlotMaxCapacityBonus(mod, maxModuleLevel(mod))} max` : `${capacityAtLevel(mod, 0)}–${capacityAtLevel(mod, maxModuleLevel(mod))}`}</span>
+            <span>Max Level: +{maxModuleLevel(mod)}</span>
+            {mod.socket && <span className={socketColorClass(mod.socket)}>{mod.socket}</span>}
+          </div>
+        </div>,
+        document.body,
+      )}
+    </>
   );
 }
 
@@ -1246,6 +1316,11 @@ function BuildPlannerPanelInner({
     [form.targetType, form.plannerSlotCatalysts, nSlots],
   );
 
+  const equippedModuleIds = useMemo(
+    () => new Set(slots.filter(Boolean).map((s) => s!.moduleId)),
+    [slots],
+  );
+
   const maxCap = useMemo(
     () =>
       effectiveMaxCapacity(
@@ -1372,6 +1447,13 @@ function BuildPlannerPanelInner({
     if (!mod) return;
     const idx = o.index;
 
+    // Universal: no duplicate modules (same module can't go in two slots)
+    const alreadyEquipped = slots.some((s, si) => s && si !== idx && s.moduleId === mod.id);
+    if (alreadyEquipped) {
+      window.alert(`"${mod.name}" is already equipped in another slot.`);
+      return;
+    }
+
     if (mod.tier === "Transcendent" && mod.descendantIds?.length > 0) {
       const isSkillMod = !!mod.preview;
       const isResolution = !mod.preview;
@@ -1425,6 +1507,22 @@ function BuildPlannerPanelInner({
         });
         if (dup) {
           window.alert(`Only one module of category "${mod.type}" can be on this build.`);
+          return;
+        }
+      }
+    }
+
+    // Weapon: one module per non-empty type (e.g. only one "ATK", one "Special Mod")
+    if (form.targetType === "weapon") {
+      const excl = weaponModuleTypeExclusionKey(mod);
+      if (excl) {
+        const dup = slots.some((s, si) => {
+          if (!s || si === idx) return false;
+          const em = moduleById.get(s.moduleId);
+          return !!(em && weaponModuleTypeExclusionKey(em) === excl);
+        });
+        if (dup) {
+          window.alert(`Only one "${mod.type}" module can be equipped on a weapon.`);
           return;
         }
       }
@@ -2171,7 +2269,15 @@ function BuildPlannerPanelInner({
                   No modules match. Adjust filters.
                 </p>
               ) : (
-                libraryFiltered.map((m) => <ModuleLibraryCard key={m.id} mod={m} disabled={false} expanded={expandMods} />)
+                libraryFiltered.map((m) => (
+                  <ModuleLibraryCard
+                    key={m.id}
+                    mod={m}
+                    disabled={equippedModuleIds.has(m.id)}
+                    expanded={expandMods}
+                    equipped={equippedModuleIds.has(m.id)}
+                  />
+                ))
               )}
             </div>
             <p className="muted builder-lib-foot">{libraryFiltered.length} shown {"\u00b7"} {libraryBase.length} available</p>

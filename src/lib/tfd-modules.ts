@@ -195,6 +195,13 @@ export function descendantModuleTypeExclusionKey(mod: ModuleRecord): string | nu
   return t;
 }
 
+/** Weapon builds: one module per non-empty `module_type` (same in-game rule as descendants). */
+export function weaponModuleTypeExclusionKey(mod: ModuleRecord): string | null {
+  const t = (mod.type ?? "").trim();
+  if (!t) return null;
+  return t;
+}
+
 export function isTriggerOnlyOnBoard(mod: ModuleRecord): boolean {
   const st = mod.slotTypes ?? [];
   return st.includes("Trigger") && !st.includes("Main") && !st.includes("Skill") && !st.includes("Sub");

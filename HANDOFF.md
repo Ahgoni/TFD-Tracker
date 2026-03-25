@@ -1,8 +1,16 @@
 # TFD Tracker — handoff / session memory
 
-**Last updated:** 2026-03-25 (Market tab, external comp fixes, Nexon link prompt)
+**Last updated:** 2026-03-25 (weapon module rules, library tooltips, equipped badges)
 
-**Latest (2026-03-25):** **Market tab + external component fixes + Nexon account linking:**
+**Latest (2026-03-25):** **Weapon module rules, library tooltips, equipped badges:**
+1. **Duplicate module prevention (universal):** `handleDragEnd` now blocks placing the same module in two different slots — applies to both descendant and weapon builds.
+2. **Weapon module_type exclusion:** Added `weaponModuleTypeExclusionKey` in `tfd-modules.ts`. Weapon builds now enforce one-per-type (e.g. only one "ATK", one "Special Mod") — same game rule as descendants. Types like "ATK", "Special Mod", "Firearm Critical Hit Damage", "Rounds per Magazine", etc. are all enforced.
+3. **Module library hover tooltips:** `ModuleLibraryCard` now shows a rich tooltip on 350ms hover — displays module image, name, tier, class, `module_type`, full preview/description text (split by newlines), capacity range, max level, and socket. Tooltip is portal-rendered and positioned to the left of the library panel (falls back right if no space). CSS: `.mod-lib-tooltip*` classes.
+4. **Equipped module indicators:** Library cards for already-equipped modules are dimmed (50% opacity) with a green "Equipped" badge and tinted border. Dragging is disabled for these. CSS: `.is-equipped`, `.mod-lib-equipped-badge`.
+
+Files: **`tfd-modules.ts`** (weaponModuleTypeExclusionKey), **`BuildPlannerPanel.tsx`** (handleDragEnd validation chain, ModuleLibraryCard tooltip + equipped, equippedModuleIds memo), **`globals.css`** (tooltip + badge styles). Build + types clean.
+
+**Earlier (2026-03-25):** **Market tab + external component fixes + Nexon account linking:**
 1. **External component images:** Increased `builder-ext-ro-visual` height from 58→90px, added padding and drop-shadow to images so component art in public build views is no longer tiny/cramped.
 2. **External substat tier coloring:** Added `inferTierFromExternalSubstat` to the read-only external component card — each substat now shows a colored tier badge (common/rare/ultimate), matching the existing reactor substat treatment. CSS: `.ext-sub-tier`, `.ext-sub-tier-{common|rare|ultimate}`.
 3. **Market tab:** New tracker tab (inserted before Builds, with migration for existing users) showing all 22 Ancestor + 29 Trigger modules from the Nexon catalog. Features: type filter (All/Ancestor/Trigger), name search, compatible-descendant dropdown filter, expandable cards with stat-range breakdowns parsed from `module_stat` preview, tier-colored borders, descendant avatar chips. Links to official Nexon Market and Alcast Market Tool. Welcome tab includes a Market card. Note: Nexon has no public market API for live trade listings — the tab is a reference catalog + market links. Files: **`MarketTab.tsx`** (new), **`tracker-client.tsx`** (import + tab migration + content), **`WelcomeTab.tsx`** (card), **`globals.css`** (full Market CSS section).
