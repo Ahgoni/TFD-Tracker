@@ -82,13 +82,7 @@ export function isChargedSubAttackModule(mod: ModuleRecord | undefined): boolean
  */
 export function isSubModuleBoardSlot(mod: ModuleRecord | undefined): boolean {
   if (!mod) return false;
-  if (isChargedSubAttackModule(mod)) return true;
-  if (mod.moduleClass === "Descendant" && mod.socket === "Malachite") {
-    const p = mod.preview?.trim().toLowerCase() ?? "";
-    if (p.includes("grappling")) return true;
-    if (mod.name === "Mid-Air Maneuvering") return true;
-  }
-  return false;
+  return (mod.slotTypes ?? []).includes("Sub");
 }
 
 /** Descendant-only: Trigger modules sit in the tall slot left of the 6×2 board (not in the 12 body cells). */
@@ -96,9 +90,9 @@ export function isTriggerModule(mod: ModuleRecord | undefined): boolean {
   return mod?.type === "Trigger";
 }
 
-/** Capacity consumed from the module budget (sub-attack mods cost 0 — they expand the budget instead). */
+/** Capacity consumed from the module budget (Sub-slot mods cost 0 — they expand the budget instead). */
 export function capacityCostAtLevel(mod: ModuleRecord, level: number): number {
-  if (isChargedSubAttackModule(mod)) return 0;
+  if (isSubModuleBoardSlot(mod)) return 0;
   return capacityAtLevel(mod, level);
 }
 
@@ -224,6 +218,45 @@ export function isResolutionStyleModule(mod: ModuleRecord): boolean {
   if (mod.moduleClass !== "Descendant") return false;
   if (mod.type === "Ancestors") return true;
   return mod.tier === "Transcendent" && !(mod.preview?.trim());
+}
+
+const SOCKET_CLASS_MAP: Record<string, string> = {
+  Almandine: "socket-almandine",
+  Cerulean: "socket-cerulean",
+  Malachite: "socket-malachite",
+  Rutile: "socket-rutile",
+  Xantic: "socket-xantic",
+};
+
+export function socketColorClass(socket: string | null | undefined): string {
+  if (!socket) return "";
+  return SOCKET_CLASS_MAP[socket.trim()] ?? "";
+}
+
+export function socketDotClass(socket: string | null | undefined): string {
+  if (!socket) return "";
+  const s = socket.trim();
+  return SOCKET_CLASS_MAP[s] ? `socket-dot socket-dot-${s.toLowerCase()}` : "";
+}
+
+export function tierBorderClass(tier: string | null | undefined): string {
+  if (!tier) return "";
+  const t = tier.trim();
+  if (t === "Transcendent") return "tier-border-transcendent";
+  if (t === "Ultimate") return "tier-border-ultimate";
+  if (t === "Rare") return "tier-border-rare";
+  if (t === "Normal") return "tier-border-normal";
+  return "";
+}
+
+export function tierTextClass(tier: string | null | undefined): string {
+  if (!tier) return "";
+  const t = tier.trim();
+  if (t === "Transcendent") return "tier-transcendent";
+  if (t === "Ultimate") return "tier-ultimate";
+  if (t === "Rare") return "tier-rare";
+  if (t === "Normal") return "tier-norm";
+  return "";
 }
 
 export function defaultPlacedSocket(mod: ModuleRecord): string {

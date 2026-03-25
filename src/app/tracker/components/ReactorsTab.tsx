@@ -8,7 +8,6 @@ import {
   substatOptions,
   getReactorName,
   inferTierFromReactorSubstat,
-  tierColors,
 } from "@/lib/tracker-data";
 import { uuid } from "@/lib/uuid";
 
@@ -287,8 +286,8 @@ export function ReactorsTab({ state, setState }: Props) {
               const elemDef = elementDefs.find((d) => d.id === r.element);
               const skillDef = skillDefs.find((d) => d.id === r.skillType);
               return (
-                <tr key={r.id}>
-                  <td>{r.name}</td>
+                <tr key={r.id} className={`element-${r.element === "nonattribute" ? "nonattr" : r.element}`}>
+                  <td><strong>{r.name}</strong></td>
                   <td>
                     <span className="badge">
                       {elemDef?.icon && <img src={elemDef.icon} alt={elemDef.label} />}
@@ -307,10 +306,8 @@ export function ReactorsTab({ state, setState }: Props) {
                     {(r.substats ?? []).map((s, i) => (
                       <div
                         key={i}
-                        style={{
-                          color: tierColors[s.tier] ?? tierColors.common,
-                          fontSize: "0.82rem",
-                        }}
+                        className={`reactor-sub-tier-${s.tier ?? "common"}`}
+                        style={{ fontSize: "0.82rem", border: "none", padding: 0 }}
                       >
                         {s.stat} ({s.value})
                       </div>

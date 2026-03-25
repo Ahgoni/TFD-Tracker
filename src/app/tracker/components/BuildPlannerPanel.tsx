@@ -58,6 +58,10 @@ import {
   emptySlotCatalystCorners,
   normalizePlannerSlotCatalysts,
   placedModuleCapacityDisplay,
+  socketColorClass,
+  socketDotClass,
+  tierBorderClass,
+  tierTextClass,
   rawSubSlotMaxCapacityBonus,
   slotCountForTarget,
   totalCapacityCost,
@@ -204,7 +208,8 @@ interface Props {
 
 function ModuleLibraryCard({ mod, disabled, expanded }: { mod: ModuleRecord; disabled?: boolean; expanded?: boolean }) {
   const { attributes, listeners, setNodeRef, isDragging } = useDraggable({ id: draggableLibId(mod.id), disabled });
-  const tierClass = mod.tier === "Transcendent" ? "tier-transcendent" : mod.tier === "Ultimate" ? "tier-ultimate" : mod.tier === "Rare" ? "tier-rare" : "tier-norm";
+  const tBorder = tierBorderClass(mod.tier);
+  const tText = tierTextClass(mod.tier);
 
   return (
     <div
@@ -212,7 +217,7 @@ function ModuleLibraryCard({ mod, disabled, expanded }: { mod: ModuleRecord; dis
       style={{ opacity: isDragging ? 0 : undefined }}
       {...listeners}
       {...attributes}
-      className={`mod-lib-card ${tierClass}${isDragging ? " is-dragging" : ""}${disabled ? " is-disabled" : ""}${expanded ? " mod-lib-expanded" : ""}`}
+      className={`mod-lib-card ${tBorder}${isDragging ? " is-dragging" : ""}${disabled ? " is-disabled" : ""}${expanded ? " mod-lib-expanded" : ""}`}
     >
       {mod.image ? <img src={mod.image} alt="" className="mod-lib-img" /> : <div className="mod-lib-img mod-lib-img-ph" />}
       <div className="mod-lib-body">
@@ -222,35 +227,22 @@ function ModuleLibraryCard({ mod, disabled, expanded }: { mod: ModuleRecord; dis
               ? `+${rawSubSlotMaxCapacityBonus(mod, 0)} max`
               : capacityAtLevel(mod, 0)}
           </span>
-          {mod.socket && <span className="mod-lib-socket" title={mod.socket}>{mod.socket}</span>}
+          {mod.socket && (
+            <span className={`mod-lib-socket ${socketColorClass(mod.socket)}`} title={mod.socket}>
+              <span className={socketDotClass(mod.socket)} />
+              {mod.socket}
+            </span>
+          )}
         </div>
-        <div className={`mod-lib-name ${tierClass}`}>{mod.name}</div>
+        <div className={`mod-lib-name ${tText}`}>{mod.name}</div>
         <div className="mod-lib-meta-row">
-          <span className={`mod-lib-tier ${tierClass}`}>{mod.tier}</span>
+          <span className={`mod-lib-tier ${tText}`}>{mod.tier}</span>
           {mod.moduleClass && <span className="mod-lib-class">{mod.moduleClass}</span>}
         </div>
         {expanded && mod.preview && <p className="mod-lib-preview-full">{mod.preview}</p>}
       </div>
     </div>
   );
-}
-
-/** TFD / in-game style polarity marks (no emoji — avoids wrong OS glyphs). */
-const POLARITY_CATALYST_GLYPH: Record<string, string> = {
-  Almandine: "\u0393",
-  Cerulean: "C",
-  Malachite: "\u2227",
-  Rutile: "r",
-  Xantic: "X",
-};
-
-function polarityCatalystGlyph(name: string | null | undefined): string {
-  if (!name?.trim()) return "\u2014";
-  return POLARITY_CATALYST_GLYPH[name] ?? name.slice(0, 1);
-}
-
-function polarityCatalystOptionText(name: string): string {
-  return `${polarityCatalystGlyph(name)}\u2003${name}`;
 }
 
 function SlotCatalystPill({
@@ -264,40 +256,31 @@ function SlotCatalystPill({
   readOnly?: boolean;
   subSlot?: boolean;
 }) {
-  const rutileSocket = slotValue === "Rutile";
+  const dotCls = slotValue ? socketDotClass(slotValue) : "";
   if (readOnly) {
     return (
       <div
         className={`builder-slot-catalyst-pill builder-slot-catalyst-pill-readonly${subSlot ? " is-sub-slot" : ""}`}
         title={slotValue ? `Slot catalyst: ${slotValue}` : "No slot catalyst"}
       >
-        <span className={`builder-slot-catalyst-pill-glyph${rutileSocket ? " is-rutile" : ""}`} aria-hidden>
-          {polarityCatalystGlyph(slotValue)}
-        </span>
-        <span className="builder-slot-catalyst-pill-label">{slotValue ?? "Empty"}</span>
+        {dotCls && <span className={dotCls} aria-hidden />}
+        <span className={`builder-slot-catalyst-pill-label ${socketColorClass(slotValue)}`}>{slotValue ?? "Empty"}</span>
       </div>
     );
   }
   return (
     <div className={`builder-slot-catalyst-pill${subSlot ? " is-sub-slot" : ""}`}>
-      <span
-        className={`builder-slot-catalyst-pill-glyph${rutileSocket ? " is-rutile" : ""}`}
-        aria-hidden
-      >
-        {polarityCatalystGlyph(slotValue)}
-      </span>
+      {dotCls && <span className={dotCls} aria-hidden />}
       <select
-        className="builder-slot-catalyst-pill-select"
+        className={`builder-slot-catalyst-pill-select ${socketColorClass(slotValue)}`}
         value={slotValue ?? ""}
         onChange={(e) => onChange?.(e.target.value || null)}
         onClick={(e) => e.stopPropagation()}
         aria-label={subSlot ? "Sub cell socket (catalyst)" : "Slot socket (catalyst)"}
       >
-        <option value="">Empty</option>
+        <option value="">— No Catalyst —</option>
         {MODULE_POLARITY_OPTIONS.map((o) => (
-          <option key={o} value={o}>
-            {polarityCatalystOptionText(o)}
-          </option>
+          <option key={o} value={o}>{o}</option>
         ))}
       </select>
     </div>
@@ -350,11 +333,14 @@ function SlotDrop({
   const isSubCell = index === 6;
   const modSocketRutile = (placed?.socket ?? "").trim() === "Rutile";
 
+  const slotTierBorder = mod ? tierBorderClass(mod.tier) : "";
+  const catalystSocketGlow = !!(sock && corners.some((c) => c !== null)) ? ` builder-slot-catalyzed` : "";
+
   return (
-    <div ref={setNodeRef} className={`builder-slot${roleClass}${isOver ? " slot-over" : ""}${placed ? " slot-filled" : ""}`}>
+    <div ref={setNodeRef} className={`builder-slot${roleClass}${isOver ? " slot-over" : ""}${placed ? " slot-filled" : ""}${slotTierBorder ? ` ${slotTierBorder}` : ""}${catalystSocketGlow}`}>
       <span className="builder-slot-idx">{index + 1}</span>
-      {slotRole === "skill" && <span className="builder-slot-role-pill">Skill</span>}
-      {slotRole === "sub" && <span className="builder-slot-role-pill">Sub</span>}
+      {slotRole === "skill" && <span className="builder-slot-role-pill builder-slot-role-skill-pill">Skill</span>}
+      {slotRole === "sub" && <span className="builder-slot-role-pill builder-slot-role-sub-pill">Sub</span>}
       {!placed ? (
         <div className="builder-slot-empty">
           <span className="builder-slot-chip">
@@ -394,9 +380,7 @@ function SlotDrop({
               }${subBonusLine ? " sub-bonus" : ""}`}
               title={subBonusLine ? "Bonus to max module capacity (Sub cell)" : "Capacity cost at this level"}
             >
-              <span className={`builder-slot-cap-pill-glyph${modSocketRutile ? " is-rutile" : ""}`} aria-hidden>
-                {polarityCatalystGlyph(placed.socket)}
-              </span>
+              <span className={socketDotClass(placed.socket)} aria-hidden />
               <span className="builder-slot-cap-pill-num">{capDisplay}</span>
             </div>
           ) : null}
@@ -404,12 +388,15 @@ function SlotDrop({
             {mod?.image || placed.image
               ? <img src={mod?.image || placed.image} alt="" className="builder-slot-icon" />
               : <div className="builder-slot-icon builder-slot-icon-ph" />}
-            <div className={`builder-slot-title ${mod?.tier === "Transcendent" ? "tier-transcendent" : mod?.tier === "Ultimate" ? "tier-ultimate" : mod?.tier === "Rare" ? "tier-rare" : ""}`} title={placed.name}>{placed.name}</div>
+            <div className={`builder-slot-title ${tierTextClass(mod?.tier)}`} title={placed.name}>{placed.name}</div>
             <div className="builder-slot-meta builder-slot-meta-min">
               {subBonusLine ? (
                 <span className="builder-slot-meta-hint muted">+Max capacity</span>
               ) : (
-                <span className={`builder-slot-socket-tiny ${mod?.tier === "Transcendent" ? "tier-transcendent" : ""}`}>{placed.socket}</span>
+                <span className={`builder-slot-socket-tiny ${socketColorClass(placed.socket)}`}>
+                  <span className={socketDotClass(placed.socket)} />
+                  {placed.socket}
+                </span>
               )}
             </div>
             {isAncestor && placed.ancestorStats ? (
@@ -2190,7 +2177,7 @@ function BuildPlannerPanelInner({
       {!readOnly && (
       <DragOverlay dropAnimation={null} zIndex={10000}>
         {activeDrag ? (
-          <div className={`mod-lib-card mod-lib-card-overlay ${activeDrag.tier === "Transcendent" ? "tier-transcendent" : activeDrag.tier === "Ultimate" ? "tier-ultimate" : activeDrag.tier === "Rare" ? "tier-rare" : "tier-norm"}`}>
+          <div className={`mod-lib-card mod-lib-card-overlay ${tierBorderClass(activeDrag.tier)}`}>
             {activeDrag.image ? <img src={activeDrag.image} alt="" className="mod-lib-img" /> : null}
             <div className="mod-lib-body">
               <div className="mod-lib-name">{activeDrag.name}</div>

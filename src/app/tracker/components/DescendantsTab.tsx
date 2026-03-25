@@ -4,6 +4,14 @@ import type { TrackerState, DescendantEntry } from "../tracker-client";
 import { elementDefs, skillDefs } from "@/lib/tracker-data";
 import { uuid } from "@/lib/uuid";
 
+const ELEMENT_COLOR_CLASS: Record<string, string> = {
+  fire: "element-fire",
+  chill: "element-chill",
+  electric: "element-electric",
+  toxic: "element-toxic",
+  nonattribute: "element-nonattr",
+};
+
 interface Props {
   state: TrackerState;
   setState: React.Dispatch<React.SetStateAction<TrackerState>>;
@@ -157,7 +165,7 @@ export function DescendantsTab({ state, setState }: Props) {
             {filtered.map((d) => {
               const elemDef = elementDefs.find((x) => x.id === d.element);
               return (
-                <tr key={d.name} className={d.owned ? "" : "row-unowned"}>
+                <tr key={d.name} className={`${d.owned ? "" : "row-unowned"} ${ELEMENT_COLOR_CLASS[d.element] ?? ""}`}>
                   <td style={{ textAlign: "center" }}>
                     <input
                       type="checkbox"
@@ -181,11 +189,11 @@ export function DescendantsTab({ state, setState }: Props) {
                       <span className="portrait portrait-initials" style={{ display: "none" }}>
                         {d.name.split(" ").map((x) => x[0]).slice(0, 2).join("").toUpperCase()}
                       </span>
-                      {d.name}
+                      <strong>{d.name}</strong>
                     </span>
                   </td>
                   <td>
-                    <span className="badge">
+                    <span className={`badge ${ELEMENT_COLOR_CLASS[d.element] ?? ""}`}>
                       {elemDef?.icon && <img src={elemDef.icon} alt={elemDef.label} />}
                       {elemDef?.label ?? d.element}
                     </span>

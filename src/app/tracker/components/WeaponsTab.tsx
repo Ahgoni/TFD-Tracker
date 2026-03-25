@@ -160,9 +160,13 @@ export function WeaponsTab({ state, setState }: Props) {
                 w.rarity === "Ultimate" ? "rarity-chip-ultimate"
                 : w.rarity === "Rare" ? "rarity-chip-rare"
                 : "rarity-chip-normal";
+              const tierRow =
+                w.rarity === "Ultimate" ? "tier-border-ultimate"
+                : w.rarity === "Rare" ? "tier-border-rare"
+                : "tier-border-normal";
               const roundsDef = ammoDefs.find((a) => a.id === (w.roundsType ?? "General Rounds")) ?? ammoDefs[1];
               return (
-                <tr key={w.slug}>
+                <tr key={w.slug} className={tierRow}>
                   <td style={{ textAlign: "center" }}>
                     <input
                       type="checkbox"
@@ -173,7 +177,7 @@ export function WeaponsTab({ state, setState }: Props) {
                   <td>
                     <img className="weapon-icon" src={w.icon} alt={w.name ?? w.slug} />
                   </td>
-                  <td>{w.name ?? w.slug}</td>
+                  <td><strong>{w.name ?? w.slug}</strong></td>
                   <td>
                     <span className={`skill-chip ${rarityClass}`}>
                       <strong>{w.rarity ?? "Rare"}</strong>

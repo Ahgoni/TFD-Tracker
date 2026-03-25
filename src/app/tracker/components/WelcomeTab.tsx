@@ -19,7 +19,7 @@ const SECTION_CARDS = [
     ),
     title: "Descendants",
     desc: "Track every descendant — level, arche level, and catalyst investment.",
-    accent: "#00c8f0",
+    accent: "var(--accent)",
   },
   {
     tab: "Weapons",
@@ -31,7 +31,7 @@ const SECTION_CARDS = [
     ),
     title: "Weapons",
     desc: "All 140+ weapons pre-loaded. Mark acquired, set level, enhancements and cores.",
-    accent: "#a855f7",
+    accent: "var(--tier-rare)",
   },
   {
     tab: "Reactors",
@@ -43,7 +43,7 @@ const SECTION_CARDS = [
     ),
     title: "Reactors",
     desc: "Log every reactor with element, skill type, substats, and tier color.",
-    accent: "#f59e0b",
+    accent: "var(--tier-ultimate)",
   },
   {
     tab: "Farming",
@@ -56,7 +56,7 @@ const SECTION_CARDS = [
     ),
     title: "Farming Goals",
     desc: "Set active farming targets, check them off, and filter to your active grind.",
-    accent: "#ef4444",
+    accent: "var(--tier-transcendent)",
   },
   {
     tab: "Mastery",
@@ -67,7 +67,7 @@ const SECTION_CARDS = [
     ),
     title: "Mastery Rank",
     desc: "Track your mastery progress from descendants owned, weapons acquired, and more.",
-    accent: "#f59e0b",
+    accent: "var(--socket-xantic)",
   },
   {
     tab: "Player Lookup",
@@ -80,7 +80,7 @@ const SECTION_CARDS = [
     ),
     title: "Player Lookup",
     desc: "Search any player by in-game name — visual loadout with modules, weapons, reactor & components (Nexon Open API).",
-    accent: "#38bdf8",
+    accent: "var(--socket-cerulean)",
   },
   {
     tab: "Builds",
@@ -93,7 +93,7 @@ const SECTION_CARDS = [
     ),
     title: "Builds",
     desc: "Save descendant & weapon loadouts — modules, reactor notes, and share with friends on your profile.",
-    accent: "#22d3ee",
+    accent: "var(--socket-malachite)",
   },
 ];
 
