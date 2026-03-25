@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { redirectToDiscordOAuth } from "@/lib/discord-oauth-redirect";
 
 /* Official Discord chat-bubble mark — white fill on blurple background */
@@ -21,18 +22,31 @@ export function DiscordSignInButton({
   size = "lg",
   callbackUrl = "/tracker",
 }: Props) {
+  const [signInError, setSignInError] = useState<string | null>(null);
+
   return (
-    <button
-      type="button"
-      className={`btn discord-btn btn-${size}`}
-      onClick={() => {
-        void redirectToDiscordOAuth(callbackUrl).catch((e) => {
-          window.alert(e instanceof Error ? e.message : "Sign-in failed.");
-        });
-      }}
-    >
-      {discordIcon}
-      {label}
-    </button>
+    <div className="discord-signin-wrap">
+      <button
+        type="button"
+        className={`btn discord-btn btn-${size}`}
+        onClick={() => {
+          setSignInError(null);
+          void redirectToDiscordOAuth(callbackUrl).catch((e) => {
+            const msg = e instanceof Error ? e.message : "Sign-in failed.";
+            console.error("[DiscordSignInButton]", e);
+            setSignInError(msg);
+            window.alert(msg);
+          });
+        }}
+      >
+        {discordIcon}
+        {label}
+      </button>
+      {signInError && (
+        <p className="discord-signin-error" role="alert">
+          {signInError}
+        </p>
+      )}
+    </div>
   );
 }

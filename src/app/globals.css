@@ -1172,6 +1172,21 @@ td .badge { display: inline-flex; align-items: center; gap: 0.35rem; }
   transform: translateY(-1px);
 }
 
+.discord-signin-wrap {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0.35rem;
+  max-width: 100%;
+}
+.discord-signin-error {
+  margin: 0;
+  font-size: 0.78rem;
+  line-height: 1.35;
+  color: var(--danger);
+  max-width: 22rem;
+}
+
 /* ── Landing page ─────────────────────────────────────────────── */
 
 .landing {

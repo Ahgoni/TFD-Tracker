@@ -3,13 +3,17 @@
 This app adds Discord login and private per-user cloud state for The First Descendant tracker.
 
 ## Quick start
-1. Copy `.env.example` to `.env` and fill values. (Optional: **`TIER_LIST_MOD_DISCORD_IDS`** — your Discord snowflake — enables private tier-list mod tools on `/tier-list` after deploy.)
-2. Start Postgres (`docker compose up -d db`).
+1. Copy `.env.example` to `.env` and fill values. You need a real **Discord** app (Client ID + Secret) and **`NEXTAUTH_SECRET`**; add redirect **`http://localhost:3000/api/auth/callback/discord`** in the Discord portal. (Optional: **`TIER_LIST_MOD_DISCORD_IDS`** — your Discord snowflake — enables private tier-list mod tools on `/tier-list` after deploy.)
+2. Start Postgres (`docker compose up -d db`). If you ever changed `docker-compose.yml` credentials, either match `DATABASE_URL` in `.env` or remove the old volume (`docker compose down -v`) and migrate again.
 3. Install and run migrations:
    - `npm install`
    - `npm run prisma:generate`
    - `npm run prisma:migrate`
-4. Start app: `npm run dev`
+4. Start app: **`npm run dev`** and open **http://localhost:3000** (Cursor’s embedded browser only works while this server is running). Tier list and sign-in both need Postgres reachable and a valid `.env`.
+
+**“Could not load tier list”** locally → almost always Postgres not running, wrong `DATABASE_URL`, or migrations not applied (check the terminal where `npm run dev` is running for Prisma errors).
+
+**Sign in does nothing** → usually missing/invalid Discord env vars or `NEXTAUTH_SECRET`, or Discord redirect URI mismatch; the sign-in button now also shows a red error line under the button when the client can detect the failure.
 
 ## Architecture & UX vision
 
