@@ -159,6 +159,8 @@ export type ModuleCatalogRow = {
   moduleClass: string;
   weaponTypes: string[];
   descendantIds: string[];
+  /** Nexon `available_module_slot_type`: Skill, Sub, Main, Trigger (descendant body grid uses Main + fixed Skill/Sub cells). */
+  slotTypes: string[];
   capacities: number[];
   preview: string;
 };
@@ -168,6 +170,9 @@ export function transformModulesFromNexon(modRaw: unknown): ModuleCatalogRow[] {
   return modRaw.map((m: Record<string, unknown>) => {
     const isTranscendent = m.module_tier_id === "Tier4";
     const moduleStat = m.module_stat as Array<{ level?: number; module_capacity?: number; value?: string }> | undefined;
+    const slotTypes = Array.isArray(m.available_module_slot_type)
+      ? (m.available_module_slot_type as string[]).map((s) => String(s))
+      : [];
     return {
       id: String(m.module_id ?? ""),
       name: String(m.module_name ?? ""),
@@ -178,6 +183,7 @@ export function transformModulesFromNexon(modRaw: unknown): ModuleCatalogRow[] {
       moduleClass: String(m.module_class ?? ""),
       weaponTypes: (m.available_weapon_type as string[]) ?? [],
       descendantIds: (m.available_descendant_id as string[]) ?? [],
+      slotTypes,
       capacities: capacitiesFromStats(moduleStat),
       preview: previewFromStats(moduleStat, isTranscendent),
     };

@@ -526,7 +526,7 @@ export function TrackerClient() {
   const pathname = usePathname() ?? "";
 
   return (
-    <div className="app">
+    <div className="app app-tracker-wide">
       <header className="topbar">
         <div className="topbar-row">
           <div className="topbar-left-cluster">

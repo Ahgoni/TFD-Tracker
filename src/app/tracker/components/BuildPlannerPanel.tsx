@@ -42,12 +42,18 @@ import {
   type ModuleRecord,
   capacityAtLevel,
   capacityCostAtLevel,
+  defaultPlacedSocket,
+  descendantModuleTypeExclusionKey,
+  descendantSlotAcceptsModule,
   DESCENDANT_BASE_CAPACITY,
   effectiveMaxCapacity,
+  isResolutionStyleModule,
   MAX_DESCENDANT_CAPACITY,
   filterModuleLibrary,
   isChargedSubAttackModule,
   matchesModuleFilters,
+  maxModuleLevel,
+  MODULE_POLARITY_OPTIONS,
   slotCountForTarget,
   subAttackMaxCapacityBonusAtLevel,
   totalCapacityCost,
@@ -226,7 +232,7 @@ function ModuleLibraryCard({ mod, disabled, expanded }: { mod: ModuleRecord; dis
 // Child: Slot
 
 function SlotDrop({
-  index, placed, moduleById, onClear, onLevel, onEditAncestor, readOnly,
+  index, placed, moduleById, onClear, onLevel, onEditAncestor, readOnly, targetType,
 }: {
   index: number;
   placed: PlacedModule | null | undefined;
@@ -235,14 +241,23 @@ function SlotDrop({
   onLevel: (delta: number) => void;
   onEditAncestor?: () => void;
   readOnly?: boolean;
+  targetType: "descendant" | "weapon";
 }) {
   const { isOver, setNodeRef } = useDroppable({ id: droppableSlotId(index), disabled: !!readOnly });
   const mod = placed ? moduleById.get(placed.moduleId) : undefined;
   const isAncestor = mod?.type === "Ancestors";
+  const resolutionEditable = !!(mod && isResolutionStyleModule(mod));
+  const slotRole =
+    targetType === "descendant" ? (index === 0 ? "skill" : index === 6 ? "sub" : "main") : null;
+  const roleClass =
+    slotRole === "skill" ? " builder-slot-role-skill" : slotRole === "sub" ? " builder-slot-role-sub" : "";
+  const maxLv = mod ? maxModuleLevel(mod) : 10;
 
   return (
-    <div ref={setNodeRef} className={`builder-slot${isOver ? " slot-over" : ""}${placed ? " slot-filled" : ""}`}>
+    <div ref={setNodeRef} className={`builder-slot${roleClass}${isOver ? " slot-over" : ""}${placed ? " slot-filled" : ""}`}>
       <span className="builder-slot-idx">{index + 1}</span>
+      {slotRole === "skill" && <span className="builder-slot-role-pill">Skill</span>}
+      {slotRole === "sub" && <span className="builder-slot-role-pill">Sub</span>}
       {!placed ? (
         <div className="builder-slot-empty">
           <span className="builder-slot-chip">{readOnly ? "—" : "Drop module"}</span>
@@ -252,8 +267,16 @@ function SlotDrop({
           {!readOnly && (
             <>
               <button type="button" className="builder-slot-x" onClick={onClear} aria-label="Remove module">{"\u00d7"}</button>
-              {isAncestor && onEditAncestor && !placed.ancestorStats && (
-                <button type="button" className="builder-slot-edit" onClick={onEditAncestor} aria-label="Configure substats" title="Configure substats">{"\u270e"}</button>
+              {resolutionEditable && onEditAncestor && (
+                <button
+                  type="button"
+                  className="builder-slot-edit"
+                  onClick={onEditAncestor}
+                  aria-label={isAncestor ? "Configure resolution substats and polarity" : "Set polarity"}
+                  title={isAncestor ? "Configure substats / polarity" : "Polarity"}
+                >
+                  {"\u270e"}
+                </button>
               )}
             </>
           )}
@@ -297,7 +320,7 @@ function SlotDrop({
             <div className="builder-slot-lvl" role="group" aria-label="Module level">
               <button type="button" className="builder-lvl-btn" onClick={() => onLevel(-1)} disabled={placed.level <= 0}>{"\u2212"}</button>
               <span className="builder-lvl-num">Lv {placed.level}</span>
-              <button type="button" className="builder-lvl-btn" onClick={() => onLevel(1)} disabled={placed.level >= 10}>+</button>
+              <button type="button" className="builder-lvl-btn" onClick={() => onLevel(1)} disabled={placed.level >= maxLv}>+</button>
             </div>
           )}
         </div>
@@ -347,7 +370,7 @@ function AncestorEditor({
   descendantGameId: string | null;
   /** IDs in the same character group (see `filterModuleLibrary`). */
   descendantPeerIds?: string[] | null;
-  onSave: (stats: { positives: AncestorStat[]; negative?: AncestorStat }) => void;
+  onSave: (stats: { positives: AncestorStat[]; negative?: AncestorStat; socket: string }) => void;
   onClose: () => void;
 }) {
   const [db, setDb] = useState<AncestorDb | null>(null);
@@ -366,9 +389,13 @@ function AncestorEditor({
   }, [descendantGameId, descendantPeerIds]);
 
   const ancestorMod = useMemo(() => {
-    if (!db || peerSet.size === 0) return null;
-    return db.modules.find((m) => m.descendantIds.some((id) => peerSet.has(id))) ?? null;
-  }, [db, peerSet]);
+    if (!db) return null;
+    const nameNorm = mod.name.trim().toLowerCase();
+    const byName = db.modules.filter((m) => m.name.trim().toLowerCase() === nameNorm);
+    if (byName.length === 0) return null;
+    if (peerSet.size === 0) return byName[0];
+    return byName.find((m) => m.descendantIds.some((id) => peerSet.has(id))) ?? byName[0];
+  }, [db, mod.name, peerSet]);
 
   const statPool = useMemo(() => {
     if (!db || !ancestorMod) return [];
@@ -390,6 +417,18 @@ function AncestorEditor({
     existing?.negative ? { stat: existing.negative.stat, value: String(existing.negative.value) } : { stat: "", value: "" }
   );
 
+  const [polarity, setPolarity] = useState(() => {
+    const s = placed.socket?.trim();
+    if (s && (MODULE_POLARITY_OPTIONS as readonly string[]).includes(s)) return s;
+    return defaultPlacedSocket(mod);
+  });
+  useEffect(() => {
+    const s = placed.socket?.trim();
+    setPolarity(
+      s && (MODULE_POLARITY_OPTIONS as readonly string[]).includes(s) ? s : defaultPlacedSocket(mod),
+    );
+  }, [placed.socket, placed.moduleId, mod.id]);
+
   useEffect(() => {
     setPos((prev) => {
       const next = [...prev];
@@ -399,13 +438,20 @@ function AncestorEditor({
   }, [posCount]);
 
   function save() {
-    const positives: AncestorStat[] = pos.filter((p) => p.stat && p.value).map((p) => ({ stat: p.stat, value: parseFloat(p.value) }));
-    const negative = hasNeg && neg.stat && neg.value ? { stat: neg.stat, value: parseFloat(neg.value) } : undefined;
-    onSave({ positives, negative });
+    const socket = polarity.trim() || defaultPlacedSocket(mod);
+    if (ancestorMod) {
+      const positives: AncestorStat[] = pos.filter((p) => p.stat && p.value).map((p) => ({ stat: p.stat, value: parseFloat(p.value) }));
+      const negative = hasNeg && neg.stat && neg.value ? { stat: neg.stat, value: parseFloat(neg.value) } : undefined;
+      onSave({ positives, negative, socket });
+    } else {
+      const positives = placed.ancestorStats?.positives ?? [];
+      const negative = placed.ancestorStats?.negative;
+      onSave({ positives, negative, socket });
+    }
     onClose();
   }
 
-  if (!db || !ancestorMod) {
+  if (!db) {
     return (
       <div className="builder-ancestor-editor">
         <p className="muted">Loading ancestor data{"\u2026"}</p>
@@ -414,11 +460,48 @@ function AncestorEditor({
     );
   }
 
+  if (!isResolutionStyleModule(mod)) {
+    return (
+      <div className="builder-ancestor-editor">
+        <p className="muted">This module does not use the resolution editor.</p>
+        <button type="button" onClick={onClose}>Close</button>
+      </div>
+    );
+  }
+
+  const polarityRow = (
+    <div className="ancestor-polarity-row">
+      <label htmlFor={`mod-polarity-${mod.id}`}>Polarity (socket)</label>
+      <select id={`mod-polarity-${mod.id}`} value={polarity} onChange={(e) => setPolarity(e.target.value)}>
+        {MODULE_POLARITY_OPTIONS.map((o) => (
+          <option key={o} value={o}>{o}</option>
+        ))}
+      </select>
+    </div>
+  );
+
+  if (!ancestorMod) {
+    return (
+      <div className="builder-ancestor-editor">
+        <h4>{mod.name}</h4>
+        {polarityRow}
+        {mod.type === "Ancestors" && (
+          <p className="muted">Detailed stat ranges for this resolution module are not in local data. Polarity still applies to capacity math.</p>
+        )}
+        <div className="builder-ancestor-actions">
+          <button type="button" onClick={save}>Apply</button>
+          <button type="button" className="btn-ghost" onClick={onClose}>Cancel</button>
+        </div>
+      </div>
+    );
+  }
+
   const usedStats = new Set([...pos.map((p) => p.stat), neg.stat].filter(Boolean));
 
   return (
     <div className="builder-ancestor-editor">
-      <h4>{ancestorMod.name}</h4>
+      <h4>{mod.name}</h4>
+      {polarityRow}
       <div className="ancestor-config-row">
         {(["2+1", "2+0", "3+1", "3+0"] as const).map((c) => (
           <button key={c} type="button" className={`filter-chip${config === c ? " active" : ""}`} onClick={() => setConfig(c)}>
@@ -1055,7 +1138,7 @@ function BuildPlannerPanelInner({
       .sort((a, b) => (TIER_ORDER[a.tier] ?? 9) - (TIER_ORDER[b.tier] ?? 9));
   }, [libraryBase, libSearch, libTier, libSocket]);
   const socketOptions = useMemo(() => {
-    const s = new Set<string>();
+    const s = new Set<string>(MODULE_POLARITY_OPTIONS);
     libraryBase.forEach((m) => { if (m.socket) s.add(m.socket); });
     return [...s].sort();
   }, [libraryBase]);
@@ -1149,6 +1232,31 @@ function BuildPlannerPanelInner({
       }
     }
 
+    if (form.targetType === "descendant") {
+      if (!descendantSlotAcceptsModule(idx, mod)) {
+        window.alert(
+          idx === 0
+            ? "Slot 1 is only for Transcendent skill modules (Nexon Skill cell)."
+            : idx === 6
+              ? "Slot 7 is only for Sub Attack modules (Nexon Sub cell)."
+              : "This slot only accepts Main modules. Trigger-only modules belong on the weapon board, not in these 12 cells.",
+        );
+        return;
+      }
+      const excl = descendantModuleTypeExclusionKey(mod);
+      if (excl) {
+        const dup = slots.some((s, si) => {
+          if (!s || si === idx) return false;
+          const em = moduleById.get(s.moduleId);
+          return !!(em && descendantModuleTypeExclusionKey(em) === excl);
+        });
+        if (dup) {
+          window.alert(`Only one module of category "${mod.type}" can be on this build.`);
+          return;
+        }
+      }
+    }
+
     const row = [...slots];
     const displayCap = isChargedSubAttackModule(mod) ? subAttackMaxCapacityBonusAtLevel(mod, 0) : capacityCostAtLevel(mod, 0);
     const placed: PlacedModule = {
@@ -1157,7 +1265,7 @@ function BuildPlannerPanelInner({
       name: mod.name,
       image: mod.image,
       capacity: displayCap,
-      socket: mod.socket,
+      socket: defaultPlacedSocket(mod),
       tier: mod.tier,
     };
     const nextRow = [...row];
@@ -1200,7 +1308,8 @@ function BuildPlannerPanelInner({
       if (!cur) return f;
       const mod = moduleById.get(cur.moduleId);
       if (!mod) return f;
-      const nextLv = Math.min(10, Math.max(0, cur.level + delta));
+      const capLv = maxModuleLevel(mod);
+      const nextLv = Math.min(capLv, Math.max(0, cur.level + delta));
       const displayCap = isChargedSubAttackModule(mod) ? subAttackMaxCapacityBonusAtLevel(mod, nextLv) : capacityCostAtLevel(mod, nextLv);
       const nextRow = [...row];
       nextRow[slotIndex] = { ...cur, level: nextLv, capacity: displayCap };
@@ -1223,14 +1332,28 @@ function BuildPlannerPanelInner({
     });
   }
 
-  function saveAncestorStats(slotIndex: number, stats: { positives: AncestorStat[]; negative?: AncestorStat }) {
+  function saveAncestorStats(
+    slotIndex: number,
+    stats: { positives: AncestorStat[]; negative?: AncestorStat; socket: string },
+  ) {
     setForm((f) => {
       const row = [...(f.plannerSlots ?? [])];
       const cur = row[slotIndex];
       if (!cur) return f;
-      const summary = stats.positives.map((p) => `${p.stat}: +${p.value}`).join(", ") +
-        (stats.negative ? `, ${stats.negative.stat}: ${stats.negative.value}` : "");
-      row[slotIndex] = { ...cur, ancestorStats: stats, customPreview: summary };
+      const m = moduleById.get(cur.moduleId);
+      const socket = stats.socket.trim() || (m ? defaultPlacedSocket(m) : cur.socket);
+      const hasStats = stats.positives.length > 0 || !!stats.negative;
+      const summary = hasStats
+        ? stats.positives.map((p) => `${p.stat}: +${p.value}`).join(", ") +
+          (stats.negative ? `, ${stats.negative.stat}: ${stats.negative.value}` : "")
+        : cur.customPreview ?? "";
+      row[slotIndex] = {
+        ...cur,
+        socket,
+        ...(hasStats
+          ? { ancestorStats: { positives: stats.positives, negative: stats.negative }, customPreview: summary }
+          : {}),
+      };
       return { ...f, plannerSlots: row };
     });
   }
@@ -1755,6 +1878,7 @@ function BuildPlannerPanelInner({
                     index={index}
                     placed={placed}
                     moduleById={moduleById}
+                    targetType={form.targetType}
                     readOnly={readOnly}
                     onClear={() => setSlot(index, null)}
                     onLevel={(d) => changeLevel(index, d)}
@@ -1764,16 +1888,21 @@ function BuildPlannerPanelInner({
               </div>
             </div>
 
-            {!readOnly && editingSlot !== null && slots[editingSlot] && moduleById.get(slots[editingSlot]!.moduleId) && (
-              <AncestorEditor
-                placed={slots[editingSlot]!}
-                mod={moduleById.get(slots[editingSlot]!.moduleId)!}
-                descendantGameId={descendantGameId}
-                descendantPeerIds={descendantPeerIds}
-                onSave={(stats) => saveAncestorStats(editingSlot, stats)}
-                onClose={() => setEditingSlot(null)}
-              />
-            )}
+            {!readOnly && editingSlot !== null && slots[editingSlot] && (() => {
+              const em = moduleById.get(slots[editingSlot]!.moduleId);
+              if (!em || !isResolutionStyleModule(em)) return null;
+              return (
+                <AncestorEditor
+                  key={editingSlot}
+                  placed={slots[editingSlot]!}
+                  mod={em}
+                  descendantGameId={descendantGameId}
+                  descendantPeerIds={descendantPeerIds}
+                  onSave={(stats) => saveAncestorStats(editingSlot, stats)}
+                  onClose={() => setEditingSlot(null)}
+                />
+              );
+            })()}
 
             {form.targetType === "descendant" && readOnly && reactor ? (
               <ReactorReadOnlyCard reactor={reactor} />

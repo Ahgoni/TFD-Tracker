@@ -9,6 +9,8 @@ export interface ModuleRecord {
   moduleClass: string;
   weaponTypes: string[];
   descendantIds: string[];
+  /** From Nexon `available_module_slot_type`; empty for legacy/weapon rows. */
+  slotTypes?: string[];
   capacities: number[];
   preview: string;
 }
@@ -42,8 +44,21 @@ export function maxCapacityForTarget(targetType: "descendant" | "weapon"): numbe
   return targetType === "weapon" ? MAX_WEAPON_CAPACITY : MAX_DESCENDANT_CAPACITY;
 }
 
+/** Highest level index with positive capacity in Nexon `module_stat` (0–10). Falls back to 10. */
+export function maxModuleLevel(mod: ModuleRecord): number {
+  const caps = mod.capacities;
+  if (!caps?.length) return 10;
+  let max = 0;
+  for (let L = 0; L <= 10 && L < caps.length; L++) {
+    const c = caps[L];
+    if (typeof c === "number" && c > 0) max = L;
+  }
+  return max;
+}
+
 export function capacityAtLevel(mod: ModuleRecord, level: number): number {
-  const lv = Math.min(10, Math.max(0, level));
+  const capMax = maxModuleLevel(mod);
+  const lv = Math.min(capMax, Math.max(0, level));
   const c = mod.capacities?.[lv];
   return typeof c === "number" ? c : 0;
 }
@@ -88,10 +103,53 @@ export function capacityCostAtLevel(mod: ModuleRecord, level: number): number {
  */
 export function subAttackMaxCapacityBonusAtLevel(mod: ModuleRecord, level: number): number {
   if (!isChargedSubAttackModule(mod)) return 0;
-  const lv = Math.min(10, Math.max(0, level));
+  const capMax = maxModuleLevel(mod);
+  const lv = Math.min(capMax, Math.max(0, level));
   const c = mod.capacities?.[lv];
   if (typeof c === "number" && c > 0) return c;
   return lv;
+}
+
+/** Polarity labels (Nexon `module_socket_type`) for resolution / manual socket. */
+export const MODULE_POLARITY_OPTIONS = ["Almandine", "Cerulean", "Malachite", "Rutile", "Xantic"] as const;
+
+/** One module per non-empty `module_type` on descendant builds; skip Ancestors (resolution rules apply separately). */
+export function descendantModuleTypeExclusionKey(mod: ModuleRecord): string | null {
+  const t = (mod.type ?? "").trim();
+  if (!t || t === "Ancestors") return null;
+  return t;
+}
+
+export function isTriggerOnlyOnBoard(mod: ModuleRecord): boolean {
+  const st = mod.slotTypes ?? [];
+  return st.includes("Trigger") && !st.includes("Main") && !st.includes("Skill") && !st.includes("Sub");
+}
+
+/**
+ * Descendant body grid (12 slots): index 0 = Skill (red), 6 = Sub, rest = Main.
+ * Trigger-only library mods are excluded from this grid.
+ */
+export function descendantSlotAcceptsModule(slotIndex: number, mod: ModuleRecord): boolean {
+  const st = mod.slotTypes ?? [];
+  if (st.length === 0) return true;
+  if (isTriggerOnlyOnBoard(mod)) return false;
+  if (slotIndex === 0) return st.includes("Skill");
+  if (slotIndex === 6) return st.includes("Sub");
+  return st.includes("Main");
+}
+
+/** Resolution-style descendant mods (Ancestors type or blank-preview Transcendent) — user picks polarity. */
+export function isResolutionStyleModule(mod: ModuleRecord): boolean {
+  if (mod.moduleClass !== "Descendant") return false;
+  if (mod.type === "Ancestors") return true;
+  return mod.tier === "Transcendent" && !(mod.preview?.trim());
+}
+
+export function defaultPlacedSocket(mod: ModuleRecord): string {
+  const s = mod.socket?.trim();
+  if (s && (MODULE_POLARITY_OPTIONS as readonly string[]).includes(s)) return s;
+  if (isResolutionStyleModule(mod)) return "Malachite";
+  return s;
 }
 
 export function totalCapacityCost(

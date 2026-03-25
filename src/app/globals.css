@@ -82,6 +82,12 @@ button:focus-visible {
   padding-bottom: max(1.5rem, env(safe-area-inset-bottom));
 }
 
+/* Tracker: use horizontal space for build planner + external components */
+.app-tracker-wide {
+  max-width: min(1680px, 100%);
+  width: 100%;
+}
+
 /* ── Topbar ────────────────────────────────────────────────────── */
 
 .topbar {
@@ -3795,8 +3801,8 @@ td .badge { display: inline-flex; align-items: center; gap: 0.35rem; }
   position: relative;
   z-index: 1;
   display: grid;
-  grid-template-columns: minmax(220px, 280px) minmax(280px, 1fr) minmax(220px, 320px);
-  gap: 0.85rem;
+  grid-template-columns: minmax(220px, 300px) minmax(420px, 1fr) minmax(220px, 340px);
+  gap: 1rem;
   align-items: start;
 }
 @media (max-width: 1200px) {
@@ -4107,11 +4113,12 @@ td .badge { display: inline-flex; align-items: center; gap: 0.35rem; }
 /* Weapon: 10 slots = 5×2 (in-game). Descendant: 12 slots = 6×2. */
 .builder-slots-weapon {
   grid-template-columns: repeat(5, minmax(0, 1fr));
-  max-width: 720px;
+  max-width: min(1100px, 100%);
 }
 .builder-slots-descendant {
-  grid-template-columns: repeat(6, minmax(0, 1fr));
-  max-width: 900px;
+  grid-template-columns: repeat(6, minmax(72px, 1fr));
+  max-width: 100%;
+  width: 100%;
 }
 @media (max-width: 900px) {
   .builder-slots-descendant {
@@ -4126,6 +4133,50 @@ td .badge { display: inline-flex; align-items: center; gap: 0.35rem; }
   .builder-slots-descendant {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
+}
+
+.builder-slot-role-skill {
+  border-color: rgba(248, 113, 113, 0.28);
+  background: rgba(248, 113, 113, 0.04);
+}
+.builder-slot-role-sub {
+  border-color: rgba(250, 204, 21, 0.28);
+  background: rgba(250, 204, 21, 0.05);
+}
+.builder-slot-role-pill {
+  position: absolute;
+  top: 18px;
+  left: 6px;
+  display: block;
+  font-size: 0.58rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+  max-width: calc(100% - 12px);
+  line-height: 1.1;
+}
+
+.ancestor-polarity-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 0.75rem;
+  margin-bottom: 0.75rem;
+  padding: 0.5rem 0.65rem;
+  border-radius: 8px;
+  border: 1px solid var(--line);
+  background: rgba(0, 0, 0, 0.15);
+}
+.ancestor-polarity-row label {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--muted);
+}
+.ancestor-polarity-row select {
+  min-width: 9rem;
+  padding: 0.35rem 0.5rem;
+  border-radius: 6px;
 }
 
 .builder-slot {

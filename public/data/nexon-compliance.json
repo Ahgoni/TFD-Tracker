@@ -1,6 +1,6 @@
 {
   "notice": "NEXON Open API requires updating data pulled from the API at least every 30 days. See https://openapi.nexon.com — static meta JSON is refreshed by npm run fetch:data / fetch:stats.",
   "canonicalLibraryBase": "https://tfd.nexon.com/en/library",
-  "lastStaticMetadataPullAt": "2026-03-24T19:08:16.730Z",
+  "lastStaticMetadataPullAt": "2026-03-25T02:32:31.443Z",
   "lastStatsPullAt": null
 }
