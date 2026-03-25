@@ -24,7 +24,9 @@ export async function POST(request: Request) {
     create: { userId, data: stateData },
   });
 
-  await syncPublicBuildListings(userId, stateData as Record<string, unknown>).catch(() => {});
+  await syncPublicBuildListings(userId, stateData as Record<string, unknown>).catch((err) => {
+    console.error("[syncPublicBuildListings]", err);
+  });
 
   return NextResponse.json({ ok: true });
 }

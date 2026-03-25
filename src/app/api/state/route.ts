@@ -46,7 +46,9 @@ export async function PUT(request: Request) {
     select: { updatedAt: true },
   });
 
-  await syncPublicBuildListings(userId, payload).catch(() => {});
+  await syncPublicBuildListings(userId, payload).catch((err) => {
+    console.error("[syncPublicBuildListings]", err);
+  });
 
   return NextResponse.json({ ok: true, updatedAt: saved.updatedAt.toISOString() });
 }

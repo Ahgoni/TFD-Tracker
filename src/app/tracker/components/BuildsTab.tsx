@@ -26,6 +26,54 @@ function emptyPlannerSlots(targetType: "descendant" | "weapon"): (PlacedModule |
   return Array.from({ length: slotCountForTarget(targetType) }, () => null);
 }
 
+function TierListVisibilitySwitch({
+  checked,
+  onToggle,
+  compact,
+  ariaLabel,
+}: {
+  checked: boolean;
+  onToggle: () => void;
+  compact?: boolean;
+  ariaLabel?: string;
+}) {
+  return (
+    <div className={`tier-hub-switch-row${compact ? " tier-hub-switch-row-compact" : ""}`}>
+      {!compact ? (
+        <>
+          <span className={`tier-hub-switch-label${!checked ? " is-active" : ""}`}>Private</span>
+          <button
+            type="button"
+            className={`tier-hub-switch${compact ? " tier-hub-switch-sm" : ""}`}
+            role="switch"
+            aria-checked={checked}
+            aria-label={ariaLabel}
+            onClick={onToggle}
+          >
+            <span className="tier-hub-switch-thumb" />
+          </button>
+          <span className={`tier-hub-switch-label${checked ? " is-active" : ""}`}>Public</span>
+        </>
+      ) : (
+        <>
+          <span className="tier-hub-switch-compact-hint">Tier list</span>
+          <button
+            type="button"
+            className="tier-hub-switch tier-hub-switch-sm"
+            role="switch"
+            aria-checked={checked}
+            aria-label={ariaLabel ?? "Tier list public or private"}
+            onClick={onToggle}
+          >
+            <span className="tier-hub-switch-thumb" />
+          </button>
+          <span className="tier-hub-switch-compact-state">{checked ? "Public" : "Private"}</span>
+        </>
+      )}
+    </div>
+  );
+}
+
 function plannerToLegacyLines(slots: (PlacedModule | null)[]): string[] {
   const lines = slots.map((s) => (s ? s.name : ""));
   while (lines.length < 12) lines.push("");
@@ -247,6 +295,13 @@ export function BuildsTab({ state, setState }: Props) {
       communityPublic: b.communityPublic === true,
     });
     window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  function setBuildCommunityPublic(buildId: string, communityPublic: boolean) {
+    setState((prev) => ({
+      ...prev,
+      builds: (prev.builds ?? []).map((x) => (x.id === buildId ? { ...x, communityPublic } : x)),
+    }));
   }
 
   function removeBuild(id: string) {
@@ -512,17 +567,21 @@ export function BuildsTab({ state, setState }: Props) {
             />
           </label>
 
-          <label className="build-community-row">
-            <input
-              type="checkbox"
-              checked={form.communityPublic}
-              onChange={(e) => setForm((f) => ({ ...f, communityPublic: e.target.checked }))}
-            />
-            <span>List on community tier hub (home page)</span>
-          </label>
-          <p className="muted" style={{ fontSize: "0.78rem", margin: "-0.35rem 0 0.5rem" }}>
-            Discoverable from the public tier list when your profile sharing is <strong>Open</strong> (Friends tab).
-          </p>
+          <div className="tier-hub-visibility-block">
+            <div className="tier-hub-visibility-head">
+              <div>
+                <div className="tier-hub-visibility-title">Community tier list</div>
+                <p className="muted tier-hub-visibility-hint">
+                  <strong>Public</strong> listings can appear on the home tier list. Requires profile sharing{" "}
+                  <strong>Open</strong> in Friends — otherwise the index stays empty even if this is Public.
+                </p>
+              </div>
+              <TierListVisibilitySwitch
+                checked={form.communityPublic}
+                onToggle={() => setForm((f) => ({ ...f, communityPublic: !f.communityPublic }))}
+              />
+            </div>
+          </div>
 
           <div className="builds-form-actions">
             <button type="submit" className="btn-primary">
@@ -593,11 +652,6 @@ export function BuildsTab({ state, setState }: Props) {
                     <p className="build-card-meta">
                       <span className={`build-type-tag ${b.targetType}`}>{b.targetType}</span>
                       {b.displayName}
-                      {b.communityPublic ? (
-                        <span className="filter-chip" style={{ marginLeft: 6, fontSize: "0.65rem" }}>
-                          Tier hub
-                        </span>
-                      ) : null}
                     </p>
                     <p className="build-card-date">Updated {new Date(b.updatedAt).toLocaleString()}</p>
                   </div>
@@ -649,6 +703,12 @@ export function BuildsTab({ state, setState }: Props) {
                   </p>
                 )}
                 <div className="build-card-actions">
+                  <TierListVisibilitySwitch
+                    compact
+                    checked={b.communityPublic === true}
+                    ariaLabel={`${b.name}: tier list ${b.communityPublic ? "public" : "private"}`}
+                    onToggle={() => setBuildCommunityPublic(b.id, !(b.communityPublic === true))}
+                  />
                   <button type="button" className="filter-chip" onClick={() => startEdit(b)}>
                     Edit
                   </button>

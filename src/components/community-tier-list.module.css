@@ -807,3 +807,11 @@
   color: var(--muted);
   margin: 0;
 }
+
+.emptyBuildsHint {
+  font-size: 0.75rem;
+  color: var(--muted);
+  margin: 0.4rem 0 0;
+  line-height: 1.45;
+  opacity: 0.92;
+}

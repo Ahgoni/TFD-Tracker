@@ -665,11 +665,14 @@ export function CommunityTierList() {
               ) : publicBuilds && publicBuilds.length > 0 ? (
                 <p className={styles.emptyBuilds}>{t("tierList.modalNoBuildsFilter")}</p>
               ) : (
-                <p className={styles.emptyBuilds}>
-                  {t("tierList.modalNoBuilds", {
-                    target: t(tab === "weapons" ? "tierList.targetWeapon" : "tierList.targetDescendant"),
-                  })}
-                </p>
+                <>
+                  <p className={styles.emptyBuilds}>
+                    {t("tierList.modalNoBuilds", {
+                      target: t(tab === "weapons" ? "tierList.targetWeapon" : "tierList.targetDescendant"),
+                    })}
+                  </p>
+                  <p className={styles.emptyBuildsHint}>{t("tierList.modalNoBuildsHint")}</p>
+                </>
               )}
             </div>
           </div>

@@ -23,6 +23,7 @@
   "tierList.modalPublicBuilds": "公開ビルド",
   "tierList.modalLoadingBuilds": "読み込み中…",
   "tierList.modalNoBuilds": "この{target}の公開ビルドはまだありません。トラッカーのビルドタブでティアハブに設定し、プロフィール共有を開いてください。",
+  "tierList.modalNoBuildsHint": "表示したい場合：ビルドを「公開」にし、フレンドタブでプロフィール共有を「公開」にして保存し、数秒待って同期してください。通常／アルティメイト絞り込みでは「すべて」も試してください。",
   "tierList.modalNoBuildsFilter": "この絞り込みに一致する公開ビルドはありません。「すべて」または通常／アルティメイトを切り替えてください。",
   "tierList.buildVariantLabel": "表示するビルド",
   "tierList.buildVariantAria": "通常またはアルティメイト継承者で公開ビルドを絞り込み",

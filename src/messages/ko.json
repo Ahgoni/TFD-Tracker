@@ -23,6 +23,7 @@
   "tierList.modalPublicBuilds": "공개 빌드",
   "tierList.modalLoadingBuilds": "불러오는 중…",
   "tierList.modalNoBuilds": "이 {target}에 대한 공개 빌드가 아직 없습니다. 트래커 빌드 탭에서 티어 허브로 표시하고 프로필 공유를 열어두세요.",
+  "tierList.modalNoBuildsHint": "내 빌드가 보여야 한다면: 빌드를 공개로 두고, 친구 탭에서 프로필 공유를 열기로 설정한 뒤 저장하고 몇 초 기다리세요. 기본/얼티밋 필터에서는 ‘전체’도 눌러 보세요.",
   "tierList.modalNoBuildsFilter": "이 필터에 맞는 공개 빌드가 없습니다. “전체”로 보거나 기본/얼티밋을 바꿔 보세요.",
   "tierList.buildVariantLabel": "표시할 빌드",
   "tierList.buildVariantAria": "기본 또는 얼티밋 후손별로 공개 빌드 필터",

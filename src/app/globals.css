@@ -3408,15 +3408,134 @@ td .badge { display: inline-flex; align-items: center; gap: 0.35rem; }
 }
 
 .builds-form { display: flex; flex-direction: column; gap: 0.75rem; }
-.build-community-row {
-  display: flex;
-  align-items: flex-start;
-  gap: 0.5rem;
-  font-size: 0.88rem;
-  cursor: pointer;
-  line-height: 1.35;
+
+.tier-hub-visibility-block {
+  margin: 0.35rem 0 0.25rem;
+  padding: 0.65rem 0.8rem;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  background: rgba(0, 0, 0, 0.12);
 }
-.build-community-row input { margin-top: 0.2rem; flex-shrink: 0; }
+
+.tier-hub-visibility-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.65rem 1rem;
+}
+
+.tier-hub-visibility-title {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.tier-hub-visibility-hint {
+  font-size: 0.78rem;
+  margin: 0.3rem 0 0;
+  line-height: 1.45;
+  max-width: 36rem;
+}
+
+.tier-hub-switch-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.45rem 0.55rem;
+  flex-shrink: 0;
+}
+
+.tier-hub-switch-row-compact {
+  margin-right: auto;
+}
+
+.tier-hub-switch-label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--muted);
+  transition: color 0.12s ease;
+}
+
+.tier-hub-switch-label.is-active {
+  color: var(--text);
+}
+
+.tier-hub-switch {
+  position: relative;
+  width: 44px;
+  height: 26px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: rgba(0, 0, 0, 0.35);
+  cursor: pointer;
+  padding: 0;
+  flex-shrink: 0;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.tier-hub-switch[aria-checked="true"] {
+  background: rgba(0, 200, 240, 0.2);
+  border-color: rgba(0, 200, 240, 0.45);
+}
+
+.tier-hub-switch-thumb {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #e2e8f0;
+  transition: transform 0.15s ease;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.35);
+  pointer-events: none;
+}
+
+.tier-hub-switch[aria-checked="true"] .tier-hub-switch-thumb {
+  transform: translateX(18px);
+  background: var(--accent, #38bdf8);
+}
+
+.tier-hub-switch:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.tier-hub-switch-sm {
+  width: 36px;
+  height: 22px;
+}
+
+.tier-hub-switch-sm .tier-hub-switch-thumb {
+  width: 14px;
+  height: 14px;
+  top: 3px;
+  left: 3px;
+}
+
+.tier-hub-switch-sm[aria-checked="true"] .tier-hub-switch-thumb {
+  transform: translateX(14px);
+}
+
+.tier-hub-switch-compact-hint {
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--muted);
+}
+
+.tier-hub-switch-compact-state {
+  font-size: 0.76rem;
+  font-weight: 700;
+  color: var(--text);
+  min-width: 3.1rem;
+}
+
+[data-theme="light"] .tier-hub-visibility-block {
+  background: rgba(0, 80, 120, 0.04);
+}
 .builds-form-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
@@ -3529,6 +3648,7 @@ td .badge { display: inline-flex; align-items: center; gap: 0.35rem; }
 .build-card-actions {
   display: flex;
   flex-wrap: wrap;
+  align-items: center;
   gap: 0.35rem;
   margin-top: auto;
   padding-top: 0.35rem;

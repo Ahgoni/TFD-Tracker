@@ -7,8 +7,32 @@ type RawBuild = {
   name?: string;
   targetType?: string;
   targetKey?: string;
+  /** Same as roster display name for descendants — fallback if targetKey mismatches catalog keys. */
+  displayName?: string;
   communityPublic?: boolean;
 };
+
+/** Match build target to Nexon roster name + group id (case-insensitive; prefers canonical map key spelling). */
+function matchDescendantToGroup(
+  nameToGroup: Map<string, string>,
+  targetKey: string | undefined,
+  displayName: string | undefined,
+): { groupId: string; rosterName: string } | null {
+  const tryNames = [targetKey, displayName]
+    .filter((x): x is string => typeof x === "string" && x.trim().length > 0)
+    .map((x) => x.trim());
+  for (const name of tryNames) {
+    const g = nameToGroup.get(name);
+    if (g) return { groupId: g, rosterName: name };
+  }
+  for (const name of tryNames) {
+    const lower = name.toLowerCase();
+    for (const [k, g] of nameToGroup) {
+      if (k.toLowerCase() === lower) return { groupId: g, rosterName: k };
+    }
+  }
+  return null;
+}
 
 /**
  * Keeps `PublicBuildListing` in sync with saved builds. Only listings where
@@ -34,15 +58,15 @@ export async function syncPublicBuildListings(userId: string, state: Record<stri
 
   for (const b of builds) {
     if (!b?.id || !b.name?.trim() || !b.communityPublic) continue;
-    if (b.targetType === "descendant" && typeof b.targetKey === "string") {
-      const g = nameToGroup.get(b.targetKey.trim());
-      if (!g) continue;
+    if (b.targetType === "descendant") {
+      const matched = matchDescendantToGroup(nameToGroup, b.targetKey, b.displayName);
+      if (!matched) continue;
       rows.push({
         userId,
         buildId: b.id,
         category: TierListCategory.DESCENDANT,
-        entityKey: g,
-        targetKey: b.targetKey.trim(),
+        entityKey: matched.groupId,
+        targetKey: matched.rosterName,
         buildName: b.name.trim(),
       });
     } else if (b.targetType === "weapon" && typeof b.targetKey === "string") {
