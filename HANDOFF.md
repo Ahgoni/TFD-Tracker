@@ -1,8 +1,11 @@
 # TFD Tracker — handoff / session memory
 
-**Last updated:** 2026-03-25 (weapon module rules, library tooltips, equipped badges)
+**Last updated:** 2026-03-25 (Market tab overhaul — Gameslantern-style layout)
 
-**Latest (2026-03-25):** **Weapon module rules, library tooltips, equipped badges:**
+**Latest (2026-03-25):** **Market tab overhaul — Gameslantern-style sidebar + listing layout:**
+Complete rebuild of the Market tab to match Gameslantern's UI pattern: sticky left sidebar with filters + scrollable right listing area. **Sidebar filters:** Select a Module dropdown, Select a Descendant dropdown, Socket Type (5 polarities), text search, collapsible "Possible Ancestor Stats" reference (13 stat names), Reset Filters button, and direct links to Gameslantern live market and official Nexon Market. **Tabs:** Ancestor/Trigger toggle (like Gameslantern) with proper counts. **Module cards:** full-width cards with module image (64px), name + Nexon ID, compatible descendants with avatar icons, socket + capacity badge, tier badge, stat breakdown blocks for Trigger modules (grouped by ability sections), ancestor roll info note, and action buttons linking to both Nexon Market and Gameslantern. **Live market callout:** green pulsing dot "View live market listings" button in the listings header. **Note:** Nexon has no public market API for live trade listings — tab is a comprehensive reference + direct links to live market tools. CSS: all `.mkt-*` classes (replaced old `.market-*`), responsive grid collapses to single-column at 768px. Files: **`MarketTab.tsx`**, **`globals.css`**. Build clean.
+
+**Earlier (2026-03-25):** **Weapon module rules, library tooltips, equipped badges:**
 1. **Duplicate module prevention (universal):** `handleDragEnd` now blocks placing the same module in two different slots — applies to both descendant and weapon builds.
 2. **Weapon module_type exclusion:** Added `weaponModuleTypeExclusionKey` in `tfd-modules.ts`. Weapon builds now enforce one-per-type (e.g. only one "ATK", one "Special Mod") — same game rule as descendants. Types like "ATK", "Special Mod", "Firearm Critical Hit Damage", "Rounds per Magazine", etc. are all enforced.
 3. **Module library hover tooltips:** `ModuleLibraryCard` now shows a rich tooltip on 350ms hover — displays module image, name, tier, class, `module_type`, full preview/description text (split by newlines), capacity range, max level, and socket. Tooltip is portal-rendered and positioned to the left of the library panel (falls back right if no space). CSS: `.mod-lib-tooltip*` classes.
