@@ -1,6 +1,12 @@
 import fs from "fs";
 import path from "path";
 import type { DescendantCatalogRow } from "@/lib/nexon-catalog-transform";
+import {
+  NEXON_DESCENDANT_JSON,
+  NEXON_WEAPON_JSON,
+  transformDescendantsFromNexon,
+  transformWeaponsFromNexon,
+} from "@/lib/nexon-catalog-transform";
 
 export type TierListEntity = {
   entityKey: string;
@@ -12,6 +18,18 @@ const DESC_PATH = path.join(process.cwd(), "public/data/descendants.json");
 /** Same slugs as tracker builds (`WeaponEntry.slug`), not raw Nexon numeric ids. */
 const WEAPON_CATALOG_PATH = path.join(process.cwd(), "public/weapons-catalog.json");
 
+/** Matches `scripts/fetch-game-stats.js` / tracker slug convention. */
+export function weaponNameToSlug(name: string): string {
+  return name
+    .toLowerCase()
+    .replace(/'/g, "")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/-+/g, "-")
+    .replace(/^-|-$/g, "");
+}
+
+type WeaponSlugRow = { slug: string; name: string; icon?: string; rarity?: string };
+
 function readDescendants(): DescendantCatalogRow[] {
   try {
     const raw = fs.readFileSync(DESC_PATH, "utf8");
@@ -21,8 +39,6 @@ function readDescendants(): DescendantCatalogRow[] {
     return [];
   }
 }
-
-type WeaponSlugRow = { slug: string; name: string; icon?: string };
 
 function readWeaponsBySlug(): WeaponSlugRow[] {
   try {
@@ -34,9 +50,28 @@ function readWeaponsBySlug(): WeaponSlugRow[] {
   }
 }
 
+async function fetchNexonJson(url: string): Promise<unknown | null> {
+  try {
+    const res = await fetch(url, {
+      next: { revalidate: 3600 },
+      headers: { Accept: "application/json" },
+    });
+    if (!res.ok) return null;
+    return await res.json();
+  } catch {
+    return null;
+  }
+}
+
+async function loadDescendantRows(): Promise<DescendantCatalogRow[]> {
+  const raw = await fetchNexonJson(NEXON_DESCENDANT_JSON);
+  const live = raw ? transformDescendantsFromNexon(raw) : [];
+  if (live.length > 0) return live;
+  return readDescendants();
+}
+
 /** One row per Nexon `descendant_group_id` (base + Ultimate merged). */
-export function getTierListDescendants(): TierListEntity[] {
-  const rows = readDescendants();
+function buildTierListDescendantsFromRows(rows: DescendantCatalogRow[]): TierListEntity[] {
   const byGroup = new Map<string, DescendantCatalogRow[]>();
   for (const r of rows) {
     const g = r.groupId?.trim();
@@ -56,7 +91,12 @@ export function getTierListDescendants(): TierListEntity[] {
     });
   }
   out.sort((a, b) => a.displayName.localeCompare(b.displayName));
-  return out;
+  return out.filter((e) => e.entityKey);
+}
+
+export async function getTierListDescendants(): Promise<TierListEntity[]> {
+  const rows = await loadDescendantRows();
+  return buildTierListDescendantsFromRows(rows);
 }
 
 function pickDescendantDisplayName(rows: DescendantCatalogRow[]): string {
@@ -66,8 +106,8 @@ function pickDescendantDisplayName(rows: DescendantCatalogRow[]): string {
   return sorted[0]?.name.trim() ?? "Unknown";
 }
 
-export function getTierListWeapons(): TierListEntity[] {
-  const rows = readWeaponsBySlug();
+function getTierListWeaponsFromFiles(): TierListEntity[] {
+  const rows = readWeaponsBySlug().filter((w) => w.rarity === "Ultimate");
   const out: TierListEntity[] = rows.map((w) => ({
     entityKey: w.slug,
     displayName: w.name,
@@ -77,17 +117,40 @@ export function getTierListWeapons(): TierListEntity[] {
   return out;
 }
 
-/** Map exact roster/catalog descendant name → Nexon group id. */
-export function descendantNameToGroupId(): Map<string, string> {
-  const rows = readDescendants();
-  const m = new Map<string, string>();
-  for (const r of rows) {
-    if (r.name && r.groupId) m.set(r.name.trim(), r.groupId);
-  }
-  return m;
+async function loadWeaponEntitiesFromNexon(): Promise<TierListEntity[] | null> {
+  const raw = await fetchNexonJson(NEXON_WEAPON_JSON);
+  if (!raw) return null;
+  const rows = transformWeaponsFromNexon(raw).filter((w) => w.rarity === "Ultimate");
+  if (rows.length === 0) return null;
+  return rows
+    .map((w) => ({
+      entityKey: weaponNameToSlug(w.name),
+      displayName: w.name,
+      image: w.image,
+    }))
+    .sort((a, b) => a.displayName.localeCompare(b.displayName));
 }
 
-/** Validate weapon id exists in catalog. */
-export function weaponSlugSet(): Set<string> {
-  return new Set(readWeaponsBySlug().map((w) => w.slug));
+/**
+ * Tier list weapons: **Ultimate** only (matches `rarity` in `weapons-catalog.json` / Nexon tier).
+ * Prefers live Nexon `weapon.json`, falls back to `public/weapons-catalog.json`.
+ */
+export async function getTierListWeapons(): Promise<TierListEntity[]> {
+  const live = await loadWeaponEntitiesFromNexon();
+  if (live && live.length > 0) return live;
+  return getTierListWeaponsFromFiles();
+}
+
+export async function weaponSlugSet(): Promise<Set<string>> {
+  return new Set((await getTierListWeapons()).map((w) => w.entityKey));
+}
+
+/** Map exact roster/catalog descendant name → Nexon group id. */
+export async function descendantNameToGroupId(): Promise<Map<string, string>> {
+  const rows = await loadDescendantRows();
+  const m = new Map<string, string>();
+  for (const r of rows) {
+    if (r.name && r.groupId) m.set(r.name.trim(), r.groupId.trim());
+  }
+  return m;
 }

@@ -30,7 +30,7 @@ export async function GET(request: Request) {
   const tab = searchParams.get("tab") === "weapons" ? "weapons" : "descendants";
   const category = tab === "weapons" ? TierListCategory.WEAPON : TierListCategory.DESCENDANT;
 
-  const entities = tab === "weapons" ? getTierListWeapons() : getTierListDescendants();
+  const entities = tab === "weapons" ? await getTierListWeapons() : await getTierListDescendants();
   const entityKeys = new Set(entities.map((e) => e.entityKey));
 
   const votes = await prisma.tierVote.findMany({

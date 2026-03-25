@@ -21,8 +21,8 @@ export async function syncPublicBuildListings(userId: string, state: Record<stri
   if (sharePrivacy !== "open") return;
 
   const builds = (state.builds as RawBuild[]) ?? [];
-  const nameToGroup = descendantNameToGroupId();
-  const weapons = weaponSlugSet();
+  const nameToGroup = await descendantNameToGroupId();
+  const weapons = await weaponSlugSet();
   const rows: Array<{
     userId: string;
     buildId: string;

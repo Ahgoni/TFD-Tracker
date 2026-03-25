@@ -1,8 +1,10 @@
 # TFD Tracker — handoff / session memory
 
-**Last updated:** 2026-03-24 (tier list mod panel + synthetic overlay)
+**Last updated:** 2026-03-24 (tier list catalog: Nexon + Ultimate weapons)
 
-**Latest (2026-03-24):** **Tier list mod (owner-only):** env **`TIER_LIST_MOD_DISCORD_IDS`** (comma-separated snowflakes) gates **`/api/tier-list/mod/*`**. Matching Discord sign-in sees collapsible **`TierListModPanel`** on the tier list; others see nothing. **Synthetic overlay** (`TierListModOverlay`) adjusts per-tier counts on read (real `TierVote` rows unchanged unless mod deletes them). Run **`prisma migrate deploy`** for new table.
+**Latest (2026-03-24):** **Community tier list catalog** (`src/lib/tier-list-catalog.ts`): descendants and weapons lists prefer **live Nexon** `descendant.json` / `weapon.json` (ISR **1h**), then fall back to **`public/data/descendants.json`** / **`public/weapons-catalog.json`**. **Weapons tab is Ultimate-only** (`rarity === "Ultimate"` / Nexon Tier3). **`getTierListDescendants` / `getTierListWeapons` / `weaponSlugSet` / `descendantNameToGroupId`** are **async**; tier-list APIs + **`sync-public-build-listings`** await them. Descendant **`entityKey`** = map key = **`descendant_group_id`**.
+
+**Earlier (2026-03-24):** **Tier list mod (owner-only):** env **`TIER_LIST_MOD_DISCORD_IDS`** (comma-separated snowflakes) gates **`/api/tier-list/mod/*`**. Matching Discord sign-in sees collapsible **`TierListModPanel`** on the tier list; others see nothing. **Synthetic overlay** (`TierListModOverlay`) adjusts per-tier counts on read (real `TierVote` rows unchanged unless mod deletes them). Run **`prisma migrate deploy`** for new table.
 
 **Earlier (2026-03-24):** **Community tier list:** votes aggregate with **weights S=5 … D=1**. **Row placement** uses **rounded weighted mean** (not raw plurality). **Score %** = `(mean − 1) / 4 × 100` (D→0%, S→100%). **Bar** = vote share by tier; **letter in bar** = **plurality** (ties S→D). API: `votesByTier`, `scorePercent`, `consensusTier`. UI: `community-tier-list` list rows + modal blurb. Lib: `tier-list-aggregate.ts`.
 
@@ -235,6 +237,7 @@ After deploy: **hard refresh** to clear stale asset caches.
 
 | Date       | Summary |
 |-----------|---------|
+| 2026-03-24 | **Tier list catalog:** Nexon fetch + 1h revalidate; **weapons = Ultimate only**; file fallback; async `tier-list-catalog` + API/sync callers; descendant `entityKey` = group map key. |
 | 2026-03-24 | **Tier list:** removed **? / UNRANKED** row; `GET /api/tier-list` adds **`unranked`[]**; UI shows **S–D** only + optional **Unranked** section (text heading, spacer) when entries have no votes. |
 | 2026-03-24 | **Tier list votes view:** hover tooltip + touch chips for S–D counts; column shows total votes; modal caption; **language `<select>`** dark-mode `option` + `color-scheme` in `globals.css`. |
 | 2026-03-24 | **Tier list UI:** Display **Tiers** (default portrait grid) vs **Votes** (bars + %); sessionStorage `tfd-tier-list-display`; removed in-bar consensus letters; i18n en/ko/ja. |

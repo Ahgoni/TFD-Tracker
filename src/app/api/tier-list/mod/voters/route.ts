@@ -5,9 +5,9 @@ import { requireUserId } from "@/lib/require-user";
 import { isTierListMod } from "@/lib/tier-list-mod";
 import { getTierListDescendants, weaponSlugSet } from "@/lib/tier-list-catalog";
 
-function validEntityKey(tab: "descendants" | "weapons", entityKey: string): boolean {
-  if (tab === "weapons") return weaponSlugSet().has(entityKey);
-  const groups = new Set(getTierListDescendants().map((e) => e.entityKey));
+async function validEntityKey(tab: "descendants" | "weapons", entityKey: string): Promise<boolean> {
+  if (tab === "weapons") return (await weaponSlugSet()).has(entityKey);
+  const groups = new Set((await getTierListDescendants()).map((e) => e.entityKey));
   return groups.has(entityKey);
 }
 
@@ -19,7 +19,7 @@ export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const tab = searchParams.get("tab") === "weapons" ? "weapons" : "descendants";
   const entityKey = searchParams.get("entityKey")?.trim() ?? "";
-  if (!entityKey || !validEntityKey(tab, entityKey)) {
+  if (!entityKey || !(await validEntityKey(tab, entityKey))) {
     return NextResponse.json({ error: "Invalid entity" }, { status: 400 });
   }
   const category = tab === "weapons" ? TierListCategory.WEAPON : TierListCategory.DESCENDANT;

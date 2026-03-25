@@ -11,9 +11,9 @@ const bodySchema = z.object({
   entityKey: z.string().min(1).max(120),
 });
 
-function validEntityKey(tab: "descendants" | "weapons", entityKey: string): boolean {
-  if (tab === "weapons") return weaponSlugSet().has(entityKey);
-  const groups = new Set(getTierListDescendants().map((e) => e.entityKey));
+async function validEntityKey(tab: "descendants" | "weapons", entityKey: string): Promise<boolean> {
+  if (tab === "weapons") return (await weaponSlugSet()).has(entityKey);
+  const groups = new Set((await getTierListDescendants()).map((e) => e.entityKey));
   return groups.has(entityKey);
 }
 
@@ -29,7 +29,7 @@ export async function POST(request: Request) {
   }
 
   const { tab, entityKey } = parsed.data;
-  if (!validEntityKey(tab, entityKey)) {
+  if (!(await validEntityKey(tab, entityKey))) {
     return NextResponse.json({ error: "Unknown entity" }, { status: 400 });
   }
 
