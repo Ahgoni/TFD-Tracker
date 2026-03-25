@@ -1,30 +1,10 @@
 import Link from "next/link";
 import { SignInWithDiscordLink } from "@/components/sign-in-discord-link";
-import { PublicBuildCard } from "@/components/public-build-card";
+import { PublicBuildPlannerView } from "@/components/public-build-planner-view";
 import type { PublicBuild } from "@/lib/public-build-types";
 
 interface SharedState {
-  builds?: Array<{
-    id: string;
-    name: string;
-    targetType: string;
-    targetKey: string;
-    displayName: string;
-    imageUrl: string;
-    moduleSlots: string[];
-    plannerSlots?: Array<{
-      moduleId: string;
-      level: number;
-      name: string;
-      image: string;
-      capacity: number;
-      socket: string;
-      tier: string;
-    } | null> | null;
-    reactorNotes?: string;
-    notes: string;
-    updatedAt: string;
-  }>;
+  builds?: PublicBuild[];
 }
 
 interface Owner {
@@ -154,8 +134,8 @@ export default async function PublicBuildPage({
         </div>
       </header>
 
-      <section className="panel public-build-spotlight-panel" style={{ maxWidth: "720px", margin: "0 auto 2rem" }}>
-        <PublicBuildCard build={build as PublicBuild} />
+      <section className="panel public-build-spotlight-panel">
+        <PublicBuildPlannerView build={build as PublicBuild} />
       </section>
     </div>
   );

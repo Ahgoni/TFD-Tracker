@@ -1,8 +1,15 @@
+import Link from "next/link";
 import { PublicBuildStatRollup } from "@/components/public-build-stats-client";
 import type { PublicBuild } from "@/lib/public-build-types";
 
 /** Single read-only build card (profile, share, spotlight page). */
-export function PublicBuildCard({ build }: { build: PublicBuild }) {
+export function PublicBuildCard({
+  build,
+  profileUsername,
+}: {
+  build: PublicBuild;
+  profileUsername?: string;
+}) {
   const b = build;
   return (
     <article className="build-card" id={`build-${b.id}`}>
@@ -70,6 +77,17 @@ export function PublicBuildCard({ build }: { build: PublicBuild }) {
           <strong>Notes:</strong> {b.notes}
         </p>
       )}
+      {profileUsername && b.id ? (
+        <div className="build-card-full-link-wrap">
+          <Link
+            className="btn btn-primary btn-sm"
+            href={`/u/${encodeURIComponent(profileUsername)}/b/${encodeURIComponent(b.id)}`}
+            style={{ width: "100%", justifyContent: "center", marginTop: "0.5rem" }}
+          >
+            Full loadout view
+          </Link>
+        </div>
+      ) : null}
     </article>
   );
 }

@@ -144,7 +144,10 @@ export default async function UsernameProfilePage({ params }: { params: Promise<
         ))}
       </div>
 
-      <PublicBuildsSection builds={(state.builds ?? []) as PublicBuild[]} />
+      <PublicBuildsSection
+        builds={(state.builds ?? []) as PublicBuild[]}
+        profileUsername={owner.username ?? username}
+      />
 
       {(state.descendants ?? []).length > 0 && (
         <section className="panel" style={{ marginBottom: "1rem" }}>

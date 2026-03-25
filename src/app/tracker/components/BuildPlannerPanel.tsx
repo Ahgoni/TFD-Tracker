@@ -174,6 +174,8 @@ interface Props {
   savedReactors?: { id: string; name: string; element: string; skillType: string; level: number; enhancement: string; substats: ReactorSubstat[] }[];
   externalComponents?: ExternalComponent[];
   onExternalComponentsChange?: (comps: ExternalComponent[]) => void;
+  /** Public / shared build view: no DnD, library, or editors. */
+  readOnly?: boolean;
 }
 
 // Child: Module library card
@@ -214,7 +216,7 @@ function ModuleLibraryCard({ mod, disabled, expanded }: { mod: ModuleRecord; dis
 // Child: Slot
 
 function SlotDrop({
-  index, placed, moduleById, onClear, onLevel, onEditAncestor,
+  index, placed, moduleById, onClear, onLevel, onEditAncestor, readOnly,
 }: {
   index: number;
   placed: PlacedModule | null | undefined;
@@ -222,8 +224,9 @@ function SlotDrop({
   onClear: () => void;
   onLevel: (delta: number) => void;
   onEditAncestor?: () => void;
+  readOnly?: boolean;
 }) {
-  const { isOver, setNodeRef } = useDroppable({ id: droppableSlotId(index) });
+  const { isOver, setNodeRef } = useDroppable({ id: droppableSlotId(index), disabled: !!readOnly });
   const mod = placed ? moduleById.get(placed.moduleId) : undefined;
   const isAncestor = mod?.type === "Ancestors";
 
@@ -231,12 +234,18 @@ function SlotDrop({
     <div ref={setNodeRef} className={`builder-slot${isOver ? " slot-over" : ""}${placed ? " slot-filled" : ""}`}>
       <span className="builder-slot-idx">{index + 1}</span>
       {!placed ? (
-        <div className="builder-slot-empty"><span className="builder-slot-chip">Drop module</span></div>
+        <div className="builder-slot-empty">
+          <span className="builder-slot-chip">{readOnly ? "—" : "Drop module"}</span>
+        </div>
       ) : (
         <div className="builder-slot-filled">
-          <button type="button" className="builder-slot-x" onClick={onClear} aria-label="Remove module">{"\u00d7"}</button>
-          {isAncestor && onEditAncestor && !placed.ancestorStats && (
-            <button type="button" className="builder-slot-edit" onClick={onEditAncestor} aria-label="Configure substats" title="Configure substats">{"\u270e"}</button>
+          {!readOnly && (
+            <>
+              <button type="button" className="builder-slot-x" onClick={onClear} aria-label="Remove module">{"\u00d7"}</button>
+              {isAncestor && onEditAncestor && !placed.ancestorStats && (
+                <button type="button" className="builder-slot-edit" onClick={onEditAncestor} aria-label="Configure substats" title="Configure substats">{"\u270e"}</button>
+              )}
+            </>
           )}
           <div className="builder-slot-body">
             {mod?.image || placed.image
@@ -270,11 +279,17 @@ function SlotDrop({
               );
             })() : null}
           </div>
-          <div className="builder-slot-lvl" role="group" aria-label="Module level">
-            <button type="button" className="builder-lvl-btn" onClick={() => onLevel(-1)} disabled={placed.level <= 0}>{"\u2212"}</button>
-            <span className="builder-lvl-num">Lv {placed.level}</span>
-            <button type="button" className="builder-lvl-btn" onClick={() => onLevel(1)} disabled={placed.level >= 10}>+</button>
-          </div>
+          {readOnly ? (
+            <div className="builder-slot-lvl builder-slot-lvl-readonly" aria-label="Module level">
+              <span className="builder-lvl-num">Lv {placed.level}</span>
+            </div>
+          ) : (
+            <div className="builder-slot-lvl" role="group" aria-label="Module level">
+              <button type="button" className="builder-lvl-btn" onClick={() => onLevel(-1)} disabled={placed.level <= 0}>{"\u2212"}</button>
+              <span className="builder-lvl-num">Lv {placed.level}</span>
+              <button type="button" className="builder-lvl-btn" onClick={() => onLevel(1)} disabled={placed.level >= 10}>+</button>
+            </div>
+          )}
         </div>
       )}
     </div>
@@ -572,6 +587,115 @@ function ExternalComponentsSection({
   );
 }
 
+function ReactorReadOnlyCard({ reactor }: { reactor: BuildReactor }) {
+  const el = elementDefs.find((d) => d.id === reactor.element);
+  const sk = skillDefs.find((d) => d.id === reactor.skillType);
+  return (
+    <div className="builder-reactor-section builder-reactor-readonly">
+      <div className="builder-reactor-head">
+        <h4 className="builder-stats-h">Reactor</h4>
+      </div>
+      <div className="builder-reactor-readonly-card">
+        <div className="builder-reactor-readonly-top">
+          {el?.icon && <img src={el.icon} alt="" className="builder-reactor-ro-icon" />}
+          <div className="builder-reactor-readonly-text">
+            <div className="builder-reactor-readonly-name">{reactor.name}</div>
+            <div className="muted builder-reactor-readonly-meta">
+              Lv {reactor.level} · Enh +{reactor.enhancement}
+              {sk?.label ? ` · ${sk.label}` : ""}
+            </div>
+          </div>
+        </div>
+        {reactor.substats && reactor.substats.length > 0 && (
+          <ul className="builder-reactor-subs-readonly">
+            {reactor.substats.map((s, i) => (
+              <li key={i}>
+                {s.tier && <span className={`reactor-sub-tier reactor-sub-tier-${s.tier}`}>{s.tier}</span>}
+                <span className="builder-reactor-sub-line">{s.stat}: {s.value}</span>
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function ExternalComponentsReadOnly({ components }: { components: ExternalComponent[] }) {
+  const [db, setDb] = useState<ExtCompDb | null>(null);
+  useEffect(() => {
+    fetch("/data/external-components.json?v=2025-03-21-sets4", { cache: "no-store" })
+      .then((r) => (r.ok ? r.json() : null))
+      .then((d) => setDb(d))
+      .catch(() => {});
+  }, []);
+
+  const setCounts = useMemo(() => {
+    const c: Record<string, number> = {};
+    components.forEach((x) => {
+      if (x.set) c[x.set] = (c[x.set] ?? 0) + 1;
+    });
+    return c;
+  }, [components]);
+
+  const setBonusRows: ExternalSetBonusSet[] = useMemo(() => {
+    if (!db) return [];
+    return Object.entries(setCounts)
+      .map(([setName, count]) => ({
+        setName,
+        count,
+        twoEffect: db.sets[setName]?.["2pc"] ?? "",
+        fourEffect: db.sets[setName]?.["4pc"] ?? "",
+      }))
+      .sort((a, b) => b.count - a.count);
+  }, [db, setCounts]);
+
+  if (!db) return null;
+
+  const hasAny = components.some(
+    (c) => c.baseStat || c.set || (c.substats?.some((s) => s.stat)),
+  );
+  if (!hasAny) return null;
+
+  return (
+    <div className="builder-components-section builder-components-readonly">
+      <h4 className="builder-stats-h">External Components</h4>
+      {setBonusRows.length > 0 && <ExternalSetBonusesBanner sets={setBonusRows} />}
+      <div className="builder-comp-grid">
+        {db.slots.map((slotDef, idx) => {
+          const comp = components[idx];
+          if (!comp || (!comp.baseStat && !comp.set && !(comp.substats?.some((s) => s.stat)))) return null;
+          return (
+            <div key={slotDef.name} className="builder-comp-card builder-comp-card-readonly">
+              <div className="builder-comp-header" title={slotDef.name}>
+                {slotDef.name}
+              </div>
+              {comp.baseStat ? (
+                <div className="builder-comp-readonly-row">
+                  <span className="muted">Base</span>
+                  <span>{comp.baseStat}: {comp.baseValue}</span>
+                </div>
+              ) : null}
+              {(comp.substats ?? []).filter((s) => s.stat).map((s, si) => (
+                <div key={si} className="builder-comp-readonly-row">
+                  <span className="muted">Sub</span>
+                  <span>{s.stat}: {s.value}</span>
+                </div>
+              ))}
+              {comp.set ? (
+                <div className="builder-comp-readonly-row builder-comp-readonly-set">
+                  <span className="muted">Set</span>
+                  <span>{comp.set}</span>
+                </div>
+              ) : null}
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
 // Child: Inline reactor form
 
 const ENHANCEMENTS = ["0", "1", "2", "3", "4", "5"] as const;
@@ -769,6 +893,7 @@ function BuildPlannerPanelInner({
   hero = null, reactor = null, onReactorChange, targetLevel, onTargetLevelChange,
   archeLevel, onArcheLevelChange, savedReactors,
   externalComponents, onExternalComponentsChange,
+  readOnly = false,
 }: Props) {
   const [activeDrag, setActiveDrag] = useState<ModuleRecord | null>(null);
   const [libSearch, setLibSearch] = useState("");
@@ -803,7 +928,9 @@ function BuildPlannerPanelInner({
     }, 220);
   }, [clearSkillTipLeaveTimer]);
 
-  const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 6 } }));
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: readOnly ? 99999 : 6 } }),
+  );
   const nSlots = slotCountForTarget(form.targetType);
   const defaultLevel = form.targetType === "weapon" ? 100 : 40;
   const level = targetLevel ?? defaultLevel;
@@ -890,11 +1017,13 @@ function BuildPlannerPanelInner({
   // DnD handlers
 
   function handleDragStart(e: DragStartEvent) {
+    if (readOnly) return;
     const p = parseDragId(e.active.id);
     if (p?.kind === "lib") setActiveDrag(moduleById.get(p.moduleId) ?? null);
   }
 
   function handleDragEnd(e: DragEndEvent) {
+    if (readOnly) return;
     setActiveDrag(null);
     const { active, over } = e;
     if (!over) return;
@@ -1054,11 +1183,15 @@ function BuildPlannerPanelInner({
       .catch(() => {});
   }, []);
 
-  const { affectedSkillNames, isSpecificMatch } = useMemo(() => {
-    if (!equippedTranscendent) return { affectedSkillNames: new Set<string>(), isSpecificMatch: false };
+  const { affectedSkillNames, isSpecificMatch, mappedSkillNames } = useMemo(() => {
+    if (!equippedTranscendent) {
+      return { affectedSkillNames: new Set<string>(), isSpecificMatch: false, mappedSkillNames: [] as string[] };
+    }
     const mapping = skillMap[equippedTranscendent.mod.id];
     const fromMap = mappingAffectedSkills(mapping);
-    if (fromMap.length > 0) return { affectedSkillNames: new Set(fromMap), isSpecificMatch: true };
+    if (fromMap.length > 0) {
+      return { affectedSkillNames: new Set(fromMap), isSpecificMatch: true, mappedSkillNames: fromMap };
+    }
     const modName = (equippedTranscendent.mod.name ?? "").toLowerCase();
     const preview = (equippedTranscendent.mod.preview ?? "").toLowerCase();
     const searchText = modName + " " + preview;
@@ -1069,9 +1202,9 @@ function BuildPlannerPanelInner({
       const lc = name.toLowerCase();
       if (searchText.includes(lc) || lc.includes(modName)) matched.add(name);
     }
-    if (matched.size > 0) return { affectedSkillNames: matched, isSpecificMatch: true };
+    if (matched.size > 0) return { affectedSkillNames: matched, isSpecificMatch: true, mappedSkillNames: [] };
     skillNames.forEach((n) => { if (n) matched.add(n); });
-    return { affectedSkillNames: matched, isSpecificMatch: false };
+    return { affectedSkillNames: matched, isSpecificMatch: false, mappedSkillNames: [] };
   }, [equippedTranscendent, descSkills, skillMap]);
 
   const hoveredSkillTooltip = useMemo(() => {
@@ -1081,6 +1214,12 @@ function BuildPlannerPanelInner({
     const full = descSkills.find((s) => s.name === hoveredSkill);
     if (!sk || !full) return null;
     const isAffected = affectedSkillNames.has(String(sk.name ?? ""));
+    const mappedHit =
+      equippedTranscendent &&
+      mappedSkillNames.length > 0 &&
+      mappedSkillNames.includes(String(full?.name ?? ""));
+    const showTranscendentNaming =
+      isAffected && equippedTranscendent && (isSpecificMatch || mappedHit);
     const modMapping = isAffected && equippedTranscendent ? skillMap[equippedTranscendent.mod.id] : null;
     const skillOv = modMapping?.skillOverrides?.[String(full?.name ?? "")];
     const displayElement = (skillOv?.modifiedElement ?? modMapping?.modifiedElement ?? full?.element) ?? "";
@@ -1102,6 +1241,7 @@ function BuildPlannerPanelInner({
       skillDetail,
       hasStats,
       calcLines,
+      showTranscendentNaming,
     };
   }, [
     hoveredSkill,
@@ -1113,6 +1253,8 @@ function BuildPlannerPanelInner({
     skillMap,
     descendantGameId,
     skillDetailsDb,
+    isSpecificMatch,
+    mappedSkillNames,
   ]);
 
   useLayoutEffect(() => {
@@ -1194,6 +1336,14 @@ function BuildPlannerPanelInner({
                   <div className="builder-skills-row">
                     {heroSkills.map((sk, idx) => {
                       const isAffected = affectedSkillNames.has(String(sk.name ?? ""));
+                      const mappedHit =
+                        equippedTranscendent &&
+                        mappedSkillNames.length > 0 &&
+                        mappedSkillNames.includes(String(sk.name ?? ""));
+                      const useTranscendentArt =
+                        isAffected &&
+                        equippedTranscendent &&
+                        (isSpecificMatch || mappedHit);
                       return (
                         <div
                           key={sk.name}
@@ -1205,7 +1355,7 @@ function BuildPlannerPanelInner({
                           onMouseEnter={() => onSkillIconEnter(sk.name)}
                           onMouseLeave={onSkillIconLeave}
                         >
-                          <img src={isAffected && isSpecificMatch && equippedTranscendent ? equippedTranscendent.mod.image : sk.image} alt={sk.name} />
+                          <img src={useTranscendentArt ? equippedTranscendent.mod.image : sk.image} alt={sk.name} />
                           <span className="builder-skill-num">{idx + 1}</span>
                         </div>
                       );
@@ -1246,7 +1396,7 @@ function BuildPlannerPanelInner({
                   </span>
                 </div>
                 <h4 className="skill-tooltip-name">
-                  {hoveredSkillTooltip.isAffected && isSpecificMatch && equippedTranscendent
+                  {hoveredSkillTooltip.showTranscendentNaming && equippedTranscendent
                     ? String(equippedTranscendent.mod.name ?? "")
                     : String(hoveredSkillTooltip.full.name ?? "")}
                 </h4>
@@ -1323,35 +1473,52 @@ function BuildPlannerPanelInner({
             document.body,
           )}
 
-        {/* Three-column layout */}
-        <div className="builder-main">
+        {/* Three-column layout (library hidden in read-only public view) */}
+        <div className={`builder-main${readOnly ? " builder-main-readonly" : ""}`}>
           {/* LEFT: Stats panel */}
           <aside className="builder-stats-panel" aria-label="Build statistics">
             <div className="builder-stats-section">
               <div className="builder-level-row">
-                <label className="builder-level-label">
-                  Level
-                  <input
-                    type="number"
-                    min={1}
-                    max={form.targetType === "weapon" ? 100 : 40}
-                    value={level}
-                    onChange={(e) => onTargetLevelChange?.(Number(e.target.value))}
-                    className="builder-level-input"
-                  />
-                </label>
-                {form.targetType === "descendant" && (
-                  <label className="builder-level-label">
-                    Arche Lv
-                    <input
-                      type="number"
-                      min={0}
-                      max={40}
-                      value={archLv}
-                      onChange={(e) => onArcheLevelChange?.(Number(e.target.value))}
-                      className="builder-level-input"
-                    />
-                  </label>
+                {readOnly ? (
+                  <>
+                    <div className="builder-level-readonly">
+                      <span className="builder-level-label-txt">Level</span>
+                      <span className="builder-level-val">{level}</span>
+                    </div>
+                    {form.targetType === "descendant" && (
+                      <div className="builder-level-readonly">
+                        <span className="builder-level-label-txt">Arche Lv</span>
+                        <span className="builder-level-val">{archLv}</span>
+                      </div>
+                    )}
+                  </>
+                ) : (
+                  <>
+                    <label className="builder-level-label">
+                      Level
+                      <input
+                        type="number"
+                        min={1}
+                        max={form.targetType === "weapon" ? 100 : 40}
+                        value={level}
+                        onChange={(e) => onTargetLevelChange?.(Number(e.target.value))}
+                        className="builder-level-input"
+                      />
+                    </label>
+                    {form.targetType === "descendant" && (
+                      <label className="builder-level-label">
+                        Arche Lv
+                        <input
+                          type="number"
+                          min={0}
+                          max={40}
+                          value={archLv}
+                          onChange={(e) => onArcheLevelChange?.(Number(e.target.value))}
+                          className="builder-level-input"
+                        />
+                      </label>
+                    )}
+                  </>
                 )}
               </div>
               <StatSheet stats={computedStats} groups={statGroups} />
@@ -1507,6 +1674,7 @@ function BuildPlannerPanelInner({
                     index={index}
                     placed={placed}
                     moduleById={moduleById}
+                    readOnly={readOnly}
                     onClear={() => setSlot(index, null)}
                     onLevel={(d) => changeLevel(index, d)}
                     onEditAncestor={() => setEditingSlot(index)}
@@ -1515,7 +1683,7 @@ function BuildPlannerPanelInner({
               </div>
             </div>
 
-            {editingSlot !== null && slots[editingSlot] && moduleById.get(slots[editingSlot]!.moduleId) && (
+            {!readOnly && editingSlot !== null && slots[editingSlot] && moduleById.get(slots[editingSlot]!.moduleId) && (
               <AncestorEditor
                 placed={slots[editingSlot]!}
                 mod={moduleById.get(slots[editingSlot]!.moduleId)!}
@@ -1526,19 +1694,24 @@ function BuildPlannerPanelInner({
               />
             )}
 
-            {form.targetType === "descendant" && (
+            {form.targetType === "descendant" && readOnly && reactor ? (
+              <ReactorReadOnlyCard reactor={reactor} />
+            ) : form.targetType === "descendant" && !readOnly ? (
               <ReactorSection reactor={reactor} onChange={onReactorChange ?? (() => {})} savedReactors={savedReactors} />
-            )}
+            ) : null}
 
-            {form.targetType === "descendant" && onExternalComponentsChange && (
+            {form.targetType === "descendant" && readOnly && (externalComponents?.length ?? 0) > 0 ? (
+              <ExternalComponentsReadOnly components={externalComponents ?? []} />
+            ) : form.targetType === "descendant" && !readOnly && onExternalComponentsChange ? (
               <ExternalComponentsSection
                 components={externalComponents ?? []}
                 onChange={onExternalComponentsChange}
               />
-            )}
+            ) : null}
           </section>
 
           {/* RIGHT: Module library */}
+          {!readOnly && (
           <aside className="builder-col-right" aria-label="Module library">
             <div className="builder-lib-header">Module Library</div>
             <div className="builder-lib-filters">
@@ -1584,10 +1757,12 @@ function BuildPlannerPanelInner({
             </div>
             <p className="muted builder-lib-foot">{libraryFiltered.length} shown {"\u00b7"} {libraryBase.length} available</p>
           </aside>
+          )}
         </div>
       </div>
 
       {/* Drag overlay (no modifiers = follows grab point correctly) */}
+      {!readOnly && (
       <DragOverlay dropAnimation={null} zIndex={10000}>
         {activeDrag ? (
           <div className={`mod-lib-card mod-lib-card-overlay ${activeDrag.tier === "Transcendent" ? "tier-transcendent" : activeDrag.tier === "Ultimate" ? "tier-ultimate" : activeDrag.tier === "Rare" ? "tier-rare" : "tier-norm"}`}>
@@ -1599,6 +1774,7 @@ function BuildPlannerPanelInner({
           </div>
         ) : null}
       </DragOverlay>
+      )}
     </DndContext>
   );
 }

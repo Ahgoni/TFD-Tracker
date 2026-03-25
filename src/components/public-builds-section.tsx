@@ -5,7 +5,14 @@ import type { PublicBuild, PublicPlacedModule } from "@/lib/public-build-types";
 
 export type { PublicBuild, PublicPlacedModule };
 
-export function PublicBuildsSection({ builds }: { builds: PublicBuild[] }) {
+export function PublicBuildsSection({
+  builds,
+  profileUsername,
+}: {
+  builds: PublicBuild[];
+  /** When set, each card links to the full planner-style shared build page. */
+  profileUsername?: string | null;
+}) {
   const list = builds.filter((b) => b?.name);
   if (!builds?.length) {
     return (
@@ -29,7 +36,7 @@ export function PublicBuildsSection({ builds }: { builds: PublicBuild[] }) {
       <h2>Builds ({list.length})</h2>
       <div className="builds-grid public-builds">
         {list.map((b) => (
-          <PublicBuildCard key={b.id} build={b} />
+          <PublicBuildCard key={b.id} build={b} profileUsername={profileUsername ?? undefined} />
         ))}
       </div>
     </section>

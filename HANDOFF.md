@@ -1,8 +1,10 @@
 # TFD Tracker — handoff / session memory
 
-**Last updated:** 2026-03-24 (mobile layout + nav drawer)
+**Last updated:** 2026-03-24 (shared build full planner view)
 
-**Latest (2026-03-24):** **Mobile / small screens:** root **`viewport`** (`layout.tsx`) with safe-area; **`overflow-x: clip`** on `html`/`body`/`landing`; **`SiteTopNav`** hamburger drawer ≤720px; tracker **`tab-nav-wrap`** horizontal scroll; share row + hero CTA stack; tier list / mod panel horizontal safe-area padding; iOS **16px** inputs ≤768px to reduce focus-zoom.
+**Latest (2026-03-24):** **Public shared build page** (`/u/{username}/b/{buildId}`): uses **`PublicBuildPlannerView`** — same **`BuildPlannerPanel`** as the tracker in **`readOnly`** mode (hero, skills w/ Transcendent icon swap from `transcendent-skill-map.json`, module grid, stats, reactor + external read-only cards). **`PublicBuild`** type extended with **`reactor`**, **`externalComponents`**, **`targetLevel`**, etc. Profile **`PublicBuildsSection`** passes **`profileUsername`**; cards link **Full loadout view**. **`weaponNameToSlug`** moved to **`src/lib/weapon-slug.ts`** (client-safe).
+
+**Earlier (2026-03-24):** **Mobile / small screens:** root **`viewport`** (`layout.tsx`) with safe-area; **`overflow-x: clip`** on `html`/`body`/`landing`; **`SiteTopNav`** hamburger drawer ≤720px; tracker **`tab-nav-wrap`** horizontal scroll; share row + hero CTA stack; tier list / mod panel horizontal safe-area padding; iOS **16px** inputs ≤768px to reduce focus-zoom.
 
 **Earlier (2026-03-24):** **Community tier list catalog** (`src/lib/tier-list-catalog.ts`): descendants and weapons lists prefer **live Nexon** `descendant.json` / `weapon.json` (ISR **1h**), then fall back to **`public/data/descendants.json`** / **`public/weapons-catalog.json`**. **Weapons tab is Ultimate-only** (`rarity === "Ultimate"` / Nexon Tier3). **`getTierListDescendants` / `getTierListWeapons` / `weaponSlugSet` / `descendantNameToGroupId`** are **async**; tier-list APIs + **`sync-public-build-listings`** await them. Descendant **`entityKey`** = map key = **`descendant_group_id`**.
 
@@ -239,6 +241,7 @@ After deploy: **hard refresh** to clear stale asset caches.
 
 | Date       | Summary |
 |-----------|---------|
+| 2026-03-24 | **Shared builds:** full read-only `BuildPlannerPanel` on `/u/…/b/…`; Transcendent skill art uses map + `mappedSkillNames`; `PublicBuild` + `weapon-slug.ts`; profile link to full loadout. |
 | 2026-03-24 | **Mobile UX:** viewport + safe-area; site nav drawer; tracker tab strip scroll; landing/share/tier-list padding; iOS input font-size. |
 | 2026-03-24 | **Tier list catalog:** Nexon fetch + 1h revalidate; **weapons = Ultimate only**; file fallback; async `tier-list-catalog` + API/sync callers; descendant `entityKey` = group map key. |
 | 2026-03-24 | **Tier list:** removed **? / UNRANKED** row; `GET /api/tier-list` adds **`unranked`[]**; UI shows **S–D** only + optional **Unranked** section (text heading, spacer) when entries have no votes. |

@@ -1,6 +1,7 @@
 import fs from "fs";
 import path from "path";
 import type { DescendantCatalogRow } from "@/lib/nexon-catalog-transform";
+import { weaponNameToSlug as weaponNameToSlugFromLib } from "@/lib/weapon-slug";
 import {
   NEXON_DESCENDANT_JSON,
   NEXON_WEAPON_JSON,
@@ -18,15 +19,8 @@ const DESC_PATH = path.join(process.cwd(), "public/data/descendants.json");
 /** Same slugs as tracker builds (`WeaponEntry.slug`), not raw Nexon numeric ids. */
 const WEAPON_CATALOG_PATH = path.join(process.cwd(), "public/weapons-catalog.json");
 
-/** Matches `scripts/fetch-game-stats.js` / tracker slug convention. */
-export function weaponNameToSlug(name: string): string {
-  return name
-    .toLowerCase()
-    .replace(/'/g, "")
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/-+/g, "-")
-    .replace(/^-|-$/g, "");
-}
+/** Re-export for server/catalog code; implementation is client-safe in `weapon-slug.ts`. */
+export const weaponNameToSlug = weaponNameToSlugFromLib;
 
 type WeaponSlugRow = { slug: string; name: string; icon?: string; rarity?: string };
 
