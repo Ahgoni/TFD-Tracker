@@ -1662,12 +1662,9 @@ td .badge { display: inline-flex; align-items: center; gap: 0.35rem; }
   position: absolute;
   top: 0; left: 0; right: 0;
   height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(0, 200, 240, 0.25), transparent);
 }
 
 .feature-card:hover {
-  border-color: rgba(0, 200, 240, 0.35);
-  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(0, 200, 240, 0.08), 0 0 30px rgba(0, 200, 240, 0.06);
   transform: translateY(-3px);
 }
 
@@ -2526,7 +2523,6 @@ td .badge { display: inline-flex; align-items: center; gap: 0.35rem; }
 [data-theme="light"] .friends-hero { background: linear-gradient(160deg, #e8f2ff, #f0f6ff); }
 [data-theme="light"] .friends-item { background: #ffffff; }
 
-[data-theme="light"] th { color: var(--muted); }
 [data-theme="light"] tbody tr:hover td { background: rgba(0, 136, 170, 0.04); }
 
 /* ── Light mode landing page ───────────────────────────────── */
@@ -3805,6 +3801,15 @@ td .badge { display: inline-flex; align-items: center; gap: 0.35rem; }
   gap: 1rem;
   align-items: start;
 }
+.builder-col-right {
+  display: flex;
+  flex-direction: column;
+  max-height: min(70vh, 560px);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: rgba(0,0,0,0.15);
+  overflow: hidden;
+}
 @media (max-width: 1200px) {
   .builder-main {
     grid-template-columns: 1fr 1fr;
@@ -4578,15 +4583,6 @@ td .badge { display: inline-flex; align-items: center; gap: 0.35rem; }
   margin-top: 0;
 }
 
-.builder-col-right {
-  display: flex;
-  flex-direction: column;
-  max-height: min(70vh, 560px);
-  border: 1px solid var(--line);
-  border-radius: 12px;
-  background: rgba(0,0,0,0.15);
-  overflow: hidden;
-}
 .builder-lib-header {
   padding: 0.65rem 0.75rem;
   font-weight: 800;
@@ -5502,10 +5498,11 @@ td .badge { display: inline-flex; align-items: center; gap: 0.35rem; }
   font-size: 0.82rem;
   width: 100%;
 }
-.autofill-display {
-  background: rgba(255,255,255,0.04);
-  border: 1px solid var(--line);
-  cursor: default;
+.builder-reactor-fields .autofill-display {
+  background: rgba(255,255,255,0.04) !important;
+  border: 1px solid var(--line) !important;
+  border-bottom: 1px solid var(--line) !important;
+  border-radius: 8px !important;
 }
 
 /* ── Ancestor module editor ──────────────────────────────────────── */

@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
-import { useSession } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 import { BrandLogo } from "@/app/brand-logo";
 import { ThemeToggle } from "@/app/theme-toggle";
 import { DiscordSignInButton } from "@/app/discord-signin-button";
@@ -77,9 +77,9 @@ export function SiteTopNav() {
               <Link className="btn btn-primary btn-sm" href="/tracker">
                 {t("nav.openTracker")}
               </Link>
-              <Link className="btn btn-ghost btn-sm" href="/api/auth/signout">
+              <button className="btn btn-ghost btn-sm" onClick={() => signOut({ callbackUrl: "/" })}>
                 {t("nav.signOut")}
-              </Link>
+              </button>
             </>
           ) : (
             <DiscordSignInButton label={t("nav.signInDiscord")} size="sm" />
@@ -124,9 +124,9 @@ export function SiteTopNav() {
                 <Link className="btn btn-primary btn-sm" href="/tracker" onClick={closeMenu}>
                   {t("nav.openTracker")}
                 </Link>
-                <Link className="btn btn-ghost btn-sm" href="/api/auth/signout" onClick={closeMenu}>
+                <button className="btn btn-ghost btn-sm" onClick={() => { closeMenu(); signOut({ callbackUrl: "/" }); }}>
                   {t("nav.signOut")}
-                </Link>
+                </button>
               </>
             ) : (
               <DiscordSignInButton label={t("nav.signInDiscord")} size="sm" />
