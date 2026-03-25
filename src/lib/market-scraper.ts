@@ -1,3 +1,5 @@
+import { createRequire } from "module";
+
 const NEXON_MARKET_URL = "https://tfd.nexon.com/en/market";
 const PRODUCTS_URL_PATTERN = "tfd-api.nexon.com/api/trademarket/en/products";
 
@@ -117,8 +119,9 @@ export async function scrapeMarketListings(
 ): Promise<MarketListing[]> {
   let browser;
   try {
-    // Dynamic import so Next.js / Turbopack never tries to bundle Chromium
-    const puppeteer = await import("puppeteer").then((m) => m.default ?? m);
+    // Use createRequire so Turbopack/webpack never analyze this dependency
+    const _require = createRequire(import.meta.url);
+    const puppeteer = _require("puppeteer");
     browser = await puppeteer.launch({
       headless: true,
       args: [
@@ -138,8 +141,10 @@ export async function scrapeMarketListings(
     let capturedData: unknown = null;
 
     await page.setRequestInterception(true);
-    page.on("request", (req) => req.continue());
-    page.on("response", async (res) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    page.on("request", (req: any) => req.continue());
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    page.on("response", async (res: any) => {
       if (res.url().includes(PRODUCTS_URL_PATTERN) && res.status() === 200) {
         try {
           capturedData = await res.json();
