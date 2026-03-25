@@ -10,7 +10,7 @@ import type { PublicBuild } from "@/lib/public-build-types";
 import type { ModuleRecord } from "@/lib/tfd-modules";
 import { WEAPON_TYPE_TO_NEXON, slotCountForTarget } from "@/lib/tfd-modules";
 import { weaponNameToSlug } from "@/lib/weapon-slug";
-import { fetchDescendantsCatalogRows } from "@/lib/fetch-game-catalog";
+import { fetchDescendantsCatalogRows, fetchModulesCatalog, fetchWeaponsCatalogRows } from "@/lib/fetch-game-catalog";
 import type { DescendantCatalogRow } from "@/lib/nexon-catalog-transform";
 import type { PlacedModule, BuildReactor, ExternalComponent } from "@/app/tracker/tracker-client";
 
@@ -32,17 +32,17 @@ export function PublicBuildPlannerView({ build }: { build: PublicBuild }) {
     let cancelled = false;
     (async () => {
       const [mods, weapons, desc] = await Promise.all([
-        fetch("/data/modules.json")
-          .then((r) => r.json())
-          .catch(() => []),
-        fetch("/data/weapons.json")
-          .then((r) => r.json())
-          .catch(() => []),
+        fetchModulesCatalog().then((m) => (Array.isArray(m) ? m : [])),
+        fetchWeaponsCatalogRows().then((w) => {
+          if (!w?.length) return fetch("/data/weapons.json").then((r) => (r.ok ? r.json() : []));
+          return w;
+        }),
         fetchDescendantsCatalogRows().catch(() => []),
       ]);
       if (cancelled) return;
-      if (Array.isArray(mods)) setModuleCatalog(mods);
-      if (Array.isArray(weapons)) setWeaponRows(weapons);
+      if (Array.isArray(mods) && mods.length) setModuleCatalog(mods);
+      const wr: WeaponRow[] = Array.isArray(weapons) ? weapons : [];
+      if (wr.length) setWeaponRows(wr);
       setDescRows(Array.isArray(desc) ? desc : []);
     })();
     return () => {

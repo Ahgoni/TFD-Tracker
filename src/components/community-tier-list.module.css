@@ -732,6 +732,51 @@
   margin: 0 0 0.45rem;
 }
 
+.buildVariantRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 0.75rem;
+  margin-bottom: 0.55rem;
+}
+
+.buildVariantLabel {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.buildVariantBtns {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.buildVariantBtn {
+  padding: 0.3rem 0.65rem;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: var(--panel-2, rgba(15, 23, 42, 0.6));
+  color: var(--muted);
+  font-size: 0.76rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: border-color 0.12s, color 0.12s, background 0.12s;
+}
+
+.buildVariantBtn:hover {
+  border-color: var(--accent);
+  color: var(--text, #e2e8f0);
+}
+
+.buildVariantBtnActive {
+  border-color: var(--accent, #38bdf8);
+  color: var(--accent, #38bdf8);
+  background: rgba(56, 189, 248, 0.1);
+}
+
 .buildLink {
   display: block;
   padding: 0.45rem 0.55rem;

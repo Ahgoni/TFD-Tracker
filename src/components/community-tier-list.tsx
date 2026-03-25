@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useSession } from "next-auth/react";
 import { redirectToDiscordOAuth } from "@/lib/discord-oauth-redirect";
 import { useI18n } from "@/contexts/i18n-context";
@@ -35,7 +35,11 @@ type PublicBuildRow = {
   username: string;
   authorName: string | null;
   href: string;
+  /** Descendant display name at sync time (e.g. "Ultimate Luna"); used to split public builds by variant. */
+  targetKey?: string | null;
 };
+
+type PublicBuildVariantFilter = "all" | "base" | "ultimate";
 
 const TIER_CLASS: Record<string, string> = {
   S: styles.tS,
@@ -320,6 +324,8 @@ export function CommunityTierList() {
   const [loadError, setLoadError] = useState<string | null>(null);
   const [modal, setModal] = useState<TierItem | null>(null);
   const [publicBuilds, setPublicBuilds] = useState<PublicBuildRow[] | null>(null);
+  const [publicBuildVariant, setPublicBuildVariant] = useState<PublicBuildVariantFilter>("all");
+  const [descendantHasUltimateSplit, setDescendantHasUltimateSplit] = useState(false);
   const [buildsLoading, setBuildsLoading] = useState(false);
   const [voteBusy, setVoteBusy] = useState(false);
   const [displayMode, setDisplayMode] = useState<"tiers" | "votes">("tiers");
@@ -353,6 +359,37 @@ export function CommunityTierList() {
   }, [loadTierList]);
 
   useEffect(() => {
+    setPublicBuildVariant("all");
+  }, [modal?.entityKey]);
+
+  useEffect(() => {
+    if (!modal || tab !== "descendants") {
+      setDescendantHasUltimateSplit(false);
+      return;
+    }
+    let cancelled = false;
+    fetch("/api/nexon/catalog/descendants", { cache: "no-store" })
+      .then((r) => (r.ok ? r.json() : null))
+      .then((rows: unknown) => {
+        if (cancelled || !Array.isArray(rows)) return;
+        const gKey = String(modal.entityKey);
+        const g = rows.filter((x: { groupId?: string }) => String(x.groupId) === gKey);
+        const hasUlt = g.some((x: { name?: string }) => /^ultimate\s+/i.test(String(x.name ?? "")));
+        const hasBase = g.some((x: { name?: string }) => {
+          const n = String(x.name ?? "");
+          return n.length > 0 && !/^ultimate\s+/i.test(n);
+        });
+        setDescendantHasUltimateSplit(hasUlt && hasBase);
+      })
+      .catch(() => {
+        if (!cancelled) setDescendantHasUltimateSplit(false);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [modal, tab]);
+
+  useEffect(() => {
     if (!modal) {
       setPublicBuilds(null);
       return;
@@ -368,6 +405,18 @@ export function CommunityTierList() {
       .catch(() => setPublicBuilds([]))
       .finally(() => setBuildsLoading(false));
   }, [modal, tab]);
+
+  const filteredPublicBuilds = useMemo(() => {
+    if (!publicBuilds) return null;
+    if (tab !== "descendants" || publicBuildVariant === "all") return publicBuilds;
+    return publicBuilds.filter((b) => {
+      const tk = (b.targetKey ?? "").trim();
+      if (!tk) return false;
+      const isUlt = /^ultimate\s+/i.test(tk);
+      if (publicBuildVariant === "ultimate") return isUlt;
+      return !isUlt;
+    });
+  }, [publicBuilds, publicBuildVariant, tab]);
 
   async function submitVote(tier: string) {
     if (!modal) return;
@@ -584,10 +633,27 @@ export function CommunityTierList() {
 
             <div>
               <p className={styles.buildsLabel}>{t("tierList.modalPublicBuilds")}</p>
+              {tab === "descendants" && descendantHasUltimateSplit ? (
+                <div className={styles.buildVariantRow} role="group" aria-label={t("tierList.buildVariantAria")}>
+                  <span className={styles.buildVariantLabel}>{t("tierList.buildVariantLabel")}</span>
+                  <div className={styles.buildVariantBtns}>
+                    {(["all", "base", "ultimate"] as const).map((v) => (
+                      <button
+                        key={v}
+                        type="button"
+                        className={`${styles.buildVariantBtn} ${publicBuildVariant === v ? styles.buildVariantBtnActive : ""}`}
+                        onClick={() => setPublicBuildVariant(v)}
+                      >
+                        {t(`tierList.buildFilter.${v}`)}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              ) : null}
               {buildsLoading ? (
                 <p className={styles.emptyBuilds}>{t("tierList.modalLoadingBuilds")}</p>
-              ) : publicBuilds && publicBuilds.length > 0 ? (
-                publicBuilds.map((b) => (
+              ) : filteredPublicBuilds && filteredPublicBuilds.length > 0 ? (
+                filteredPublicBuilds.map((b) => (
                   <Link key={`${b.username}-${b.buildId}`} href={b.href} className={styles.buildLink}>
                     <div className={styles.buildLinkTitle}>{b.buildName}</div>
                     <div className={styles.buildLinkMeta}>
@@ -596,6 +662,8 @@ export function CommunityTierList() {
                     </div>
                   </Link>
                 ))
+              ) : publicBuilds && publicBuilds.length > 0 ? (
+                <p className={styles.emptyBuilds}>{t("tierList.modalNoBuildsFilter")}</p>
               ) : (
                 <p className={styles.emptyBuilds}>
                   {t("tierList.modalNoBuilds", {

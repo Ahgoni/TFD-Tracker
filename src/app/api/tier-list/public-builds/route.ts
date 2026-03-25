@@ -25,6 +25,7 @@ export async function GET(request: Request) {
     .map((r) => ({
       buildId: r.buildId,
       buildName: r.buildName,
+      targetKey: r.targetKey,
       username: r.user.username as string,
       authorName: r.user.name,
       href: `/u/${encodeURIComponent(r.user.username as string)}/b/${encodeURIComponent(r.buildId)}`,

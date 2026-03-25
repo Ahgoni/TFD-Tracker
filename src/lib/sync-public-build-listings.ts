@@ -28,6 +28,7 @@ export async function syncPublicBuildListings(userId: string, state: Record<stri
     buildId: string;
     category: TierListCategoryValue;
     entityKey: string;
+    targetKey: string | null;
     buildName: string;
   }> = [];
 
@@ -41,6 +42,7 @@ export async function syncPublicBuildListings(userId: string, state: Record<stri
         buildId: b.id,
         category: TierListCategory.DESCENDANT,
         entityKey: g,
+        targetKey: b.targetKey.trim(),
         buildName: b.name.trim(),
       });
     } else if (b.targetType === "weapon" && typeof b.targetKey === "string") {
@@ -51,6 +53,7 @@ export async function syncPublicBuildListings(userId: string, state: Record<stri
         buildId: b.id,
         category: TierListCategory.WEAPON,
         entityKey: slug,
+        targetKey: slug,
         buildName: b.name.trim(),
       });
     }
@@ -64,6 +67,7 @@ export async function syncPublicBuildListings(userId: string, state: Record<stri
       buildId: r.buildId,
       category: r.category,
       entityKey: r.entityKey,
+      targetKey: r.targetKey,
       buildName: r.buildName,
     })),
   });

@@ -79,6 +79,16 @@ import {
   inferTierFromReactorSubstat,
 } from "@/lib/tracker-data";
 import { ExternalSetBonusesBanner, type ExternalSetBonusSet } from "./ExternalSetBonusesBanner";
+import { fetchExternalComponentCatalogRows, fetchReactorsCatalogRows } from "@/lib/fetch-game-catalog";
+import type { ExternalComponentCatalogRow, ReactorCatalogRow } from "@/lib/nexon-catalog-transform";
+
+/** Substring inside official Nexon `reactor_name` (e.g. "... Fusion Reactor"). */
+const REACTOR_SKILL_NAME_TOKEN: Record<string, string> = {
+  fusion: "Fusion",
+  singular: "Singularity",
+  dimension: "Dimension",
+  tech: "Mechanics",
+};
 
 const ultimateToBase: Record<string, string> = {
   "101000004": "101000001", "101000007": "101000002", "101000010": "101000003",
@@ -590,19 +600,70 @@ function ExternalComponentsSection({
 function ReactorReadOnlyCard({ reactor }: { reactor: BuildReactor }) {
   const el = elementDefs.find((d) => d.id === reactor.element);
   const sk = skillDefs.find((d) => d.id === reactor.skillType);
+  const [catalog, setCatalog] = useState<ReactorCatalogRow[]>([]);
+  useEffect(() => {
+    void fetchReactorsCatalogRows().then((rows) => setCatalog(Array.isArray(rows) ? rows : []));
+  }, []);
+
+  const elLabel = el?.label ?? "";
+  const token = REACTOR_SKILL_NAME_TOKEN[reactor.skillType] ?? "";
+  const catalogMatch = useMemo(() => {
+    if (!catalog.length) return null;
+    const byEl = catalog.filter(
+      (r) => r.element === elLabel || (reactor.element === "nonattribute" && r.element === "Non-Attribute"),
+    );
+    let hit = token ? byEl.find((r) => r.name.includes(token)) : null;
+    if (!hit && reactor.name?.trim()) {
+      const n = reactor.name.trim();
+      hit = catalog.find((r) => r.name === n || n.includes(r.name) || r.name.includes(n)) ?? null;
+    }
+    return hit;
+  }, [catalog, elLabel, token, reactor.name, reactor.element]);
+
+  const reactorImg = catalogMatch?.image?.trim();
+  const enhN = Math.min(5, Math.max(0, parseInt(String(reactor.enhancement ?? "0"), 10) || 0));
+  const lv = Math.min(200, Math.max(1, Number(reactor.level) || 1));
+  const lvPct = ((lv - 1) / 199) * 100;
+
   return (
     <div className="builder-reactor-section builder-reactor-readonly">
       <div className="builder-reactor-head">
         <h4 className="builder-stats-h">Reactor</h4>
       </div>
       <div className="builder-reactor-readonly-card">
-        <div className="builder-reactor-readonly-top">
-          {el?.icon && <img src={el.icon} alt="" className="builder-reactor-ro-icon" />}
+        <div className="builder-reactor-readonly-hero">
+          <div className="builder-reactor-art-wrap">
+            {reactorImg ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img src={reactorImg} alt="" className="builder-reactor-art-img" />
+            ) : el?.icon ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img src={el.icon} alt="" className="builder-reactor-art-fallback" />
+            ) : (
+              <div className="builder-reactor-art-ph" aria-hidden />
+            )}
+          </div>
           <div className="builder-reactor-readonly-text">
             <div className="builder-reactor-readonly-name">{reactor.name}</div>
-            <div className="muted builder-reactor-readonly-meta">
-              Lv {reactor.level} · Enh +{reactor.enhancement}
-              {sk?.label ? ` · ${sk.label}` : ""}
+            {sk?.label ? (
+              <div className="builder-reactor-readonly-skill muted">{sk.label} reactor</div>
+            ) : null}
+            <div className="builder-reactor-bars">
+              <div className="builder-bar-labeled">
+                <span className="builder-bar-label">Level</span>
+                <div className="builder-lvl-bar-track" title={`Level ${lv}`}>
+                  <div className="builder-lvl-bar-fill" style={{ width: `${lvPct}%` }} />
+                </div>
+                <span className="builder-bar-val">{lv}</span>
+              </div>
+              <div className="builder-bar-labeled">
+                <span className="builder-bar-label">Enhancement</span>
+                <div className="builder-seg-bar" role="img" aria-label={`Enhancement ${enhN} of 5`}>
+                  {Array.from({ length: 5 }, (_, i) => (
+                    <span key={i} className={`builder-seg-cell${i < enhN ? " is-on" : ""}`} />
+                  ))}
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -621,13 +682,24 @@ function ReactorReadOnlyCard({ reactor }: { reactor: BuildReactor }) {
   );
 }
 
+function externalImageForSet(catalog: ExternalComponentCatalogRow[], setName: string | undefined): string | null {
+  if (!setName?.trim() || !catalog.length) return null;
+  const row = catalog.find((r) => r.setOptionDetail?.some((d) => d.setName === setName));
+  const u = row?.image?.trim();
+  return u || null;
+}
+
 function ExternalComponentsReadOnly({ components }: { components: ExternalComponent[] }) {
   const [db, setDb] = useState<ExtCompDb | null>(null);
+  const [extCatalog, setExtCatalog] = useState<ExternalComponentCatalogRow[]>([]);
   useEffect(() => {
     fetch("/data/external-components.json?v=2025-03-21-sets4", { cache: "no-store" })
       .then((r) => (r.ok ? r.json() : null))
       .then((d) => setDb(d))
       .catch(() => {});
+    void fetchExternalComponentCatalogRows().then((rows) =>
+      setExtCatalog(Array.isArray(rows) ? rows : []),
+    );
   }, []);
 
   const setCounts = useMemo(() => {
@@ -665,10 +737,19 @@ function ExternalComponentsReadOnly({ components }: { components: ExternalCompon
         {db.slots.map((slotDef, idx) => {
           const comp = components[idx];
           if (!comp || (!comp.baseStat && !comp.set && !(comp.substats?.some((s) => s.stat)))) return null;
+          const setImg = externalImageForSet(extCatalog, comp.set);
           return (
             <div key={slotDef.name} className="builder-comp-card builder-comp-card-readonly">
               <div className="builder-comp-header" title={slotDef.name}>
                 {slotDef.name}
+              </div>
+              <div className="builder-ext-ro-visual">
+                {setImg ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img src={setImg} alt="" className="builder-ext-ro-img" />
+                ) : (
+                  <div className="builder-ext-ro-ph" aria-hidden />
+                )}
               </div>
               {comp.baseStat ? (
                 <div className="builder-comp-readonly-row">
