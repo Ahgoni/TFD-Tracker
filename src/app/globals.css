@@ -6458,6 +6458,110 @@ tr.element-nonattr { border-left: 3px solid var(--muted); }
 }
 .mkt-action-gl:hover { background: rgba(34,197,94,0.16); }
 
+/* Option pills (stat rolls on live listings) */
+.mkt-card-options {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 0.35rem;
+  padding: 0 0.85rem 0.55rem; border-top: 1px solid var(--line); padding-top: 0.5rem;
+}
+.mkt-opt-pill {
+  display: flex; align-items: center; gap: 0.35rem;
+  padding: 0.35rem 0.55rem; border-radius: 6px; font-size: 0.73rem;
+  border: 1px solid var(--line);
+}
+.mkt-opt-boost {
+  background: rgba(34,197,94,0.06); border-color: rgba(34,197,94,0.15);
+}
+.mkt-opt-penalty {
+  background: rgba(239,68,68,0.06); border-color: rgba(239,68,68,0.15);
+}
+.mkt-opt-arrow {
+  font-size: 0.65rem; flex-shrink: 0;
+}
+.mkt-opt-boost .mkt-opt-arrow { color: #22c55e; }
+.mkt-opt-penalty .mkt-opt-arrow { color: #ef4444; }
+.mkt-opt-name {
+  flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  color: #a0b0c8;
+}
+.mkt-opt-val {
+  font-weight: 800; font-family: var(--font-mono, monospace); font-size: 0.72rem; color: #e0e8f0;
+  flex-shrink: 0;
+}
+.mkt-opt-range {
+  font-size: 0.62rem; color: #667799; flex-shrink: 0;
+}
+
+/* Price column */
+.mkt-card-price-col {
+  display: flex; flex-direction: column; align-items: flex-end; gap: 0.1rem; flex-shrink: 0;
+}
+.mkt-price-value {
+  font-size: 1.2rem; font-weight: 900; color: #fbbf24;
+}
+.mkt-price-unit {
+  font-size: 0.65rem; font-weight: 700; color: #fbbf24; opacity: 0.7; text-transform: uppercase;
+}
+.mkt-listed-at {
+  font-size: 0.62rem; color: #667799; white-space: nowrap;
+}
+
+/* Seller info */
+.mkt-card-seller { margin-top: 0.2rem; }
+.mkt-seller-name {
+  font-size: 0.72rem; font-weight: 700; color: #22c55e;
+}
+
+/* Meta helpers */
+.mkt-card-meta-sep { color: #444; font-size: 0.65rem; }
+.mkt-card-meta-txt { font-size: 0.68rem; color: #667799; }
+
+/* Whisper button */
+.mkt-whisper-btn {
+  display: inline-flex; align-items: center; gap: 0.35rem;
+  padding: 0.4rem 0.7rem; border-radius: 5px; font-size: 0.75rem; font-weight: 700;
+  background: rgba(251,191,36,0.1); color: #fbbf24; border: 1px solid rgba(251,191,36,0.2);
+  cursor: pointer; transition: background 120ms, transform 60ms;
+}
+.mkt-whisper-btn:hover { background: rgba(251,191,36,0.18); }
+.mkt-whisper-btn:active { transform: scale(0.97); }
+.mkt-whisper-btn.copied {
+  background: rgba(34,197,94,0.12); color: #22c55e; border-color: rgba(34,197,94,0.25);
+}
+
+/* Refresh button */
+.mkt-refresh-btn {
+  display: inline-flex; align-items: center; gap: 0.35rem;
+  padding: 0.35rem 0.65rem; border-radius: 6px; font-size: 0.72rem; font-weight: 700;
+  background: rgba(0,200,240,0.08); color: var(--accent); border: 1px solid rgba(0,200,240,0.18);
+  cursor: pointer; transition: background 120ms;
+}
+.mkt-refresh-btn:hover { background: rgba(0,200,240,0.16); }
+.mkt-refresh-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+@keyframes mktSpin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+.mkt-spin { animation: mktSpin 1s linear infinite; }
+
+/* Price row */
+.mkt-price-row { display: flex; gap: 0.35rem; }
+.mkt-input-half { flex: 1; min-width: 0; }
+
+/* Cache age badge */
+.mkt-cache-age { font-size: 0.65rem; color: #556677; margin-left: 0.3rem; }
+
+/* Error message */
+.mkt-error {
+  padding: 0.55rem 0.75rem; border-radius: 6px; font-size: 0.78rem;
+  background: rgba(239,68,68,0.06); border: 1px solid rgba(239,68,68,0.15); color: #ef4444;
+  margin-bottom: 0.5rem;
+}
+
+/* Fallback message */
+.mkt-fallback-msg {
+  padding: 0.6rem 0.85rem; border-radius: 6px; font-size: 0.78rem;
+  background: rgba(251,191,36,0.04); border: 1px solid rgba(251,191,36,0.12); color: #a0b0c8;
+  margin-bottom: 0.65rem; line-height: 1.45;
+}
+.mkt-fallback-msg a { color: var(--accent); text-decoration: underline; }
+
 /* Light mode */
 [data-theme="light"] .mkt-title { color: #1e293b; text-shadow: none; }
 [data-theme="light"] .mkt-subtitle { color: #6b7280; }
