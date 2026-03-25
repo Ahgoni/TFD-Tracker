@@ -16,6 +16,7 @@ import { BuildsTab } from "./components/BuildsTab";
 import { ProfileMenu } from "./components/ProfileMenu";
 import { FriendsTab } from "./components/FriendsTab";
 import { PlayerLookupTab } from "./components/PlayerLookupTab";
+import { MarketTab } from "./components/MarketTab";
 import { normalizeWeaponName } from "@/lib/tracker-data";
 import { fetchDescendantsCatalogRows } from "@/lib/fetch-game-catalog";
 import type { DescendantCatalogRow } from "@/lib/nexon-catalog-transform";
@@ -207,6 +208,7 @@ const DEFAULT_STATE: TrackerState = {
     "Farming",
     "Mastery",
     "Player Lookup",
+    "Market",
     "Builds",
     "Friends",
   ],
@@ -385,6 +387,15 @@ export function TrackerClient() {
             const fi = loaded.tabs.indexOf("Friends");
             if (fi >= 0) loaded.tabs.splice(fi, 0, "Player Lookup");
             else loaded.tabs.push("Player Lookup");
+          }
+        }
+        if (!loaded.tabs.includes("Market")) {
+          const bi = loaded.tabs.indexOf("Builds");
+          if (bi >= 0) loaded.tabs.splice(bi, 0, "Market");
+          else {
+            const fi = loaded.tabs.indexOf("Friends");
+            if (fi >= 0) loaded.tabs.splice(fi, 0, "Market");
+            else loaded.tabs.push("Market");
           }
         }
         loaded.tabs = loaded.tabs.filter((t) => t !== "Progression");
@@ -629,6 +640,7 @@ export function TrackerClient() {
           <MasteryTab state={state} />
         )}
         {activeTab === "Player Lookup" && <PlayerLookupTab />}
+        {activeTab === "Market" && <MarketTab />}
         {activeTab === "Builds" && (
           <BuildsTab state={state} setState={setState} />
         )}

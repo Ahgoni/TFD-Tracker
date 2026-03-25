@@ -1,8 +1,16 @@
 # TFD Tracker — handoff / session memory
 
-**Last updated:** 2026-03-25 (game-accurate UI overhaul + math hardening)
+**Last updated:** 2026-03-25 (Market tab, external comp fixes, Nexon link prompt)
 
-**Latest (2026-03-25):** **Game-accurate UI overhaul (5 phases):**
+**Latest (2026-03-25):** **Market tab + external component fixes + Nexon account linking:**
+1. **External component images:** Increased `builder-ext-ro-visual` height from 58→90px, added padding and drop-shadow to images so component art in public build views is no longer tiny/cramped.
+2. **External substat tier coloring:** Added `inferTierFromExternalSubstat` to the read-only external component card — each substat now shows a colored tier badge (common/rare/ultimate), matching the existing reactor substat treatment. CSS: `.ext-sub-tier`, `.ext-sub-tier-{common|rare|ultimate}`.
+3. **Market tab:** New tracker tab (inserted before Builds, with migration for existing users) showing all 22 Ancestor + 29 Trigger modules from the Nexon catalog. Features: type filter (All/Ancestor/Trigger), name search, compatible-descendant dropdown filter, expandable cards with stat-range breakdowns parsed from `module_stat` preview, tier-colored borders, descendant avatar chips. Links to official Nexon Market and Alcast Market Tool. Welcome tab includes a Market card. Note: Nexon has no public market API for live trade listings — the tab is a reference catalog + market links. Files: **`MarketTab.tsx`** (new), **`tracker-client.tsx`** (import + tab migration + content), **`WelcomeTab.tsx`** (card), **`globals.css`** (full Market CSS section).
+4. **Nexon account link banner:** Welcome tab now shows a "Link your TFD in-game name" prompt for signed-in users who haven't set `nexonIngameName`. Saves via `/api/profile` PUT (existing endpoint). Success state shows linked name with green check. Dismiss option hides for the session. CSS: `.nexon-link-*` styles.
+
+Files touched: **`globals.css`**, **`BuildPlannerPanel.tsx`** (ext substat coloring), **`MarketTab.tsx`** (new), **`tracker-client.tsx`**, **`WelcomeTab.tsx`**. Build passes clean (tsc + no lint errors).
+
+**Earlier (2026-03-25):** **Game-accurate UI overhaul (5 phases):**
 1. **CSS Design Tokens:** Added `:root` variables for all 5 socket/polarity colors (`--socket-almandine/cerulean/malachite/rutile/xantic` + glow variants) and 4 tier colors (`--tier-normal/rare/ultimate/transcendent` + glow). Light-mode overrides for all. Refactored ~30 hardcoded hex color references across `.tier-*`, `.rarity-chip-*`, `.reactor-sub-tier-*`, `.ancestor-tier-*` to use variables. Added utility classes: `.socket-{name}` (color), `.socket-dot-{name}` (colored circle), `.tier-border-{name}` (left border), `.element-{name}` (row borders + badge colors for Fire/Chill/Electric/Toxic/Non-Attribute).
 2. **Build planner math hardening:** `isSubModuleBoardSlot` simplified from fragile preview-text matching to `slotTypes.includes("Sub")` (Nexon API field). `capacityCostAtLevel` now uses `isSubModuleBoardSlot` (was `isChargedSubAttackModule`) so all Sub mods explicitly cost 0. Added `socketColorClass`, `socketDotClass`, `tierBorderClass`, `tierTextClass` helpers in **`tfd-modules.ts`**.
 3. **Module cards + build slots:** Library cards (`ModuleLibraryCard`) use tier-colored left borders via `tierBorderClass`, socket-colored dots next to socket names, hover effects. Build slot cards get tier borders when filled, `builder-slot-catalyzed` glow, "Skill"/"Sub" pills colored with game-appropriate colors. Catalyst pills replaced Unicode glyph system with colored dots + socket color on the `<select>`. Cap pill uses socket dot instead of glyph. Level bar segments use accent gradient.

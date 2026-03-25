@@ -1,5 +1,6 @@
 "use client";
 
+import { useCallback, useState } from "react";
 import { useSession } from "next-auth/react";
 import type { TrackerState } from "../tracker-client";
 
@@ -83,6 +84,19 @@ const SECTION_CARDS = [
     accent: "var(--socket-cerulean)",
   },
   {
+    tab: "Market",
+    icon: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M6 2L3 7h18l-3-5z" />
+        <path d="M3 7v11a2 2 0 002 2h14a2 2 0 002-2V7" />
+        <path d="M9 12h6" />
+      </svg>
+    ),
+    title: "Market",
+    desc: "Browse Ancestor & Trigger modules with stat ranges, compatible Descendants, and links to the official trade market.",
+    accent: "var(--tier-transcendent)",
+  },
+  {
     tab: "Builds",
     icon: (
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
@@ -107,6 +121,90 @@ function activityToTab(text: string): string | null {
   return null;
 }
 
+function NexonLinkBanner() {
+  const { data: session } = useSession();
+  const nexonIngameName = (session?.user as Record<string, unknown> | undefined)?.nexonIngameName as string | null;
+  const [name, setName] = useState("");
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState(false);
+  const [dismissed, setDismissed] = useState(false);
+
+  const handleSave = useCallback(async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!name.trim()) return;
+    setError("");
+    setSaving(true);
+    try {
+      const res = await fetch("/api/profile", {
+        method: "PUT",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ nexonIngameName: name.trim() }),
+      });
+      const data = await res.json();
+      if (!res.ok) { setError(typeof data.error === "string" ? data.error : "Failed to save."); return; }
+      setSuccess(true);
+    } catch {
+      setError("Network error.");
+    } finally {
+      setSaving(false);
+    }
+  }, [name]);
+
+  if (!session?.user) return null;
+  if (dismissed) return null;
+
+  if (nexonIngameName || success) {
+    return (
+      <div className="nexon-link-banner nexon-link-success">
+        <svg viewBox="0 0 20 20" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="1.6">
+          <circle cx="10" cy="10" r="8" />
+          <path d="M7 10l2 2 4-4" />
+        </svg>
+        <div>
+          <strong>TFD In-Game Account Linked</strong>
+          <span className="nexon-link-name">{nexonIngameName ?? name}</span>
+          — Enables Mastery data, Player Lookup, and more. Edit in Friends tab.
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="nexon-link-banner">
+      <div className="nexon-link-content">
+        <svg viewBox="0 0 20 20" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="1.5">
+          <path d="M10 2a8 8 0 100 16 8 8 0 000-16z" />
+          <path d="M10 6v4M10 14h.01" />
+        </svg>
+        <div className="nexon-link-text">
+          <strong>Link your TFD in-game name</strong>
+          <span>
+            Enter your in-game name to enable automatic Mastery rank lookup, Player Lookup by name,
+            and future Market features. Your name is verified via the Nexon Open API.
+          </span>
+        </div>
+      </div>
+      <form className="nexon-link-form" onSubmit={handleSave}>
+        <input
+          type="text"
+          placeholder="YourName#1234"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          className="nexon-link-input"
+        />
+        <button type="submit" className="nexon-link-save" disabled={saving || !name.trim()}>
+          {saving ? "Saving…" : "Link Account"}
+        </button>
+        <button type="button" className="nexon-link-dismiss" onClick={() => setDismissed(true)}>
+          Later
+        </button>
+      </form>
+      {error && <div className="nexon-link-error">{error}</div>}
+    </div>
+  );
+}
+
 export function WelcomeTab({ state, setTab }: Props) {
   const { data: session } = useSession();
 
@@ -123,6 +221,9 @@ export function WelcomeTab({ state, setTab }: Props) {
 
   return (
     <div className="welcome-page">
+
+      {/* ── Nexon account link prompt ──────────────────────────────── */}
+      <NexonLinkBanner />
 
       {/* ── Hero greeting ─────────────────────────────────────────── */}
       <section className="welcome-hero">

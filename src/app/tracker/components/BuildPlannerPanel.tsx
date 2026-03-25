@@ -91,6 +91,7 @@ import {
   substatOptions,
   getReactorName,
   inferTierFromReactorSubstat,
+  inferTierFromExternalSubstat,
 } from "@/lib/tracker-data";
 import { ExternalSetBonusesBanner, type ExternalSetBonusSet } from "./ExternalSetBonusesBanner";
 import { fetchExternalComponentCatalogRows, fetchReactorsCatalogRows } from "@/lib/fetch-game-catalog";
@@ -966,12 +967,18 @@ function ExternalComponentsReadOnly({ components }: { components: ExternalCompon
                   <span>{comp.baseStat}: {comp.baseValue}</span>
                 </div>
               ) : null}
-              {(comp.substats ?? []).filter((s) => s.stat).map((s, si) => (
-                <div key={si} className="builder-comp-readonly-row">
-                  <span className="muted">Sub</span>
-                  <span>{s.stat}: {s.value}</span>
-                </div>
-              ))}
+              {(comp.substats ?? []).filter((s) => s.stat).map((s, si) => {
+                const tier = inferTierFromExternalSubstat(s.stat, String(s.value));
+                return (
+                  <div key={si} className="builder-comp-readonly-row">
+                    <span className="muted">Sub</span>
+                    <span style={{ display: "flex", alignItems: "baseline", gap: "0.3rem" }}>
+                      <span className={`ext-sub-tier ext-sub-tier-${tier}`}>{tier}</span>
+                      {s.stat}: {s.value}
+                    </span>
+                  </div>
+                );
+              })}
               {comp.set ? (
                 <div className="builder-comp-readonly-row builder-comp-readonly-set">
                   <span className="muted">Set</span>
