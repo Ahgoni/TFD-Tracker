@@ -1,8 +1,10 @@
 # TFD Tracker — handoff / session memory
 
-**Last updated:** 2026-03-24 (tier list catalog: Nexon + Ultimate weapons)
+**Last updated:** 2026-03-24 (mobile layout + nav drawer)
 
-**Latest (2026-03-24):** **Community tier list catalog** (`src/lib/tier-list-catalog.ts`): descendants and weapons lists prefer **live Nexon** `descendant.json` / `weapon.json` (ISR **1h**), then fall back to **`public/data/descendants.json`** / **`public/weapons-catalog.json`**. **Weapons tab is Ultimate-only** (`rarity === "Ultimate"` / Nexon Tier3). **`getTierListDescendants` / `getTierListWeapons` / `weaponSlugSet` / `descendantNameToGroupId`** are **async**; tier-list APIs + **`sync-public-build-listings`** await them. Descendant **`entityKey`** = map key = **`descendant_group_id`**.
+**Latest (2026-03-24):** **Mobile / small screens:** root **`viewport`** (`layout.tsx`) with safe-area; **`overflow-x: clip`** on `html`/`body`/`landing`; **`SiteTopNav`** hamburger drawer ≤720px; tracker **`tab-nav-wrap`** horizontal scroll; share row + hero CTA stack; tier list / mod panel horizontal safe-area padding; iOS **16px** inputs ≤768px to reduce focus-zoom.
+
+**Earlier (2026-03-24):** **Community tier list catalog** (`src/lib/tier-list-catalog.ts`): descendants and weapons lists prefer **live Nexon** `descendant.json` / `weapon.json` (ISR **1h**), then fall back to **`public/data/descendants.json`** / **`public/weapons-catalog.json`**. **Weapons tab is Ultimate-only** (`rarity === "Ultimate"` / Nexon Tier3). **`getTierListDescendants` / `getTierListWeapons` / `weaponSlugSet` / `descendantNameToGroupId`** are **async**; tier-list APIs + **`sync-public-build-listings`** await them. Descendant **`entityKey`** = map key = **`descendant_group_id`**.
 
 **Earlier (2026-03-24):** **Tier list mod (owner-only):** env **`TIER_LIST_MOD_DISCORD_IDS`** (comma-separated snowflakes) gates **`/api/tier-list/mod/*`**. Matching Discord sign-in sees collapsible **`TierListModPanel`** on the tier list; others see nothing. **Synthetic overlay** (`TierListModOverlay`) adjusts per-tier counts on read (real `TierVote` rows unchanged unless mod deletes them). Run **`prisma migrate deploy`** for new table.
 
@@ -237,6 +239,7 @@ After deploy: **hard refresh** to clear stale asset caches.
 
 | Date       | Summary |
 |-----------|---------|
+| 2026-03-24 | **Mobile UX:** viewport + safe-area; site nav drawer; tracker tab strip scroll; landing/share/tier-list padding; iOS input font-size. |
 | 2026-03-24 | **Tier list catalog:** Nexon fetch + 1h revalidate; **weapons = Ultimate only**; file fallback; async `tier-list-catalog` + API/sync callers; descendant `entityKey` = group map key. |
 | 2026-03-24 | **Tier list:** removed **? / UNRANKED** row; `GET /api/tier-list` adds **`unranked`[]**; UI shows **S–D** only + optional **Unranked** section (text heading, spacer) when entries have no votes. |
 | 2026-03-24 | **Tier list votes view:** hover tooltip + touch chips for S–D counts; column shows total votes; modal caption; **language `<select>`** dark-mode `option` + `color-scheme` in `globals.css`. |

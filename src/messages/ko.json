@@ -5,6 +5,8 @@
   "nav.openTracker": "트래커 열기",
   "nav.signOut": "로그아웃",
   "nav.signInDiscord": "Discord로 로그인",
+  "nav.openMenu": "메뉴 열기",
+  "nav.closeMenu": "메뉴 닫기",
   "lang.label": "언어",
   "tierList.title": "퍼스트 디센던트",
   "tierList.titleAccent": "커뮤니티 티어 리스트",

@@ -557,17 +557,19 @@ export function TrackerClient() {
           </div>
         </div>
 
-        <nav className="tab-nav" aria-label="Tracker sections">
-          {state.tabs.map((tab) => (
-            <button
-              key={tab}
-              className={tab === activeTab ? "active" : ""}
-              onClick={() => setActiveTab(tab)}
-            >
-              {tab}
-            </button>
-          ))}
-        </nav>
+        <div className="tab-nav-wrap">
+          <nav className="tab-nav" aria-label="Tracker sections">
+            {state.tabs.map((tab) => (
+              <button
+                key={tab}
+                className={tab === activeTab ? "active" : ""}
+                onClick={() => setActiveTab(tab)}
+              >
+                {tab}
+              </button>
+            ))}
+          </nav>
+        </div>
 
         {showShare && shareToken && (
           <div className="share-link-row">

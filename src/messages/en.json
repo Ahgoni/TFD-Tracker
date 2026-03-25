@@ -5,6 +5,8 @@
   "nav.openTracker": "Open Tracker",
   "nav.signOut": "Sign out",
   "nav.signInDiscord": "Sign in with Discord",
+  "nav.openMenu": "Open menu",
+  "nav.closeMenu": "Close menu",
   "lang.label": "Language",
   "tierList.title": "The First Descendant",
   "tierList.titleAccent": "Community Tier List",

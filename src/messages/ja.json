@@ -4,6 +4,8 @@
   "nav.tracker": "トラッカー",
   "nav.openTracker": "トラッカーを開く",
   "nav.signOut": "サインアウト",
+  "nav.openMenu": "メニューを開く",
+  "nav.closeMenu": "メニューを閉じる",
   "nav.signInDiscord": "Discordでサインイン",
   "lang.label": "言語",
   "tierList.title": "The First Descendant",
