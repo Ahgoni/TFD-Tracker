@@ -235,9 +235,73 @@ function ModuleLibraryCard({ mod, disabled, expanded }: { mod: ModuleRecord; dis
   );
 }
 
-function catalystCornerLabel(p: string | null): string {
-  if (!p) return "\u2697";
-  return p.slice(0, 1);
+/** TFD / in-game style polarity marks (no emoji — avoids wrong OS glyphs). */
+const POLARITY_CATALYST_GLYPH: Record<string, string> = {
+  Almandine: "\u0393",
+  Cerulean: "C",
+  Malachite: "\u2227",
+  Rutile: "r",
+  Xantic: "X",
+};
+
+function polarityCatalystGlyph(name: string | null | undefined): string {
+  if (!name?.trim()) return "\u2014";
+  return POLARITY_CATALYST_GLYPH[name] ?? name.slice(0, 1);
+}
+
+function polarityCatalystOptionText(name: string): string {
+  return `${polarityCatalystGlyph(name)}\u2003${name}`;
+}
+
+function SlotCatalystPill({
+  slotValue,
+  onChange,
+  readOnly,
+  subSlot,
+}: {
+  slotValue: string | null;
+  onChange?: (v: string | null) => void;
+  readOnly?: boolean;
+  subSlot?: boolean;
+}) {
+  const rutileSocket = slotValue === "Rutile";
+  if (readOnly) {
+    return (
+      <div
+        className={`builder-slot-catalyst-pill builder-slot-catalyst-pill-readonly${subSlot ? " is-sub-slot" : ""}`}
+        title={slotValue ? `Slot catalyst: ${slotValue}` : "No slot catalyst"}
+      >
+        <span className={`builder-slot-catalyst-pill-glyph${rutileSocket ? " is-rutile" : ""}`} aria-hidden>
+          {polarityCatalystGlyph(slotValue)}
+        </span>
+        <span className="builder-slot-catalyst-pill-label">{slotValue ?? "Empty"}</span>
+      </div>
+    );
+  }
+  return (
+    <div className={`builder-slot-catalyst-pill${subSlot ? " is-sub-slot" : ""}`}>
+      <span
+        className={`builder-slot-catalyst-pill-glyph${rutileSocket ? " is-rutile" : ""}`}
+        aria-hidden
+      >
+        {polarityCatalystGlyph(slotValue)}
+      </span>
+      <select
+        className="builder-slot-catalyst-pill-select"
+        value={slotValue ?? ""}
+        onChange={(e) => onChange?.(e.target.value || null)}
+        onClick={(e) => e.stopPropagation()}
+        aria-label={subSlot ? "Sub cell socket (catalyst)" : "Slot socket (catalyst)"}
+      >
+        <option value="">Empty</option>
+        {MODULE_POLARITY_OPTIONS.map((o) => (
+          <option key={o} value={o}>
+            {polarityCatalystOptionText(o)}
+          </option>
+        ))}
+      </select>
+    </div>
+  );
 }
 
 // Child: Slot
@@ -252,7 +316,6 @@ function SlotDrop({
   readOnly,
   targetType,
   catalystCorners,
-  onCycleCatalystCorner,
   onSetPrimaryCatalyst,
 }: {
   index: number;
@@ -264,7 +327,6 @@ function SlotDrop({
   readOnly?: boolean;
   targetType: "descendant" | "weapon";
   catalystCorners: (string | null)[];
-  onCycleCatalystCorner?: (cornerIndex: number) => void;
   onSetPrimaryCatalyst?: (polarity: string | null) => void;
 }) {
   const { isOver, setNodeRef } = useDroppable({ id: droppableSlotId(index), disabled: !!readOnly });
@@ -285,68 +347,26 @@ function SlotDrop({
   const sock = (mod?.socket ?? placed?.socket ?? "").trim();
   const socketMatchesCatalyst = !!(sock && corners.some((c) => c === sock));
   const subBonusLine = !!(mod && isSubModuleBoardSlot(mod) && index === 6);
-
-  const cornerBtn = (ci: number, pos: "tl" | "tr" | "bl" | "br") => {
-    const v = corners[ci] ?? null;
-    if (!showCatalyst) return null;
-    if (readOnly) {
-      return (
-        <span
-          key={ci}
-          className={`builder-slot-catalyst-corner builder-slot-catalyst-${pos} builder-slot-catalyst-readonly`}
-          title={v ? `Catalyst: ${v}` : "No catalyst"}
-        >
-          {catalystCornerLabel(v)}
-        </span>
-      );
-    }
-    return (
-      <button
-        key={ci}
-        type="button"
-        className={`builder-slot-catalyst-corner builder-slot-catalyst-${pos}${v ? " has-val" : ""}`}
-        title={v ? `Catalyst: ${v} (click to change)` : "Add slot catalyst (socket type)"}
-        aria-label={v ? `Catalyst corner ${ci + 1}: ${v}` : `Catalyst corner ${ci + 1}: empty`}
-        onClick={(e) => {
-          e.stopPropagation();
-          onCycleCatalystCorner?.(ci);
-        }}
-      >
-        {catalystCornerLabel(v)}
-      </button>
-    );
-  };
+  const isSubCell = index === 6;
+  const modSocketRutile = (placed?.socket ?? "").trim() === "Rutile";
 
   return (
     <div ref={setNodeRef} className={`builder-slot${roleClass}${isOver ? " slot-over" : ""}${placed ? " slot-filled" : ""}`}>
       <span className="builder-slot-idx">{index + 1}</span>
       {slotRole === "skill" && <span className="builder-slot-role-pill">Skill</span>}
       {slotRole === "sub" && <span className="builder-slot-role-pill">Sub</span>}
-      {showCatalyst && (
-        <div className="builder-slot-catalyst-layer">
-          {cornerBtn(0, "tl")}
-          {cornerBtn(1, "tr")}
-          {cornerBtn(2, "bl")}
-          {cornerBtn(3, "br")}
-        </div>
-      )}
       {!placed ? (
         <div className="builder-slot-empty">
-          <span className="builder-slot-chip">{readOnly ? "—" : "Drop module"}</span>
-          {showCatalyst && onSetPrimaryCatalyst && !readOnly && (
-            <label className="builder-slot-catalyst-quick">
-              <span className="sr-only">Primary slot socket (catalyst)</span>
-              <select
-                value={corners[0] ?? ""}
-                onChange={(e) => onSetPrimaryCatalyst(e.target.value || null)}
-                onClick={(e) => e.stopPropagation()}
-              >
-                <option value="">Socket —</option>
-                {MODULE_POLARITY_OPTIONS.map((o) => (
-                  <option key={o} value={o}>{o}</option>
-                ))}
-              </select>
-            </label>
+          <span className="builder-slot-chip">
+            {readOnly ? "—" : isSubCell ? "Drop Sub module" : "Drop module"}
+          </span>
+          {showCatalyst && (
+            <SlotCatalystPill
+              slotValue={corners[0] ?? null}
+              onChange={readOnly ? undefined : onSetPrimaryCatalyst}
+              readOnly={readOnly}
+              subSlot={isSubCell}
+            />
           )}
         </div>
       ) : (
@@ -367,22 +387,30 @@ function SlotDrop({
               )}
             </>
           )}
+          {mod ? (
+            <div
+              className={`builder-slot-cap-pill${
+                !subBonusLine && socketMatchesCatalyst && capDisplay > 0 ? " matched" : ""
+              }${subBonusLine ? " sub-bonus" : ""}`}
+              title={subBonusLine ? "Bonus to max module capacity (Sub cell)" : "Capacity cost at this level"}
+            >
+              <span className={`builder-slot-cap-pill-glyph${modSocketRutile ? " is-rutile" : ""}`} aria-hidden>
+                {polarityCatalystGlyph(placed.socket)}
+              </span>
+              <span className="builder-slot-cap-pill-num">{capDisplay}</span>
+            </div>
+          ) : null}
           <div className="builder-slot-body">
             {mod?.image || placed.image
               ? <img src={mod?.image || placed.image} alt="" className="builder-slot-icon" />
               : <div className="builder-slot-icon builder-slot-icon-ph" />}
             <div className={`builder-slot-title ${mod?.tier === "Transcendent" ? "tier-transcendent" : mod?.tier === "Ultimate" ? "tier-ultimate" : mod?.tier === "Rare" ? "tier-rare" : ""}`} title={placed.name}>{placed.name}</div>
-            <div className="builder-slot-meta">
-              <span className={`builder-slot-socket ${mod?.tier === "Transcendent" ? "tier-transcendent" : ""}`}>{placed.socket}</span>
-              <span
-                className={`builder-slot-cap${
-                  subBonusLine ? " builder-slot-cap-bonus" : ""
-                }${!subBonusLine && socketMatchesCatalyst && capDisplay > 0 ? " builder-slot-cap-matched" : ""}`}
-              >
-                {subBonusLine
-                  ? `+${capDisplay} max cap`
-                  : `${capDisplay} cap`}
-              </span>
+            <div className="builder-slot-meta builder-slot-meta-min">
+              {subBonusLine ? (
+                <span className="builder-slot-meta-hint muted">+Max capacity</span>
+              ) : (
+                <span className={`builder-slot-socket-tiny ${mod?.tier === "Transcendent" ? "tier-transcendent" : ""}`}>{placed.socket}</span>
+              )}
             </div>
             {isAncestor && placed.ancestorStats ? (
               <div className="builder-slot-ancestor-stats">
@@ -403,20 +431,13 @@ function SlotDrop({
               );
             })() : null}
           </div>
-          {showCatalyst && onSetPrimaryCatalyst && !readOnly && (
-            <label className="builder-slot-catalyst-quick builder-slot-catalyst-quick-filled">
-              <span className="sr-only">Primary slot socket (catalyst)</span>
-              <select
-                value={corners[0] ?? ""}
-                onChange={(e) => onSetPrimaryCatalyst(e.target.value || null)}
-                onClick={(e) => e.stopPropagation()}
-              >
-                <option value="">Socket —</option>
-                {MODULE_POLARITY_OPTIONS.map((o) => (
-                  <option key={o} value={o}>{o}</option>
-                ))}
-              </select>
-            </label>
+          {showCatalyst && (
+            <SlotCatalystPill
+              slotValue={corners[0] ?? null}
+              onChange={readOnly ? undefined : onSetPrimaryCatalyst}
+              readOnly={readOnly}
+              subSlot={isSubCell}
+            />
           )}
           {readOnly ? (
             <div className="builder-slot-lvl builder-slot-lvl-readonly" aria-label="Module level">
@@ -1257,34 +1278,6 @@ function BuildPlannerPanelInner({
     [slots, moduleById, catalystRows],
   );
 
-  const cycleSlotCatalyst = useCallback(
-    (slotIndex: number, cornerIndex: number) => {
-      if (readOnly || form.targetType !== "descendant") return;
-      const order: (string | null)[] = [null, ...(MODULE_POLARITY_OPTIONS as unknown as string[])];
-      setForm((f) => {
-        const cats = normalizePlannerSlotCatalysts(f.plannerSlotCatalysts, nSlots);
-        const row = [...cats[slotIndex]];
-        const cur = row[cornerIndex] ?? null;
-        const idx = order.indexOf(cur);
-        row[cornerIndex] = order[(idx < 0 ? 0 : idx + 1) % order.length];
-        cats[slotIndex] = row;
-        const slotRow = [...(f.plannerSlots ?? [])];
-        while (slotRow.length < nSlots) slotRow.push(null);
-        const payload = slotRow.slice(0, nSlots).map((s) => (s ? { moduleId: s.moduleId, level: s.level } : null));
-        const tot = totalCapacityCost(payload, moduleById, cats);
-        const effMax = effectiveMaxCapacity(f.targetType, payload, moduleById, cats);
-        if (tot > effMax) {
-          window.alert(
-            "That catalyst change breaks the current module budget (or lowers max capacity). Adjust modules or levels first.",
-          );
-          return f;
-        }
-        return { ...f, plannerSlotCatalysts: cats };
-      });
-    },
-    [readOnly, form.targetType, nSlots, moduleById, setForm],
-  );
-
   const setPrimaryCatalyst = useCallback(
     (slotIndex: number, polarity: string | null) => {
       if (readOnly || form.targetType !== "descendant") return;
@@ -2100,7 +2093,6 @@ function BuildPlannerPanelInner({
                     moduleById={moduleById}
                     targetType={form.targetType}
                     catalystCorners={catalystRows?.[index] ?? emptySlotCatalystCorners()}
-                    onCycleCatalystCorner={(ci) => cycleSlotCatalyst(index, ci)}
                     onSetPrimaryCatalyst={(p) => setPrimaryCatalyst(index, p)}
                     readOnly={readOnly}
                     onClear={() => setSlot(index, null)}

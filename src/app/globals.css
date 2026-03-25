@@ -4169,81 +4169,119 @@ td .badge { display: inline-flex; align-items: center; gap: 0.35rem; }
   border: 0;
 }
 
-.builder-slot-catalyst-layer {
-  position: absolute;
-  inset: 0;
-  z-index: 2;
-  pointer-events: none;
+/* TFD-style: one bottom row = glyph + native select (options use "Γ  Almandine" text) */
+.builder-slot-catalyst-pill {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin-top: auto;
+  padding: 0.22rem 0.4rem 0.22rem 0.35rem;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(12, 14, 20, 0.92);
+  width: 100%;
+  flex-shrink: 0;
+  box-sizing: border-box;
 }
-.builder-slot-catalyst-corner {
-  position: absolute;
-  width: 20px;
-  height: 20px;
-  padding: 0;
-  margin: 0;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 5px;
-  background: rgba(0, 0, 0, 0.55);
-  color: var(--muted);
-  font-size: 0.62rem;
+.builder-slot-catalyst-pill.is-sub-slot {
+  border-color: rgba(250, 204, 21, 0.22);
+  background: rgba(30, 24, 8, 0.55);
+}
+.builder-slot-catalyst-pill-glyph {
+  flex: 0 0 1.1rem;
+  width: 1.1rem;
+  text-align: center;
+  font-size: 0.72rem;
   font-weight: 800;
+  color: #e2e8f0;
   line-height: 1;
+  font-family: ui-sans-serif, system-ui, sans-serif;
+}
+.builder-slot-catalyst-pill-glyph.is-rutile {
+  font-style: italic;
+  font-family: Georgia, "Times New Roman", serif;
+}
+.builder-slot-catalyst-pill-select {
+  flex: 1;
+  min-width: 0;
+  border: none;
+  margin: 0;
+  padding: 0.12rem 1.15rem 0.12rem 0;
+  background: transparent;
+  color: var(--fg);
+  font-size: 0.65rem;
+  font-weight: 600;
+  cursor: pointer;
+  appearance: none;
+  background-image: linear-gradient(45deg, transparent 50%, var(--muted) 50%),
+    linear-gradient(135deg, var(--muted) 50%, transparent 50%);
+  background-position: calc(100% - 0.55rem) calc(50% + 0.1rem), calc(100% - 0.35rem) calc(50% + 0.1rem);
+  background-size: 5px 5px, 5px 5px;
+  background-repeat: no-repeat;
+}
+.builder-slot-catalyst-pill-select option {
+  color: #0f172a;
+  background: #f8fafc;
+}
+.builder-slot-catalyst-pill-readonly {
+  opacity: 0.92;
+}
+.builder-slot-catalyst-pill-label {
+  font-size: 0.65rem;
+  font-weight: 600;
+  color: var(--muted);
+  flex: 1;
+  min-width: 0;
+}
+
+/* Game-like cost badge above art: [socket glyph] [number] */
+.builder-slot-cap-pill {
   display: flex;
   align-items: center;
   justify-content: center;
-  pointer-events: auto;
-  cursor: pointer;
-  transition: border-color 0.12s, color 0.12s, background 0.12s;
-}
-.builder-slot-catalyst-corner:hover {
-  border-color: rgba(0, 200, 240, 0.45);
-  color: var(--accent);
-}
-.builder-slot-catalyst-corner.has-val {
-  border-color: rgba(0, 200, 240, 0.35);
-  color: #a5f3fc;
-}
-.builder-slot-catalyst-readonly {
-  pointer-events: none;
-  opacity: 0.85;
-}
-.builder-slot-catalyst-tl {
-  top: 22px;
-  left: 4px;
-}
-.builder-slot-catalyst-tr {
-  top: 22px;
-  right: 4px;
-}
-.builder-slot-catalyst-bl {
-  bottom: 52px;
-  left: 4px;
-}
-.builder-slot-catalyst-br {
-  bottom: 52px;
-  right: 4px;
-}
-.builder-slot-catalyst-quick {
-  margin-top: 0.35rem;
-  width: 100%;
-  max-width: 100%;
-}
-.builder-slot-catalyst-quick select,
-.builder-slot-catalyst-quick-filled select {
-  width: 100%;
-  font-size: 0.6rem;
-  padding: 0.2rem 0.25rem;
-  border-radius: 5px;
-  border: 1px solid var(--line);
+  gap: 0.35rem;
+  align-self: center;
+  margin: 0.15rem 0 0.1rem;
+  padding: 0.12rem 0.55rem;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
   background: rgba(0, 0, 0, 0.35);
-  color: var(--fg);
 }
-.builder-slot-catalyst-quick-filled {
-  margin-top: 0.15rem;
-  flex-shrink: 0;
-}
-.builder-slot-cap-matched {
+.builder-slot-cap-pill.matched .builder-slot-cap-pill-num {
   color: #4ade80;
+}
+.builder-slot-cap-pill.sub-bonus .builder-slot-cap-pill-num {
+  color: #fbbf24;
+}
+.builder-slot-cap-pill-glyph {
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: #cbd5e1;
+  line-height: 1;
+}
+.builder-slot-cap-pill-glyph.is-rutile {
+  font-style: italic;
+  font-family: Georgia, "Times New Roman", serif;
+}
+.builder-slot-cap-pill-num {
+  font-size: 0.78rem;
+  font-weight: 800;
+  color: #e2e8f0;
+  font-variant-numeric: tabular-nums;
+}
+.builder-slot-meta-min {
+  justify-content: center;
+  margin-top: 0.1rem;
+}
+.builder-slot-meta-hint {
+  font-size: 0.58rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.builder-slot-socket-tiny {
+  font-size: 0.58rem;
+  font-weight: 700;
+  color: var(--muted);
 }
 .builder-slot-lvl-track {
   display: flex;
