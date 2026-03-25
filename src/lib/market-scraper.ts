@@ -1,5 +1,3 @@
-import puppeteer from "puppeteer";
-
 const NEXON_MARKET_URL = "https://tfd.nexon.com/en/market";
 const PRODUCTS_URL_PATTERN = "tfd-api.nexon.com/api/trademarket/en/products";
 
@@ -119,6 +117,8 @@ export async function scrapeMarketListings(
 ): Promise<MarketListing[]> {
   let browser;
   try {
+    // Dynamic import so Next.js / Turbopack never tries to bundle Chromium
+    const puppeteer = await import("puppeteer").then((m) => m.default ?? m);
     browser = await puppeteer.launch({
       headless: true,
       args: [
