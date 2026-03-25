@@ -220,6 +220,27 @@ npm run build
 pm2 restart tfd-web
 ```
 
+**Do not skip `npm install`.** If you run only `git pull && npm run build`, new dependencies (for example **`puppeteer`** for the Market tab) are never installed and **`next build`** fails with **`Can't resolve 'puppeteer'`**. Always run **`npm install`** (or **`npm ci`**) after every pull before building.
+
+**One-liner (safe update):**
+```bash
+cd ~/apps/TFD && git pull && npm install && npx prisma migrate deploy && npm run build && pm2 restart tfd-web
+```
+(Use `~/apps/TFD/tfd-web` if your `package.json` lives there.)
+
+### 12e) Market tab / Puppeteer on Linux
+
+The live market scraper uses **Puppeteer** (headless Chrome). After `npm install`, the first successful scrape may need extra OS libraries on a minimal VPS. If the app builds but `/api/market` errors at runtime, install Chromium deps (Ubuntu/Debian example):
+
+```bash
+sudo apt-get update && sudo apt-get install -y \
+  ca-certificates fonts-liberation libasound2t64 libatk-bridge2.0-0 libatk1.0-0 libcups2 \
+  libdbus-1-3 libdrm2 libgbm1 libgtk-3-0 libnspr4 libnss3 libxcomposite1 libxdamage1 \
+  libxfixes3 libxkbcommon0 libxrandr2 xdg-utils
+```
+
+Then restart: `pm2 restart tfd-web`. See also [Puppeteer troubleshooting](https://pptr.dev/troubleshooting).
+
 ### 12d) `git pull` aborts: local changes to `public/data/*.json` (e.g. `modules.json`)
 
 **Error:** `Your local changes to the following files would be overwritten by merge` — often **`public/data/modules.json`** (or `descendants.json`, `weapons.json`).

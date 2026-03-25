@@ -18,6 +18,9 @@ const securityHeaders = [
 const nextConfig: NextConfig = {
   productionBrowserSourceMaps: false,
 
+  /** Puppeteer must stay a Node require(); do not bundle Chromium into the server chunk. */
+  serverExternalPackages: ["puppeteer"],
+
   /** When the repo is cloned as `.../TFD/tfd-web` and a stray `package-lock.json` exists in `.../TFD/`, Next would otherwise resolve `@/` to the wrong `src/`. */
   turbopack: {
     root: appDir,
