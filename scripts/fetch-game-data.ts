@@ -14,7 +14,7 @@ import {
   transformDescendantsFromNexon,
   transformModulesFromNexon,
   transformWeaponsFromNexon,
-} from "@/lib/nexon-catalog-transform";
+} from "../src/lib/nexon-catalog-transform";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const OUT = resolve(__dirname, "../public/data");
